@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>APEX v150 • INFINITE ENGINE</title>
+    <title>APEX v152 • INFINITE SCROLL</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;800&family=Lora:ital,wght@0,400;0,700;1,400;1,700&display=swap');
@@ -16,16 +16,22 @@
             --ios-blue: #007AFF;
         }
 
-        body { 
-            font-family: 'JetBrains Mono', monospace; background-color: var(--mil-bg); 
-            color: var(--mil-phosphor); margin: 0; padding: 0;
-            overflow-x: hidden; width: 100vw; display: flex; flex-direction: column;
+        /* RESET PARA ROLAGEM LIVRE */
+        html, body { 
+            background-color: var(--mil-bg); 
+            margin: 0; padding: 0;
+            width: 100vw; min-height: 100vh;
+            overflow-x: hidden;
+            overflow-y: auto; /* Permite rolagem total no corpo */
         }
 
-        /* ÁREA DE COMANDO */
+        body { display: flex; flex-direction: column; font-family: 'JetBrains Mono', monospace; }
+
+        /* ÁREA DE COMANDO FIXA NO TOPO */
         .command-zone {
+            position: sticky; top: 0;
             flex: none; padding: 20px; background: var(--mil-bg);
-            border-bottom: 1px solid var(--mil-border); z-index: 10;
+            border-bottom: 1px solid var(--mil-border); z-index: 100;
         }
 
         textarea { 
@@ -34,11 +40,11 @@
             width: 100%; outline: none; resize: none; font-family: 'JetBrains Mono';
         }
 
-        /* PAINEL TÁTICO EXPANSIVO */
+        /* PAINEL TÁTICO EXPANSIVO - SEM LIMITE DE ALTURA */
         .tactical-viewport { 
-            flex: 1; width: 100%; background-color: var(--mil-olive); 
-            padding: 40px 60px; overflow-y: auto; box-sizing: border-box;
-            display: none;
+            width: 100%; background-color: var(--mil-olive); 
+            padding: 40px 60px; box-sizing: border-box;
+            display: none; min-height: 100vh;
         }
 
         .paper-content {
@@ -59,7 +65,7 @@
             font-size: 11px; border: none; cursor: pointer;
         }
 
-        /* PTS ROLAGEM LATERAL */
+        /* PTS ROLAGEM LATERAL (ORIGINAL) */
         .pts-scroll {
             width: 100%; overflow-x: auto; margin-top: 30px; border-radius: 15px;
             border: 1px solid var(--mil-border); background: rgba(0,0,0,0.5);
@@ -72,21 +78,19 @@
         .pts-label { color: var(--ios-blue); font-size: 10px; font-weight: 800; text-transform: uppercase; margin-top: 15px; display: block; }
         .pts-val { font-size: 14px; color: var(--mil-phosphor); line-height: 1.5; font-family: 'JetBrains Mono'; }
 
-        /* IMPRESSÃO FLUXOGRAMA TIMES 8PT */
+        /* ESTILO DA BARRA DE ROLAGEM */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--mil-bg); }
+        ::-webkit-scrollbar-thumb { background: var(--mil-border); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--ios-blue); }
+
         @media print {
-            @page { size: A4 portrait; margin: 5mm; }
             .no-print { display: none !important; }
             body { background: #FFF !important; color: #000 !important; }
             .tactical-viewport { display: block !important; background: #FFF !important; padding: 0 !important; }
-            .paper-content { display: none !important; }
-            .flowchart-mode {
-                display: block !important; font-family: "Times New Roman", serif !important;
-                font-size: 8pt !important; line-height: 1.2;
-            }
-            .flow-node { border: 0.5pt solid #000; padding: 8px; margin-bottom: 10px; width: 100%; text-align: justify; }
+            .paper-content { font-family: "Times New Roman", serif !important; font-size: 8pt !important; color: #000; }
         }
 
-        #flowchart-data { display: none; }
         #gate { position: fixed; inset: 0; background: #000; z-index: 1000; display: flex; items: center; justify-content: center; }
     </style>
 </head>
@@ -94,8 +98,8 @@
 
     <div id="gate">
         <div class="bg-[#0A0F08] p-12 rounded-3xl border border-[#333] text-center">
-            <div class="text-white font-black text-2xl mb-8 italic shadow-xl">APEX Ω</div>
-            <h2 class="text-[10px] font-bold text-gray-500 uppercase tracking-[0.5em] mb-10">SENHA: 7400</h2>
+            <div class="text-white font-black text-2xl mb-8 italic">APEX Ω</div>
+            <h2 class="text-[10px] font-bold text-gray-500 uppercase tracking-[0.5em] mb-10 text-white">CHAVE: 7400</h2>
             <input type="password" id="pass" class="w-full p-4 bg-black rounded-xl text-center font-bold mb-8 text-[#00FF41] outline-none border border-[#333]">
             <button onclick="unlock()" class="ios-btn w-full">AUTORIZAR</button>
         </div>
@@ -103,18 +107,18 @@
 
     <div class="command-zone no-print">
         <div class="flex justify-between items-center mb-4">
-            <h1 class="font-black italic text-xl uppercase tracking-tighter text-white">Apex <span class="text-[#00FF41]">v150</span></h1>
+            <h1 class="font-black italic text-xl uppercase tracking-tighter text-white">Apex <span class="text-[#00FF41]">v152</span></h1>
             <div class="flex gap-2">
                 <button onclick="window.print()" class="ios-btn" style="background: #222;">FLUXOGRAMA (A4)</button>
                 <button onclick="solveInfinite()" class="ios-btn">EXECUTAR INFERÊNCIA</button>
             </div>
         </div>
-        <textarea id="clin-in" rows="3" placeholder="Insira o caso clínico para análise integral..."></textarea>
+        <textarea id="clin-in" rows="3" placeholder="Insira o caso clínico integral..."></textarea>
     </div>
 
     <main id="nexus" class="hidden tactical-viewport">
-        <div class="paper-content" id="screen-view">
-            <div id="integral-out"></div>
+        <div class="paper-content">
+            <div id="integral-soap-out"></div>
             
             <div id="pts-section">
                 <h2>PROJETO TERAPÊUTICO SINGULAR (PTS)</h2>
@@ -142,9 +146,6 @@
                 </div>
             </div>
         </div>
-
-        <div id="flowchart-data" class="flowchart-mode">
-            </div>
     </main>
 
     <script>
@@ -162,29 +163,30 @@
 
             document.getElementById('nexus').style.display = 'block';
 
-            // DADOS TOTAIS RESTAURADOS
+            // DADOS TOTAIS SEM LIMITE DE TEXTO
             setTimeout(() => {
-                const s = "<b>[S]ubjetivo:</b> Paciente Gilberto, 58 anos, pedreiro. Apresenta cefaleia holocraniana súbita intensidade 10/10, seguida de vômitos e rebaixamento de consciência. Relato de HAS e Tabagismo.";
-                const o = "<b>[O]bjetivo:</b> Glasgow 12. PA 175/105 mmHg. Rigidez de nuca. TC evidenciando HSA Fisher IV. Creatinina 1.9, Glicemia 165.";
-                const a = "<b>[A]valiação:</b> HSA Hunt-Hess III. Emergência Hipertensiva. Risco de vasoespasmo. Iatrogenia detectada.";
-                const p = "<b>[P]lano:</b> Internar UTI AVC. Protocolo MOV. Neurocirurgia imediata. Controle rigoroso de metas.";
+                const s = "<b>[S]UBJETIVO:</b> Gilberto, 58 anos, pedreiro. Admitido com cefaleia súbita explosiva 10/10 seguida de vômitos e rebaixamento de consciência (Glasgow 12). Histórico de HAS severa mal controlada e tabagismo de longa data.";
+                const o = "<b>[O]BJETIVO:</b> Sinais de rigidez nucal presentes. PA 175/105 mmHg. TC evidenciando HSA Fisher IV. Creatinina 1.9, Glicemia 165 mg/dL. Monitorização invasiva iniciada com pressão arterial média invasiva.";
+                const a = "<b>[A]VALIAÇÃO:</b> Hemorragia Subaracnoidea (HSA) Hunt-Hess III / Fisher IV por provável ruptura aneurismática. Emergência Hipertensiva Grau III. IRA KDIGO 2 obstrutiva/pré-renal. Iatrogenia detectada por uso prévio de amitriptilina exacerbando retenção.";
+                const p = "<b>[P]LANO:</b> Internação imediata em UTI Neurológica. Protocolo MOV. Neurocirurgia para clipagem ou embolização endovascular urgente. Controle rigoroso de PA e PIC. Iniciar Nimodipino 60mg 4/4h.";
 
-                document.getElementById('integral-out').innerHTML = `<h2>SOAP INTEGRAL</h2>${s}<br><br>${o}<br><br>${a}<br><br>${p}`;
+                document.getElementById('integral-soap-out').innerHTML = `<h2>SOAP INTEGRAL</h2>${s}<br><br>${o}<br><br>${a}<br><br>${p}`;
                 
-                document.getElementById('pts-c-a').innerText = "Protocolo MOV e Estabilização de PA.";
-                document.getElementById('pts-c-r').innerText = "Equipe de Neuro-UTI.";
-                document.getElementById('pts-c-s').innerText = "PIC < 20 e PPC > 70.";
+                document.getElementById('pts-c-a').innerText = "Protocolo MOV e Controle de Metas Hemodinâmicas.";
+                document.getElementById('pts-c-r').innerText = "Equipe Multidisciplinar UTI Neurologia.";
+                document.getElementById('pts-c-s').innerText = "PIC < 20 e PPC > 70 mmHg sustentados.";
 
-                document.getElementById('pts-m-a').innerText = "Manejo de Vasoespasmo e Nimodipino.";
-                document.getElementById('pts-m-r').innerText = "Neurocirurgia/Fisio.";
-                document.getElementById('pts-m-s').innerText = "Ausência de novo déficit focal.";
+                document.getElementById('pts-m-a').innerText = "Manejo Proativo de Vasoespasmo e Reabilitação Motora.";
+                document.getElementById('pts-m-r').innerText = "Neurocirurgia / Fisioterapia Intensiva.";
+                document.getElementById('pts-m-s').innerText = "Estabilidade neurológica sem novos déficits focais.";
 
-                document.getElementById('pts-l-a').innerText = "Prevenção Secundária e DASH.";
-                document.getElementById('pts-l-r').innerText = "Geriatria/Cardio.";
-                document.getElementById('pts-l-s').innerText = "PA < 130/80 mmHg.";
+                document.getElementById('pts-l-a').innerText = "Prevenção Secundária, DASH e Cessação de Tabagismo.";
+                document.getElementById('pts-l-r').innerText = "Geriatria / Cardiologia de Base.";
+                document.getElementById('pts-l-s').innerText = "PA alvo < 130/80 mmHg em domicílio.";
                 
-                document.getElementById('nexus').scrollTop = 0;
-            }, 1000);
+                // Rola para o topo do resultado
+                window.scrollTo({ top: document.getElementById('nexus').offsetTop, behavior: 'smooth' });
+            }, 800);
         }
     </script>
 </body>
