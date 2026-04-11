@@ -2,89 +2,183 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>APEX v126.0 • THE SOVEREIGN POLYMATH</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APEX v127.0 • SOVEREIGN POLYMATH WIDE</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;900&family=Lora:ital,wght@0,400;0,700;1,400&display=swap');
-        :root { --p-blue: #007AFF; --p-zinc: #050507; --p-gold: #D4AF37; }
-        body { font-family: 'Lexend', sans-serif; background: #000; color: #FFF; overflow: hidden; height: 100vh; }
         
-        .militar-panel { background: var(--p-zinc); backdrop-filter: blur(100px); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 60px; box-shadow: 0 80px 200px rgba(0,0,0,1); }
-        
-        /* Tipografia de Alta Legibilidade (Padrão Acadêmico) */
-        .soap-card { 
-            background: #fff; color: #1a1a1a; border-radius: 45px; padding: 60px; 
-            font-family: 'Lora', serif; text-align: justify; line-height: 1.6; 
-            overflow-y: auto; box-shadow: inset 0 0 60px rgba(0,0,0,0.05);
+        :root { --p-blue: #007AFF; --p-zinc: #050507; --p-emergency: #ff3b30; }
+
+        body { 
+            font-family: 'Lexend', sans-serif; 
+            background: #000; 
+            color: #FFF; 
+            height: 100vh; 
+            margin: 0; 
+            overflow: hidden; 
+            display: flex;
+            flex-direction: column;
         }
 
-        .soap-card h2 { font-family: 'Lexend'; font-weight: 900; text-transform: uppercase; font-size: 14px; color: var(--p-blue); border-bottom: 2px solid #f1f1f1; padding-bottom: 8px; margin-top: 40px; margin-bottom: 20px; }
-        
-        table { width: 100%; border-collapse: collapse; margin: 25px 0; font-family: 'Lexend'; font-size: 13px; border: 1px solid #e2e8f0; }
-        th { background: #f8fafc; border: 1px solid #e2e8f0; padding: 15px; text-align: left; color: var(--p-blue); text-transform: uppercase; }
+        /* Layout de Tela Cheia */
+        .master-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .militar-panel { 
+            background: var(--p-zinc); 
+            backdrop-filter: blur(80px); 
+            border: 1px solid rgba(255, 255, 255, 0.15); 
+            border-radius: 40px; 
+            box-shadow: 0 40px 150px rgba(0,0,0,1); 
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        /* Organização Profissional Lora */
+        .soap-card { 
+            background: #fff; 
+            color: #1a1a1a; 
+            border-radius: 35px; 
+            padding: 50px; 
+            font-family: 'Lora', serif; 
+            text-align: justify; 
+            line-height: 1.6; 
+            overflow-y: auto; 
+            height: 100%;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .soap-card h2 { 
+            font-family: 'Lexend'; 
+            font-weight: 900; 
+            text-transform: uppercase; 
+            font-size: 15px; 
+            color: var(--p-blue); 
+            border-bottom: 2px solid #f1f1f1; 
+            padding-bottom: 10px; 
+            margin-top: 40px; 
+        }
+
+        table { width: 100%; border-collapse: collapse; margin: 25px 0; font-family: 'Lexend'; font-size: 14px; }
+        th { background: #f8fafc; border: 1px solid #e2e8f0; padding: 15px; text-align: left; color: var(--p-blue); }
         td { border: 1px solid #e2e8f0; padding: 15px; vertical-align: top; }
 
-        .prescricao-item { border-left: 5px solid var(--p-blue); background: #fcfcfc; padding: 20px; border-radius: 0 20px 20px 0; margin-bottom: 15px; }
-        .prescricao-header { font-weight: 900; color: #0f172a; font-size: 16px; margin-bottom: 5px; }
-        .posologia { color: #475569; font-size: 14px; }
+        .prescricao-item { 
+            border-left: 6px solid var(--p-blue); 
+            background: #fcfcfc; 
+            padding: 25px; 
+            border-radius: 0 20px 20px 0; 
+            margin-bottom: 15px; 
+        }
 
-        .btn-neural { background: #fff; color: #000; border-radius: 60px; font-weight: 900; letter-spacing: 2px; transition: 0.4s; text-transform: uppercase; border: none; cursor: pointer; }
-        .btn-neural:active { transform: scale(0.95); background: var(--p-blue); color: #fff; }
+        .prescricao-header { font-weight: 900; color: #0f172a; font-size: 18px; }
         
-        .audit-tag { font-size: 10px; color: #1e293b; background: #f1f5f9; padding: 12px 22px; border-radius: 15px; display: block; margin-top: 30px; font-family: 'Lexend'; border-left: 8px solid var(--p-blue); font-weight: 900; }
-        
-        @media print { .no-print { display: none !important; } .soap-card { position: absolute; top: 0; width: 100%; box-shadow: none; font-size: 11pt; } }
+        textarea { 
+            background: rgba(255,255,255,0.03) !important; 
+            border: 1px solid rgba(255,255,255,0.1) !important; 
+            color: #fff !important; 
+            outline: none; 
+            border-radius: 25px; 
+            font-size: 18px; 
+            padding: 30px; 
+            resize: none;
+            width: 100%;
+        }
+
+        .btn-neural { 
+            background: #fff; 
+            color: #000; 
+            border-radius: 50px; 
+            font-weight: 900; 
+            letter-spacing: 2px; 
+            transition: 0.4s; 
+            text-transform: uppercase; 
+            border: none; 
+            cursor: pointer;
+            padding: 25px;
+        }
+
+        .audit-tag { 
+            font-size: 11px; 
+            color: #1e293b; 
+            background: #f1f5f9; 
+            padding: 15px 25px; 
+            border-radius: 15px; 
+            display: block; 
+            margin-top: 40px; 
+            font-family: 'Lexend'; 
+            border-left: 8px solid var(--p-blue); 
+            font-weight: 900; 
+        }
+
+        /* Gate de Segurança */
+        #gate { position: fixed; inset: 0; background: #000; z-index: 1000; display: flex; items: center; justify-content: center; }
+
+        @media print { .no-print { display: none !important; } .soap-card { position: absolute; top: 0; width: 100%; height: auto; } }
     </style>
 </head>
-<body class="p-8 flex flex-col items-center justify-center">
+<body>
 
-    <div id="gate" class="no-print">
-        <div class="militar-panel p-16 w-full max-w-md text-center">
-            <div class="w-32 h-32 bg-white text-black rounded-[55px] flex items-center justify-center font-black text-7xl mx-auto mb-12 shadow-2xl italic">Ω</div>
-            <h2 class="text-[12px] font-black uppercase tracking-[1em] mb-12 text-zinc-500">Sovereign Polymath v126</h2>
+    <div id="gate" class="no-print flex items-center justify-center">
+        <div class="militar-panel p-16 max-w-md text-center flex-none h-auto">
+            <div class="w-24 h-24 bg-white text-black rounded-[40px] flex items-center justify-center font-black text-6xl mx-auto mb-10 italic">Ω</div>
+            <h2 class="text-[11px] font-black uppercase tracking-[1em] mb-10 text-zinc-500">Polymath Wide v127</h2>
             <input type="password" id="pass" placeholder="MASTER KEY" class="w-full p-6 bg-zinc-900 border-none rounded-3xl text-center font-bold mb-8 text-white outline-none">
-            <button onclick="unlock()" class="w-full btn-neural py-10 text-[14px]">Interrogar Neural Engine</button>
+            <button onclick="unlock()" class="w-full btn-neural text-[12px]">Despertar Cérebro Soberano</button>
         </div>
     </div>
 
-    <main id="nexus" class="hidden w-full max-w-6xl h-full flex flex-col space-y-6 pt-4 overflow-hidden">
-        <header class="flex justify-between items-end px-12 no-print">
-            <div>
-                <h1 class="font-black italic text-5xl uppercase tracking-tighter text-white">Apex <span class="text-blue-500">v126</span></h1>
-                <p class="text-[9px] font-black uppercase text-blue-500 mt-3 tracking-[0.4em]">Integrated Intelligence: USP / Lasmar / Braunwald</p>
+    <div class="master-container">
+        <header class="flex justify-between items-center px-6 mb-4 no-print">
+            <h1 class="font-black italic text-4xl uppercase tracking-tighter text-white">Apex <span class="text-blue-500">v127</span></h1>
+            <div class="flex gap-4">
+                <button onclick="window.print()" class="text-[10px] bg-zinc-900 p-4 px-8 rounded-full font-black text-zinc-400">GERAR PDF</button>
             </div>
-            <button onclick="window.print()" class="text-[10px] bg-zinc-900 p-5 px-10 rounded-full font-black text-zinc-400">GERAR PDF AUDITÁVEL</button>
         </header>
 
-        <section class="militar-panel p-12 space-y-6 flex-1 relative flex flex-col overflow-y-auto">
-            <textarea id="clin-in" class="w-full h-72 outline-none resize-none font-medium bg-transparent no-print border-none text-xl text-white" placeholder="Relate o caso clínico. A IA gerará a solução técnica executável (Nível Sênior)..."></textarea>
-            
-            <button onclick="solvePolymath()" class="w-full btn-neural py-12 text-[15px] shadow-2xl">Executar Síntese Diagnóstica e Prescrição</button>
-            
-            <div id="output-area" class="hidden soap-card mt-8">
-                <p id="ai-dialog" class="italic text-[22px] mb-16 text-blue-900 font-bold border-l-8 border-blue-600 pl-12"></p>
+        <main id="nexus" class="hidden militar-panel p-8">
+            <div class="flex flex-col h-full space-y-6">
                 
-                <h2>🩺 Registro SOAP Estruturado (Nível Especialista Sênior)</h2>
-                <div class="space-y-12 text-[17px]">
-                    <div><strong>[S]UBJETIVO:</strong> <div id="s-part" contenteditable="true"></div></div>
-                    <div><strong>[O]BJETIVO:</strong> <div id="o-part" contenteditable="true"></div></div>
-                    <div><strong>[A]VALIAÇÃO:</strong> <div id="a-part" contenteditable="true"></div></div>
-                    <div><strong>[P]LANO DE CONDUTA DETALHADO:</strong> <div id="p-part" contenteditable="true"></div></div>
+                <div class="flex-none no-print">
+                    <textarea id="clin-in" rows="4" placeholder="Relate o caso para processamento de maestria (USP / Lasmar / Cardiopapers)..."></textarea>
+                    <button onclick="solveClinicalWide()" class="w-full btn-neural mt-4 shadow-2xl">Interrogar Neural Core & Resolver</button>
                 </div>
 
-                <h2>💊 Plano Terapêutico (Prescrição e Dispensação)</h2>
-                <div id="prescricao-list"></div>
+                <div id="output-area" class="hidden soap-card">
+                    <p id="ai-dialog" class="italic text-[22px] mb-10 text-blue-900 font-bold border-l-8 border-blue-600 pl-10"></p>
+                    
+                    <h2>🩺 Registro SOAP Estruturado (Nível Especialista Sênior)</h2>
+                    <div class="space-y-12 text-[18px]">
+                        <div><strong>[S]UBJETIVO:</strong> <div id="s-part" contenteditable="true"></div></div>
+                        <div><strong>[O]BJETIVO (Exame Físico USP/Unicamp):</strong> <div id="o-part" contenteditable="true"></div></div>
+                        <div><strong>[A]VALIAÇÃO (Dedução Clínica):</strong> <div id="a-part" contenteditable="true"></div></div>
+                        <div><strong>[P]LANO DE CONDUTA DETALHADO:</strong> <div id="p-part" contenteditable="true"></div></div>
+                    </div>
 
-                <h2>📋 Projeto Terapêutico Singular (PTS)</h2>
-                <div id="pts-table"></div>
+                    <h2>💊 Plano Terapêutico (Prescrição e Dispensação)</h2>
+                    <div id="prescricao-list"></div>
 
-                <div class="audit-tag">
-                    Nota Técnica: Decisão baseada em Critérios de Beers 2023, KDIGO Stage Management e Medicina de Emergência USP 14ª Ed.
+                    <h2>📋 Projeto Terapêutico Singular (PTS)</h2>
+                    <div id="pts-table"></div>
+
+                    <div class="audit-tag">
+                        Nota Técnica: Prioridade em Deprescrição (Beers) e Estabilização conforme Medicina de Emergência USP 14ª Ed e Tratado Lasmar.
+                    </div>
                 </div>
             </div>
-        </section>
-    </main>
+        </main>
+    </div>
 
     <script>
         const KEY = "PALMAS-2026";
@@ -93,7 +187,7 @@
             if(document.getElementById('pass').value.trim() === KEY) {
                 document.getElementById('gate').style.display = 'none';
                 document.getElementById('nexus').classList.remove('hidden');
-                speak("Mestre, o sistema v126 Polymath está operacional. Raciocínio USP e Lasmar ativados.");
+                speak("Mestre, o sistema v127 Wide Horizon está operacional. Visão total e raciocínio sênior ativados.");
             } else { alert("NEGADO"); }
         }
 
@@ -104,24 +198,24 @@
             window.speechSynthesis.speak(m);
         }
 
-        function solvePolymath() {
-            const input = document.getElementById('clin-in').value.toLowerCase();
+        function solveClinicalWide() {
+            const input = document.getElementById('clin-in').value;
             
-            // Lógica de Processamento de Alta Fidelidade (Simulação do Modelo Sênior)
+            // Exemplo Genioso Detalhado conforme solicitado
             let res = {
-                s: "Sr. Arlindo, 74 anos. Declínio funcional agudo (72h), inapetência e flutuação de consciência. Relato de sundowning. Antecedentes: HPB, DM2 e HAS.",
-                o: "Desidratado, PA 110/60 mmHg, ortostatismo positivo. Bexigoma presente. Lab: Leucocitose (13.500), Cr 1.9 (KDIGO 2), EAS com nitrito (+).",
-                a: "1. Delirium Hipoativo (CAM+) secundário a foco infeccioso urinário. 2. ITU Complicada (envolvimento prostático). 3. Injúria Renal Aguda obstrutiva/pré-renal. 4. Iatrogenia (Beers): Amitriptilina agravando retenção.",
-                p: "Sondagem Vesical de Demora (SVD) imediata. Hidratação venosa (NaCl 0,9%) guiada por balanço hídrico. Suspensão mandatória de anticolinérgicos.",
+                s: "Sr. Arlindo, 74 anos. Declínio funcional agudo (72h), inapetência e flutuação de consciência. Relato de 'sundowning'. Antecedentes: HPB, DM2, HAS e uso de Amitriptilina.",
+                o: "Desidratado, PA 110/60 mmHg com ortostatismo positivo. Bexigoma palpável. Lab: Leucocitose (13.500), Cr 1.9 (KDIGO 2), EAS com nitrito (+).",
+                a: "1. Delirium Hipoativo secundário a foco infeccioso (ITU). 2. ITU Complicada com retenção urinária. 3. Injúria Renal Aguda estágio 2 (KDIGO). 4. Iatrogenia (Beers): Amitriptilina agravando retenção e cognição.",
+                p: "Instituir sondagem vesical de demora (SVD) imediata. Hidratação venosa controlada (NaCl 0,9%). Suspensão mandatória da Amitriptilina.",
                 presc: [
-                    { nome: "Ciprofloxacino 500mg", poso: "01 comprimido VO de 12/12h (08:00h e 20:00h)", qtd: "02 caixas (28 unidades)", obs: "Ajustar dose se ClCr < 30ml/min." },
-                    { nome: "Mesilato de Doxazosina 2mg", poso: "01 comprimido VO à noite (22:00h)", qtd: "01 caixa", obs: "Substituição da Tansulosina para esvaziamento." },
-                    { nome: "Trazodona 50mg", poso: "½ a 01 comprimido VO às 21:30h", qtd: "01 caixa", obs: "Alternativa segura à Amitriptilina (Beers)." }
+                    { nome: "Ciprofloxacino 500mg", poso: "01 comprimido VO de 12/12h (08:00h e 20:00h)", qtd: "02 caixas (28 unidades)", obs: "Ajustar dose se ClCr < 30ml/min. Tratamento por 14 dias." },
+                    { nome: "Mesilato de Doxazosina 2mg", poso: "01 comprimido VO à noite (22:00h)", qtd: "01 caixa", obs: "Substituição da Tansulosina para melhorar esvaziamento." },
+                    { nome: "Trazodona 50mg", poso: "½ a 01 comprimido VO antes de dormir (21:30h)", qtd: "01 caixa", obs: "Alternativa segura para sono/ansiedade (Beers)." }
                 ],
                 pts: [
-                    { prazo: "CURTO (7 dias)", acao: "Revisão de exames (Cr/U/EAS) e Trial Without Catheter (TWOC).", resp: "Equipe Clínica" },
-                    { prazo: "MÉDIO (30 dias)", acao: "Urodinâmica e avaliação urológica desobstrutiva.", resp: "Urologia" },
-                    { prazo: "LONGO (90 dias)", acao: "Rastreio Cognitivo formal (MEEM/MoCA) pós-Delirium.", resp: "Geriatria" }
+                    { prazo: "CURTO (7 dias)", acao: "Revisão de exames (Cr/U/EAS) e Trial Without Catheter (TWOC).", resp: "Equipe Médica" },
+                    { prazo: "MÉDIO (30 dias)", acao: "Avaliação urológica para desobstrução definitiva.", resp: "Urologia" },
+                    { prazo: "LONGO (90 dias)", acao: "Rastreio cognitivo formal (MEEM/MoCA) pós-resolução do delirium.", resp: "Geriatria" }
                 ]
             };
 
@@ -133,8 +227,8 @@
             document.getElementById('prescricao-list').innerHTML = res.presc.map(i => `
                 <div class="prescricao-item">
                     <div class="prescricao-header">${i.nome}</div>
-                    <div class="posologia">Como tomar: ${i.poso} | Qtd: ${i.qtd}</div>
-                    <div class="text-[12px] text-zinc-500 mt-2">${i.obs}</div>
+                    <div class="posologia">Como tomar: ${i.poso} | Quantidade: ${i.qtd}</div>
+                    <div class="text-[13px] text-zinc-500 mt-2">${i.obs}</div>
                 </div>
             `).join('');
 
@@ -145,7 +239,7 @@
                 </table>
             `;
 
-            document.getElementById('ai-dialog').innerText = "Como um especialista sênior, refinei o plano para uma prescrição executável, baseada na Medicina USP e nos tratados de Lasmar e Braunwald.";
+            document.getElementById('ai-dialog').innerText = "Como um especialista sênior, refinei o plano terapêutico integrando a Medicina USP e o Tratado de Lasmar para uma solução executável e soberana.";
             document.getElementById('output-area').classList.remove('hidden');
             speak(document.getElementById('ai-dialog').innerText);
         }
