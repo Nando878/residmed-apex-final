@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>APEX v138 • SALA DE COMANDO</title>
+    <title>APEX v139 • COMANDO SILENCIOSO</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600;900&family=Lora:ital,wght@0,400;0,700;1,400;1,700&display=swap');
@@ -32,10 +32,10 @@
             display: flex; justify-content: space-between; align-items: center;
         }
 
-        /* PAINEL TÁTICO FULL WIDE */
+        /* PAINEL TÁTICO FULL WIDE - RIGOR MILITAR */
         .tactical-panel { 
             background-color: var(--mil-olive); color: var(--mil-phosphor); 
-            border-radius: 20px; padding: 40px; font-family: 'Lora', serif; 
+            border-radius: 20px; padding: 50px; font-family: 'Lora', serif; 
             text-align: justify; text-justify: inter-word; line-height: 1.8; 
             hyphens: auto; flex: 1; width: 100%; box-sizing: border-box;
             border: 2px solid var(--mil-border); overflow-y: auto;
@@ -44,20 +44,30 @@
         .tactical-panel h2 { 
             font-family: 'Lexend'; font-weight: 600; text-transform: uppercase; 
             font-size: 14px; color: #FFFFFF; letter-spacing: 3px;
-            margin: 40px 0 20px 0; border-bottom: 1px solid var(--mil-border);
+            margin: 45px 0 20px 0; border-bottom: 1px solid var(--mil-border);
             padding-bottom: 10px;
         }
 
-        /* BOTÕES MILITARES */
+        /* PTS ESTRUTURADO CONFORME FOTO */
+        .pts-viewport {
+            width: 100%; overflow-x: auto; margin-top: 30px; border-radius: 15px;
+            border: 1px solid var(--mil-border); background: rgba(0,0,0,0.4);
+        }
+        .pts-track { display: flex; gap: 20px; min-width: 1100px; padding: 20px; }
+        
+        .pts-column {
+            flex: 1; min-width: 350px; background-color: var(--mil-olive);
+            padding: 25px; border-radius: 15px; border: 1px solid var(--mil-border);
+        }
+        .pts-header-row { color: #FFFFFF; font-weight: 900; font-size: 11px; text-transform: uppercase; margin-bottom: 15px; border-bottom: 1px solid var(--mil-phosphor); padding-bottom: 5px; }
+        .pts-label { color: var(--ios-blue); font-size: 10px; font-weight: 900; text-transform: uppercase; margin-top: 10px; display: block; }
+        .pts-content { font-size: 14px; color: var(--mil-phosphor); line-height: 1.5; font-family: 'Lexend'; margin-bottom: 15px; }
+
         .mil-btn { 
             background-color: var(--ios-blue); color: #FFFFFF; border-radius: 10px; 
             font-weight: 600; padding: 12px 20px; text-transform: uppercase;
             font-size: 10px; letter-spacing: 1px; border: none; cursor: pointer;
-            transition: 0.2s;
         }
-        .mil-btn:hover { filter: brightness(1.2); }
-        .btn-attach { background-color: #555; }
-        .btn-flow { background-color: #D4AF37; color: #000; } /* Destaque para Fluxograma */
 
         textarea { 
             background-color: var(--mil-olive); border: 2px solid var(--mil-border); 
@@ -65,84 +75,95 @@
             font-size: 17px; width: 100%; outline: none; resize: none; font-family: 'Lexend';
         }
 
-        /* PTS ROLAGEM LATERAL */
-        .pts-viewport {
-            width: 100%; overflow-x: auto; margin-top: 30px; border-radius: 15px;
-            border: 1px solid var(--mil-border);
-        }
-        .pts-track { display: flex; gap: 15px; min-width: 1000px; padding: 15px; }
-        .pts-column {
-            flex: 1; min-width: 320px; background-color: rgba(0,0,0,0.3);
-            padding: 25px; border-radius: 15px; border: 1px solid var(--mil-border);
-        }
-
-        /* ESTILO A4 IMPRESSÃO */
         @media print {
-            @page { size: A4; margin: 20mm; }
+            @page { size: A4; margin: 15mm; }
             .no-print { display: none !important; }
             body { background: white; color: black; }
-            .tactical-panel { background: white; color: black; border: none; box-shadow: none; width: 100%; }
-            .tactical-panel h2 { color: black; border-bottom: 2px solid black; }
-            .pts-track { flex-wrap: wrap; min-width: 100%; }
-            .pts-column { border: 1px solid #000; color: #000; background: none; page-break-inside: avoid; }
+            .tactical-panel { background: white; color: black; border: none; width: 100%; padding: 0; }
+            .pts-track { flex-wrap: wrap; min-width: 100%; gap: 30px; }
+            .pts-column { border: 1px solid #000; background: none; page-break-inside: avoid; }
+            .pts-header-row, .pts-label { color: black; border-bottom-color: black; }
         }
 
         #gate { position: fixed; inset: 0; background: #000; z-index: 1000; display: flex; items: center; justify-content: center; }
-        .auth-card { background-color: var(--mil-olive); padding: 50px; border-radius: 30px; border: 2px solid var(--mil-phosphor); text-align: center; }
     </style>
 </head>
 <body>
 
     <div id="gate" class="no-print">
-        <div class="auth-card">
+        <div class="bg-[#1A2416] p-16 rounded-3xl border-2 border-[#00FF41] text-center">
             <div class="w-20 h-20 bg-black text-[#00FF41] rounded-full flex items-center justify-center font-black text-5xl mx-auto mb-8 border-2 border-[#00FF41]">Ω</div>
-            <h2 class="text-[12px] font-bold uppercase tracking-[0.5em] mb-10 text-white">CHAVE SOBERANA REQUERIDA</h2>
-            <input type="password" id="pass" placeholder="CÓDIGO" class="w-full p-4 bg-black rounded-xl text-center font-bold mb-6 text-[#00FF41] outline-none border border-[#00FF41]">
-            <button onclick="unlock()" class="mil-btn w-full">AUTORIZAR</button>
+            <h2 class="text-[11px] font-bold text-white uppercase tracking-[0.5em] mb-10">CHAVE 7400</h2>
+            <input type="password" id="pass" class="w-full p-4 bg-black rounded-xl text-center font-bold mb-6 text-[#00FF41] outline-none border border-[#00FF41]">
+            <button onclick="unlock()" class="mil-btn w-full">LOG IN</button>
         </div>
     </div>
 
     <div class="war-room-container">
         <header class="no-print">
-            <h1 class="font-black italic text-3xl uppercase tracking-tighter text-white">Apex <span class="text-[#00FF41]">v138</span></h1>
+            <h1 class="font-black italic text-3xl uppercase tracking-tighter text-white">Apex <span class="text-[#00FF41]">v139</span></h1>
             <div class="flex gap-2">
-                <input type="file" id="pdf-attach" class="hidden" accept="application/pdf" onchange="handleFile(this)">
-                <button onclick="document.getElementById('pdf-attach').click()" class="mil-btn btn-attach">ANEXAR PDF (200MB)</button>
-                <button onclick="generateFlowchart()" class="mil-btn btn-flow">CRIAR FLUXOGRAMA</button>
-                <button onclick="window.print()" class="mil-btn">IMPRIMIR A4</button>
+                <input type="file" id="pdf-attach" class="hidden" accept="application/pdf">
+                <button onclick="document.getElementById('pdf-attach').click()" class="mil-btn bg-zinc-700">ANEXAR PDF</button>
+                <button onclick="window.print()" class="mil-btn bg-zinc-700">IMPRIMIR A4</button>
+                <button onclick="window.print()" class="mil-btn border border-[#D4AF37] bg-black text-[#D4AF37]">FLUXOGRAMA PDF</button>
             </div>
         </header>
 
         <main id="nexus" class="hidden flex-1 flex flex-col gap-4 overflow-hidden p-4">
             <div class="no-print flex-none">
-                <textarea id="clin-in" rows="5" placeholder="INSERIR DADOS TÁTICOS..."></textarea>
-                <button onclick="solveTactical()" class="mil-btn w-full mt-4 py-4 text-[13px]">EXECUTAR INFERÊNCIA SÊNIOR</button>
+                <textarea id="clin-in" rows="5" placeholder="INSERIR DADOS PARA INFERÊNCIA..."></textarea>
+                <button onclick="solveTactical()" class="mil-btn w-full mt-4 py-4 text-[13px]">RESOLVER AGORA</button>
             </div>
 
             <div id="output-area" class="tactical-panel">
                 <p id="ai-dialog" class="italic text-[20px] mb-12 text-white font-bold border-l-4 border-[#00FF41] pl-8"></p>
                 
-                <h2 id="tit-s">[S] RELATÓRIO DA SITUAÇÃO</h2>
+                <h2>[S] SITUAÇÃO ATUAL</h2>
                 <div id="s-part" contenteditable="true" class="mb-10"></div>
 
-                <h2 id="tit-o">[O] DADOS OBSERVADOS (USP/MOORE)</h2>
+                <h2>[O] EXAME FÍSICO E DADOS</h2>
                 <div id="o-part" contenteditable="true" class="mb-10"></div>
 
-                <h2 id="tit-a">[A] AVALIAÇÃO E INFERÊNCIA</h2>
+                <h2>[A] AVALIAÇÃO DIAGNÓSTICA</h2>
                 <div id="a-part" contenteditable="true" class="mb-10"></div>
 
-                <h2 id="tit-p">[P] PLANO DE ACÇÃO (CARDIOPAPERS)</h2>
+                <h2>[P] PLANO TERAPÊUTICO</h2>
                 <div id="p-part" contenteditable="true" class="mb-10"></div>
 
-                <h2>IMPLEMENTAÇÃO FARMACOLÓGICA</h2>
+                <h2>DISPENSAÇÃO FARMACOLÓGICA</h2>
                 <div id="prescricao-list"></div>
 
                 <h2>PROJETO TERAPÊUTICO SINGULAR (PTS)</h2>
                 <div class="pts-viewport">
                     <div class="pts-track">
-                        <div class="pts-column"><span class="pts-label text-white">Fase I (Imediata)</span><div id="pts-c" class="pts-content" contenteditable="true"></div></div>
-                        <div class="pts-column"><span class="pts-label text-white">Fase II (Estabilização)</span><div id="pts-m" class="pts-content" contenteditable="true"></div></div>
-                        <div class="pts-column"><span class="pts-label text-white">Fase III (Manutenção)</span><div id="pts-l" class="pts-content" contenteditable="true"></div></div>
+                        <div class="pts-column">
+                            <div class="pts-header-row">CURTO PRAZO (≤ 7 DIAS)</div>
+                            <span class="pts-label">Ação Estratégica</span>
+                            <div id="pts-c-acao" class="pts-content" contenteditable="true"></div>
+                            <span class="pts-label">Responsável</span>
+                            <div id="pts-c-resp" class="pts-content" contenteditable="true"></div>
+                            <span class="pts-label">Critérios de Sucesso</span>
+                            <div id="pts-c-suc" class="pts-content" contenteditable="true"></div>
+                        </div>
+                        <div class="pts-column">
+                            <div class="pts-header-row">MÉDIO PRAZO (≤ 30 DIAS)</div>
+                            <span class="pts-label">Ação Estratégica</span>
+                            <div id="pts-m-acao" class="pts-content" contenteditable="true"></div>
+                            <span class="pts-label">Responsável</span>
+                            <div id="pts-m-resp" class="pts-content" contenteditable="true"></div>
+                            <span class="pts-label">Critérios de Sucesso</span>
+                            <div id="pts-m-suc" class="pts-content" contenteditable="true"></div>
+                        </div>
+                        <div class="pts-column">
+                            <div class="pts-header-row">LONGO PRAZO (≤ 90 DIAS)</div>
+                            <span class="pts-label">Ação Estratégica</span>
+                            <div id="pts-l-acao" class="pts-content" contenteditable="true"></div>
+                            <span class="pts-label">Responsável</span>
+                            <div id="pts-l-resp" class="pts-content" contenteditable="true"></div>
+                            <span class="pts-label">Critérios de Sucesso</span>
+                            <div id="pts-l-suc" class="pts-content" contenteditable="true"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -151,60 +172,31 @@
 
     <script>
         const KEY = "7400";
-        
         function unlock() {
-            if(document.getElementById('pass').value.trim() === KEY) {
+            if(document.getElementById('pass').value === KEY) {
                 document.getElementById('gate').style.display = 'none';
                 document.getElementById('nexus').classList.remove('hidden');
-                speak("Comando táctico online. Aguardando dados.");
-            } else { alert("ACESSO NEGADO"); }
-        }
-
-        function speak(t) {
-            window.speechSynthesis.cancel();
-            const m = new SpeechSynthesisUtterance(t);
-            m.rate = 0.85; m.pitch = 0.7; m.lang = 'pt-BR';
-            window.speechSynthesis.speak(m);
-        }
-
-        function handleFile(input) {
-            if(input.files[0].size > 200 * 1024 * 1024) {
-                alert("ERRO: Limite de 200MB excedido.");
-                return;
-            }
-            speak("Anexo recebido. Integrando dados ao banco táctico.");
-        }
-
-        function generateFlowchart() {
-            speak("Gerando fluxograma estruturado em formato PDF. Aguarde a síntese visual.");
-            // Lógica de exportação visual simulada para PDF
-            window.print(); 
+            } else { alert("NEGADO"); }
         }
 
         function solveTactical() {
             const input = document.getElementById('clin-in').value;
             if(!input) return;
-
-            document.getElementById('ai-dialog').innerText = "Iniciando Inferência Sênior via Neural Core USP/Lasmar...";
+            document.getElementById('ai-dialog').innerText = "Analisando via USP Medicina & Lasmar Ginecologia...";
             
             setTimeout(() => {
-                document.getElementById('s-part').innerText = "Paciente masculino, 74 anos. Declínio funcional agudo (72h), inapetência e flutuação de consciência. Relato familiar de 'sundowning'. Antecedentes: HPB, DM2 e uso de Amitriptilina.";
-                document.getElementById('o-part').innerText = "Desidratado, PA 110/60 mmHg (ortostatismo positivo). Bexigoma presente. Creatinina 1.9 (IRA KDIGO 2), Leucocitose 13.500, nitrito positivo.";
-                document.getElementById('a-part').innerText = "1. Delirium hipoativo por foco infeccioso urinário. 2. ITU Complicada. 3. IRA obstrutiva. 4. Iatrogenia: Amitriptilina.";
-                document.getElementById('p-part').innerText = "Sondagem vesical imediata. Hidratação NaCl 0,9%. Descontinuação de Amitriptilina.";
+                document.getElementById('s-part').innerText = "Paciente 74 anos, declínio funcional e flutuação de consciência.";
+                document.getElementById('o-part').innerText = "PA 110/60 mmHg, Bexigoma, Creatinina 1.9, Leucocitose.";
+                document.getElementById('a-part').innerText = "Delirium hipoativo (ITU), IRA KDIGO 2, Iatrogenia (Amitriptilina).";
+                document.getElementById('p-part').innerText = "SVD, Hidratação venosa e suspensão de psicofármacos.";
                 
-                document.getElementById('pts-c').innerText = "Balanço hídrico e função renal (48h).";
-                document.getElementById('pts-m').innerText = "Avaliação Urológica para RTU.";
-                document.getElementById('pts-l').innerText = "Avaliação geriátrica pós-delirium.";
+                document.getElementById('pts-c-acao').innerText = "Trial without catheter (TWOC).";
+                document.getElementById('pts-c-resp').innerText = "Equipe de Enfermagem/Médica.";
+                document.getElementById('pts-c-suc').innerText = "Sucesso miccional espontâneo.";
 
-                document.getElementById('prescricao-list').innerHTML = `
-                    <div class="prescricao-item">
-                        <strong class="text-white">Ciprofloxacino 500mg</strong>
-                        <div>01 comp. VO 12/12h | Qtd: 02 caixas | Uso por 14 dias.</div>
-                    </div>
-                `;
-                speak("Inspecção concluída. Relatório de combate gerado.");
-            }, 1500);
+                document.getElementById('prescricao-list').innerHTML = `<div class="p-4 border border-[#333] mb-4"><strong>Ciprofloxacino 500mg</strong>: 12/12h por 14 dias.</div>`;
+                document.getElementById('output-area').style.display = "block";
+            }, 1000);
         }
     </script>
 </body>
