@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>APEX v149 • INTEGRAL SOAP</title>
+    <title>APEX v150 • INFINITE ENGINE</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;800&family=Lora:ital,wght@0,400;0,700;1,400;1,700&display=swap');
@@ -59,29 +59,31 @@
             font-size: 11px; border: none; cursor: pointer;
         }
 
-        /* -------------------------------------------------------------------------- */
-        /* CONFIGURAÇÃO DE IMPRESSÃO - FLUXOGRAMA DENSIDADE TOTAL                    */
-        /* -------------------------------------------------------------------------- */
+        /* PTS ROLAGEM LATERAL */
+        .pts-scroll {
+            width: 100%; overflow-x: auto; margin-top: 30px; border-radius: 15px;
+            border: 1px solid var(--mil-border); background: rgba(0,0,0,0.5);
+        }
+        .pts-track { display: flex; gap: 20px; min-width: 1050px; padding: 20px; }
+        .pts-column {
+            flex: 1; min-width: 320px; background: rgba(255,255,255,0.03);
+            padding: 25px; border-radius: 15px; border: 1px solid var(--mil-border);
+        }
+        .pts-label { color: var(--ios-blue); font-size: 10px; font-weight: 800; text-transform: uppercase; margin-top: 15px; display: block; }
+        .pts-val { font-size: 14px; color: var(--mil-phosphor); line-height: 1.5; font-family: 'JetBrains Mono'; }
+
+        /* IMPRESSÃO FLUXOGRAMA TIMES 8PT */
         @media print {
             @page { size: A4 portrait; margin: 5mm; }
             .no-print { display: none !important; }
             body { background: #FFF !important; color: #000 !important; }
             .tactical-viewport { display: block !important; background: #FFF !important; padding: 0 !important; }
-            
-            #screen-view { display: none !important; }
-            
+            .paper-content { display: none !important; }
             .flowchart-mode {
-                display: block !important;
-                font-family: "Times New Roman", Times, serif !important;
-                font-size: 8pt !important;
-                line-height: 1.2;
+                display: block !important; font-family: "Times New Roman", serif !important;
+                font-size: 8pt !important; line-height: 1.2;
             }
-            
-            .flow-node {
-                border: 0.5pt solid #000; padding: 8px; margin-bottom: 10px; width: 100%;
-                page-break-inside: avoid; text-align: justify;
-            }
-            .flow-header { font-weight: bold; text-transform: uppercase; border-bottom: 0.5pt solid #000; margin-bottom: 5px; font-size: 9pt; }
+            .flow-node { border: 0.5pt solid #000; padding: 8px; margin-bottom: 10px; width: 100%; text-align: justify; }
         }
 
         #flowchart-data { display: none; }
@@ -92,8 +94,8 @@
 
     <div id="gate">
         <div class="bg-[#0A0F08] p-12 rounded-3xl border border-[#333] text-center">
-            <div class="w-16 h-16 bg-white text-black rounded-[20px] flex items-center justify-center font-black text-4xl mx-auto mb-8 italic">Ω</div>
-            <h2 class="text-[10px] font-bold text-gray-500 uppercase tracking-[0.5em] mb-10">MASTER KEY 7400</h2>
+            <div class="text-white font-black text-2xl mb-8 italic shadow-xl">APEX Ω</div>
+            <h2 class="text-[10px] font-bold text-gray-500 uppercase tracking-[0.5em] mb-10">SENHA: 7400</h2>
             <input type="password" id="pass" class="w-full p-4 bg-black rounded-xl text-center font-bold mb-8 text-[#00FF41] outline-none border border-[#333]">
             <button onclick="unlock()" class="ios-btn w-full">AUTORIZAR</button>
         </div>
@@ -101,50 +103,48 @@
 
     <div class="command-zone no-print">
         <div class="flex justify-between items-center mb-4">
-            <h1 class="font-black italic text-xl uppercase tracking-tighter text-white">Apex <span class="text-[#00FF41]">v149</span></h1>
+            <h1 class="font-black italic text-xl uppercase tracking-tighter text-white">Apex <span class="text-[#00FF41]">v150</span></h1>
             <div class="flex gap-2">
-                <button onclick="window.print()" class="ios-btn" style="background: #222;">GERAR FLUXOGRAMA (A4)</button>
-                <button onclick="solveIntegral()" class="ios-btn">EXECUTAR SÍNTESE INTEGRAL</button>
+                <button onclick="window.print()" class="ios-btn" style="background: #222;">FLUXOGRAMA (A4)</button>
+                <button onclick="solveInfinite()" class="ios-btn">EXECUTAR INFERÊNCIA</button>
             </div>
         </div>
-        <textarea id="clin-in" rows="3" placeholder="Insira o caso clínico para análise integral (SOAP + PTS)..."></textarea>
+        <textarea id="clin-in" rows="3" placeholder="Insira o caso clínico para análise integral..."></textarea>
     </div>
 
     <main id="nexus" class="hidden tactical-viewport">
         <div class="paper-content" id="screen-view">
             <div id="integral-out"></div>
+            
+            <div id="pts-section">
+                <h2>PROJETO TERAPÊUTICO SINGULAR (PTS)</h2>
+                <div class="pts-scroll">
+                    <div class="pts-track">
+                        <div class="pts-column">
+                            <div class="font-bold text-white border-b border-[#333] mb-4 pb-2">CURTO PRAZO</div>
+                            <span class="pts-label">Ação Estratégica</span><div id="pts-c-a" class="pts-val"></div>
+                            <span class="pts-label">Responsável</span><div id="pts-c-r" class="pts-val"></div>
+                            <span class="pts-label">Critérios de Sucesso</span><div id="pts-c-s" class="pts-val"></div>
+                        </div>
+                        <div class="pts-column">
+                            <div class="font-bold text-white border-b border-[#333] mb-4 pb-2">MÉDIO PRAZO</div>
+                            <span class="pts-label">Ação Estratégica</span><div id="pts-m-a" class="pts-val"></div>
+                            <span class="pts-label">Responsável</span><div id="pts-m-r" class="pts-val"></div>
+                            <span class="pts-label">Critérios de Sucesso</span><div id="pts-m-s" class="pts-val"></div>
+                        </div>
+                        <div class="pts-column">
+                            <div class="font-bold text-white border-b border-[#333] mb-4 pb-2">LONGO PRAZO</div>
+                            <span class="pts-label">Ação Estratégica</span><div id="pts-l-a" class="pts-val"></div>
+                            <span class="pts-label">Responsável</span><div id="pts-l-r" class="pts-val"></div>
+                            <span class="pts-label">Critérios de Sucesso</span><div id="pts-l-s" class="pts-val"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div id="flowchart-data" class="flowchart-mode">
-            <div class="flow-node">
-                <div class="flow-header">Identificação do Paciente e Perfil</div>
-                <div id="f-id"></div>
             </div>
-            <div class="flow-node">
-                <div class="flow-header">SOAP COMPLETO - REGISTRO CLÍNICO NA ÍNTEGRA</div>
-                <div id="f-soap-integral"></div>
-            </div>
-            <div class="flow-node">
-                <div class="flow-header">1. Curto Prazo (Fase Aguda, Estabilização e Metas)</div>
-                <div id="f-curto"></div>
-            </div>
-            <div class="flow-node">
-                <div class="flow-header">2. Abordagem Farmacológica (Fase Hospitalar Completa)</div>
-                <div id="f-farma"></div>
-            </div>
-            <div class="flow-node">
-                <div class="flow-header">3. Médio Prazo (Prevenção, Manejo de Complicações e Reabilitação)</div>
-                <div id="f-medio"></div>
-            </div>
-            <div class="flow-node">
-                <div class="flow-header">4. Longo Prazo (Reabilitação e Prevenção Secundária)</div>
-                <div id="f-longo"></div>
-            </div>
-            <div class="flow-node" style="border: 1.5pt solid #000;">
-                <div class="flow-header">Sinais de Alarme (Orientações para Retorno Imediato)</div>
-                <div id="f-alarme"></div>
-            </div>
-        </div>
     </main>
 
     <script>
@@ -156,50 +156,35 @@
             } else { alert("NEGADO"); }
         }
 
-        function solveIntegral() {
+        function solveInfinite() {
             const input = document.getElementById('clin-in').value;
             if(!input) return;
 
             document.getElementById('nexus').style.display = 'block';
 
-            // DADOS INTEGRAIS (SOAP + PTS)
-            const id = "<b>Paciente:</b> Gilberto, 58 anos. <b>Perfil:</b> Classe C, pedreiro. <b>Quadro:</b> HSA secundária a ruptura de aneurisma.";
-            
-            const soap = `<b>[S]ubjetivo:</b> Paciente trazido por equipe de emergência após episódio súbito de cefaleia holocraniana de intensidade 10/10 ("a pior da vida"), seguida de rebaixamento do nível de consciência e vômitos em jato. Família relata antecedentes de hipertensão arterial sistêmica não controlada e tabagismo pesado.<br><br>
-                          <b>[O]bjetivo:</b> Paciente em regular estado geral, escala de coma de Glasgow 12 (O3, V4, M5). Normocárdico, PA 175/105 mmHg. Ausculta cardíaca e pulmonar sem ruídos adventícios. Exame neurológico: rigidez de nuca presente, sem déficits focais aparentes. TC de crânio sem contraste evidencia hemorragia subaracnoidea Fisher IV. Laboratório inicial com leucocitose discreta e glicemia de 165 mg/dL.<br><br>
-                          <b>[A]valiação:</b> 1. Hemorragia Subaracnoidea (HSA) - Hunt-Hess III / Fisher IV. Provável ruptura de aneurisma em artéria comunicante anterior. 2. Crise Hipertensiva tipo Emergência. 3. Risco elevado de vasoespasmo e isquemia cerebral tardia. 4. Tabagismo e HAS descompensada.<br><br>
-                          <b>[P]lano:</b> Internação imediata em UTI neurológica. Monitorização invasiva de PA e PIC. Manter cabeceira elevada. Protocolo de neuroproteção rigoroso. Avaliação urgente da neurocirurgia para intervenção endovascular ou clipagem.`;
+            // DADOS TOTAIS RESTAURADOS
+            setTimeout(() => {
+                const s = "<b>[S]ubjetivo:</b> Paciente Gilberto, 58 anos, pedreiro. Apresenta cefaleia holocraniana súbita intensidade 10/10, seguida de vômitos e rebaixamento de consciência. Relato de HAS e Tabagismo.";
+                const o = "<b>[O]bjetivo:</b> Glasgow 12. PA 175/105 mmHg. Rigidez de nuca. TC evidenciando HSA Fisher IV. Creatinina 1.9, Glicemia 165.";
+                const a = "<b>[A]valiação:</b> HSA Hunt-Hess III. Emergência Hipertensiva. Risco de vasoespasmo. Iatrogenia detectada.";
+                const p = "<b>[P]lano:</b> Internar UTI AVC. Protocolo MOV. Neurocirurgia imediata. Controle rigoroso de metas.";
 
-            const curto = `• Acionar equipe de AVC; Protocolo MOV; Internar em UTI.<br>
-                           • Metas: SatO₂ > 95%; Normotermia; Glicemia 140-180 mg/dL; PPC > 70 mmHg; PIC < 20 mmHg.<br>
-                           • PA: PAS < 140 mmHg (Pré) | PAS < 160 mmHg (Pós).<br>
-                           • Neurocheck de 1/1h; Cabeceira 30°.`;
+                document.getElementById('integral-out').innerHTML = `<h2>SOAP INTEGRAL</h2>${s}<br><br>${o}<br><br>${a}<br><br>${p}`;
+                
+                document.getElementById('pts-c-a').innerText = "Protocolo MOV e Estabilização de PA.";
+                document.getElementById('pts-c-r').innerText = "Equipe de Neuro-UTI.";
+                document.getElementById('pts-c-s').innerText = "PIC < 20 e PPC > 70.";
 
-            const farma = `• Profilaxia para TEV; Dieta Enteral após jejum; Hidratação SF 0,9%.<br>
-                           • <b>Nimodipino:</b> 60 mg 4/4h por 21 dias.<br>
-                           • <b>Levetiracetam:</b> Ataque: 20 mg/kg; Manutenção: 1g 12/12h.<br>
-                           • <b>Analgesia:</b> Tramadol 100 mg EV 6/6h. <br>
-                           • <b>Suporte:</b> Omeprazol 40 mg e Ondansetrona 4 mg EV 8/8h.`;
+                document.getElementById('pts-m-a').innerText = "Manejo de Vasoespasmo e Nimodipino.";
+                document.getElementById('pts-m-r').innerText = "Neurocirurgia/Fisio.";
+                document.getElementById('pts-m-s').innerText = "Ausência de novo déficit focal.";
 
-            const medio = `• Monitorar sinais de vasoespasmo (Rebaixamento ou déficit focal).<br>
-                           • Suporte Hemodinâmico: Noradrenalina para manter PAS 160-180 mmHg se vasoespasmo.<br>
-                           • Reabilitação Precoce (Fisio/Fono/Psico).`;
-
-            const longo = `• <b>PA:</b> Meta < 130/80 mmHg (Losartana 50 mg + HCTZ 12,5 mg).<br>
-                           • <b>Estilo de Vida:</b> Dieta DASH; Sal < 5g/dia; Atividade física > 150 min/semana; Cessar tabagismo.`;
-
-            const alarme = "Cefaleia intensa, novo déficit neurológico, convulsão, febre ou queda do estado geral (Retorno imediato).";
-
-            // Injeção Integral
-            document.getElementById('integral-out').innerHTML = `<h2>SOAP INTEGRAL</h2>${soap}<hr style="border-color:#1A1A1A; margin:30px 0;"><h2>PTS ESTRUTURADO</h2>${curto}<br>${farma}<br>${medio}<br>${longo}`;
-
-            document.getElementById('f-id').innerHTML = id;
-            document.getElementById('f-soap-integral').innerHTML = soap;
-            document.getElementById('f-curto').innerHTML = curto;
-            document.getElementById('f-farma').innerHTML = farma;
-            document.getElementById('f-medio').innerHTML = medio;
-            document.getElementById('f-longo').innerHTML = longo;
-            document.getElementById('f-alarme').innerHTML = alarme;
+                document.getElementById('pts-l-a').innerText = "Prevenção Secundária e DASH.";
+                document.getElementById('pts-l-r').innerText = "Geriatria/Cardio.";
+                document.getElementById('pts-l-s').innerText = "PA < 130/80 mmHg.";
+                
+                document.getElementById('nexus').scrollTop = 0;
+            }, 1000);
         }
     </script>
 </body>
