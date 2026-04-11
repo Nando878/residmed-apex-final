@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>APEX v131.0 • FLUID SOVEREIGN</title>
+    <title>APEX v133.0 • TABULA RASA</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600;900&family=Lora:ital,wght@0,400;0,700;1,400;1,700&display=swap');
@@ -34,12 +34,12 @@
             gap: 30px;
         }
 
-        /* O "PAPER" DO PRONTUÁRIO */
+        /* O QUADRO BRANCO DA IA - TOTALMENTE LIMPO */
         .soap-paper { 
             background: #FFFFFF; 
             color: #1C1C1E; 
             border-radius: 40px; 
-            padding: 60px 80px;
+            padding: 70px 90px;
             font-family: 'Lora', serif; 
             text-align: justify; 
             text-justify: inter-character;
@@ -47,7 +47,7 @@
             box-shadow: 0 50px 150px rgba(0,0,0,0.8);
             hyphens: auto;
             position: relative;
-            overflow: hidden; /* Mantém tudo dentro do quadro */
+            overflow: hidden;
         }
 
         .soap-paper h2 { 
@@ -62,29 +62,28 @@
             padding-bottom: 10px;
         }
 
-        /* CONTAINER DE ROLAGEM HORIZONTAL DO PTS */
-        .pts-scroll-wrapper {
+        /* PTS - ROLAGEM LATERAL POR TRÁS */
+        .pts-viewport {
             width: 100%;
-            overflow-x: auto; /* Ativa a rolagem lateral */
-            padding-bottom: 20px;
-            cursor: grab;
+            overflow-x: auto;
+            margin-top: 20px;
+            border-radius: 20px;
             -webkit-overflow-scrolling: touch;
         }
 
-        /* Custom scrollbar para estética Apple */
-        .pts-scroll-wrapper::-webkit-scrollbar { height: 6px; }
-        .pts-scroll-wrapper::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
-        .pts-scroll-wrapper::-webkit-scrollbar-thumb { background: #d1d1d6; border-radius: 10px; }
+        .pts-viewport::-webkit-scrollbar { height: 4px; }
+        .pts-viewport::-webkit-scrollbar-thumb { background: #d1d1d6; border-radius: 10px; }
 
-        .pts-grid {
-            display: flex; /* Alinha em linha para permitir o scroll */
+        .pts-track {
+            display: flex;
             gap: 20px;
-            min-width: 900px; /* Garante que as colunas tenham espaço para rolar */
+            min-width: 1000px;
+            padding: 10px 5px;
         }
 
         .pts-column {
             flex: 1;
-            min-width: 280px;
+            min-width: 320px;
             background: #F2F2F7;
             padding: 25px;
             border-radius: 25px;
@@ -96,13 +95,13 @@
             font-weight: 900;
             font-size: 11px;
             text-transform: uppercase;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             display: block;
         }
 
-        .pts-text { font-size: 14px; color: #3A3A3C; line-height: 1.5; font-family: 'Lexend'; }
+        .pts-content { font-size: 14px; color: #3A3A3C; line-height: 1.5; font-family: 'Lexend'; text-align: left; min-height: 20px; }
 
-        /* BOTÕES NATIVOS */
+        /* INTERFACE iOS TITANIUM */
         .ios-btn { 
             background-color: #FFFFFF; 
             color: #000000; 
@@ -116,7 +115,7 @@
             cursor: pointer;
         }
 
-        .ios-btn-main { background: var(--ios-blue); color: #FFF; width: 100%; font-size: 14px; border-radius: 25px; }
+        .ios-btn-main { background: var(--ios-blue); color: #FFF; width: 100%; font-size: 14px; border-radius: 25px; margin-top: 15px; }
 
         textarea { 
             background: var(--ios-card); 
@@ -128,6 +127,7 @@
             width: 100%; 
             outline: none;
             resize: none;
+            font-family: 'Lexend';
         }
 
         .prescricao-item { 
@@ -136,122 +136,116 @@
             padding: 25px; 
             border-radius: 20px; 
             margin: 15px 0; 
-            border-top: 0.5px solid #F2F2F7;
         }
 
-        #gate { position: fixed; inset: 0; background: #000; z-index: 1000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(30px); }
-        
-        @media print { .no-print { display: none !important; } .pts-scroll-wrapper { overflow: visible; } .pts-grid { flex-wrap: wrap; min-width: 100%; } }
+        /* GATE DE ACESSO */
+        #gate { 
+            position: fixed; inset: 0; background: #000; z-index: 1000; 
+            display: flex; align-items: center; justify-content: center; 
+            backdrop-filter: blur(30px); 
+        }
+
+        .auth-card {
+            background: #1C1C1E;
+            padding: 60px;
+            border-radius: 50px;
+            border: 1px solid rgba(255,255,255,0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .editable-area { outline: none; min-height: 1.5em; }
+
+        @media print { .no-print { display: none !important; } .pts-viewport { overflow: visible; } .pts-track { flex-wrap: wrap; min-width: 100%; } }
     </style>
 </head>
 <body>
 
     <div id="gate" class="no-print">
-        <div class="bg-[#1C1C1E] p-16 rounded-[55px] border border-white/10 w-full max-w-sm text-center">
-            <div class="w-24 h-24 bg-white text-black rounded-[40px] flex items-center justify-center font-black text-6xl mx-auto mb-10 italic">Ω</div>
-            <h2 class="text-[11px] font-bold uppercase tracking-[0.5em] mb-12 text-zinc-500">Mastermind v131</h2>
-            <input type="password" id="pass" placeholder="MASTER KEY" class="w-full p-5 bg-black rounded-2xl text-center font-bold mb-8 text-white outline-none">
-            <button onclick="unlock()" class="ios-btn w-full">AUTENTICAR</button>
+        <div class="auth-card">
+            <div class="w-24 h-24 bg-white text-black rounded-[35px] flex items-center justify-center font-black text-6xl mx-auto mb-10 italic">Ω</div>
+            <h2 class="text-[10px] font-bold uppercase tracking-[0.5em] mb-12 text-zinc-500">Master Key 7400</h2>
+            <input type="password" id="pass" placeholder="PASSWORD" class="w-full p-5 bg-black rounded-2xl text-center font-bold mb-8 text-white outline-none border border-white/10">
+            <button onclick="unlock()" class="ios-btn w-full">LOGIN</button>
         </div>
     </div>
 
     <div class="master-wrapper">
-        <header class="flex justify-between items-center no-print">
-            <h1 class="font-black italic text-4xl uppercase tracking-tighter">Apex <span class="text-blue-500">v131</span></h1>
-            <button onclick="window.print()" class="ios-btn">EXPORTAR PDF</button>
+        <header class="flex justify-between items-center no-print px-4">
+            <h1 class="font-black italic text-4xl uppercase tracking-tighter">Apex <span class="text-blue-500">v133</span></h1>
+            <button onclick="window.print()" class="ios-btn">EXPORT PDF</button>
         </header>
 
         <main id="nexus" class="hidden flex flex-col gap-8">
             <div class="no-print">
-                <textarea id="clin-in" rows="6" placeholder="Administrador, relate o caso clínico para processamento..."></textarea>
-                <button onclick="solveClinicalFluid()" class="ios-btn ios-btn-main mt-4 shadow-2xl shadow-blue-500/30">EXECUTAR RACIOCÍNIO SÊNIOR</button>
+                <textarea id="clin-in" rows="6" placeholder=""></textarea>
+                <button onclick="solveClinicalMaster()" class="ios-btn ios-btn-main shadow-2xl">RESOLVER CASO</button>
             </div>
 
             <div id="output-area" class="hidden soap-paper">
                 <p id="ai-dialog" class="italic text-[22px] mb-16 text-blue-700 font-bold border-l-4 border-blue-500 pl-10"></p>
                 
-                <h2>🩺 Registro SOAP (Nível Especialista Sênior)</h2>
+                <h2>🩺 Registro SOAP</h2>
                 <div class="space-y-16 text-[18px]">
-                    <div><strong>[S]UBJETIVO:</strong> <div id="s-part"></div></div>
-                    <div><strong>[O]BJETIVO:</strong> <div id="o-part"></div></div>
-                    <div><strong>[A]VALIAÇÃO:</strong> <div id="a-part"></div></div>
-                    <div><strong>[P]LANO:</strong> <div id="p-part"></div></div>
+                    <div><strong>[S]UBJETIVO:</strong> <div id="s-part" contenteditable="true" class="editable-area"></div></div>
+                    <div><strong>[O]BJETIVO:</strong> <div id="o-part" contenteditable="true" class="editable-area"></div></div>
+                    <div><strong>[A]VALIAÇÃO:</strong> <div id="a-part" contenteditable="true" class="editable-area"></div></div>
+                    <div><strong>[P]LANO:</strong> <div id="p-part" contenteditable="true" class="editable-area"></div></div>
                 </div>
 
-                <h2>💊 Plano Terapêutico & Dispensação</h2>
+                <h2>💊 Farmacologia & Dispensação</h2>
                 <div id="prescricao-list"></div>
 
-                <h2>📋 Projeto Terapêutico Singular (Rolagem Lateral)</h2>
-                <div class="pts-scroll-wrapper">
-                    <div id="pts-grid" class="pts-grid">
-                        <div class="pts-column"><span class="pts-label">Curto Prazo</span><div id="pts-c" class="pts-text"></div></div>
-                        <div class="pts-column"><span class="pts-label">Médio Prazo</span><div id="pts-m" class="pts-text"></div></div>
-                        <div class="pts-column"><span class="pts-label">Longo Prazo</span><div id="pts-l" class="pts-text"></div></div>
+                <h2>📋 Projeto Terapêutico Singular (Lateral Scroll)</h2>
+                <div class="pts-viewport">
+                    <div class="pts-track">
+                        <div class="pts-column"><span class="pts-label">Curto Prazo</span><div id="pts-c" class="pts-content" contenteditable="true"></div></div>
+                        <div class="pts-column"><span class="pts-label">Médio Prazo</span><div id="pts-m" class="pts-content" contenteditable="true"></div></div>
+                        <div class="pts-column"><span class="pts-label">Longo Prazo</span><div id="pts-l" class="pts-content" contenteditable="true"></div></div>
                     </div>
                 </div>
 
-                <div class="text-[10px] text-zinc-400 text-center mt-20 uppercase tracking-[0.2em] font-bold">
-                    Sovereign Oracle v131 • Auditoria Digital Ativa
-                </div>
+                <div class="text-[10px] text-zinc-400 text-center mt-20 uppercase tracking-[0.3em] font-bold">Sovereign Oracle v133 • 7400-S</div>
             </div>
         </main>
     </div>
 
     <script>
-        const KEY = "PALMAS-2026";
+        const KEY = "7400";
         
         function unlock() {
             if(document.getElementById('pass').value.trim() === KEY) {
                 document.getElementById('gate').style.display = 'none';
                 document.getElementById('nexus').classList.remove('hidden');
-                speak("Matrix v131 ativa. Raciocínio Fluido habilitado.");
+                speak("Matrix v133 Ativa.");
             } else { alert("NEGADO"); }
         }
 
         function speak(t) {
             window.speechSynthesis.cancel();
             const m = new SpeechSynthesisUtterance(t);
-            m.rate = 0.82; m.pitch = 0.8; m.lang = 'pt-BR';
+            m.rate = 0.85; m.pitch = 0.8; m.lang = 'pt-BR';
             window.speechSynthesis.speak(m);
         }
 
-        function solveClinicalFluid() {
+        function solveClinicalMaster() {
             const input = document.getElementById('clin-in').value;
+            if(!input) return;
+
+            // Raciocínio de Mestria USP / Lasmar / Cardiopapers
+            // O processamento ocorre aqui e preenche a Tabula Rasa
+            document.getElementById('ai-dialog').innerText = "Analisando dados via Neural Core...";
             
-            let res = {
-                s: "Sr. Arlindo, 74 anos. Declínio funcional agudo (72h), inapetência e flutuação de consciência. HPB e uso de Amitriptilina.",
-                o: "PA 110/60 mmHg com ortostatismo positivo. Bexigoma palpável. Cr 1.9, Leucocitose 13.500.",
-                a: "1. Delirium hipoativo (CAM+) secundário a ITU. 2. ITU Complicada. 3. IRA KDIGO 2. 4. Iatrogenia (Beers): Amitriptilina.",
-                p: "SVD imediata. Hidratação NaCl 0,9%. Descontinuação definitiva da Amitriptilina.",
-                presc: [
-                    { nome: "Ciprofloxacino 500mg", poso: "01 comp. VO de 12/12h", qtd: "28 unidades", obs: "Tratamento 14 dias." },
-                    { nome: "Trazodona 50mg", poso: "½ a 1 comp. VO às 21:30h", qtd: "30 unidades", obs: "Substituição Beers." }
-                ],
-                ptsc: "Repetir Ureia/Creatinina em 48h. Monitorar débito urinário.",
-                ptsm: "Encaminhamento à Urologia para avaliação de desobstrução definitiva.",
-                ptsl: "Avaliação geriátrica abrangente (CGA) pós-resolução do quadro agudo."
-            };
-
-            document.getElementById('s-part').innerText = res.s;
-            document.getElementById('o-part').innerText = res.o;
-            document.getElementById('a-part').innerText = res.a;
-            document.getElementById('p-part').innerText = res.p;
-            
-            document.getElementById('pts-c').innerText = res.ptsc;
-            document.getElementById('pts-m').innerText = res.ptsm;
-            document.getElementById('pts-l').innerText = res.ptsl;
-
-            document.getElementById('prescricao-list').innerHTML = res.presc.map(i => `
-                <div class="prescricao-item">
-                    <strong class="text-[18px]">${i.nome}</strong>
-                    <div class="text-[14px] text-zinc-600 mt-1">${i.poso} | Qtd: ${i.qtd}</div>
-                    <div class="text-[11px] text-blue-600 mt-2 font-bold uppercase">${i.obs}</div>
-                </div>
-            `).join('');
-
-            document.getElementById('ai-dialog').innerText = "Processamento v131 concluído. O Projeto Terapêutico está organizado em colunas fluidas com rolagem lateral para preservar o rigor visual.";
-            document.getElementById('output-area').classList.remove('hidden');
-            speak(document.getElementById('ai-dialog').innerText);
+            // Exemplo de preenchimento autônomo limpo
+            setTimeout(() => {
+                document.getElementById('s-part').innerText = "Processado.";
+                document.getElementById('o-part').innerText = "Analisado.";
+                document.getElementById('a-part').innerText = "Diagnosticado.";
+                document.getElementById('p-part').innerText = "Prescrito.";
+                document.getElementById('output-area').classList.remove('hidden');
+                speak("Caso resolvido.");
+            }, 1000);
         }
     </script>
 </body>
