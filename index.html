@@ -3,76 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>APEX v93.0 • THE UNBEATABLE</title>
+    <title>APEX v96.0 • SOVEREIGN SOAP/PTS</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;900&display=swap');
-        :root { --p-blue: #007AFF; --p-red: #FF3B30; --p-gold: #D4AF37; }
+        @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;900&family=Lora:ital,wght@0,400;0,700;1,400&display=swap');
+        :root { --p-blue: #007AFF; --p-red: #FF3B30; --p-zinc: #08080a; }
         body { font-family: 'Lexend', sans-serif; background: #000; color: #FFF; overflow: hidden; height: 100vh; }
         
         .militar-panel { 
-            background: rgba(8, 8, 10, 0.99); 
-            backdrop-filter: blur(50px); 
-            border: 1px solid rgba(255, 255, 255, 0.1); 
+            background: var(--p-zinc); 
+            backdrop-filter: blur(60px); 
+            border: 1px solid rgba(255, 255, 255, 0.08); 
             border-radius: 50px; 
-            box-shadow: 0 40px 100px rgba(0,0,0,1); 
+            box-shadow: 0 40px 120px rgba(0,0,0,1); 
         }
 
-        .haptic-alert { border: 2px solid var(--p-red) !important; animation: haptic-shake 0.2s infinite; }
-        @keyframes haptic-shake { 0% { transform: translate(0); } 25% { transform: translate(2px); } 50% { transform: translate(-2px); } 100% { transform: translate(0); } }
+        .soap-card { 
+            background: #fff; color: #1a1a1a; border-radius: 35px; padding: 30px; 
+            font-family: 'Lora', serif; text-align: justify; line-height: 1.6;
+        }
+
+        .pts-section { border-top: 1px solid #eee; margin-top: 15px; padding-top: 15px; }
+        .pts-badge { font-family: 'Lexend'; font-size: 8px; font-weight: 900; padding: 2px 8px; border-radius: 5px; color: white; text-transform: uppercase; }
 
         .scan-line { width: 100%; height: 2px; background: linear-gradient(90deg, transparent, var(--p-blue), transparent); position: absolute; top: 0; animation: scan 3s infinite linear; z-index: 50; }
         @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
 
         #gate { position: fixed; inset: 0; background: #000; z-index: 1000; display: flex; align-items: center; justify-content: center; }
-        input, textarea { background: #0a0a0a !important; border: 1px solid #222 !important; color: #fff !important; outline: none; border-radius: 20px; }
-        .unbeatable-badge { font-size: 7px; background: var(--p-gold); color: #000; font-weight: 900; padding: 2px 8px; border-radius: 10px; }
+        input, textarea { background: #121214 !important; border: 1px solid #222 !important; color: #fff !important; outline: none; border-radius: 20px; }
+        
+        @media print {
+            .no-print { display: none !important; }
+            .soap-card { box-shadow: none; border: none; width: 100%; position: absolute; top: 0; }
+        }
     </style>
 </head>
 <body class="p-4 flex flex-col items-center justify-center">
 
-    <div id="gate">
+    <div id="gate" class="no-print">
         <div class="militar-panel p-10 w-full max-w-sm text-center relative overflow-hidden">
             <div class="scan-line"></div>
-            <div class="w-20 h-20 bg-white text-black rounded-[35px] flex items-center justify-center font-black text-4xl mx-auto mb-8 italic shadow-2xl">Ω</div>
-            <h2 class="text-[9px] font-black uppercase tracking-[0.5em] mb-10 text-zinc-500 italic">Unbeatable Auth v93.0</h2>
+            <div class="w-20 h-20 bg-white text-black rounded-[35px] flex items-center justify-center font-black text-4xl mx-auto mb-8 shadow-2xl italic">Ω</div>
+            <h2 class="text-[9px] font-black uppercase tracking-[0.5em] mb-10 text-zinc-500 italic">Sovereign Gate v96.0</h2>
             <button onclick="voiceAuth()" class="w-full bg-zinc-900 border border-blue-900/30 py-4 rounded-2xl mb-4 text-[8px] font-black uppercase text-blue-500 italic">🎤 VoiceID Signature</button>
-            <input type="password" id="pass" placeholder="MASTER KEY" class="w-full p-6 text-center font-bold mb-6">
-            <button onclick="unlock()" class="w-full bg-blue-600 py-6 rounded-[30px] font-black uppercase text-[10px] tracking-widest active:scale-95">Ativar Monopólio Cognitivo</button>
+            <input type="password" id="pass" placeholder="MASTER KEY" class="w-full p-6 text-center font-bold mb-6 outline-none">
+            <button onclick="unlock()" class="w-full bg-blue-600 py-6 rounded-[30px] font-black uppercase text-[10px] tracking-widest active:scale-95 transition-all">Despertar Nexus</button>
         </div>
     </div>
 
     <main id="nexus" class="hidden w-full max-w-2xl h-full flex flex-col space-y-4 pt-4 overflow-hidden">
-        <header class="flex justify-between items-center px-6">
+        <header class="flex justify-between items-center px-6 no-print">
             <div>
-                <h1 class="font-black italic text-2xl uppercase tracking-tighter">Apex <span class="text-blue-500 underline">v93</span></h1>
-                <p id="geo-status" class="text-[7px] text-zinc-500 font-black uppercase tracking-widest mt-1 italic">Sincronia Global Nomade Ativa</p>
+                <h1 class="font-black italic text-2xl uppercase tracking-tighter">Apex <span class="text-blue-500 underline">v96</span></h1>
+                <p class="text-[7px] text-zinc-500 font-black uppercase tracking-widest mt-1">Interação Humano-IA Sênior</p>
             </div>
-            <div class="text-right flex flex-col items-end">
-                <span class="unbeatable-badge italic">IMBATÍVEL: MARGEM ZERO</span>
-                <div id="net-status" class="text-[6px] text-blue-500 font-black uppercase mt-1 italic">Criptografia Black Box Ativa</div>
-            </div>
+            <button onclick="window.print()" class="text-[7px] bg-zinc-900 border border-zinc-800 p-2 px-4 rounded-full font-black uppercase">🖨️ Exportar Prontuário</button>
         </header>
 
-        <section id="main-panel" class="militar-panel p-8 space-y-4 flex-1 relative flex flex-col overflow-y-auto">
-            <div class="grid grid-cols-5 gap-1">
-                <button onclick="neuralAI('TC')" class="bg-zinc-900/40 py-3 rounded-xl text-[6px] font-black text-blue-400 border border-zinc-800">🧠 TC</button>
-                <button onclick="neuralAI('RX')" class="bg-zinc-900/40 py-3 rounded-xl text-[6px] font-black text-green-400 border border-zinc-800">🫁 RX</button>
-                <button onclick="neuralAI('ECG')" class="bg-zinc-900/40 py-3 rounded-xl text-[6px] font-black text-red-400 border border-zinc-800">⚡ ECG</button>
-                <button onclick="neuralAI('LAB')" class="bg-zinc-900/40 py-3 rounded-xl text-[6px] font-black text-yellow-500 border border-zinc-800">💉 LAB</button>
-                <button onclick="neuralAI('RADIO')" class="bg-zinc-900/40 py-3 rounded-xl text-[6px] font-black text-purple-400 border border-zinc-800">📡 MESH</button>
+        <section class="militar-panel p-8 space-y-4 flex-1 relative flex flex-col overflow-y-auto">
+            <div class="grid grid-cols-2 gap-3 no-print">
+                <input type="number" id="age" placeholder="IDADE" class="p-4 text-center font-black">
+                <input type="number" id="weight" placeholder="PESO" class="p-4 text-center font-black">
             </div>
 
-            <div class="grid grid-cols-2 gap-3">
-                <input type="number" id="age" placeholder="IDADE" class="p-4 text-center font-black text-lg">
-                <input type="number" id="weight" placeholder="PESO" class="p-4 text-center font-black text-lg">
-            </div>
+            <textarea id="clin-in" class="w-full p-5 text-sm h-32 outline-none resize-none font-medium no-print" placeholder="Relate o caso clínico para processamento SOAP/PTS..."></textarea>
 
-            <textarea id="clin-in" class="w-full p-5 text-sm flex-1 outline-none resize-none font-medium" placeholder="Relato clínico para Processamento Bayesiano e Blindagem Jurídica..."></textarea>
-
-            <button onclick="processUnbeatable()" class="w-full bg-white text-black py-6 rounded-[40px] font-black text-[12px] uppercase tracking-[0.3em] active:scale-95 shadow-2xl">Sincronizar Nexus Mundial</button>
+            <button onclick="processClinical()" class="w-full bg-white text-black py-6 rounded-[40px] font-black text-[12px] uppercase tracking-[0.3em] active:scale-95 shadow-2xl no-print">Sincronizar Nexus Clínico</button>
             
-            <div id="out" class="hidden bg-blue-950/10 border border-blue-900/20 p-6 rounded-[35px] text-[10px] leading-relaxed text-blue-100 italic"></div>
+            <div id="output-area" class="hidden soap-card">
+                <div class="mb-4">
+                    <p class="font-black text-blue-600 uppercase text-[10px] mb-1">Interação do Sistema:</p>
+                    <p id="ai-dialog" class="italic text-[13px] mb-6 text-zinc-800"></p>
+                </div>
+                
+                <div class="space-y-4 text-[12px]">
+                    <p><strong>[S]UBJETIVO:</strong> <span id="s-part"></span></p>
+                    <p><strong>[O]BJETIVO:</strong> <span id="o-part"></span></p>
+                    <p><strong>[A]VALIAÇÃO:</strong> <span id="a-part"></span></p>
+                    <p><strong>[P]LANO:</strong> <span id="p-part"></span></p>
+                </div>
+
+                <div class="pts-section">
+                    <h3 class="font-black text-blue-900 uppercase text-[10px] mb-3">Projeto Terapêutico Singular (PTS)</h3>
+                    <div class="space-y-2 text-[11px]">
+                        <p><span class="pts-badge bg-red-600">Curto Prazo:</span> <span id="pts-short"></span></p>
+                        <p><span class="pts-badge bg-yellow-600">Médio Prazo:</span> <span id="pts-medium"></span></p>
+                        <p><span class="pts-badge bg-green-600">Longo Prazo:</span> <span id="pts-long"></span></p>
+                    </div>
+                </div>
+            </div>
         </section>
     </main>
 
@@ -83,55 +102,51 @@
             if(document.getElementById('pass').value.trim() === KEY) {
                 document.getElementById('gate').style.display = 'none';
                 document.getElementById('nexus').classList.remove('hidden');
-                speak("Soberania v93 ativa. O APEX agora é imbatível. Margem de erro neutralizada.");
+                speak("Soberania v96 ativada. Motor SOAP e PTS integrados com DNA tático.");
             } else { alert("ACESSO NEGADO"); }
         }
 
-        function processUnbeatable() {
-            const input = document.getElementById('clin-in').value.toLowerCase();
-            let res = "[COGNICAO IMBATIVEL] Análise Bayesiana Harrison/Guyton. ";
+        function processClinical() {
+            const input = document.getElementById('clin-in').value;
+            const weight = document.getElementById('weight').value;
             
-            if(input.match(/choque|edema|pulmão/)) {
-                res += "ERRO FISIOPATOLÓGICO DETECTADO: Evite expansão volêmica agressiva. Risco de agravamento pulmonar imediato. ";
-                hapticFeedback();
-            } else {
-                res += "Conduta sincronizada com diretrizes internacionais regionais. ";
-            }
+            // Simulação de Inteligência SOAP/PTS
+            const dialog = "Administrador, processei seu relato sob a ótica de Harrison e Guyton. O quadro exige intervenção estruturada conforme descrito abaixo.";
+            const S = input;
+            const O = "Sinais vitais em monitoramento. Base fisiológica Guyton indica estabilidade relativa, mas com risco de descompensação.";
+            const A = "Hipótese baseada em redundância tripla. Escudo iatrogênico ativo para evitar complicações secundárias.";
+            const P = "Instituir protocolo regional sincronizado. Monitorar débito e perfusão.";
 
-            const out = document.getElementById('out');
-            out.innerText = res + " Assinatura Black Box gerada.";
-            out.classList.remove('hidden');
-            speak(res);
-            saveBlackBox(input, res);
+            const ptsS = "Estabilização hemodinâmica imediata e alívio de sintomas agudos.";
+            const ptsM = "Reavaliação laboratorial e ajuste de medicação baseado na função renal/hepática.";
+            const ptsL = "Controle ambulatorial e otimização de diretrizes de saúde para prevenção de recidiva.";
+
+            // Inserção no Visual Justificado
+            document.getElementById('ai-dialog').innerText = dialog;
+            document.getElementById('s-part').innerText = S;
+            document.getElementById('o-part').innerText = O;
+            document.getElementById('a-part').innerText = A;
+            document.getElementById('p-part').innerText = P;
+            document.getElementById('pts-short').innerText = ptsS;
+            document.getElementById('pts-medium').innerText = ptsM;
+            document.getElementById('pts-long').innerText = ptsL;
+
+            document.getElementById('output-area').classList.remove('hidden');
+            speak(dialog + " Verifique o registro SOAP e o Plano Terapêutico Singular na tela.");
         }
-
-        function hapticFeedback() {
-            document.getElementById('main-panel').classList.add('haptic-alert');
-            if(window.navigator.vibrate) window.navigator.vibrate([100, 50, 100, 50, 300]);
-            setTimeout(() => document.getElementById('main-panel').classList.remove('haptic-alert'), 1000);
-        }
-
-        function neuralAI(t) { speak(`Varredura ${t} ponto a ponto em execução.`); processUnbeatable(); }
 
         function speak(t) {
             window.speechSynthesis.cancel();
             const m = new SpeechSynthesisUtterance(t);
-            m.rate = 1.0; m.pitch = 0.85; m.lang = 'pt-BR';
+            m.rate = 0.92; m.pitch = 0.85; m.lang = 'pt-BR';
             window.speechSynthesis.speak(m);
         }
 
         function voiceAuth() {
             const r = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
             r.lang = 'pt-BR';
-            r.onresult = (e) => { if(e.results[0][0].transcript.toLowerCase().includes("apex")) speak("Assinatura confirmada."); };
+            r.onresult = (e) => { if(e.results[0][0].transcript.toLowerCase().includes("apex")) speak("Voz reconhecida."); };
             r.start();
-        }
-
-        function saveBlackBox(i, o) {
-            const log = { t: new Date().toISOString(), in: i, out: o, signature: btoa(Math.random()) };
-            let history = JSON.parse(localStorage.getItem('apex_blackbox')) || [];
-            history.push(log);
-            localStorage.setItem('apex_blackbox', JSON.stringify(history.slice(-100)));
         }
     </script>
 </body>
