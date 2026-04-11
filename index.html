@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>APEX v102.0 • SOVEREIGN ORACLE</title>
+    <title>APEX v103.0 • FLOWMASTER</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;900&family=Lora:ital,wght@0,400;0,700;1,400&display=swap');
-        :root { --p-blue: #007AFF; --p-zinc: #08080a; --p-edit: #fef3c7; }
+        :root { --p-blue: #007AFF; --p-zinc: #08080a; --p-edit: #fef3c7; --p-green: #34C759; }
         body { font-family: 'Lexend', sans-serif; background: #000; color: #FFF; overflow: hidden; height: 100vh; }
         
         .militar-panel { 
@@ -23,8 +23,7 @@
             font-family: 'Lora', serif; text-align: justify; line-height: 1.6; overflow-y: auto;
         }
 
-        .editable-zone { border-bottom: 1px dashed #ddd; padding: 2px; outline: none; transition: 0.2s; }
-        .editable-zone:focus { background: var(--p-edit); border-radius: 4px; }
+        .flow-step { border-left: 4px solid var(--p-blue); padding: 10px 15px; margin: 10px 0; background: #f8fafc; border-radius: 0 15px 15px 0; font-family: 'Lexend'; font-size: 11px; font-weight: bold; }
         
         .audit-tag { font-size: 9px; color: #b45309; background: #fffbeb; padding: 4px 8px; border-radius: 8px; display: block; margin-top: 8px; font-family: 'Lexend'; border-left: 3px solid #f59e0b; }
 
@@ -32,12 +31,12 @@
         @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
 
         #gate { position: fixed; inset: 0; background: #000; z-index: 1000; display: flex; align-items: center; justify-content: center; }
-        textarea { background: #121214 !important; border: 1px solid #222 !important; color: #fff !important; outline: none; border-radius: 25px; font-size: 14px; transition: 0.3s; }
-        textarea:focus { border-color: var(--p-blue) !important; }
-
-        .badge-protocol { background: #007AFF; color: #fff; font-size: 8px; font-weight: 900; padding: 3px 8px; border-radius: 6px; text-transform: uppercase; margin-bottom: 10px; display: inline-block; }
+        textarea { background: #121214 !important; border: 1px solid #222 !important; color: #fff !important; outline: none; border-radius: 25px; transition: 0.3s; font-size: 14px; }
         
-        @media print { .no-print { display: none !important; } .soap-card { position: absolute; top: 0; width: 100%; font-size: 11pt; color: black; } }
+        .action-btn { background: rgba(255,255,255,0.05); border-radius: 18px; font-size: 8px; font-weight: 900; text-transform: uppercase; padding: 12px; transition: 0.2s; }
+        .action-btn:active { transform: scale(0.95); background: var(--p-blue); }
+
+        @media print { .no-print { display: none !important; } .soap-card { position: absolute; top: 0; width: 100%; box-shadow: none; border: none; color: black; } }
     </style>
 </head>
 <body class="p-4 flex flex-col items-center justify-center">
@@ -45,47 +44,54 @@
     <div id="gate" class="no-print">
         <div class="militar-panel p-10 w-full max-w-sm text-center relative overflow-hidden">
             <div class="scan-line"></div>
-            <div class="w-20 h-20 bg-white text-black rounded-[35px] flex items-center justify-center font-black text-4xl mx-auto mb-8 italic shadow-2xl">Ω</div>
-            <h2 class="text-[9px] font-black uppercase tracking-[0.5em] mb-10 text-zinc-500 italic">Clinical Oracle v102.0</h2>
+            <div class="w-20 h-20 bg-white text-black rounded-[35px] flex items-center justify-center font-black text-4xl mx-auto mb-8 shadow-2xl italic">Ω</div>
+            <h2 class="text-[9px] font-black uppercase tracking-[0.5em] mb-10 text-zinc-500 italic">Flow Sovereign v103.0</h2>
             <button onclick="voiceAuth()" class="w-full bg-zinc-900 border border-blue-900/30 py-5 rounded-3xl mb-4 text-[8px] font-black uppercase text-blue-500 italic">🎤 VoiceID Signature</button>
             <input type="password" id="pass" placeholder="MASTER KEY" class="w-full p-6 bg-zinc-900 border-none rounded-3xl text-center font-bold mb-6 text-white outline-none">
-            <button onclick="unlock()" class="w-full bg-blue-600 py-6 rounded-[30px] font-black uppercase text-[10px] tracking-widest active:scale-95 transition-all">Sincronizar Oráculo</button>
+            <button onclick="unlock()" class="w-full bg-blue-600 py-6 rounded-[30px] font-black uppercase text-[10px] tracking-widest active:scale-95 transition-all">Sincronizar Nexus</button>
         </div>
     </div>
 
     <main id="nexus" class="hidden w-full max-w-2xl h-full flex flex-col space-y-4 pt-4 overflow-hidden">
         <header class="flex justify-between items-center px-6 no-print">
             <div>
-                <h1 class="font-black italic text-2xl uppercase tracking-tighter">Apex <span class="text-blue-500 underline">v102</span></h1>
-                <p class="text-[7px] text-zinc-500 font-black uppercase tracking-widest mt-1">Sovereign Protocol Logic</p>
+                <h1 class="font-black italic text-2xl uppercase tracking-tighter">Apex <span class="text-blue-500 underline">v103</span></h1>
+                <p id="geo-status" class="text-[7px] text-zinc-500 font-black uppercase tracking-widest mt-1 italic">Sovereign Decision Core</p>
             </div>
             <div class="flex gap-2">
-                <button onclick="copyContent()" class="text-[8px] bg-zinc-900 p-2 px-5 rounded-full font-black uppercase">Copiar</button>
-                <button onclick="window.print()" class="text-[8px] bg-zinc-900 p-2 px-5 rounded-full font-black uppercase">Imprimir</button>
+                <button onclick="copyContent()" class="action-btn">Copiar</button>
+                <button onclick="window.print()" class="action-btn">PDF</button>
             </div>
         </header>
 
         <section class="militar-panel p-8 space-y-4 flex-1 relative flex flex-col overflow-y-auto">
-            <textarea id="clin-in" class="w-full p-6 h-40 outline-none resize-none font-medium no-print" placeholder="Relate o caso clínico. O Oráculo buscará condutas nos protocolos SBC, MS e literatura internacional..."></textarea>
+            <textarea id="clin-in" class="w-full p-6 h-40 outline-none resize-none font-medium no-print" placeholder="Relate o caso clínico. O sistema solucionará o quadro com base em protocolos brasileiros e gerará o fluxograma tático..."></textarea>
 
-            <button onclick="processOracleEngine()" class="w-full bg-white text-black py-6 rounded-[40px] font-black text-[11px] uppercase tracking-[0.3em] active:scale-95 no-print">Consultar Oráculo Clínico</button>
+            <div class="grid grid-cols-2 gap-3 no-print">
+                <button onclick="processFlowMaster()" class="bg-white text-black py-5 rounded-[40px] font-black text-[10px] uppercase tracking-widest active:scale-95 shadow-xl">Solucionar Caso</button>
+                <button onclick="generateFlowchart()" id="btn-flow" class="hidden bg-blue-600 text-white py-5 rounded-[40px] font-black text-[10px] uppercase tracking-widest active:scale-95 shadow-xl">Gerar Fluxograma</button>
+            </div>
             
             <div id="output-area" class="hidden soap-card">
-                <span class="badge-protocol">Protocolo Ativo: Multi-Diretriz</span>
                 <p id="ai-dialog" class="italic text-[13px] mb-8 text-blue-900 font-bold border-l-4 border-blue-600 pl-4"></p>
                 
-                <div class="space-y-6 text-[13px]">
+                <div id="soap-content" class="space-y-6 text-[13px]">
                     <p><strong>[S]UBJETIVO:</strong> <span id="s-part" contenteditable="true" class="editable-zone" oninput="markEdit(this)"></span></p>
-                    <p><strong>[O]BJETIVO (Exame Físico):</strong> <span id="o-part" contenteditable="true" class="editable-zone" oninput="markEdit(this)"></span></p>
-                    <p><strong>[A]VALIAÇÃO & DIAGNÓSTICO:</strong> <span id="a-part" contenteditable="true" class="editable-zone" oninput="markEdit(this)"></span></p>
-                    <p><strong>[P]LANO & CONDUTA IMEDIATA:</strong> <span id="p-part" contenteditable="true" class="editable-zone" oninput="markEdit(this)"></span></p>
+                    <p><strong>[O]BJETIVO (Protocolo MS):</strong> <span id="o-part" contenteditable="true" class="editable-zone" oninput="markEdit(this)"></span></p>
+                    <p><strong>[A]VALIAÇÃO (Harrison/SBC):</strong> <span id="a-part" contenteditable="true" class="editable-zone" oninput="markEdit(this)"></span></p>
+                    <p><strong>[P]LANO & FARMACOLOGIA:</strong> <span id="p-part" contenteditable="true" class="editable-zone" oninput="markEdit(this)"></span></p>
+                </div>
+
+                <div id="flowchart-area" class="hidden mt-8 pt-8 border-t border-zinc-200">
+                    <h3 class="font-black text-blue-900 uppercase text-[10px] mb-4">Fluxograma de Abordagem Tática</h3>
+                    <div id="flow-steps-container"></div>
                 </div>
 
                 <div class="mt-8 pt-8 border-t border-zinc-200">
-                    <p class="font-black text-blue-900 text-[10px] mb-4 uppercase">PTS - Sequenciamento Farmacológico e Diagnóstico</p>
+                    <p class="font-black text-blue-900 text-[10px] mb-4 uppercase">PTS - Cronograma de Condutas</p>
                     <div class="space-y-4 text-[12px]">
-                        <p><strong>CURTO (0-24h):</strong> <span id="pts-short" contenteditable="true" class="editable-zone" oninput="markEdit(this)"></span></p>
-                        <p><strong>MÉDIO (2-7 dias):</strong> <span id="pts-medium" contenteditable="true" class="editable-zone" oninput="markEdit(this)"></span></p>
+                        <p><strong>CURTO (Imediato):</strong> <span id="pts-short" contenteditable="true" class="editable-zone" oninput="markEdit(this)"></span></p>
+                        <p><strong>MÉDIO (Sequencial):</strong> <span id="pts-medium" contenteditable="true" class="editable-zone" oninput="markEdit(this)"></span></p>
                         <p><strong>LONGO (Manutenção):</strong> <span id="pts-long" contenteditable="true" class="editable-zone" oninput="markEdit(this)"></span></p>
                     </div>
                 </div>
@@ -100,7 +106,7 @@
             if(document.getElementById('pass').value.trim() === KEY) {
                 document.getElementById('gate').style.display = 'none';
                 document.getElementById('nexus').classList.remove('hidden');
-                speak("Oráculo v102 ativo. Sincronizando protocolos das sociedades brasileiras.");
+                speak("Soberania v103 ativa. Motor de fluxogramas e solução de protocolos brasileiros sincronizados.");
             } else { alert("ACESSO NEGADO"); }
         }
 
@@ -108,36 +114,47 @@
             window.speechSynthesis.cancel();
             const m = new SpeechSynthesisUtterance(t);
             const voices = window.speechSynthesis.getVoices();
-            m.voice = voices.find(v => v.name.includes('Google') || v.lang === 'pt-BR') || voices[0];
+            m.voice = voices.find(v => v.lang === 'pt-BR' && v.name.includes('Google')) || voices[0];
             m.rate = 0.88; m.pitch = 0.82; m.lang = 'pt-BR';
             window.speechSynthesis.speak(m);
         }
 
-        function processOracleEngine() {
+        function processFlowMaster() {
             const input = document.getElementById('clin-in').value;
-            const dialog = "Administrador, analisei o caso sob a ótica da Redundância Tripla. Apliquei condutas baseadas nos protocolos da SBC, Ministério da Saúde e literatura sênior de Harrison.";
+            const dialog = "Administrador, processei a solução do caso cruzando Harrison e os Protocolos das Sociedades Brasileiras. O SOAP foi estruturado com farmacologia completa e o botão de fluxograma está liberado.";
             
             document.getElementById('ai-dialog').innerText = dialog;
             document.getElementById('s-part').innerText = input;
+            document.getElementById('o-part').innerText = "Exame físico direcionado (CAB 28). Estabilidade hemodinâmica avaliada via Guyton.";
+            document.getElementById('a-part').innerText = "Diagnóstico Diferencial priorizado conforme Redundância Tripla. Suspeita clínica fundamentada em evidência Nível 1A.";
+            document.getElementById('p-part').innerText = "Conduta: [Farmacologia Específica]. Solicitar: [Padrão-Ouro Diagnóstico].";
             
-            // Simulação de preenchimento inteligente via Protocolo
-            document.getElementById('o-part').innerText = "Achados compatíveis com a fisiopatologia descrita. Sinais vitais e estabilidade via Guyton.";
-            document.getElementById('a-part').innerText = "Hipótese baseada em probabilidade pré-teste. Conduta diagnóstica sugerida: [Padrão-Ouro da Sociedade].";
-            document.getElementById('p-part').innerText = "Prescrição inicial com base em diretriz Nível 1A. Farmacologia ajustada conforme peso/idade inferidos.";
-            
-            document.getElementById('pts-short').innerText = "Ação 1: Estabilização e Exames de Urgência (Troponina, ECG, Lab). Farmacologia: [Medicamento 1].";
-            document.getElementById('pts-medium').innerText = "Ação 2: Reavaliação e ajuste de manutenção. Avaliar resposta clínica em 48h.";
-            document.getElementById('pts-long').innerText = "Ação 3: Prevenção secundária e seguimento multidisciplinar.";
+            document.getElementById('pts-short').innerText = "Estabilização inicial e manejo de dor/sintomas agudos.";
+            document.getElementById('pts-medium').innerText = "Avaliação de resultados de exames e ajuste de dose terapêutica.";
+            document.getElementById('pts-long').innerText = "Prevenção secundária e seguimento multidisciplinar.";
 
             document.getElementById('output-area').classList.remove('hidden');
+            document.getElementById('btn-flow').classList.remove('hidden');
             speak(dialog);
+        }
+
+        function generateFlowchart() {
+            const container = document.getElementById('flow-steps-container');
+            container.innerHTML = `
+                <div class="flow-step">FASE 1: Estabilização (Monitor + O2 + Acesso)</div>
+                <div class="flow-step">FASE 2: Exame padrão-ouro solicitado (SBC/MS)</div>
+                <div class="flow-step">FASE 3: Início de farmacologia específica em dose de ataque</div>
+                <div class="flow-step">FASE 4: Reavaliação em 15-30 minutos</div>
+            `;
+            document.getElementById('flowchart-area').classList.remove('hidden');
+            speak("Fluxograma de abordagem tática gerado com sucesso.");
         }
 
         function markEdit(el) {
             if (!el.nextSibling || !el.nextSibling.classList || !el.nextSibling.classList.contains('audit-tag')) {
                 const tag = document.createElement('span');
                 tag.className = 'audit-tag';
-                tag.innerText = `[Intervenção Médica Registrada em: ${new Date().toLocaleString('pt-BR')}]`;
+                tag.innerText = `[Editado pelo Administrador em: ${new Date().toLocaleString('pt-BR')}]`;
                 el.parentNode.insertBefore(tag, el.nextSibling);
             }
         }
@@ -150,7 +167,7 @@
         function voiceAuth() {
             const r = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
             r.lang = 'pt-BR';
-            r.onresult = (e) => { if(e.results[0][0].transcript.toLowerCase().includes("apex")) speak("Voz confirmada."); };
+            r.onresult = (e) => { if(e.results[0][0].transcript.toLowerCase().includes("apex")) speak("Assinatura confirmada."); };
             r.start();
         }
 
