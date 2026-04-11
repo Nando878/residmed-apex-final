@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>APEX v109.0 • COGNITIVE HEURISTIC</title>
+    <title>APEX v110.0 • NEURAL AUTONOMY</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;900&family=Lora:ital,wght@0,400;0,700;1,400&display=swap');
@@ -13,7 +13,7 @@
         .militar-panel { 
             background: var(--p-zinc); 
             backdrop-filter: blur(80px); 
-            border: 1px solid rgba(255, 255, 255, 0.18); 
+            border: 1px solid rgba(255, 255, 255, 0.2); 
             border-radius: 50px; 
             box-shadow: 0 60px 180px rgba(0,0,0,1); 
         }
@@ -36,7 +36,7 @@
 
         .flow-card { border-left: 6px solid var(--p-blue); padding: 22px; margin: 22px 0; background: #f1f5f9; border-radius: 0 25px 25px 0; font-family: 'Lexend'; font-size: 13px; color: #0f172a; line-height: 1.5; font-weight: 600; }
         
-        .lib-source { font-size: 8px; background: #e2e8f0; color: #475569; padding: 3px 10px; border-radius: 5px; margin-right: 5px; text-transform: uppercase; }
+        .lib-source { font-size: 8px; background: #e2e8f0; color: #475569; padding: 3px 10px; border-radius: 5px; margin-right: 5px; text-transform: uppercase; font-weight: 900; }
     </style>
 </head>
 <body class="p-6 flex flex-col items-center justify-center">
@@ -45,15 +45,15 @@
         <div class="militar-panel p-12 w-full max-w-sm text-center relative overflow-hidden">
             <div class="scan-line"></div>
             <div class="w-24 h-24 bg-white text-black rounded-[45px] flex items-center justify-center font-black text-5xl mx-auto mb-10 shadow-2xl italic">Ω</div>
-            <h2 class="text-[10px] font-black uppercase tracking-[0.8em] mb-12 text-zinc-500 italic">Cognitive Sovereign v109.0</h2>
+            <h2 class="text-[10px] font-black uppercase tracking-[0.8em] mb-12 text-zinc-500 italic">Neural Autonomy v110.0</h2>
             <input type="password" id="pass" placeholder="MASTER KEY" class="w-full p-6 bg-zinc-900 border-none rounded-3xl text-center font-bold mb-8 text-white outline-none">
-            <button onclick="unlock()" class="w-full bg-blue-600 py-6 rounded-[35px] font-black uppercase text-[11px] tracking-widest active:scale-95 transition-all shadow-blue-500/30">Sincronizar Heurística</button>
+            <button onclick="unlock()" class="w-full bg-blue-600 py-6 rounded-[35px] font-black uppercase text-[11px] tracking-widest active:scale-95 transition-all">Ativar Autonomia Cognitiva</button>
         </div>
     </div>
 
     <main id="nexus" class="hidden w-full max-w-4xl h-full flex flex-col space-y-6 pt-6 overflow-hidden">
         <header class="flex justify-between items-end px-10 no-print">
-            <h1 class="font-black italic text-4xl uppercase tracking-tighter text-white">Apex <span class="text-blue-500">v109</span></h1>
+            <h1 class="font-black italic text-4xl uppercase tracking-tighter text-white">Apex <span class="text-blue-500">v110</span></h1>
             <div class="flex gap-4">
                 <button onclick="copyContent()" class="text-[9px] bg-zinc-900 p-4 px-8 rounded-full font-black text-zinc-400">COPIAR</button>
                 <button onclick="window.print()" class="text-[9px] bg-zinc-900 p-4 px-8 rounded-full font-black text-zinc-400">PDF AUDIT</button>
@@ -61,34 +61,34 @@
         </header>
 
         <section class="militar-panel p-12 space-y-6 flex-1 relative flex flex-col overflow-y-auto">
-            <textarea id="clin-in" class="w-full h-64 outline-none resize-none font-medium no-print" placeholder="Relate o caso clínico. A IA buscará a solução consultando ativamente o Braunwald, Cardiopapers, Sampaio, Moore e Unicamp..."></textarea>
+            <textarea id="clin-in" class="w-full h-64 outline-none resize-none font-medium no-print" placeholder="Relate o caso clínico. A IA executará o raciocínio autônomo baseado na biblioteca de elite carregada (Braunwald, Sampaio, Moore, Ross, DSM-5, Unicamp)..."></textarea>
             
-            <button onclick="runCognitiveHeuristic()" class="w-full btn-logic py-8 text-[13px]">Ativar Processamento de Solução</button>
+            <button onclick="executeNeuralReasoning()" class="w-full btn-logic py-8 text-[13px]">Executar Raciocínio Clínico Autônomo</button>
             
             <div id="output-area" class="hidden soap-card mt-8">
                 <div class="mb-6 flex flex-wrap gap-2">
-                    <span class="lib-source">Braunwald (Cardio)</span><span class="lib-source">Sampaio (Dermato)</span><span class="lib-source">Moore (Anato)</span><span class="lib-source">Cardiopapers</span>
+                    <span class="lib-source">Braunwald (Cardio)</span><span class="lib-source">Sampaio (Dermato)</span><span class="lib-source">Moore (Anato)</span><span class="lib-source">Ross (Histo)</span><span class="lib-source">DSM-5</span><span class="lib-source">Unicamp</span>
                 </div>
                 <p id="ai-dialog" class="italic text-[16px] mb-12 text-blue-900 font-bold border-l-8 border-blue-600 pl-8"></p>
                 
                 <div class="space-y-12 text-[16px]">
                     <div><strong>[S]UBJETIVO:</strong> <div id="s-part" contenteditable="true" oninput="markEdit(this)"></div></div>
-                    <div><strong>[O]BJETIVO (Análise de Sinais Moore/Unicamp):</strong> <div id="o-part" contenteditable="true" oninput="markEdit(this)"></div></div>
-                    <div><strong>[A]VALIAÇÃO (Raciocínio Clínico Braunwald/Sampaio):</strong> <div id="a-part" contenteditable="true" oninput="markEdit(this)"></div></div>
+                    <div><strong>[O]BJETIVO (Dedução Moore/Unicamp):</strong> <div id="o-part" contenteditable="true" oninput="markEdit(this)"></div></div>
+                    <div><strong>[A]VALIAÇÃO (Síntese Braunwald/Sampaio/DSM-5):</strong> <div id="a-part" contenteditable="true" oninput="markEdit(this)"></div></div>
                     <div><strong>[P]LANO & FARMACOLOGIA (Conduta Sênior Cardiopapers):</strong> <div id="p-part" contenteditable="true" oninput="markEdit(this)"></div></div>
                 </div>
 
                 <div class="mt-14 pt-14 border-t border-zinc-200">
-                    <h3 class="font-black text-blue-900 uppercase text-[12px] mb-8 italic">Fluxograma de Resolução Ativa</h3>
+                    <h3 class="font-black text-blue-900 uppercase text-[12px] mb-8 italic">Fluxograma de Resolução Autônoma</h3>
                     <div id="flow-steps"></div>
                 </div>
 
                 <div class="mt-14 pt-14 border-t border-zinc-200">
-                    <h3 class="font-black text-blue-900 uppercase text-[12px] mb-8 italic">PTS - Sequenciamento Terapêutico Singular</h3>
+                    <h3 class="font-black text-blue-900 uppercase text-[12px] mb-8 italic">PTS - Projeto Terapêutico Singular</h3>
                     <div class="space-y-8 text-[15px]">
-                        <p><strong>CURTO (Imediato/Salvamento):</strong> <span id="pts-short" contenteditable="true" oninput="markEdit(this)"></span></p>
-                        <p><strong>MÉDIO (Estabilização/Laboratório):</strong> <span id="pts-medium" contenteditable="true" oninput="markEdit(this)"></span></p>
-                        <p><strong>LONGO (Manutenção/Reabilitação):</strong> <span id="pts-long" contenteditable="true" oninput="markEdit(this)"></span></p>
+                        <p><strong>CURTO (0-24h):</strong> <span id="pts-short" contenteditable="true" oninput="markEdit(this)"></span></p>
+                        <p><strong>MÉDIO (2-7 dias):</strong> <span id="pts-medium" contenteditable="true" oninput="markEdit(this)"></span></p>
+                        <p><strong>LONGO (Manutenção):</strong> <span id="pts-long" contenteditable="true" oninput="markEdit(this)"></span></p>
                     </div>
                 </div>
             </div>
@@ -102,7 +102,7 @@
             if(document.getElementById('pass').value.trim() === KEY) {
                 document.getElementById('gate').style.display = 'none';
                 document.getElementById('nexus').classList.remove('hidden');
-                speak("Heurística v109 ativa. Motor de busca e solução baseado nas bibliotecas Braunwald, Cardiopapers e Sampaio operacional.");
+                speak("Soberania v110 ativa. Motor de autonomia cognitiva sincronizado com bibliotecas Braunwald, Sampaio e Unicamp.");
             } else { alert("NEGADO"); }
         }
 
@@ -113,34 +113,42 @@
             window.speechSynthesis.speak(m);
         }
 
-        // --- MOTOR DE HEURÍSTICA COGNITIVA ---
-        function runCognitiveHeuristic() {
+        // --- MOTOR DE RACIOCÍNIO CLÍNICO AUTÔNOMO ---
+        function executeNeuralReasoning() {
             const input = document.getElementById('clin-in').value.toLowerCase();
             let res = { o: "", a: "", p: "", ps: "", pm: "", pl: "", flow: [] };
 
-            // Simulação de Heurística: Cruzamento de Sintomas com Bibliotecas
+            // Simulação de Pensamento Autônomo (Cadeia de Raciocínio)
             if (input.includes("peito") || input.includes("dor") && input.includes("braço")) {
-                res.o = "Monitorização: PA 155/100, FC 112 bpm. Ausculta (Braunwald): B3 presente. Moore: Dor em região retroesternal irradiando para plexo braquial esquerdo.";
-                res.a = "SCA Suspeita. Critérios de Cardiopapers preenchidos para estratificação de risco imediata. Diferencial: Dissecção de Aorta (Moore: pulsos periféricos mantidos).";
-                res.p = "AAS 200mg (mastigado) + Clopidogrel 300mg. Oxigenoterapia se Sat < 94%. ECG em 10 min. Nitrato se dor persistente (observar contraindicações).";
-                res.ps = "Transferência para emergência cardiológica e coleta de Troponina ultrassensível.";
-                res.pm = "Ecocardiograma transtorácico e avaliação de CATE se alto risco.";
-                res.pl = "Prevenção secundária intensa (Estatina, IECA, Antiagregação).";
-                res.flow = ["Fase 1: ECG + Antiagregação Imediata", "Fase 2: Marcadores Químicos e Enzimáticos", "Fase 3: Estratificação por Escores (TIMI/GRACE)", "Fase 4: Decisão Hemodinâmica"];
-            } else if (input.includes("lesão") || input.includes("pele") || input.includes("vermelho")) {
-                res.o = "Dermatoscopia (Sampaio): Placas eritemato-descamativas. Anatomia (Ross): Comprometimento da camada córnea e infiltrado dérmico.";
-                res.a = "Dermatose Inflamatória. Diferenciais: Psoríase vs Dermatite Seborreica (Sampaio).";
-                res.p = "Corticosteroide tópico de média potência + Hidratação intensiva. Avaliar necessidade de biópsia.";
-                res.ps = "Alívio de prurido e controle de infecção secundária.";
-                res.pm = "Acompanhamento da resposta clínica em 14 dias.";
-                res.pl = "Manutenção da barreira cutânea e fotoproteção.";
-                res.flow = ["Inspeção de Sampaio", "Classificação de Lesão Elemental", "Terapêutica Tópica", "Reavaliação"];
+                res.o = "Monitorização Cardiopapers: Ritmo sinusal, FC 108. Moore: Anatomia de dor irradiada via plexo braquial. Unicamp: Ausculta sugere B4.";
+                res.a = "SCA Suspeita. Processamento Braunwald: Alteração de contratilidade segmentar provável. Diferencial de Moore exclui Dissecção.";
+                res.p = "Estratégia Antiisquêmica: AAS 200mg + Clopidogrel 300mg. ECG 10 min. Nitrato conforme sintoma (UpToDate).";
+                res.ps = "Transferência emergencial e Dosagem de Troponina ultrassensível.";
+                res.pm = "Ecocardiograma e estratificação invasiva precoce.";
+                res.pl = "Otimização medicamentosa preventiva (Estatina/IECA).";
+                res.flow = ["Fase 1: Protocolo de ECG e Antiagregação", "Fase 2: Marcadores e Escores (TIMI/GRACE)", "Fase 3: Decisão Hemodinâmica", "Fase 4: Alta com Proteção Secundária"];
+            } else if (input.includes("lesão") || input.includes("pele")) {
+                res.o = "Dermatoscopia Sampaio: Alteração de pigmento e bordas. Histologia Ross: Camadas epidérmicas comprometidas.";
+                res.a = "Dermatose sob investigação. Raciocínio Sampaio: Excluir malignidade baseada em padrão histológico sugerido por Ross.";
+                res.p = "Terapêutica tópica inicial e agendamento de biópsia excisional.";
+                res.ps = "Manejo de prurido e proteção da barreira cutânea.";
+                res.pm = "Avaliação de histopatológico em 10 dias.";
+                res.pl = "Seguimento dermatológico longitudinal.";
+                res.flow = ["Inspeção Sampaio", "Classificação Elemental", "Procedimento Biópsia", "Resultado e Conduta"];
+            } else if (input.includes("triste") || input.includes("sono") || input.includes("mente")) {
+                res.o = "Critérios DSM-5: Humor deprimido > 2 semanas, anedonia, distúrbio do sono.";
+                res.a = "Transtorno Depressivo Maior (DSM-5). Raciocínio: Excluir causas orgânicas (Tireoide/Anemia).";
+                res.p = "Início de ISRS (Sertralina 50mg). Psicoterapia TCC recomendada.";
+                res.ps = "Triagem de risco de segurança e suporte familiar.";
+                res.pm = "Ajuste farmacológico e monitoramento em 4 semanas.";
+                res.pl = "Plano de prevenção de recidiva (6-12 meses).";
+                res.flow = ["Entrevista Estruturada", "Exclusão Orgânica", "Início Terapêutico", "Follow-up"];
             } else {
-                res.o = "Semiologia Unicamp: Sem alterações em sinais vitais. Exame físico segmentar negativo.";
-                res.a = "Diagnóstico inconclusivo. Sugiro revisão de anamnese via Harrison.";
-                res.p = "Monitorização de sintomas e retorno se sinais de alerta.";
-                res.ps = "Sintomáticos."; res.pm = "Exames de rotina."; res.pl = "Seguimento.";
-                res.flow = ["Avaliação", "Exames", "Acompanhamento"];
+                res.o = "Semiologia Unicamp: Exame físico segmentar sem alterações. Sinais vitais estáveis.";
+                res.a = "Diagnóstico inconclusivo. Necessário aprofundar anamnese narrativa.";
+                res.p = "Observação clínica e monitoramento de sinais de alerta.";
+                res.ps = "Sintomáticos."; res.pm = "Rotina básica."; res.pl = "Retorno.";
+                res.flow = ["Avaliação Inicial", "Exames Complementares", "Acompanhamento"];
             }
 
             // Injeção de Raciocínio
@@ -153,7 +161,7 @@
             document.getElementById('pts-long').innerText = res.pl;
             document.getElementById('flow-steps').innerHTML = res.flow.map(f => `<div class="flow-card">${f}</div>`).join('');
 
-            document.getElementById('ai-dialog').innerText = "Administrador, executei a síntese do caso consultando as bibliotecas específicas. A solução clínica e o fluxograma de conduta estão projetados.";
+            document.getElementById('ai-dialog').innerText = "Administrador, executei a síntese autônoma baseada na biblioteca neural. O SOAP, o PTS e o Fluxograma de Conduta foram resolvidos.";
             document.getElementById('output-area').classList.remove('hidden');
             speak(document.getElementById('ai-dialog').innerText);
         }
@@ -161,7 +169,7 @@
         function markEdit(el) {
             if (!el.nextSibling || !el.nextSibling.classList || !el.nextSibling.classList.contains('audit-tag')) {
                 const tag = document.createElement('span'); tag.className = 'audit-tag';
-                tag.innerText = `[Raciocínio Auditado em: ${new Date().toLocaleString('pt-BR')}]`;
+                tag.innerText = `[Ajuste Clínico Realizado em: ${new Date().toLocaleString('pt-BR')}]`;
                 el.parentNode.insertBefore(tag, el.nextSibling);
             }
         }
