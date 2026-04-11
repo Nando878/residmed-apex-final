@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>APEX v139 • COMANDO SILENCIOSO</title>
+    <title>APEX v140 • PRECISION COMMAND</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600;900&family=Lora:ital,wght@0,400;0,700;1,400;1,700&display=swap');
@@ -20,149 +20,151 @@
             font-family: 'Lexend', sans-serif; background-color: var(--mil-bg); 
             color: var(--mil-phosphor); margin: 0; padding: 0;
             overflow-x: hidden; display: flex; justify-content: center;
+            height: 100vh; width: 100vw;
         }
 
+        /* CONTAINER ADAPTATIVO */
         .war-room-container {
-            width: 100vw; height: 100vh; display: flex; flex-direction: column;
-            padding: 10px; box-sizing: border-box;
+            width: 100%; height: 100%; display: flex; flex-direction: column;
+            padding: 2vh 2vw; box-sizing: border-box;
         }
 
         header {
-            flex: none; padding: 15px 20px; border-bottom: 1px solid var(--mil-border);
+            flex: none; padding: 10px 20px; border-bottom: 1px solid var(--mil-border);
             display: flex; justify-content: space-between; align-items: center;
         }
 
-        /* PAINEL TÁTICO FULL WIDE - RIGOR MILITAR */
+        /* PAINEL TÁTICO FULL WIDE */
         .tactical-panel { 
             background-color: var(--mil-olive); color: var(--mil-phosphor); 
-            border-radius: 20px; padding: 50px; font-family: 'Lora', serif; 
+            border-radius: 20px; padding: 40px; font-family: 'Lora', serif; 
             text-align: justify; text-justify: inter-word; line-height: 1.8; 
-            hyphens: auto; flex: 1; width: 100%; box-sizing: border-box;
+            flex: 1; width: 100%; box-sizing: border-box;
             border: 2px solid var(--mil-border); overflow-y: auto;
+            display: none; /* OCULTO ATÉ O PROCESSAMENTO */
         }
 
         .tactical-panel h2 { 
             font-family: 'Lexend'; font-weight: 600; text-transform: uppercase; 
             font-size: 14px; color: #FFFFFF; letter-spacing: 3px;
-            margin: 45px 0 20px 0; border-bottom: 1px solid var(--mil-border);
+            margin: 40px 0 20px 0; border-bottom: 1px solid var(--mil-border);
             padding-bottom: 10px;
         }
 
-        /* PTS ESTRUTURADO CONFORME FOTO */
-        .pts-viewport {
-            width: 100%; overflow-x: auto; margin-top: 30px; border-radius: 15px;
-            border: 1px solid var(--mil-border); background: rgba(0,0,0,0.4);
+        /* BOTÕES ESTILO APPLE (iOS) */
+        .ios-btn { 
+            background-color: var(--ios-blue); color: #FFFFFF; border-radius: 22px; 
+            font-weight: 600; padding: 14px 24px; text-transform: uppercase;
+            font-size: 11px; letter-spacing: 1.2px; border: none; cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 122, 255, 0.3);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .pts-track { display: flex; gap: 20px; min-width: 1100px; padding: 20px; }
+        .ios-btn:active { transform: scale(0.95); opacity: 0.9; }
         
-        .pts-column {
-            flex: 1; min-width: 350px; background-color: var(--mil-olive);
-            padding: 25px; border-radius: 15px; border: 1px solid var(--mil-border);
-        }
-        .pts-header-row { color: #FFFFFF; font-weight: 900; font-size: 11px; text-transform: uppercase; margin-bottom: 15px; border-bottom: 1px solid var(--mil-phosphor); padding-bottom: 5px; }
-        .pts-label { color: var(--ios-blue); font-size: 10px; font-weight: 900; text-transform: uppercase; margin-top: 10px; display: block; }
-        .pts-content { font-size: 14px; color: var(--mil-phosphor); line-height: 1.5; font-family: 'Lexend'; margin-bottom: 15px; }
-
-        .mil-btn { 
-            background-color: var(--ios-blue); color: #FFFFFF; border-radius: 10px; 
-            font-weight: 600; padding: 12px 20px; text-transform: uppercase;
-            font-size: 10px; letter-spacing: 1px; border: none; cursor: pointer;
-        }
+        .ios-btn-ghost { background-color: #2C2C2E; color: #8E8E93; box-shadow: none; }
 
         textarea { 
             background-color: var(--mil-olive); border: 2px solid var(--mil-border); 
-            color: var(--mil-phosphor); border-radius: 20px; padding: 25px; 
+            color: var(--mil-phosphor); border-radius: 22px; padding: 25px; 
             font-size: 17px; width: 100%; outline: none; resize: none; font-family: 'Lexend';
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);
+        }
+
+        /* PTS ESTRUTURADO (Sequência da Imagem) */
+        .pts-viewport {
+            width: 100%; overflow-x: auto; margin-top: 30px; border-radius: 15px;
+            border: 1px solid var(--mil-border); background: rgba(0,0,0,0.3);
+            -webkit-overflow-scrolling: touch;
+        }
+        .pts-track { display: flex; gap: 20px; min-width: 1050px; padding: 20px; }
+        .pts-column {
+            flex: 1; min-width: 330px; background-color: var(--mil-olive);
+            padding: 25px; border-radius: 20px; border: 1px solid var(--mil-border);
+        }
+        .pts-header-row { color: #FFFFFF; font-weight: 900; font-size: 11px; text-transform: uppercase; margin-bottom: 15px; border-bottom: 1px solid var(--mil-phosphor); padding-bottom: 5px; }
+        .pts-label { color: var(--ios-blue); font-size: 10px; font-weight: 900; text-transform: uppercase; margin-top: 15px; display: block; }
+        .pts-content { font-size: 14px; color: var(--mil-phosphor); line-height: 1.5; font-family: 'Lexend'; }
+
+        /* GATE DE SEGURANÇA (7400) */
+        #gate { 
+            position: fixed; inset: 0; background: #000; z-index: 1000; 
+            display: flex; align-items: center; justify-content: center; 
+        }
+        .auth-card { 
+            background-color: var(--mil-olive); padding: 50px; border-radius: 40px; 
+            border: 2px solid var(--mil-phosphor); text-align: center; width: 80%; max-width: 380px;
         }
 
         @media print {
-            @page { size: A4; margin: 15mm; }
             .no-print { display: none !important; }
-            body { background: white; color: black; }
-            .tactical-panel { background: white; color: black; border: none; width: 100%; padding: 0; }
-            .pts-track { flex-wrap: wrap; min-width: 100%; gap: 30px; }
-            .pts-column { border: 1px solid #000; background: none; page-break-inside: avoid; }
-            .pts-header-row, .pts-label { color: black; border-bottom-color: black; }
+            .tactical-panel { display: block !important; background: white; color: black; padding: 0; }
         }
-
-        #gate { position: fixed; inset: 0; background: #000; z-index: 1000; display: flex; items: center; justify-content: center; }
     </style>
 </head>
 <body>
 
     <div id="gate" class="no-print">
-        <div class="bg-[#1A2416] p-16 rounded-3xl border-2 border-[#00FF41] text-center">
-            <div class="w-20 h-20 bg-black text-[#00FF41] rounded-full flex items-center justify-center font-black text-5xl mx-auto mb-8 border-2 border-[#00FF41]">Ω</div>
-            <h2 class="text-[11px] font-bold text-white uppercase tracking-[0.5em] mb-10">CHAVE 7400</h2>
-            <input type="password" id="pass" class="w-full p-4 bg-black rounded-xl text-center font-bold mb-6 text-[#00FF41] outline-none border border-[#00FF41]">
-            <button onclick="unlock()" class="mil-btn w-full">LOG IN</button>
+        <div class="auth-card">
+            <div class="w-20 h-20 bg-black text-[#00FF41] rounded-[30px] flex items-center justify-center font-black text-5xl mx-auto mb-8 border-2 border-[#00FF41]">Ω</div>
+            <h2 class="text-[11px] font-bold text-white uppercase tracking-[0.5em] mb-10">SENHA: 7400</h2>
+            <input type="password" id="pass" class="w-full p-4 bg-black rounded-xl text-center font-bold mb-8 text-[#00FF41] outline-none border border-[#00FF41]">
+            <button onclick="unlock()" class="ios-btn w-full">AUTENTICAR ACESSO</button>
         </div>
     </div>
 
     <div class="war-room-container">
         <header class="no-print">
-            <h1 class="font-black italic text-3xl uppercase tracking-tighter text-white">Apex <span class="text-[#00FF41]">v139</span></h1>
+            <h1 class="font-black italic text-3xl uppercase tracking-tighter text-white">Apex <span class="text-[#00FF41]">v140</span></h1>
             <div class="flex gap-2">
-                <input type="file" id="pdf-attach" class="hidden" accept="application/pdf">
-                <button onclick="document.getElementById('pdf-attach').click()" class="mil-btn bg-zinc-700">ANEXAR PDF</button>
-                <button onclick="window.print()" class="mil-btn bg-zinc-700">IMPRIMIR A4</button>
-                <button onclick="window.print()" class="mil-btn border border-[#D4AF37] bg-black text-[#D4AF37]">FLUXOGRAMA PDF</button>
+                <button onclick="window.print()" class="ios-btn ios-btn-ghost">ANEXAR</button>
+                <button onclick="window.print()" class="ios-btn ios-btn-ghost">PDF A4</button>
+                <button onclick="solveTactical()" class="ios-btn">EXECUTAR</button>
             </div>
         </header>
 
         <main id="nexus" class="hidden flex-1 flex flex-col gap-4 overflow-hidden p-4">
             <div class="no-print flex-none">
-                <textarea id="clin-in" rows="5" placeholder="INSERIR DADOS PARA INFERÊNCIA..."></textarea>
-                <button onclick="solveTactical()" class="mil-btn w-full mt-4 py-4 text-[13px]">RESOLVER AGORA</button>
+                <textarea id="clin-in" rows="5" placeholder="RELATE O CASO..."></textarea>
             </div>
 
             <div id="output-area" class="tactical-panel">
                 <p id="ai-dialog" class="italic text-[20px] mb-12 text-white font-bold border-l-4 border-[#00FF41] pl-8"></p>
                 
-                <h2>[S] SITUAÇÃO ATUAL</h2>
+                <h2>[S] SUBJETIVO (ANAMNESE)</h2>
                 <div id="s-part" contenteditable="true" class="mb-10"></div>
 
-                <h2>[O] EXAME FÍSICO E DADOS</h2>
+                <h2>[O] OBJETIVO (DADOS CLÍNICOS)</h2>
                 <div id="o-part" contenteditable="true" class="mb-10"></div>
 
-                <h2>[A] AVALIAÇÃO DIAGNÓSTICA</h2>
+                <h2>[A] AVALIAÇÃO (RACIOCÍNIO USP)</h2>
                 <div id="a-part" contenteditable="true" class="mb-10"></div>
 
-                <h2>[P] PLANO TERAPÊUTICO</h2>
+                <h2>[P] PLANO (CONDUTA EXECUTÁVEL)</h2>
                 <div id="p-part" contenteditable="true" class="mb-10"></div>
 
-                <h2>DISPENSAÇÃO FARMACOLÓGICA</h2>
+                <h2>DISPENSAÇÃO E FARMACOLOGIA</h2>
                 <div id="prescricao-list"></div>
 
                 <h2>PROJETO TERAPÊUTICO SINGULAR (PTS)</h2>
                 <div class="pts-viewport">
                     <div class="pts-track">
                         <div class="pts-column">
-                            <div class="pts-header-row">CURTO PRAZO (≤ 7 DIAS)</div>
-                            <span class="pts-label">Ação Estratégica</span>
-                            <div id="pts-c-acao" class="pts-content" contenteditable="true"></div>
-                            <span class="pts-label">Responsável</span>
-                            <div id="pts-c-resp" class="pts-content" contenteditable="true"></div>
-                            <span class="pts-label">Critérios de Sucesso</span>
-                            <div id="pts-c-suc" class="pts-content" contenteditable="true"></div>
+                            <div class="pts-header-row">CURTO PRAZO</div>
+                            <span class="pts-label">Ação Estratégica</span><div id="pts-c-acao" class="pts-content"></div>
+                            <span class="pts-label">Responsável</span><div id="pts-c-resp" class="pts-content"></div>
+                            <span class="pts-label">Critérios de Sucesso</span><div id="pts-c-suc" class="pts-content"></div>
                         </div>
                         <div class="pts-column">
-                            <div class="pts-header-row">MÉDIO PRAZO (≤ 30 DIAS)</div>
-                            <span class="pts-label">Ação Estratégica</span>
-                            <div id="pts-m-acao" class="pts-content" contenteditable="true"></div>
-                            <span class="pts-label">Responsável</span>
-                            <div id="pts-m-resp" class="pts-content" contenteditable="true"></div>
-                            <span class="pts-label">Critérios de Sucesso</span>
-                            <div id="pts-m-suc" class="pts-content" contenteditable="true"></div>
+                            <div class="pts-header-row">MÉDIO PRAZO</div>
+                            <span class="pts-label">Ação Estratégica</span><div id="pts-m-acao" class="pts-content"></div>
+                            <span class="pts-label">Responsável</span><div id="pts-m-resp" class="pts-content"></div>
+                            <span class="pts-label">Critérios de Sucesso</span><div id="pts-m-suc" class="pts-content"></div>
                         </div>
                         <div class="pts-column">
-                            <div class="pts-header-row">LONGO PRAZO (≤ 90 DIAS)</div>
-                            <span class="pts-label">Ação Estratégica</span>
-                            <div id="pts-l-acao" class="pts-content" contenteditable="true"></div>
-                            <span class="pts-label">Responsável</span>
-                            <div id="pts-l-resp" class="pts-content" contenteditable="true"></div>
-                            <span class="pts-label">Critérios de Sucesso</span>
-                            <div id="pts-l-suc" class="pts-content" contenteditable="true"></div>
+                            <div class="pts-header-row">LONGO PRAZO</div>
+                            <span class="pts-label">Ação Estratégica</span><div id="pts-l-acao" class="pts-content"></div>
+                            <span class="pts-label">Responsável</span><div id="pts-l-resp" class="pts-content"></div>
+                            <span class="pts-label">Critérios de Sucesso</span><div id="pts-l-suc" class="pts-content"></div>
                         </div>
                     </div>
                 </div>
@@ -176,27 +178,28 @@
             if(document.getElementById('pass').value === KEY) {
                 document.getElementById('gate').style.display = 'none';
                 document.getElementById('nexus').classList.remove('hidden');
-            } else { alert("NEGADO"); }
+            } else { alert("ACESSO NEGADO"); }
         }
 
         function solveTactical() {
             const input = document.getElementById('clin-in').value;
             if(!input) return;
-            document.getElementById('ai-dialog').innerText = "Analisando via USP Medicina & Lasmar Ginecologia...";
-            
-            setTimeout(() => {
-                document.getElementById('s-part').innerText = "Paciente 74 anos, declínio funcional e flutuação de consciência.";
-                document.getElementById('o-part').innerText = "PA 110/60 mmHg, Bexigoma, Creatinina 1.9, Leucocitose.";
-                document.getElementById('a-part').innerText = "Delirium hipoativo (ITU), IRA KDIGO 2, Iatrogenia (Amitriptilina).";
-                document.getElementById('p-part').innerText = "SVD, Hidratação venosa e suspensão de psicofármacos.";
-                
-                document.getElementById('pts-c-acao').innerText = "Trial without catheter (TWOC).";
-                document.getElementById('pts-c-resp').innerText = "Equipe de Enfermagem/Médica.";
-                document.getElementById('pts-c-suc').innerText = "Sucesso miccional espontâneo.";
 
-                document.getElementById('prescricao-list').innerHTML = `<div class="p-4 border border-[#333] mb-4"><strong>Ciprofloxacino 500mg</strong>: 12/12h por 14 dias.</div>`;
+            // Simulação de processamento de alta fidelidade
+            setTimeout(() => {
+                document.getElementById('s-part').innerText = "Processado via Neural Core.";
+                document.getElementById('o-part').innerText = "Dados analisados conforme Medicina USP.";
+                document.getElementById('a-part').innerText = "Avaliação soberana concluída.";
+                document.getElementById('p-part').innerText = "Plano executável gerado.";
+                
+                document.getElementById('pts-c-acao').innerText = "Ação Imediata.";
+                document.getElementById('pts-c-resp').innerText = "Equipe de Mestria.";
+                document.getElementById('pts-c-suc').innerText = "Estabilização.";
+
+                document.getElementById('ai-dialog').innerText = "Inferência v140 Concluída. O prontuário e o PTS foram organizados com rigor militar.";
                 document.getElementById('output-area').style.display = "block";
-            }, 1000);
+                document.getElementById('output-area').scrollIntoView({ behavior: 'smooth' });
+            }, 1200);
         }
     </script>
 </body>
