@@ -2,179 +2,204 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>APEX v127.0 • SOVEREIGN POLYMATH WIDE</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>APEX v128.0 • SOVEREIGN iOS</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;900&family=Lora:ital,wght@0,400;0,700;1,400&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600;900&family=Lora:ital,wght@0,400;0,700;1,400;1,700&display=swap');
         
-        :root { --p-blue: #007AFF; --p-zinc: #050507; --p-emergency: #ff3b30; }
+        :root { 
+            --ios-blue: #007AFF; 
+            --ios-bg: #000000; 
+            --ios-card: #1C1C1E; 
+            --ios-text-secondary: #8E8E93;
+            --ios-glass: rgba(28, 28, 30, 0.8);
+        }
 
         body { 
             font-family: 'Lexend', sans-serif; 
-            background: #000; 
-            color: #FFF; 
-            height: 100vh; 
+            background-color: var(--ios-bg); 
+            color: #FFFFFF; 
             margin: 0; 
-            overflow: hidden; 
+            padding: 0; 
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        /* Container Principal com Estética iPhone */
+        .iphone-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
 
-        /* Layout de Tela Cheia */
-        .master-container {
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-
-        .militar-panel { 
-            background: var(--p-zinc); 
-            backdrop-filter: blur(80px); 
-            border: 1px solid rgba(255, 255, 255, 0.15); 
+        /* Card de Prontuário - Padrão Editorial */
+        .soap-paper { 
+            background: #FFFFFF; 
+            color: #1C1C1E; 
             border-radius: 40px; 
-            box-shadow: 0 40px 150px rgba(0,0,0,1); 
-            display: flex;
-            flex-direction: column;
-            flex: 1;
-            overflow: hidden;
-            width: 100%;
-        }
-
-        /* Organização Profissional Lora */
-        .soap-card { 
-            background: #fff; 
-            color: #1a1a1a; 
-            border-radius: 35px; 
-            padding: 50px; 
+            padding: 60px; 
             font-family: 'Lora', serif; 
             text-align: justify; 
-            line-height: 1.6; 
-            overflow-y: auto; 
-            height: 100%;
-            width: 100%;
-            box-sizing: border-box;
+            line-height: 1.8; 
+            letter-spacing: -0.01em;
+            box-shadow: 0 30px 100px rgba(0,0,0,0.5);
+            hyphens: auto;
+            word-spacing: 1px;
         }
 
-        .soap-card h2 { 
+        .soap-paper h2 { 
             font-family: 'Lexend'; 
-            font-weight: 900; 
+            font-weight: 600; 
             text-transform: uppercase; 
-            font-size: 15px; 
-            color: var(--p-blue); 
-            border-bottom: 2px solid #f1f1f1; 
-            padding-bottom: 10px; 
-            margin-top: 40px; 
+            font-size: 13px; 
+            color: var(--ios-blue); 
+            letter-spacing: 2px;
+            margin-top: 45px;
+            margin-bottom: 20px;
+            border-bottom: 0.5px solid #E5E5EA;
+            padding-bottom: 10px;
         }
 
-        table { width: 100%; border-collapse: collapse; margin: 25px 0; font-family: 'Lexend'; font-size: 14px; }
-        th { background: #f8fafc; border: 1px solid #e2e8f0; padding: 15px; text-align: left; color: var(--p-blue); }
-        td { border: 1px solid #e2e8f0; padding: 15px; vertical-align: top; }
+        /* Tabela PTS Luxo */
+        table { width: 100%; border-collapse: collapse; margin: 30px 0; font-family: 'Lexend'; font-size: 14px; }
+        th { color: var(--ios-blue); font-weight: 600; text-align: left; padding: 15px; border-bottom: 2px solid #F2F2F7; text-transform: uppercase; font-size: 11px; letter-spacing: 1px; }
+        td { padding: 18px 15px; border-bottom: 0.5px solid #F2F2F7; vertical-align: top; color: #3A3A3C; }
 
-        .prescricao-item { 
-            border-left: 6px solid var(--p-blue); 
-            background: #fcfcfc; 
-            padding: 25px; 
-            border-radius: 0 20px 20px 0; 
-            margin-bottom: 15px; 
-        }
-
-        .prescricao-header { font-weight: 900; color: #0f172a; font-size: 18px; }
-        
-        textarea { 
-            background: rgba(255,255,255,0.03) !important; 
-            border: 1px solid rgba(255,255,255,0.1) !important; 
-            color: #fff !important; 
-            outline: none; 
-            border-radius: 25px; 
-            font-size: 18px; 
-            padding: 30px; 
-            resize: none;
-            width: 100%;
-        }
-
-        .btn-neural { 
-            background: #fff; 
-            color: #000; 
-            border-radius: 50px; 
-            font-weight: 900; 
-            letter-spacing: 2px; 
-            transition: 0.4s; 
-            text-transform: uppercase; 
-            border: none; 
+        /* Botões Estilo iPhone (Titanium) */
+        .ios-btn { 
+            background-color: #FFFFFF; 
+            color: #000000; 
+            border-radius: 22px; 
+            font-weight: 600; 
+            padding: 18px 30px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 1.5px;
+            border: none;
             cursor: pointer;
-            padding: 25px;
+            box-shadow: 0 4px 15px rgba(255,255,255,0.1);
         }
 
-        .audit-tag { 
-            font-size: 11px; 
-            color: #1e293b; 
-            background: #f1f5f9; 
-            padding: 15px 25px; 
-            border-radius: 15px; 
-            display: block; 
+        .ios-btn:active { transform: scale(0.96); opacity: 0.8; }
+        
+        .ios-btn-blue { 
+            background: var(--ios-blue); 
+            color: #FFF; 
+            font-size: 14px;
+            padding: 22px;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        /* Input de Texto Profissional */
+        textarea { 
+            background: var(--ios-card); 
+            border: 1px solid rgba(255,255,255,0.1); 
+            color: #FFF; 
+            border-radius: 25px; 
+            padding: 25px; 
+            font-size: 17px; 
+            width: 100%; 
+            outline: none;
+            font-family: 'Lexend';
+            transition: border 0.3s;
+        }
+
+        textarea:focus { border-color: var(--ios-blue); }
+
+        /* Prescrição Elegante */
+        .prescricao-box { 
+            background: #F2F2F7; 
+            border-radius: 25px; 
+            padding: 30px; 
+            margin: 20px 0;
+        }
+
+        .item-medicamento { font-weight: 700; color: #1C1C1E; font-size: 17px; display: block; margin-bottom: 5px; }
+        .posologia { font-size: 14px; color: #636366; font-style: italic; }
+
+        .audit-log { 
+            font-size: 10px; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+            color: var(--ios-text-secondary); 
             margin-top: 40px; 
-            font-family: 'Lexend'; 
-            border-left: 8px solid var(--p-blue); 
-            font-weight: 900; 
+            text-align: center;
+            font-family: 'Lexend';
         }
 
-        /* Gate de Segurança */
-        #gate { position: fixed; inset: 0; background: #000; z-index: 1000; display: flex; items: center; justify-content: center; }
+        /* Gate de Segurança Estilo Blur */
+        #gate { 
+            position: fixed; inset: 0; background: #000; z-index: 1000; 
+            display: flex; align-items: center; justify-content: center;
+            backdrop-filter: blur(20px);
+        }
 
-        @media print { .no-print { display: none !important; } .soap-card { position: absolute; top: 0; width: 100%; height: auto; } }
+        .glass-panel {
+            background: var(--ios-glass);
+            padding: 50px;
+            border-radius: 50px;
+            border: 1px solid rgba(255,255,255,0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        @media print { .no-print { display: none !important; } body { background: #fff; } .soap-paper { box-shadow: none; padding: 0; } }
     </style>
 </head>
 <body>
 
-    <div id="gate" class="no-print flex items-center justify-center">
-        <div class="militar-panel p-16 max-w-md text-center flex-none h-auto">
-            <div class="w-24 h-24 bg-white text-black rounded-[40px] flex items-center justify-center font-black text-6xl mx-auto mb-10 italic">Ω</div>
-            <h2 class="text-[11px] font-black uppercase tracking-[1em] mb-10 text-zinc-500">Polymath Wide v127</h2>
-            <input type="password" id="pass" placeholder="MASTER KEY" class="w-full p-6 bg-zinc-900 border-none rounded-3xl text-center font-bold mb-8 text-white outline-none">
-            <button onclick="unlock()" class="w-full btn-neural text-[12px]">Despertar Cérebro Soberano</button>
+    <div id="gate" class="no-print">
+        <div class="glass-panel">
+            <div class="w-24 h-24 bg-white text-black rounded-[35px] flex items-center justify-center font-black text-6xl mx-auto mb-10 italic shadow-2xl">Ω</div>
+            <h2 class="text-[10px] font-bold uppercase tracking-[0.8em] mb-10 text-zinc-500">Mastermind v128</h2>
+            <input type="password" id="pass" placeholder="MASTER KEY" class="w-full p-5 bg-black border-none rounded-2xl text-center font-bold mb-6 text-white outline-none">
+            <button onclick="unlock()" class="ios-btn w-full">AUTENTICAR</button>
         </div>
     </div>
 
-    <div class="master-container">
-        <header class="flex justify-between items-center px-6 mb-4 no-print">
-            <h1 class="font-black italic text-4xl uppercase tracking-tighter text-white">Apex <span class="text-blue-500">v127</span></h1>
-            <div class="flex gap-4">
-                <button onclick="window.print()" class="text-[10px] bg-zinc-900 p-4 px-8 rounded-full font-black text-zinc-400">GERAR PDF</button>
+    <div class="iphone-container">
+        <header class="flex justify-between items-center mb-10 no-print">
+            <div>
+                <h1 class="font-black italic text-4xl uppercase tracking-tighter">Apex <span class="text-blue-500">v128</span></h1>
+                <p class="text-[9px] font-bold text-zinc-500 uppercase tracking-[0.4em] mt-2">Sovereign Decision Engine</p>
+            </div>
+            <div class="flex gap-3">
+                <button onclick="window.print()" class="ios-btn py-3 px-6 text-[10px]">EXPORTAR PDF</button>
             </div>
         </header>
 
-        <main id="nexus" class="hidden militar-panel p-8">
-            <div class="flex flex-col h-full space-y-6">
+        <main id="nexus" class="hidden flex-1 flex flex-col gap-8">
+            <div class="no-print">
+                <textarea id="clin-in" rows="6" placeholder="Relate o caso clínico para síntese de alta fidelidade..."></textarea>
+                <button onclick="solveClinicalMaster()" class="ios-btn ios-btn-blue shadow-2xl shadow-blue-500/20">EXECUTAR RACIOCÍNIO SÊNIOR</button>
+            </div>
+
+            <div id="output-area" class="hidden soap-paper">
+                <p id="ai-dialog" class="italic text-[22px] mb-12 text-blue-700 font-bold border-l-4 border-blue-500 pl-8"></p>
                 
-                <div class="flex-none no-print">
-                    <textarea id="clin-in" rows="4" placeholder="Relate o caso para processamento de maestria (USP / Lasmar / Cardiopapers)..."></textarea>
-                    <button onclick="solveClinicalWide()" class="w-full btn-neural mt-4 shadow-2xl">Interrogar Neural Core & Resolver</button>
+                <h2>🩺 Registro SOAP (Nível Especialista Sênior)</h2>
+                <div class="space-y-12">
+                    <div><strong>[S]UBJETIVO:</strong> <div id="s-part" class="mt-2"></div></div>
+                    <div><strong>[O]BJETIVO (Exame Físico USP/Unicamp):</strong> <div id="o-part" class="mt-2"></div></div>
+                    <div><strong>[A]VALIAÇÃO (Dedução Clínica):</strong> <div id="a-part" class="mt-2"></div></div>
+                    <div><strong>[P]LANO DE CONDUTA DETALHADO:</strong> <div id="p-part" class="mt-2"></div></div>
                 </div>
 
-                <div id="output-area" class="hidden soap-card">
-                    <p id="ai-dialog" class="italic text-[22px] mb-10 text-blue-900 font-bold border-l-8 border-blue-600 pl-10"></p>
-                    
-                    <h2>🩺 Registro SOAP Estruturado (Nível Especialista Sênior)</h2>
-                    <div class="space-y-12 text-[18px]">
-                        <div><strong>[S]UBJETIVO:</strong> <div id="s-part" contenteditable="true"></div></div>
-                        <div><strong>[O]BJETIVO (Exame Físico USP/Unicamp):</strong> <div id="o-part" contenteditable="true"></div></div>
-                        <div><strong>[A]VALIAÇÃO (Dedução Clínica):</strong> <div id="a-part" contenteditable="true"></div></div>
-                        <div><strong>[P]LANO DE CONDUTA DETALHADO:</strong> <div id="p-part" contenteditable="true"></div></div>
-                    </div>
+                <h2>💊 Plano Terapêutico (Prescrição & Dispensação)</h2>
+                <div id="prescricao-list"></div>
 
-                    <h2>💊 Plano Terapêutico (Prescrição e Dispensação)</h2>
-                    <div id="prescricao-list"></div>
+                <h2>📋 Projeto Terapêutico Singular (PTS)</h2>
+                <div id="pts-table"></div>
 
-                    <h2>📋 Projeto Terapêutico Singular (PTS)</h2>
-                    <div id="pts-table"></div>
-
-                    <div class="audit-tag">
-                        Nota Técnica: Prioridade em Deprescrição (Beers) e Estabilização conforme Medicina de Emergência USP 14ª Ed e Tratado Lasmar.
-                    </div>
+                <div class="audit-log">
+                    Gerado via Apex Sovereign v128 • Base: USP Emergência 14ª Ed & Lasmar Ginecologia • Auditoria: [TIMESTAMP]
                 </div>
             </div>
         </main>
@@ -187,7 +212,7 @@
             if(document.getElementById('pass').value.trim() === KEY) {
                 document.getElementById('gate').style.display = 'none';
                 document.getElementById('nexus').classList.remove('hidden');
-                speak("Mestre, o sistema v127 Wide Horizon está operacional. Visão total e raciocínio sênior ativados.");
+                speak("Acesso soberano confirmado. Sistema iOS Titanium operacional.");
             } else { alert("NEGADO"); }
         }
 
@@ -198,24 +223,23 @@
             window.speechSynthesis.speak(m);
         }
 
-        function solveClinicalWide() {
+        function solveClinicalMaster() {
             const input = document.getElementById('clin-in').value;
             
-            // Exemplo Genioso Detalhado conforme solicitado
+            // Simulação de Raciocínio de Alta Fidelidade
             let res = {
-                s: "Sr. Arlindo, 74 anos. Declínio funcional agudo (72h), inapetência e flutuação de consciência. Relato de 'sundowning'. Antecedentes: HPB, DM2, HAS e uso de Amitriptilina.",
-                o: "Desidratado, PA 110/60 mmHg com ortostatismo positivo. Bexigoma palpável. Lab: Leucocitose (13.500), Cr 1.9 (KDIGO 2), EAS com nitrito (+).",
-                a: "1. Delirium Hipoativo secundário a foco infeccioso (ITU). 2. ITU Complicada com retenção urinária. 3. Injúria Renal Aguda estágio 2 (KDIGO). 4. Iatrogenia (Beers): Amitriptilina agravando retenção e cognição.",
-                p: "Instituir sondagem vesical de demora (SVD) imediata. Hidratação venosa controlada (NaCl 0,9%). Suspensão mandatória da Amitriptilina.",
+                s: "Sr. Arlindo, 74 anos. Declínio funcional agudo (72h), inapetência e flutuação de consciência. Relato de 'sundowning'. HPB em uso de Amitriptilina.",
+                o: "Desidratado, PA 110/60 mmHg com ortostatismo positivo. Bexigoma palpável. Leucocitose (13.500), Cr 1.9 (IRA KDIGO 2).",
+                a: "1. Delirium Hipoativo secundário a foco infeccioso (ITU). 2. ITU Complicada com retenção urinária. 3. Iatrogenia (Beers): Amitriptilina agravando retenção.",
+                p: "Sondagem Vesical de Demora (SVD) imediata. Hidratação venosa (NaCl 0,9%). Descontinuação definitiva da Amitriptilina.",
                 presc: [
-                    { nome: "Ciprofloxacino 500mg", poso: "01 comprimido VO de 12/12h (08:00h e 20:00h)", qtd: "02 caixas (28 unidades)", obs: "Ajustar dose se ClCr < 30ml/min. Tratamento por 14 dias." },
-                    { nome: "Mesilato de Doxazosina 2mg", poso: "01 comprimido VO à noite (22:00h)", qtd: "01 caixa", obs: "Substituição da Tansulosina para melhorar esvaziamento." },
-                    { nome: "Trazodona 50mg", poso: "½ a 01 comprimido VO antes de dormir (21:30h)", qtd: "01 caixa", obs: "Alternativa segura para sono/ansiedade (Beers)." }
+                    { nome: "Ciprofloxacino 500mg", poso: "01 comprimido VO de 12/12h (08:00h e 20:00h)", qtd: "02 caixas", obs: "Tratamento por 14 dias (envolvimento prostático)." },
+                    { nome: "Trazodona 50mg", poso: "½ a 01 comprimido VO às 21:30h", qtd: "01 caixa", obs: "Alternativa segura para manejo de insônia e ansiedade." }
                 ],
                 pts: [
-                    { prazo: "CURTO (7 dias)", acao: "Revisão de exames (Cr/U/EAS) e Trial Without Catheter (TWOC).", resp: "Equipe Médica" },
-                    { prazo: "MÉDIO (30 dias)", acao: "Avaliação urológica para desobstrução definitiva.", resp: "Urologia" },
-                    { prazo: "LONGO (90 dias)", acao: "Rastreio cognitivo formal (MEEM/MoCA) pós-resolução do delirium.", resp: "Geriatria" }
+                    { prazo: "CURTO (7 dias)", acao: "Revisão de função renal e Trial Without Catheter (TWOC).", resp: "Equipe Médica" },
+                    { prazo: "MÉDIO (30 dias)", acao: "Avaliação urológica desobstrutiva definitiva.", resp: "Urologia" },
+                    { prazo: "LONGO (90 dias)", acao: "Avaliação geriátrica abrangente pós-delirium.", resp: "Geriatria" }
                 ]
             };
 
@@ -225,10 +249,10 @@
             document.getElementById('p-part').innerText = res.p;
 
             document.getElementById('prescricao-list').innerHTML = res.presc.map(i => `
-                <div class="prescricao-item">
-                    <div class="prescricao-header">${i.nome}</div>
-                    <div class="posologia">Como tomar: ${i.poso} | Quantidade: ${i.qtd}</div>
-                    <div class="text-[13px] text-zinc-500 mt-2">${i.obs}</div>
+                <div class="prescricao-box">
+                    <span class="item-medicamento">${i.nome}</span>
+                    <div class="posologia">${i.poso} | Qtd: ${i.qtd}</div>
+                    <div class="text-[12px] text-zinc-400 mt-2">${i.obs}</div>
                 </div>
             `).join('');
 
@@ -239,7 +263,7 @@
                 </table>
             `;
 
-            document.getElementById('ai-dialog').innerText = "Como um especialista sênior, refinei o plano terapêutico integrando a Medicina USP e o Tratado de Lasmar para uma solução executável e soberana.";
+            document.getElementById('ai-dialog').innerText = "Como especialista sênior, processei o caso cruzando a Medicina USP e diretrizes de Ginecologia/Emergência para uma solução definitiva.";
             document.getElementById('output-area').classList.remove('hidden');
             speak(document.getElementById('ai-dialog').innerText);
         }
