@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>APEX v147 • PROTOCOL INTEGRATION</title>
+    <title>APEX v148 • MAXIMUM VOLUME</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;800&family=Lora:ital,wght@0,400;0,700;1,400;1,700&display=swap');
@@ -22,39 +22,51 @@
             overflow-x: hidden; width: 100vw; display: flex; flex-direction: column;
         }
 
+        /* ÁREA DE COMANDO */
         .command-zone {
-            flex: none; padding: 15px 20px; background: var(--mil-bg);
+            flex: none; padding: 20px; background: var(--mil-bg);
             border-bottom: 1px solid var(--mil-border); z-index: 10;
         }
 
         textarea { 
             background: #111; border: 1px solid var(--mil-border); 
-            color: #FFF; border-radius: 12px; padding: 15px; font-size: 15px; 
-            width: 100%; outline: none; resize: none;
+            color: #FFF; border-radius: 15px; padding: 20px; font-size: 16px; 
+            width: 100%; outline: none; resize: none; font-family: 'JetBrains Mono';
         }
 
+        /* PAINEL TÁTICO EXPANSIVO */
         .tactical-viewport { 
             flex: 1; width: 100%; background-color: var(--mil-olive); 
-            padding: 30px; box-sizing: border-box; display: none;
+            padding: 40px 60px; overflow-y: auto; box-sizing: border-box;
+            display: none;
         }
 
-        .soap-content { text-align: justify; line-height: 1.6; font-family: 'Lora', serif; color: #EEE; }
+        .paper-content {
+            width: 100%; max-width: 100%; font-family: 'Lora', serif;
+            text-align: justify; text-justify: inter-word; line-height: 1.8;
+            color: #EEE;
+        }
+
+        h2 { 
+            font-family: 'JetBrains Mono'; font-weight: 800; text-transform: uppercase; 
+            font-size: 14px; color: #FFF; letter-spacing: 3px;
+            margin: 50px 0 25px 0; border-bottom: 1px solid var(--mil-border); padding-bottom: 10px;
+        }
 
         .ios-btn { 
-            background-color: var(--ios-blue); color: #FFF; border-radius: 10px; 
-            font-weight: 800; padding: 10px 18px; text-transform: uppercase;
-            font-size: 10px; border: none; cursor: pointer; transition: 0.2s;
+            background-color: var(--ios-blue); color: #FFFFFF; border-radius: 12px; 
+            font-weight: 800; padding: 12px 24px; text-transform: uppercase;
+            font-size: 11px; border: none; cursor: pointer;
         }
-        .ios-btn:active { transform: scale(0.95); }
 
         /* -------------------------------------------------------------------------- */
-        /* CONFIGURAÇÃO DE IMPRESSÃO - FLUXOGRAMA TIMES NEW ROMAN 8PT                */
+        /* CONFIGURAÇÃO DE IMPRESSÃO - FLUXOGRAMA DENSIDADE TOTAL                    */
         /* -------------------------------------------------------------------------- */
         @media print {
             @page { size: A4 portrait; margin: 5mm; }
-            body { background: #FFF !important; color: #000 !important; }
             .no-print { display: none !important; }
-            .tactical-viewport { display: block !important; background: #FFF !important; padding: 0 !important; width: 100% !important; }
+            body { background: #FFF !important; color: #000 !important; }
+            .tactical-viewport { display: block !important; background: #FFF !important; padding: 0 !important; }
             
             #screen-view { display: none !important; }
             
@@ -62,21 +74,14 @@
                 display: block !important;
                 font-family: "Times New Roman", Times, serif !important;
                 font-size: 8pt !important;
-                width: 100% !important;
+                line-height: 1.2;
             }
             
-            .flow-box {
-                border: 0.5pt solid #000;
-                padding: 8px;
-                margin-bottom: 8px;
-                width: 100%;
-                page-break-inside: avoid;
+            .flow-node {
+                border: 0.5pt solid #000; padding: 8px; margin-bottom: 10px; width: 100%;
+                page-break-inside: avoid; text-align: justify;
             }
-
             .flow-header { font-weight: bold; text-transform: uppercase; border-bottom: 0.5pt solid #000; margin-bottom: 5px; font-size: 9pt; }
-            
-            .grid-pts { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
-            .col-pts { border: 0.3pt solid #333; padding: 5px; }
         }
 
         #flowchart-data { display: none; }
@@ -86,58 +91,53 @@
 <body>
 
     <div id="gate">
-        <div class="bg-[#0A0F08] p-10 rounded-2xl border border-[#333] text-center">
-            <div class="text-white font-black text-2xl mb-6 italic">APEX Ω</div>
-            <input type="password" id="pass" class="w-full p-3 bg-black rounded-lg text-center font-bold mb-6 text-[#00FF41] outline-none border border-[#333]">
-            <button onclick="unlock()" class="ios-btn w-full">AUTORIZAR ACESSO</button>
+        <div class="bg-[#0A0F08] p-12 rounded-3xl border border-[#333] text-center">
+            <div class="w-16 h-16 bg-white text-black rounded-[20px] flex items-center justify-center font-black text-4xl mx-auto mb-8 italic">Ω</div>
+            <h2 class="text-[10px] font-bold text-gray-500 uppercase tracking-[0.5em] mb-10">MASTER KEY 7400</h2>
+            <input type="password" id="pass" class="w-full p-4 bg-black rounded-xl text-center font-bold mb-8 text-[#00FF41] outline-none border border-[#333]">
+            <button onclick="unlock()" class="ios-btn w-full">AUTORIZAR</button>
         </div>
     </div>
 
     <div class="command-zone no-print">
         <div class="flex justify-between items-center mb-4">
-            <h1 class="font-black italic text-lg uppercase text-white tracking-tighter">Apex <span class="text-[#00FF41]">v147</span></h1>
+            <h1 class="font-black italic text-xl uppercase tracking-tighter text-white">Apex <span class="text-[#00FF41]">v148</span></h1>
             <div class="flex gap-2">
-                <button onclick="window.print()" class="ios-btn" style="background: #222;">IMPRIMIR FLUXOGRAMA</button>
-                <button onclick="solveProtocol()" class="ios-btn">EXECUTAR PROTOCOLO</button>
+                <button onclick="window.print()" class="ios-btn" style="background: #222;">GERAR FLUXOGRAMA (A4)</button>
+                <button onclick="solveVolume()" class="ios-btn">EXECUTAR SÍNTESE TOTAL</button>
             </div>
         </div>
-        <textarea id="clin-in" rows="3" placeholder="Insira o caso clínico para análise sênior..."></textarea>
+        <textarea id="clin-in" rows="3" placeholder="Insira o caso clínico para análise integral..."></textarea>
     </div>
 
     <main id="nexus" class="hidden tactical-viewport">
-        <div id="screen-view" class="soap-content">
-            <div id="soap-out"></div>
+        <div class="paper-content" id="screen-view">
+            <div id="volume-out"></div>
         </div>
 
         <div id="flowchart-data" class="flowchart-mode">
-            <div class="flow-box">
-                <div class="flow-header">Identificação e Perfil</div>
+            <div class="flow-node">
+                <div class="flow-header">Identificação do Paciente e Perfil</div>
                 <div id="f-id"></div>
             </div>
-
-            <div class="flow-box">
-                <div class="flow-header">1. Curto Prazo (Estabilização e Metas Terapêuticas)</div>
+            <div class="flow-node">
+                <div class="flow-header">1. Curto Prazo (Fase Aguda, Estabilização e Metas)</div>
                 <div id="f-curto"></div>
             </div>
-
-            <div class="flow-box">
-                <div class="flow-header">2. Abordagem Farmacológica Hospitalar</div>
+            <div class="flow-node">
+                <div class="flow-header">2. Abordagem Farmacológica (Fase Hospitalar Completa)</div>
                 <div id="f-farma"></div>
             </div>
-
-            <div class="grid-pts">
-                <div class="col-pts">
-                    <div class="flow-header">3. Médio Prazo (Manejo e Reabilitação)</div>
-                    <div id="f-medio"></div>
-                </div>
-                <div class="col-pts">
-                    <div class="flow-header">4. Longo Prazo e Prevenção Secundária</div>
-                    <div id="f-longo"></div>
-                </div>
+            <div class="flow-node">
+                <div class="flow-header">3. Médio Prazo (Prevenção, Manejo de Complicações e Reabilitação)</div>
+                <div id="f-medio"></div>
             </div>
-
-            <div class="flow-box" style="margin-top: 10px; border: 1pt solid #000;">
-                <div class="flow-header" style="color: red;">Sinais de Alarme e Orientações de Alta</div>
+            <div class="flow-node">
+                <div class="flow-header">4. Longo Prazo (Reabilitação e Prevenção Secundária)</div>
+                <div id="f-longo"></div>
+            </div>
+            <div class="flow-node" style="border: 1.5pt solid #000;">
+                <div class="flow-header">Sinais de Alarme (Orientações para Retorno Imediato)</div>
                 <div id="f-alarme"></div>
             </div>
         </div>
@@ -149,46 +149,45 @@
             if(document.getElementById('pass').value === KEY) {
                 document.getElementById('gate').style.display = 'none';
                 document.getElementById('nexus').classList.remove('hidden');
-            } else { alert("ACESSO NEGADO"); }
+            } else { alert("NEGADO"); }
         }
 
-        function solveProtocol() {
+        function solveVolume() {
             const input = document.getElementById('clin-in').value;
             if(!input) return;
 
             document.getElementById('nexus').style.display = 'block';
 
-            // DADOS ESTRUTURADOS CONFORME PROTOCOLO GILBERTO/HSA
-            const id = "<b>Paciente:</b> Gilberto, 58 anos. <b>Perfil:</b> Classe C, Pedreiro. <b>Quadro:</b> HSA (Ruptura de Aneurisma).";
+            // DADOS VOLUMOSOS CONFORME PROTOCOLO SOLICITADO
+            const id = "<b>Paciente:</b> Gilberto, 58 anos. <b>Perfil:</b> Classe C, pedreiro. <b>HDA:</b> Quadro de Hemorragia Subaracnoidea (HSA) secundária a ruptura de aneurisma.";
             
-            const curto = `• <b>Protocolo MOV:</b> Monitorização, Oxigênio, Venoso.<br>
-                           • <b>Metas:</b> SatO2 >95%, Glicemia 140-180, PIC <20, PPC >70.<br>
-                           • <b>PA:</b> PAS <140 (Pré-op) | PAS <160 (Pós-op).<br>
-                           • <b>Neurocheck:</b> 1/1h em UTI. Cabeceira 30°.`;
+            const curto = `<b>Medidas Iniciais:</b> Acionar equipe de AVC; Protocolo MOV (Monitorização, Oxigênio, Venoso); ABCDE e Dextro; Internar em UTI (Leito de AVC); Cabeceira elevada a 30°, repouso absoluto; Evitar manobras que aumentem a PIC; Neurocheck de 1 em 1 hora.<br>
+                           <b>Exames:</b> TC de crânio sem contraste; Arteriografia cerebral; ECG 12 derivações; Laboratório completo (Hemograma, Eletrólitos, Ureia, Cr, Glicemia, TTP, TTPA, INR, Tipagem, Gasometria, Troponina US, TGO/TGP).<br>
+                           <b>Metas:</b> SatO₂ > 95%; Normotermia; Glicemia 140-180 mg/dL; PPC > 70 mmHg; PIC < 20 mmHg; PA: PAS < 140 mmHg (Pré-cirurgia) e PAS < 160 mmHg (Pós-cirurgia).<br>
+                           <b>Neurocirurgia:</b> Avaliação para abordagem cirúrgica, monitorização da PIC e necessidade de DVE.`;
 
-            const farma = `• <b>Nimodipino:</b> 60mg 4/4h por 21 dias.<br>
-                           • <b>Levetiracetam:</b> Ataque 20mg/kg; Manutenção 1g 12/12h.<br>
-                           • <b>Analgesia:</b> Tramadol 100mg EV 6/6h. <br>
-                           • <b>Controle PA:</b> Nitroprussiato de Sódio em BIC.`;
+            const farma = `• Profilaxia para TEV; Dieta Enteral após jejum inicial; Hidratação: SF 0,9% - 20 ml/kg/dia.<br>
+                           • <b>Nimodipino:</b> 60 mg VO ou SNE de 4/4h por 21 dias (prevenção de isquemia tardia).<br>
+                           • <b>Nitroprussiato de Sódio:</b> 2 ml + 98 ml de SG em BIC (titular conforme meta pressórica).<br>
+                           • <b>Levetiracetam (Anticonvulsivante):</b> Ataque: 20 mg/kg (infusão em 5-10 min); Manutenção: 1g de 12/12h por 7 dias.<br>
+                           • <b>Analgesia:</b> Tramadol 100 mg EV de 6/6h se dor.<br>
+                           • <b>Suporte Gástrico:</b> Omeprazol 40 mg VO; <b>Antiemético:</b> Ondansetrona 4 mg EV 8/8h.`;
 
-            const medio = `• Monitorar vasoespasmo (Déficit focal/Rebaixamento).<br>
-                           • Suporte Hemodinâmico: Noradrenalina (Meta PAS 160-180 se vasoespasmo).<br>
-                           • Reabilitação Precoce (Fisio/Fono).`;
+            const medio = `• Monitorização contínua em UTI; Avaliação neurológica seriada; Monitorar sinais de vasoespasmo (Rebaixamento ou déficit focal).<br>
+                           • <b>Conduta em Vasoespasmo:</b> Nova TC crânio, acesso venoso central e monitorização invasiva da PA.<br>
+                           • <b>Suporte Hemodinâmico:</b> Noradrenalina (4 ampolas + 200 ml SG). Titular para manter PAS 160-180 mmHg.<br>
+                           • <b>Reabilitação Precoce:</b> Avaliação por Fisioterapia, Fonoaudiologia e Psicologia.<br>
+                           • <b>Critério de Alta:</b> Ausência de vasoespasmo após 14 dias, estabilidade clínica e neurológica.`;
 
-            const longo = `• <b>Meta PA:</b> <130/80 mmHg (Losartana 50mg + HCTZ 12,5mg).<br>
-                           • <b>Estilo de Vida:</b> DASH, Sal <5g, Atividade >150 min/sem. Cessar tabagismo.`;
+            const longo = `• <b>Reabilitação Funcional:</b> Continuidade das terapias motoras e cognitivas.<br>
+                           • <b>Controle de PA:</b> Meta < 130/80 mmHg (Losartana 50 mg VO + Hidroclorotiazida 12,5 mg VO).<br>
+                           • <b>Estilo de Vida:</b> Dieta DASH (Sal < 5g/dia); Perda de 5-10% do peso; Atividade física > 150 min/semana; Cessar tabagismo e etilismo.`;
 
-            const alarme = "Cefaleia intensa, novo déficit neurológico, convulsão, febre ou queda do estado geral.";
+            const alarme = "Cefaleia intensa, alteração neurológica súbita, convulsão, febre ou queda brusca do estado geral (Retorno imediato ao serviço de emergência).";
 
-            // Preenchimento de Tela
-            document.getElementById('soap-out').innerHTML = `
-                <h2 style="color:#00FF41">SOAP & PTS INTEGRADO</h2>
-                ${id}<br><br>
-                ${curto}<br><br>
-                ${farma}
-            `;
+            // Injeção de Volume Total
+            document.getElementById('volume-out').innerHTML = `<h2>SOAP & PTS SOBERANO</h2>${id}<br><br><h2>CURTO PRAZO</h2>${curto}<h2>FARMACOLOGIA</h2>${farma}<h2>MÉDIO PRAZO</h2>${medio}<h2>LONGO PRAZO</h2>${longo}`;
 
-            // Preenchimento de Fluxograma (Impressão)
             document.getElementById('f-id').innerHTML = id;
             document.getElementById('f-curto').innerHTML = curto;
             document.getElementById('f-farma').innerHTML = farma;
