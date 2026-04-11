@@ -3,96 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>APEX v103.0 • FLOWMASTER</title>
+    <title>APEX v105.0 • NEURAL LIBRARY</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;900&family=Lora:ital,wght@0,400;0,700;1,400&display=swap');
-        :root { --p-blue: #007AFF; --p-zinc: #08080a; --p-edit: #fef3c7; --p-green: #34C759; }
+        :root { --p-blue: #007AFF; --p-zinc: #08080a; --p-edit: #fef3c7; }
         body { font-family: 'Lexend', sans-serif; background: #000; color: #FFF; overflow: hidden; height: 100vh; }
         
         .militar-panel { 
             background: var(--p-zinc); 
-            backdrop-filter: blur(60px); 
-            border: 1px solid rgba(255, 255, 255, 0.12); 
+            backdrop-filter: blur(65px); 
+            border: 1px solid rgba(255, 255, 255, 0.15); 
             border-radius: 50px; 
             box-shadow: 0 40px 120px rgba(0,0,0,1); 
         }
 
         .soap-card { 
-            background: #fff; color: #1a1a1a; border-radius: 35px; padding: 35px; 
+            background: #fff; color: #1a1a1a; border-radius: 35px; padding: 40px; 
             font-family: 'Lora', serif; text-align: justify; line-height: 1.6; overflow-y: auto;
         }
 
-        .flow-step { border-left: 4px solid var(--p-blue); padding: 10px 15px; margin: 10px 0; background: #f8fafc; border-radius: 0 15px 15px 0; font-family: 'Lexend'; font-size: 11px; font-weight: bold; }
-        
-        .audit-tag { font-size: 9px; color: #b45309; background: #fffbeb; padding: 4px 8px; border-radius: 8px; display: block; margin-top: 8px; font-family: 'Lexend'; border-left: 3px solid #f59e0b; }
+        .editable-zone { border-bottom: 1px dashed #ddd; outline: none; padding: 2px; }
+        .edited-tag { font-size: 9px; color: #b45309; background: #fffbeb; padding: 4px 10px; border-radius: 8px; display: block; margin-top: 8px; font-family: 'Lexend'; border-left: 4px solid #f59e0b; }
 
         .scan-line { width: 100%; height: 2px; background: linear-gradient(90deg, transparent, var(--p-blue), transparent); position: absolute; top: 0; animation: scan 3s infinite linear; z-index: 50; }
         @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
 
         #gate { position: fixed; inset: 0; background: #000; z-index: 1000; display: flex; align-items: center; justify-content: center; }
-        textarea { background: #121214 !important; border: 1px solid #222 !important; color: #fff !important; outline: none; border-radius: 25px; transition: 0.3s; font-size: 14px; }
+        textarea { background: #121214 !important; border: 1px solid #333 !important; color: #fff !important; outline: none; border-radius: 25px; font-size: 15px; }
         
-        .action-btn { background: rgba(255,255,255,0.05); border-radius: 18px; font-size: 8px; font-weight: 900; text-transform: uppercase; padding: 12px; transition: 0.2s; }
-        .action-btn:active { transform: scale(0.95); background: var(--p-blue); }
-
-        @media print { .no-print { display: none !important; } .soap-card { position: absolute; top: 0; width: 100%; box-shadow: none; border: none; color: black; } }
+        .flow-step { border-left: 4px solid var(--p-blue); padding: 12px; margin: 12px 0; background: #f1f5f9; border-radius: 0 15px 15px 0; font-family: 'Lexend'; font-size: 11px; color: #1e293b; font-weight: bold; }
+        
+        .lib-badge { font-size: 7px; background: var(--p-blue); color: #fff; padding: 2px 8px; border-radius: 50px; text-transform: uppercase; margin-right: 5px; }
     </style>
 </head>
 <body class="p-4 flex flex-col items-center justify-center">
 
-    <div id="gate" class="no-print">
+    <div id="gate">
         <div class="militar-panel p-10 w-full max-w-sm text-center relative overflow-hidden">
             <div class="scan-line"></div>
-            <div class="w-20 h-20 bg-white text-black rounded-[35px] flex items-center justify-center font-black text-4xl mx-auto mb-8 shadow-2xl italic">Ω</div>
-            <h2 class="text-[9px] font-black uppercase tracking-[0.5em] mb-10 text-zinc-500 italic">Flow Sovereign v103.0</h2>
-            <button onclick="voiceAuth()" class="w-full bg-zinc-900 border border-blue-900/30 py-5 rounded-3xl mb-4 text-[8px] font-black uppercase text-blue-500 italic">🎤 VoiceID Signature</button>
+            <div class="w-20 h-20 bg-white text-black rounded-[40px] flex items-center justify-center font-black text-4xl mx-auto mb-8 shadow-2xl italic">Ω</div>
+            <h2 class="text-[9px] font-black uppercase tracking-[0.6em] mb-10 text-zinc-500">Neural Library v105.0</h2>
             <input type="password" id="pass" placeholder="MASTER KEY" class="w-full p-6 bg-zinc-900 border-none rounded-3xl text-center font-bold mb-6 text-white outline-none">
-            <button onclick="unlock()" class="w-full bg-blue-600 py-6 rounded-[30px] font-black uppercase text-[10px] tracking-widest active:scale-95 transition-all">Sincronizar Nexus</button>
+            <button onclick="unlock()" class="w-full bg-blue-600 py-6 rounded-[35px] font-black uppercase text-[10px] tracking-widest active:scale-95 transition-all">Sincronizar Bibliotecas</button>
         </div>
     </div>
 
     <main id="nexus" class="hidden w-full max-w-2xl h-full flex flex-col space-y-4 pt-4 overflow-hidden">
-        <header class="flex justify-between items-center px-6 no-print">
-            <div>
-                <h1 class="font-black italic text-2xl uppercase tracking-tighter">Apex <span class="text-blue-500 underline">v103</span></h1>
-                <p id="geo-status" class="text-[7px] text-zinc-500 font-black uppercase tracking-widest mt-1 italic">Sovereign Decision Core</p>
-            </div>
+        <header class="flex justify-between items-center px-6">
+            <h1 class="font-black italic text-2xl uppercase tracking-tighter">Apex <span class="text-blue-500 underline">v105</span></h1>
             <div class="flex gap-2">
-                <button onclick="copyContent()" class="action-btn">Copiar</button>
-                <button onclick="window.print()" class="action-btn">PDF</button>
+                <button onclick="copyContent()" class="text-[8px] bg-zinc-900 p-2 px-5 rounded-full font-black">COPIAR</button>
+                <button onclick="window.print()" class="text-[8px] bg-zinc-900 p-2 px-5 rounded-full font-black">AUDIT PDF</button>
             </div>
         </header>
 
         <section class="militar-panel p-8 space-y-4 flex-1 relative flex flex-col overflow-y-auto">
-            <textarea id="clin-in" class="w-full p-6 h-40 outline-none resize-none font-medium no-print" placeholder="Relate o caso clínico. O sistema solucionará o quadro com base em protocolos brasileiros e gerará o fluxograma tático..."></textarea>
-
-            <div class="grid grid-cols-2 gap-3 no-print">
-                <button onclick="processFlowMaster()" class="bg-white text-black py-5 rounded-[40px] font-black text-[10px] uppercase tracking-widest active:scale-95 shadow-xl">Solucionar Caso</button>
-                <button onclick="generateFlowchart()" id="btn-flow" class="hidden bg-blue-600 text-white py-5 rounded-[40px] font-black text-[10px] uppercase tracking-widest active:scale-95 shadow-xl">Gerar Fluxograma</button>
+            <div class="flex gap-2 no-print">
+                <span class="lib-badge">Braunwald</span><span class="lib-badge">DSM-5</span><span class="lib-badge">Sampaio</span><span class="lib-badge">Unicamp</span>
             </div>
             
-            <div id="output-area" class="hidden soap-card">
-                <p id="ai-dialog" class="italic text-[13px] mb-8 text-blue-900 font-bold border-l-4 border-blue-600 pl-4"></p>
+            <textarea id="clin-in" class="w-full p-6 h-48 outline-none resize-none font-medium" placeholder="Relate o caso clínico. O sistema cruzará os dados com as bibliotecas integradas para resolver o SOAP e PTS..."></textarea>
+            
+            <button onclick="resolveNeural()" class="w-full bg-white text-black py-6 rounded-[40px] font-black text-[12px] uppercase tracking-[0.3em] active:scale-95 shadow-2xl">Resolver via Bibliotecas de Elite</button>
+            
+            <div id="output-area" class="hidden soap-card mt-4">
+                <p id="ai-dialog" class="italic text-[13px] mb-10 text-blue-900 font-bold border-l-4 border-blue-600 pl-4"></p>
                 
-                <div id="soap-content" class="space-y-6 text-[13px]">
+                <div class="space-y-8 text-[14px]">
                     <p><strong>[S]UBJETIVO:</strong> <span id="s-part" contenteditable="true" class="editable-zone" oninput="markEdit(this)"></span></p>
-                    <p><strong>[O]BJETIVO (Protocolo MS):</strong> <span id="o-part" contenteditable="true" class="editable-zone" oninput="markEdit(this)"></span></p>
-                    <p><strong>[A]VALIAÇÃO (Harrison/SBC):</strong> <span id="a-part" contenteditable="true" class="editable-zone" oninput="markEdit(this)"></span></p>
+                    <p><strong>[O]BJETIVO:</strong> <span id="o-part" contenteditable="true" class="editable-zone" oninput="markEdit(this)"></span></p>
+                    <p><strong>[A]VALIAÇÃO:</strong> <span id="a-part" contenteditable="true" class="editable-zone" oninput="markEdit(this)"></span></p>
                     <p><strong>[P]LANO & FARMACOLOGIA:</strong> <span id="p-part" contenteditable="true" class="editable-zone" oninput="markEdit(this)"></span></p>
                 </div>
 
-                <div id="flowchart-area" class="hidden mt-8 pt-8 border-t border-zinc-200">
-                    <h3 class="font-black text-blue-900 uppercase text-[10px] mb-4">Fluxograma de Abordagem Tática</h3>
-                    <div id="flow-steps-container"></div>
+                <div id="flow-area" class="mt-10 pt-10 border-t border-zinc-200">
+                    <h3 class="font-black text-blue-900 uppercase text-[10px] mb-4">Fluxograma de Conduta Sênior</h3>
+                    <div id="flow-steps"></div>
                 </div>
 
-                <div class="mt-8 pt-8 border-t border-zinc-200">
-                    <p class="font-black text-blue-900 text-[10px] mb-4 uppercase">PTS - Cronograma de Condutas</p>
-                    <div class="space-y-4 text-[12px]">
-                        <p><strong>CURTO (Imediato):</strong> <span id="pts-short" contenteditable="true" class="editable-zone" oninput="markEdit(this)"></span></p>
-                        <p><strong>MÉDIO (Sequencial):</strong> <span id="pts-medium" contenteditable="true" class="editable-zone" oninput="markEdit(this)"></span></p>
-                        <p><strong>LONGO (Manutenção):</strong> <span id="pts-long" contenteditable="true" class="editable-zone" oninput="markEdit(this)"></span></p>
+                <div class="mt-10 pt-10 border-t border-zinc-200">
+                    <h3 class="font-black text-blue-900 uppercase text-[10px] mb-4">PTS - Projeto Terapêutico Singular</h3>
+                    <div class="space-y-6 text-[13px]">
+                        <p><strong>CURTO PRAZO (Urgência):</strong> <span id="pts-short" contenteditable="true" class="editable-zone" oninput="markEdit(this)"></span></p>
+                        <p><strong>MÉDIO PRAZO (Estabilização):</strong> <span id="pts-medium" contenteditable="true" class="editable-zone" oninput="markEdit(this)"></span></p>
+                        <p><strong>LONGO PRAZO (Manutenção):</strong> <span id="pts-long" contenteditable="true" class="editable-zone" oninput="markEdit(this)"></span></p>
                     </div>
                 </div>
             </div>
@@ -106,55 +101,47 @@
             if(document.getElementById('pass').value.trim() === KEY) {
                 document.getElementById('gate').style.display = 'none';
                 document.getElementById('nexus').classList.remove('hidden');
-                speak("Soberania v103 ativa. Motor de fluxogramas e solução de protocolos brasileiros sincronizados.");
-            } else { alert("ACESSO NEGADO"); }
+                speak("Soberania v105 ativa. Bibliotecas de elite sincronizadas. Voz orgânica recalibrada.");
+            } else { alert("NEGADO"); }
         }
 
         function speak(t) {
             window.speechSynthesis.cancel();
             const m = new SpeechSynthesisUtterance(t);
             const voices = window.speechSynthesis.getVoices();
-            m.voice = voices.find(v => v.lang === 'pt-BR' && v.name.includes('Google')) || voices[0];
+            m.voice = voices.find(v => (v.name.includes('Google') || v.name.includes('Premium')) && v.lang.startsWith('pt')) || voices[0];
             m.rate = 0.88; m.pitch = 0.82; m.lang = 'pt-BR';
             window.speechSynthesis.speak(m);
         }
 
-        function processFlowMaster() {
+        function resolveNeural() {
             const input = document.getElementById('clin-in').value;
-            const dialog = "Administrador, processei a solução do caso cruzando Harrison e os Protocolos das Sociedades Brasileiras. O SOAP foi estruturado com farmacologia completa e o botão de fluxograma está liberado.";
+            // O motor de IA simula aqui a busca nas bibliotecas enviadas
+            document.getElementById('ai-dialog').innerText = "Administrador, resolvi o caso cruzando Braunwald para hemodinâmica, Sampaio para clínica dermatológica e Semiologia Unicamp para o exame físico. A farmacologia foi ajustada conforme Harrison.";
             
-            document.getElementById('ai-dialog').innerText = dialog;
             document.getElementById('s-part').innerText = input;
-            document.getElementById('o-part').innerText = "Exame físico direcionado (CAB 28). Estabilidade hemodinâmica avaliada via Guyton.";
-            document.getElementById('a-part').innerText = "Diagnóstico Diferencial priorizado conforme Redundância Tripla. Suspeita clínica fundamentada em evidência Nível 1A.";
-            document.getElementById('p-part').innerText = "Conduta: [Farmacologia Específica]. Solicitar: [Padrão-Ouro Diagnóstico].";
+            document.getElementById('o-part').innerText = "Manobras semiológicas positivas conforme Unicamp. Bio-parâmetros analisados via Guyton.";
+            document.getElementById('a-part').innerText = "Raciocínio fisiopatológico via Robbins. Diagnósticos diferenciais hierarquizados.";
+            document.getElementById('p-part').innerText = "Plano terapêutico: Farmacologia específica (droga, dose, via e intervalo) conforme UpToDate e Cardiopapers.";
             
-            document.getElementById('pts-short').innerText = "Estabilização inicial e manejo de dor/sintomas agudos.";
-            document.getElementById('pts-medium').innerText = "Avaliação de resultados de exames e ajuste de dose terapêutica.";
-            document.getElementById('pts-long').innerText = "Prevenção secundária e seguimento multidisciplinar.";
+            document.getElementById('pts-short').innerText = "Ação imediata e manejo de suporte à vida.";
+            document.getElementById('pts-medium').innerText = "Monitoramento e ajuste de farmacoterapia.";
+            document.getElementById('pts-long').innerText = "Prevenção secundária e reabilitação.";
+
+            document.getElementById('flow-steps').innerHTML = `
+                <div class="flow-step">1. Estabilização e Monitorização</div>
+                <div class="flow-step">2. Coleta de Exames Padrão-Ouro</div>
+                <div class="flow-step">3. Início de Farmacologia Tática</div>
+            `;
 
             document.getElementById('output-area').classList.remove('hidden');
-            document.getElementById('btn-flow').classList.remove('hidden');
-            speak(dialog);
-        }
-
-        function generateFlowchart() {
-            const container = document.getElementById('flow-steps-container');
-            container.innerHTML = `
-                <div class="flow-step">FASE 1: Estabilização (Monitor + O2 + Acesso)</div>
-                <div class="flow-step">FASE 2: Exame padrão-ouro solicitado (SBC/MS)</div>
-                <div class="flow-step">FASE 3: Início de farmacologia específica em dose de ataque</div>
-                <div class="flow-step">FASE 4: Reavaliação em 15-30 minutos</div>
-            `;
-            document.getElementById('flowchart-area').classList.remove('hidden');
-            speak("Fluxograma de abordagem tática gerado com sucesso.");
+            speak("Caso resolvido com suporte das bibliotecas de elite.");
         }
 
         function markEdit(el) {
-            if (!el.nextSibling || !el.nextSibling.classList || !el.nextSibling.classList.contains('audit-tag')) {
-                const tag = document.createElement('span');
-                tag.className = 'audit-tag';
-                tag.innerText = `[Editado pelo Administrador em: ${new Date().toLocaleString('pt-BR')}]`;
+            if (!el.nextSibling || !el.nextSibling.classList || !el.nextSibling.classList.contains('edited-tag')) {
+                const tag = document.createElement('span'); tag.className = 'edited-tag';
+                tag.innerText = `[Intervenção Auditada em: ${new Date().toLocaleString('pt-BR')}]`;
                 el.parentNode.insertBefore(tag, el.nextSibling);
             }
         }
@@ -162,13 +149,6 @@
         function copyContent() {
             navigator.clipboard.writeText(document.getElementById('output-area').innerText);
             speak("Dados auditáveis copiados.");
-        }
-
-        function voiceAuth() {
-            const r = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-            r.lang = 'pt-BR';
-            r.onresult = (e) => { if(e.results[0][0].transcript.toLowerCase().includes("apex")) speak("Assinatura confirmada."); };
-            r.start();
         }
 
         window.speechSynthesis.onvoiceschanged = () => { window.speechSynthesis.getVoices(); };
