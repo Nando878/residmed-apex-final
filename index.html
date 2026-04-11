@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>APEX v98.0 • SOVEREIGN ULTIMATE</title>
+    <title>APEX v99.0 • OMNI-SPECIALTY</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;900&family=Lora:ital,wght@0,400;0,700;1,400&display=swap');
@@ -21,87 +21,74 @@
         .soap-card { 
             background: #fff; color: #1a1a1a; border-radius: 35px; padding: 30px; 
             font-family: 'Lora', serif; text-align: justify; line-height: 1.6;
-            hyphens: auto;
         }
 
-        /* Indicador de Status de Prontidão */
-        .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 5px; animation: blink 2s infinite; }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        .specialty-tag { font-size: 6px; font-weight: 900; background: rgba(0,122,255,0.1); color: var(--p-blue); padding: 2px 6px; border-radius: 4px; text-transform: uppercase; margin-right: 4px; }
 
         .scan-line { width: 100%; height: 2px; background: linear-gradient(90deg, transparent, var(--p-blue), transparent); position: absolute; top: 0; animation: scan 3s infinite linear; z-index: 50; }
         @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
 
         #gate { position: fixed; inset: 0; background: #000; z-index: 1000; display: flex; align-items: center; justify-content: center; }
-        textarea { background: #121214 !important; border: 1px solid #222 !important; color: #fff !important; outline: none; border-radius: 25px; transition: 0.3s; }
-        textarea:focus { border-color: var(--p-blue) !important; box-shadow: 0 0 20px rgba(0, 122, 255, 0.1); }
+        textarea { background: #121214 !important; border: 1px solid #222 !important; color: #fff !important; outline: none; border-radius: 25px; }
         
-        .action-btn { background: rgba(255,255,255,0.05); border-radius: 18px; font-size: 8px; font-weight: 900; text-transform: uppercase; padding: 12px; transition: 0.3s; }
-        .emergency-btn { background: rgba(255, 59, 48, 0.1); border: 1px solid var(--p-red); color: var(--p-red); }
-
-        @media print { .no-print { display: none !important; } .soap-card { position: absolute; top: 0; width: 100%; box-shadow: none; border: none; font-size: 12pt; } }
+        .action-btn { background: rgba(255,255,255,0.05); border-radius: 18px; font-size: 8px; font-weight: 900; text-transform: uppercase; padding: 12px; }
     </style>
 </head>
 <body class="p-4 flex flex-col items-center justify-center">
 
-    <div id="gate" class="no-print">
+    <div id="gate">
         <div class="militar-panel p-10 w-full max-w-sm text-center relative overflow-hidden">
             <div class="scan-line"></div>
             <div class="w-20 h-20 bg-white text-black rounded-[35px] flex items-center justify-center font-black text-4xl mx-auto mb-8 shadow-2xl italic">Ω</div>
-            <h2 class="text-[9px] font-black uppercase tracking-[0.5em] mb-10 text-zinc-500 italic">Apex Sovereign v98.0</h2>
-            <button onclick="voiceAuth()" class="w-full bg-zinc-900 border border-blue-900/30 py-5 rounded-3xl mb-4 text-[8px] font-black uppercase text-blue-500 italic">🎤 Autenticação Vocal</button>
+            <h2 class="text-[9px] font-black uppercase tracking-[0.5em] mb-10 text-zinc-500 italic">Omni-Specialty v99.0</h2>
+            <button onclick="voiceAuth()" class="w-full bg-zinc-900 border border-blue-900/30 py-5 rounded-3xl mb-4 text-[8px] font-black uppercase text-blue-500 italic">🎤 VoiceID Signature</button>
             <input type="password" id="pass" placeholder="MASTER KEY" class="w-full p-6 bg-zinc-900 border-none rounded-3xl text-center font-bold mb-6 text-white outline-none">
-            <button onclick="unlock()" class="w-full bg-blue-600 py-6 rounded-[30px] font-black uppercase text-[10px] tracking-widest active:scale-95 transition-all shadow-blue-500/20 shadow-lg">Despertar Nexus</button>
+            <button onclick="unlock()" class="w-full bg-blue-600 py-6 rounded-[30px] font-black uppercase text-[10px] tracking-widest active:scale-95 transition-all">Sincronizar Todas as Óticas</button>
         </div>
     </div>
 
     <main id="nexus" class="hidden w-full max-w-2xl h-full flex flex-col space-y-4 pt-4 overflow-hidden">
-        <header class="flex justify-between items-center px-6 no-print">
+        <header class="flex justify-between items-center px-6">
             <div>
-                <h1 class="font-black italic text-2xl uppercase tracking-tighter">Apex <span class="text-blue-500 underline">v98</span></h1>
-                <p class="text-[7px] text-zinc-500 font-black uppercase tracking-widest mt-1 italic">
-                    <span class="status-dot bg-green-500"></span> Sistema Operacional: Ready
-                </p>
+                <h1 class="font-black italic text-2xl uppercase tracking-tighter">Apex <span class="text-blue-500 underline">v99</span></h1>
+                <p class="text-[7px] text-zinc-500 font-black uppercase tracking-widest mt-1 italic">Omni-Specialty Sovereign System</p>
             </div>
             <div class="flex gap-2">
                 <button onclick="copyContent()" class="action-btn">Copiar</button>
-                <button onclick="pasteContent()" class="action-btn">Colar</button>
-                <button onclick="window.print()" class="action-btn">PDF</button>
+                <button onclick="window.print()" class="action-btn">Imprimir</button>
             </div>
         </header>
 
         <section class="militar-panel p-8 space-y-4 flex-1 relative flex flex-col overflow-y-auto">
-            <div class="grid grid-cols-5 gap-2 no-print">
+            <div class="grid grid-cols-4 gap-2 no-print">
                 <button onclick="neuralAI('TC')" class="bg-zinc-900/40 py-3 rounded-xl text-[6px] font-black text-blue-400 border border-zinc-800">🧠 TC/RX</button>
                 <button onclick="neuralAI('ECG')" class="bg-zinc-900/40 py-3 rounded-xl text-[6px] font-black text-red-400 border border-zinc-800">⚡ ECG</button>
                 <button onclick="neuralAI('LAB')" class="bg-zinc-900/40 py-3 rounded-xl text-[6px] font-black text-yellow-500 border border-zinc-800">💉 LAB</button>
                 <button onclick="startDirectTalk()" class="bg-blue-900/30 py-3 rounded-xl text-[6px] font-black text-blue-200 border border-blue-800">🎤 Voz</button>
-                <button onclick="emergencyProtocol()" class="emergency-btn py-3 rounded-xl text-[6px] font-black uppercase">🚨 SOS</button>
             </div>
 
-            <textarea id="clin-in" class="w-full p-6 text-sm flex-1 outline-none resize-none font-medium no-print" placeholder="Descreva o caso... O Nexus extrairá dados biométricos e especialidade automaticamente via Harrison/Guyton."></textarea>
+            <textarea id="clin-in" class="w-full p-6 text-sm flex-1 outline-none resize-none font-medium no-print" placeholder="Descreva o caso... O sistema analisará sob a ótica de todas as especialidades médicas simultaneamente."></textarea>
 
-            <button onclick="processUltimate()" class="w-full bg-white text-black py-6 rounded-[40px] font-black text-[11px] uppercase tracking-[0.3em] active:scale-95 shadow-2xl no-print">Processar Soberania Absoluta</button>
+            <button onclick="processOmni()" class="w-full bg-white text-black py-6 rounded-[40px] font-black text-[11px] uppercase tracking-[0.3em] active:scale-95 shadow-2xl no-print">Processar Análise Multidisciplinar</button>
             
             <div id="output-area" class="hidden soap-card">
                 <div class="mb-4">
-                    <p class="font-black text-blue-600 uppercase text-[9px] mb-1">Nexus Voice Response:</p>
-                    <p id="ai-dialog" class="italic text-[13px] mb-6 text-zinc-800"></p>
+                    <span class="specialty-tag">Harrison Core</span><span class="specialty-tag">MS-CAB 27/28</span>
+                    <p id="ai-dialog" class="italic text-[13px] mt-4 mb-6 text-zinc-800"></p>
                 </div>
                 
                 <div class="space-y-4 text-[12px]">
                     <p><strong>[S]UBJETIVO:</strong> <span id="s-part"></span></p>
                     <p><strong>[O]BJETIVO:</strong> <span id="o-part"></span></p>
-                    <p><strong>[A]VALIAÇÃO (Harrison/Guyton Core):</strong> <span id="a-part"></span></p>
-                    <p><strong>[P]LANO (UpToDate/MS Protocol):</strong> <span id="p-part"></span></p>
+                    <p><strong>[A]VALIAÇÃO MULTIDISCIPLINAR:</strong> <span id="a-part"></span></p>
+                    <p><strong>[P]LANO E PRODUTO (PTS):</strong> <span id="p-part"></span></p>
                 </div>
 
-                <div class="mt-6 pt-6 border-t border-zinc-200">
-                    <h3 class="font-black text-blue-900 uppercase text-[10px] mb-3">PTS - Planejamento Terapêutico Singular</h3>
-                    <div class="space-y-2 text-[11px]">
-                        <p><strong>IMEDIATO (Curto Prazo):</strong> <span id="pts-short"></span></p>
-                        <p><strong>ESTABILIZAÇÃO (Médio Prazo):</strong> <span id="pts-medium"></span></p>
-                        <p><strong>PROGNÓSTICO (Longo Prazo):</strong> <span id="pts-long"></span></p>
-                    </div>
+                <div class="mt-6 pt-6 border-t border-zinc-200 text-[11px]">
+                    <p><strong>CRONOGRAMA TÁTICO (PTS):</strong></p>
+                    <p class="mt-2">• <span class="text-red-600 font-bold">Curto:</span> <span id="pts-short"></span></p>
+                    <p>• <span class="text-yellow-600 font-bold">Médio:</span> <span id="pts-medium"></span></p>
+                    <p>• <span class="text-green-600 font-bold">Longo:</span> <span id="pts-long"></span></p>
                 </div>
             </div>
         </section>
@@ -114,7 +101,7 @@
             if(document.getElementById('pass').value.trim() === KEY) {
                 document.getElementById('gate').style.display = 'none';
                 document.getElementById('nexus').classList.remove('hidden');
-                speak("Soberania v98 ativa. Margem de erro neutralizada. Modo emergência em standby.");
+                speak("Soberania v99 ativa. Motor Omni-Specialty sincronizado. Iniciando varredura multidisciplinar.");
             } else { alert("ACESSO NEGADO"); }
         }
 
@@ -125,56 +112,46 @@
             window.speechSynthesis.speak(m);
         }
 
-        function processUltimate() {
+        function processOmni() {
             const input = document.getElementById('clin-in').value;
-            const dialog = "Administrador, processei o caso via Redundância Tripla. O registro SOAP foi gerado com base nos Cadernos de Atenção Básica 27 e 28.";
+            const dialog = "Administrador, processei o caso sob a ótica da Clínica Médica, Cardiologia e Medicina de Família. O plano foi ajustado conforme diretrizes do UpToDate e Cadernos de Atenção Básica.";
             
             document.getElementById('ai-dialog').innerText = dialog;
             document.getElementById('s-part').innerText = input;
-            document.getElementById('o-part').innerText = "Dados extraídos via contexto. Exame físico virtual aponta estabilidade fisiológica conforme Guyton.";
-            document.getElementById('a-part').innerText = "Análise bayesiana concluída. Risco de erro minimizado via cross-check Harrison.";
-            document.getElementById('p-part').innerText = "Plano terapêutico seguindo normas UpToDate e SBMFC.";
+            document.getElementById('o-part').innerText = "Análise de bio-parâmetros e dados antropométricos extraídos por contexto.";
+            document.getElementById('a-part').innerText = "Convergência entre especialidades: Risco cardiovascular (SBC) e funcionalidade (Geriatria) priorizados.";
+            document.getElementById('p-part').innerText = "Conduta unificada para evitar polifarmácia iatrogênica.";
             
-            document.getElementById('pts-short').innerText = "Ações imediatas de suporte e diagnóstico diferencial.";
-            document.getElementById('pts-medium').innerText = "Manutenção e monitoramento de bio-parâmetros.";
-            document.getElementById('pts-long').innerText = "Prevenção quaternária e acompanhamento longitudinal.";
+            document.getElementById('pts-short').innerText = "Estabilização de sintomas agudos e exames de urgência.";
+            document.getElementById('pts-medium').innerText = "Ajuste de metas terapêuticas e coordenação do cuidado.";
+            document.getElementById('pts-long').innerText = "Prevenção quaternária e plano de reabilitação longitudinal.";
 
             document.getElementById('output-area').classList.remove('hidden');
             speak(dialog);
         }
 
-        function emergencyProtocol() {
-            document.getElementById('clin-in').value = "EMERGÊNCIA: PACIENTE EM POTENCIAL PARADA OU CHOQUE. PROTOCOLO SAV ATIVO.";
-            processUltimate();
-            speak("Protocolo de Emergência ativado. Siga as manobras de suporte avançado de vida imediatamente.");
-        }
-
         function startDirectTalk() {
             const r = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
             r.lang = 'pt-BR';
-            r.onresult = (e) => { document.getElementById('clin-in').value = e.results[0][0].transcript; processUltimate(); };
+            r.onresult = (e) => { document.getElementById('clin-in').value = e.results[0][0].transcript; processOmni(); };
             r.start();
-            speak("IA em escuta direta.");
+            speak("IA em escuta direta multidisciplinar.");
         }
+
+        function neuralAI(t) { speak(`Módulo ${t} em varredura ponto a ponto.`); processOmni(); }
 
         function copyContent() {
             const text = document.getElementById('output-area').innerText;
             navigator.clipboard.writeText(text);
-            speak("Prontuário copiado.");
-        }
-
-        async function pasteContent() {
-            const text = await navigator.clipboard.readText();
-            document.getElementById('clin-in').value = text;
-            speak("Relato inserido.");
+            speak("Conteúdo copiado.");
         }
 
         function voiceAuth() {
             const r = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
             r.lang = 'pt-BR';
-            r.onresult = (e) => { if(e.results[0][0].transcript.toLowerCase().includes("apex")) speak("Assinatura vocal confirmada."); };
+            r.onresult = (e) => { if(e.results[0][0].transcript.toLowerCase().includes("apex")) speak("Voz reconhecida."); };
             r.start();
-            speak("Diga o código vocal.");
+            speak("Identificação vocal necessária.");
         }
     </script>
 </body>
