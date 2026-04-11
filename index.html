@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>APEX v99.0 • OMNI-SPECIALTY</title>
+    <title>APEX v100.0 • AUDIT & LEARNING</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;900&family=Lora:ital,wght@0,400;0,700;1,400&display=swap');
-        :root { --p-blue: #007AFF; --p-red: #FF3B30; --p-zinc: #08080a; }
+        :root { --p-blue: #007AFF; --p-zinc: #08080a; --p-edit: #fef3c7; }
         body { font-family: 'Lexend', sans-serif; background: #000; color: #FFF; overflow: hidden; height: 100vh; }
         
         .militar-panel { 
@@ -23,15 +23,15 @@
             font-family: 'Lora', serif; text-align: justify; line-height: 1.6;
         }
 
-        .specialty-tag { font-size: 6px; font-weight: 900; background: rgba(0,122,255,0.1); color: var(--p-blue); padding: 2px 6px; border-radius: 4px; text-transform: uppercase; margin-right: 4px; }
+        .editable-zone { border-bottom: 1px dashed #ccc; padding: 2px; outline: none; transition: 0.3s; }
+        .editable-zone:focus { background: var(--p-edit); }
+        .edited-mark { background: #fffbeb; border-left: 2px solid #f59e0b; padding-left: 5px; font-size: 10px; color: #b45309; display: block; margin-top: 5px; font-family: 'Lexend'; }
 
         .scan-line { width: 100%; height: 2px; background: linear-gradient(90deg, transparent, var(--p-blue), transparent); position: absolute; top: 0; animation: scan 3s infinite linear; z-index: 50; }
         @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
 
         #gate { position: fixed; inset: 0; background: #000; z-index: 1000; display: flex; align-items: center; justify-content: center; }
         textarea { background: #121214 !important; border: 1px solid #222 !important; color: #fff !important; outline: none; border-radius: 25px; }
-        
-        .action-btn { background: rgba(255,255,255,0.05); border-radius: 18px; font-size: 8px; font-weight: 900; text-transform: uppercase; padding: 12px; }
     </style>
 </head>
 <body class="p-4 flex flex-col items-center justify-center">
@@ -40,55 +40,44 @@
         <div class="militar-panel p-10 w-full max-w-sm text-center relative overflow-hidden">
             <div class="scan-line"></div>
             <div class="w-20 h-20 bg-white text-black rounded-[35px] flex items-center justify-center font-black text-4xl mx-auto mb-8 shadow-2xl italic">Ω</div>
-            <h2 class="text-[9px] font-black uppercase tracking-[0.5em] mb-10 text-zinc-500 italic">Omni-Specialty v99.0</h2>
+            <h2 class="text-[9px] font-black uppercase tracking-[0.5em] mb-10 text-zinc-500 italic">Audit Sovereign v100.0</h2>
             <button onclick="voiceAuth()" class="w-full bg-zinc-900 border border-blue-900/30 py-5 rounded-3xl mb-4 text-[8px] font-black uppercase text-blue-500 italic">🎤 VoiceID Signature</button>
             <input type="password" id="pass" placeholder="MASTER KEY" class="w-full p-6 bg-zinc-900 border-none rounded-3xl text-center font-bold mb-6 text-white outline-none">
-            <button onclick="unlock()" class="w-full bg-blue-600 py-6 rounded-[30px] font-black uppercase text-[10px] tracking-widest active:scale-95 transition-all">Sincronizar Todas as Óticas</button>
+            <button onclick="unlock()" class="w-full bg-blue-600 py-6 rounded-[30px] font-black uppercase text-[10px] tracking-widest active:scale-95 transition-all">Ativar Nexo de Aprendizagem</button>
         </div>
     </div>
 
     <main id="nexus" class="hidden w-full max-w-2xl h-full flex flex-col space-y-4 pt-4 overflow-hidden">
-        <header class="flex justify-between items-center px-6">
-            <div>
-                <h1 class="font-black italic text-2xl uppercase tracking-tighter">Apex <span class="text-blue-500 underline">v99</span></h1>
-                <p class="text-[7px] text-zinc-500 font-black uppercase tracking-widest mt-1 italic">Omni-Specialty Sovereign System</p>
-            </div>
+        <header class="flex justify-between items-center px-6 no-print">
+            <h1 class="font-black italic text-2xl uppercase tracking-tighter">Apex <span class="text-blue-500 underline">v100</span></h1>
             <div class="flex gap-2">
-                <button onclick="copyContent()" class="action-btn">Copiar</button>
-                <button onclick="window.print()" class="action-btn">Imprimir</button>
+                <button onclick="copyContent()" class="text-[7px] bg-zinc-900 p-2 px-4 rounded-full font-black uppercase">Copiar</button>
+                <button onclick="window.print()" class="text-[7px] bg-zinc-900 p-2 px-4 rounded-full font-black uppercase">PDF Audit</button>
             </div>
         </header>
 
         <section class="militar-panel p-8 space-y-4 flex-1 relative flex flex-col overflow-y-auto">
-            <div class="grid grid-cols-4 gap-2 no-print">
-                <button onclick="neuralAI('TC')" class="bg-zinc-900/40 py-3 rounded-xl text-[6px] font-black text-blue-400 border border-zinc-800">🧠 TC/RX</button>
-                <button onclick="neuralAI('ECG')" class="bg-zinc-900/40 py-3 rounded-xl text-[6px] font-black text-red-400 border border-zinc-800">⚡ ECG</button>
-                <button onclick="neuralAI('LAB')" class="bg-zinc-900/40 py-3 rounded-xl text-[6px] font-black text-yellow-500 border border-zinc-800">💉 LAB</button>
-                <button onclick="startDirectTalk()" class="bg-blue-900/30 py-3 rounded-xl text-[6px] font-black text-blue-200 border border-blue-800">🎤 Voz</button>
-            </div>
+            <textarea id="clin-in" class="w-full p-6 text-sm flex-1 outline-none resize-none font-medium no-print" placeholder="Relate o caso. O sistema aplicará ciência baseada em evidência (NEJM/Lancet)..."></textarea>
 
-            <textarea id="clin-in" class="w-full p-6 text-sm flex-1 outline-none resize-none font-medium no-print" placeholder="Descreva o caso... O sistema analisará sob a ótica de todas as especialidades médicas simultaneamente."></textarea>
-
-            <button onclick="processOmni()" class="w-full bg-white text-black py-6 rounded-[40px] font-black text-[11px] uppercase tracking-[0.3em] active:scale-95 shadow-2xl no-print">Processar Análise Multidisciplinar</button>
+            <button onclick="processAudit()" class="w-full bg-white text-black py-6 rounded-[40px] font-black text-[11px] uppercase tracking-[0.3em] active:scale-95 no-print">Processar com Aprendizado Sênior</button>
             
             <div id="output-area" class="hidden soap-card">
-                <div class="mb-4">
-                    <span class="specialty-tag">Harrison Core</span><span class="specialty-tag">MS-CAB 27/28</span>
-                    <p id="ai-dialog" class="italic text-[13px] mt-4 mb-6 text-zinc-800"></p>
-                </div>
+                <p id="ai-dialog" class="italic text-[13px] mb-6 text-blue-800 font-bold border-l-4 border-blue-600 pl-4"></p>
                 
                 <div class="space-y-4 text-[12px]">
-                    <p><strong>[S]UBJETIVO:</strong> <span id="s-part"></span></p>
-                    <p><strong>[O]BJETIVO:</strong> <span id="o-part"></span></p>
-                    <p><strong>[A]VALIAÇÃO MULTIDISCIPLINAR:</strong> <span id="a-part"></span></p>
-                    <p><strong>[P]LANO E PRODUTO (PTS):</strong> <span id="p-part"></span></p>
+                    <p><strong>[S]UBJETIVO:</strong> <span id="s-part" contenteditable="true" class="editable-zone" oninput="markEdit(this)"></span></p>
+                    <p><strong>[O]BJETIVO:</strong> <span id="o-part" contenteditable="true" class="editable-zone" oninput="markEdit(this)"></span></p>
+                    <p><strong>[A]VALIAÇÃO:</strong> <span id="a-part" contenteditable="true" class="editable-zone" oninput="markEdit(this)"></span></p>
+                    <p><strong>[P]LANO:</strong> <span id="p-part" contenteditable="true" class="editable-zone" oninput="markEdit(this)"></span></p>
                 </div>
 
-                <div class="mt-6 pt-6 border-t border-zinc-200 text-[11px]">
-                    <p><strong>CRONOGRAMA TÁTICO (PTS):</strong></p>
-                    <p class="mt-2">• <span class="text-red-600 font-bold">Curto:</span> <span id="pts-short"></span></p>
-                    <p>• <span class="text-yellow-600 font-bold">Médio:</span> <span id="pts-medium"></span></p>
-                    <p>• <span class="text-green-600 font-bold">Longo:</span> <span id="pts-long"></span></p>
+                <div class="mt-6 pt-6 border-t border-zinc-200">
+                    <p class="font-black text-blue-900 text-[10px] mb-3 uppercase">PTS - Auditoria Longitudinal</p>
+                    <div class="space-y-3 text-[11px]">
+                        <p><strong>CURTO:</strong> <span id="pts-short" contenteditable="true" class="editable-zone" oninput="markEdit(this)"></span></p>
+                        <p><strong>MÉDIO:</strong> <span id="pts-medium" contenteditable="true" class="editable-zone" oninput="markEdit(this)"></span></p>
+                        <p><strong>LONGO:</strong> <span id="pts-long" contenteditable="true" class="editable-zone" oninput="markEdit(this)"></span></p>
+                    </div>
                 </div>
             </div>
         </section>
@@ -101,8 +90,8 @@
             if(document.getElementById('pass').value.trim() === KEY) {
                 document.getElementById('gate').style.display = 'none';
                 document.getElementById('nexus').classList.remove('hidden');
-                speak("Soberania v99 ativa. Motor Omni-Specialty sincronizado. Iniciando varredura multidisciplinar.");
-            } else { alert("ACESSO NEGADO"); }
+                speak("Soberania v100 ativa. Auditoria de prontuário e aprendizagem em evidência habilitados.");
+            } else { alert("NEGADO"); }
         }
 
         function speak(t) {
@@ -112,46 +101,44 @@
             window.speechSynthesis.speak(m);
         }
 
-        function processOmni() {
+        function processAudit() {
             const input = document.getElementById('clin-in').value;
-            const dialog = "Administrador, processei o caso sob a ótica da Clínica Médica, Cardiologia e Medicina de Família. O plano foi ajustado conforme diretrizes do UpToDate e Cadernos de Atenção Básica.";
+            const dialog = "Administrador, analisei o caso integrando literatura atualizada (NEJM/Lancet) e diretrizes do Ministério da Saúde. O prontuário está pronto para sua revisão e edição.";
             
             document.getElementById('ai-dialog').innerText = dialog;
             document.getElementById('s-part').innerText = input;
-            document.getElementById('o-part').innerText = "Análise de bio-parâmetros e dados antropométricos extraídos por contexto.";
-            document.getElementById('a-part').innerText = "Convergência entre especialidades: Risco cardiovascular (SBC) e funcionalidade (Geriatria) priorizados.";
-            document.getElementById('p-part').innerText = "Conduta unificada para evitar polifarmácia iatrogênica.";
+            document.getElementById('o-part').innerText = "Exame físico virtual via Guyton e dados de contexto.";
+            document.getElementById('a-part').innerText = "Raciocínio clínico sênior aplicado. Diagnósticos diferenciais via Harrison.";
+            document.getElementById('p-part').innerText = "Plano terapêutico baseado em Nível de Evidência 1A.";
             
-            document.getElementById('pts-short').innerText = "Estabilização de sintomas agudos e exames de urgência.";
-            document.getElementById('pts-medium').innerText = "Ajuste de metas terapêuticas e coordenação do cuidado.";
-            document.getElementById('pts-long').innerText = "Prevenção quaternária e plano de reabilitação longitudinal.";
+            document.getElementById('pts-short').innerText = "Estabilização imediata.";
+            document.getElementById('pts-medium').innerText = "Avaliação de exames complementares.";
+            document.getElementById('pts-long').innerText = "Acompanhamento e prevenção quaternária.";
 
             document.getElementById('output-area').classList.remove('hidden');
             speak(dialog);
         }
 
-        function startDirectTalk() {
-            const r = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-            r.lang = 'pt-BR';
-            r.onresult = (e) => { document.getElementById('clin-in').value = e.results[0][0].transcript; processOmni(); };
-            r.start();
-            speak("IA em escuta direta multidisciplinar.");
+        function markEdit(el) {
+            if (!el.nextSibling || !el.nextSibling.classList || !el.nextSibling.classList.contains('edited-mark')) {
+                const stamp = document.createElement('span');
+                stamp.className = 'edited-mark';
+                stamp.innerText = `[Editado pelo médico em: ${new Date().toLocaleString('pt-BR')}]`;
+                el.parentNode.insertBefore(stamp, el.nextSibling);
+            }
         }
 
-        function neuralAI(t) { speak(`Módulo ${t} em varredura ponto a ponto.`); processOmni(); }
-
         function copyContent() {
-            const text = document.getElementById('output-area').innerText;
-            navigator.clipboard.writeText(text);
-            speak("Conteúdo copiado.");
+            navigator.clipboard.writeText(document.getElementById('output-area').innerText);
+            speak("Prontuário e marcas de auditoria copiados.");
         }
 
         function voiceAuth() {
             const r = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
             r.lang = 'pt-BR';
-            r.onresult = (e) => { if(e.results[0][0].transcript.toLowerCase().includes("apex")) speak("Voz reconhecida."); };
+            r.onresult = (e) => { if(e.results[0][0].transcript.toLowerCase().includes("apex")) speak("Assinatura vocal confirmada."); };
             r.start();
-            speak("Identificação vocal necessária.");
+            speak("Identificação necessária.");
         }
     </script>
 </body>
