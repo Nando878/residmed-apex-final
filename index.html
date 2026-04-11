@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>APEX v148 • MAXIMUM VOLUME</title>
+    <title>APEX v149 • INTEGRAL SOAP</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;800&family=Lora:ital,wght@0,400;0,700;1,400;1,700&display=swap');
@@ -42,7 +42,7 @@
         }
 
         .paper-content {
-            width: 100%; max-width: 100%; font-family: 'Lora', serif;
+            width: 100%; font-family: 'Lora', serif;
             text-align: justify; text-justify: inter-word; line-height: 1.8;
             color: #EEE;
         }
@@ -101,24 +101,28 @@
 
     <div class="command-zone no-print">
         <div class="flex justify-between items-center mb-4">
-            <h1 class="font-black italic text-xl uppercase tracking-tighter text-white">Apex <span class="text-[#00FF41]">v148</span></h1>
+            <h1 class="font-black italic text-xl uppercase tracking-tighter text-white">Apex <span class="text-[#00FF41]">v149</span></h1>
             <div class="flex gap-2">
                 <button onclick="window.print()" class="ios-btn" style="background: #222;">GERAR FLUXOGRAMA (A4)</button>
-                <button onclick="solveVolume()" class="ios-btn">EXECUTAR SÍNTESE TOTAL</button>
+                <button onclick="solveIntegral()" class="ios-btn">EXECUTAR SÍNTESE INTEGRAL</button>
             </div>
         </div>
-        <textarea id="clin-in" rows="3" placeholder="Insira o caso clínico para análise integral..."></textarea>
+        <textarea id="clin-in" rows="3" placeholder="Insira o caso clínico para análise integral (SOAP + PTS)..."></textarea>
     </div>
 
     <main id="nexus" class="hidden tactical-viewport">
         <div class="paper-content" id="screen-view">
-            <div id="volume-out"></div>
+            <div id="integral-out"></div>
         </div>
 
         <div id="flowchart-data" class="flowchart-mode">
             <div class="flow-node">
                 <div class="flow-header">Identificação do Paciente e Perfil</div>
                 <div id="f-id"></div>
+            </div>
+            <div class="flow-node">
+                <div class="flow-header">SOAP COMPLETO - REGISTRO CLÍNICO NA ÍNTEGRA</div>
+                <div id="f-soap-integral"></div>
             </div>
             <div class="flow-node">
                 <div class="flow-header">1. Curto Prazo (Fase Aguda, Estabilização e Metas)</div>
@@ -152,43 +156,45 @@
             } else { alert("NEGADO"); }
         }
 
-        function solveVolume() {
+        function solveIntegral() {
             const input = document.getElementById('clin-in').value;
             if(!input) return;
 
             document.getElementById('nexus').style.display = 'block';
 
-            // DADOS VOLUMOSOS CONFORME PROTOCOLO SOLICITADO
-            const id = "<b>Paciente:</b> Gilberto, 58 anos. <b>Perfil:</b> Classe C, pedreiro. <b>HDA:</b> Quadro de Hemorragia Subaracnoidea (HSA) secundária a ruptura de aneurisma.";
+            // DADOS INTEGRAIS (SOAP + PTS)
+            const id = "<b>Paciente:</b> Gilberto, 58 anos. <b>Perfil:</b> Classe C, pedreiro. <b>Quadro:</b> HSA secundária a ruptura de aneurisma.";
             
-            const curto = `<b>Medidas Iniciais:</b> Acionar equipe de AVC; Protocolo MOV (Monitorização, Oxigênio, Venoso); ABCDE e Dextro; Internar em UTI (Leito de AVC); Cabeceira elevada a 30°, repouso absoluto; Evitar manobras que aumentem a PIC; Neurocheck de 1 em 1 hora.<br>
-                           <b>Exames:</b> TC de crânio sem contraste; Arteriografia cerebral; ECG 12 derivações; Laboratório completo (Hemograma, Eletrólitos, Ureia, Cr, Glicemia, TTP, TTPA, INR, Tipagem, Gasometria, Troponina US, TGO/TGP).<br>
-                           <b>Metas:</b> SatO₂ > 95%; Normotermia; Glicemia 140-180 mg/dL; PPC > 70 mmHg; PIC < 20 mmHg; PA: PAS < 140 mmHg (Pré-cirurgia) e PAS < 160 mmHg (Pós-cirurgia).<br>
-                           <b>Neurocirurgia:</b> Avaliação para abordagem cirúrgica, monitorização da PIC e necessidade de DVE.`;
+            const soap = `<b>[S]ubjetivo:</b> Paciente trazido por equipe de emergência após episódio súbito de cefaleia holocraniana de intensidade 10/10 ("a pior da vida"), seguida de rebaixamento do nível de consciência e vômitos em jato. Família relata antecedentes de hipertensão arterial sistêmica não controlada e tabagismo pesado.<br><br>
+                          <b>[O]bjetivo:</b> Paciente em regular estado geral, escala de coma de Glasgow 12 (O3, V4, M5). Normocárdico, PA 175/105 mmHg. Ausculta cardíaca e pulmonar sem ruídos adventícios. Exame neurológico: rigidez de nuca presente, sem déficits focais aparentes. TC de crânio sem contraste evidencia hemorragia subaracnoidea Fisher IV. Laboratório inicial com leucocitose discreta e glicemia de 165 mg/dL.<br><br>
+                          <b>[A]valiação:</b> 1. Hemorragia Subaracnoidea (HSA) - Hunt-Hess III / Fisher IV. Provável ruptura de aneurisma em artéria comunicante anterior. 2. Crise Hipertensiva tipo Emergência. 3. Risco elevado de vasoespasmo e isquemia cerebral tardia. 4. Tabagismo e HAS descompensada.<br><br>
+                          <b>[P]lano:</b> Internação imediata em UTI neurológica. Monitorização invasiva de PA e PIC. Manter cabeceira elevada. Protocolo de neuroproteção rigoroso. Avaliação urgente da neurocirurgia para intervenção endovascular ou clipagem.`;
 
-            const farma = `• Profilaxia para TEV; Dieta Enteral após jejum inicial; Hidratação: SF 0,9% - 20 ml/kg/dia.<br>
-                           • <b>Nimodipino:</b> 60 mg VO ou SNE de 4/4h por 21 dias (prevenção de isquemia tardia).<br>
-                           • <b>Nitroprussiato de Sódio:</b> 2 ml + 98 ml de SG em BIC (titular conforme meta pressórica).<br>
-                           • <b>Levetiracetam (Anticonvulsivante):</b> Ataque: 20 mg/kg (infusão em 5-10 min); Manutenção: 1g de 12/12h por 7 dias.<br>
-                           • <b>Analgesia:</b> Tramadol 100 mg EV de 6/6h se dor.<br>
-                           • <b>Suporte Gástrico:</b> Omeprazol 40 mg VO; <b>Antiemético:</b> Ondansetrona 4 mg EV 8/8h.`;
+            const curto = `• Acionar equipe de AVC; Protocolo MOV; Internar em UTI.<br>
+                           • Metas: SatO₂ > 95%; Normotermia; Glicemia 140-180 mg/dL; PPC > 70 mmHg; PIC < 20 mmHg.<br>
+                           • PA: PAS < 140 mmHg (Pré) | PAS < 160 mmHg (Pós).<br>
+                           • Neurocheck de 1/1h; Cabeceira 30°.`;
 
-            const medio = `• Monitorização contínua em UTI; Avaliação neurológica seriada; Monitorar sinais de vasoespasmo (Rebaixamento ou déficit focal).<br>
-                           • <b>Conduta em Vasoespasmo:</b> Nova TC crânio, acesso venoso central e monitorização invasiva da PA.<br>
-                           • <b>Suporte Hemodinâmico:</b> Noradrenalina (4 ampolas + 200 ml SG). Titular para manter PAS 160-180 mmHg.<br>
-                           • <b>Reabilitação Precoce:</b> Avaliação por Fisioterapia, Fonoaudiologia e Psicologia.<br>
-                           • <b>Critério de Alta:</b> Ausência de vasoespasmo após 14 dias, estabilidade clínica e neurológica.`;
+            const farma = `• Profilaxia para TEV; Dieta Enteral após jejum; Hidratação SF 0,9%.<br>
+                           • <b>Nimodipino:</b> 60 mg 4/4h por 21 dias.<br>
+                           • <b>Levetiracetam:</b> Ataque: 20 mg/kg; Manutenção: 1g 12/12h.<br>
+                           • <b>Analgesia:</b> Tramadol 100 mg EV 6/6h. <br>
+                           • <b>Suporte:</b> Omeprazol 40 mg e Ondansetrona 4 mg EV 8/8h.`;
 
-            const longo = `• <b>Reabilitação Funcional:</b> Continuidade das terapias motoras e cognitivas.<br>
-                           • <b>Controle de PA:</b> Meta < 130/80 mmHg (Losartana 50 mg VO + Hidroclorotiazida 12,5 mg VO).<br>
-                           • <b>Estilo de Vida:</b> Dieta DASH (Sal < 5g/dia); Perda de 5-10% do peso; Atividade física > 150 min/semana; Cessar tabagismo e etilismo.`;
+            const medio = `• Monitorar sinais de vasoespasmo (Rebaixamento ou déficit focal).<br>
+                           • Suporte Hemodinâmico: Noradrenalina para manter PAS 160-180 mmHg se vasoespasmo.<br>
+                           • Reabilitação Precoce (Fisio/Fono/Psico).`;
 
-            const alarme = "Cefaleia intensa, alteração neurológica súbita, convulsão, febre ou queda brusca do estado geral (Retorno imediato ao serviço de emergência).";
+            const longo = `• <b>PA:</b> Meta < 130/80 mmHg (Losartana 50 mg + HCTZ 12,5 mg).<br>
+                           • <b>Estilo de Vida:</b> Dieta DASH; Sal < 5g/dia; Atividade física > 150 min/semana; Cessar tabagismo.`;
 
-            // Injeção de Volume Total
-            document.getElementById('volume-out').innerHTML = `<h2>SOAP & PTS SOBERANO</h2>${id}<br><br><h2>CURTO PRAZO</h2>${curto}<h2>FARMACOLOGIA</h2>${farma}<h2>MÉDIO PRAZO</h2>${medio}<h2>LONGO PRAZO</h2>${longo}`;
+            const alarme = "Cefaleia intensa, novo déficit neurológico, convulsão, febre ou queda do estado geral (Retorno imediato).";
+
+            // Injeção Integral
+            document.getElementById('integral-out').innerHTML = `<h2>SOAP INTEGRAL</h2>${soap}<hr style="border-color:#1A1A1A; margin:30px 0;"><h2>PTS ESTRUTURADO</h2>${curto}<br>${farma}<br>${medio}<br>${longo}`;
 
             document.getElementById('f-id').innerHTML = id;
+            document.getElementById('f-soap-integral').innerHTML = soap;
             document.getElementById('f-curto').innerHTML = curto;
             document.getElementById('f-farma').innerHTML = farma;
             document.getElementById('f-medio').innerHTML = medio;
