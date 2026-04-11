@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>APEX v145 • SOVEREIGN ONYX</title>
+    <title>APEX v146 • FLOWCHART ARCHITECT</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;800&family=Lora:ital,wght@0,400;0,700;1,400;1,700&display=swap');
@@ -11,20 +11,18 @@
         :root { 
             --mil-phosphor: #00FF41; 
             --mil-bg: #000000; 
-            --mil-olive: #0A0F08; /* Verde quase preto para profundidade */
-            --ios-blue: #007AFF; 
+            --mil-olive: #0A0F08;
             --mil-border: #1A1A1A;
-            --ios-red: #FF3B30;
+            --ios-blue: #007AFF;
         }
 
         body { 
             font-family: 'JetBrains Mono', monospace; background-color: var(--mil-bg); 
             color: var(--mil-phosphor); margin: 0; padding: 0;
-            overflow: hidden; width: 100vw; height: 100vh;
-            display: flex; flex-direction: column;
+            overflow-x: hidden; width: 100vw; display: flex; flex-direction: column;
         }
 
-        /* ÁREA DE COMANDO (INPUT) - COMPACTA NO TOPO */
+        /* ÁREA DE INPUT COMPACTA */
         .command-zone {
             flex: none; padding: 20px; background: var(--mil-bg);
             border-bottom: 1px solid var(--mil-border); z-index: 10;
@@ -33,66 +31,69 @@
         textarea { 
             background: #111; border: 1px solid var(--mil-border); 
             color: #FFF; border-radius: 15px; padding: 20px; font-size: 16px; 
-            width: 100%; outline: none; resize: none; font-family: 'JetBrains Mono';
-            box-sizing: border-box;
+            width: 100%; outline: none; resize: none;
         }
 
-        /* PAINEL TÁTICO EXPANSIVO - OCUPA O RESTANTE DA TELA */
+        /* PAINEL DE EXIBIÇÃO EM TELA */
         .tactical-viewport { 
             flex: 1; width: 100%; background-color: var(--mil-olive); 
-            padding: 40px 60px; overflow-y: auto; box-sizing: border-box;
-            display: none; /* Só aparece quando executado */
+            padding: 40px; box-sizing: border-box; display: none;
         }
 
-        .paper-content {
-            max-width: 100%; margin: 0 auto; font-family: 'Lora', serif;
-            text-align: justify; text-justify: inter-word; line-height: 1.8;
-        }
+        .soap-content { text-align: justify; line-height: 1.6; font-family: 'Lora', serif; }
 
-        .safety-alert {
-            background: rgba(255, 59, 48, 0.1); border: 1px solid var(--ios-red);
-            border-radius: 15px; padding: 25px; margin-bottom: 40px;
-        }
-
-        h2 { 
-            font-family: 'JetBrains Mono'; font-weight: 800; text-transform: uppercase; 
-            font-size: 14px; color: #FFF; letter-spacing: 3px;
-            margin: 45px 0 20px 0; border-bottom: 1px solid var(--mil-border); padding-bottom: 10px;
-        }
-
-        /* BOTÕES APPLE TITANIUM */
+        /* ESTILO DOS BOTÕES */
         .ios-btn { 
-            background-color: var(--ios-blue); color: #FFFFFF; border-radius: 14px; 
-            font-weight: 800; padding: 12px 24px; text-transform: uppercase;
-            font-size: 11px; letter-spacing: 1px; border: none; cursor: pointer;
-            transition: 0.2s;
+            background-color: var(--ios-blue); color: #FFF; border-radius: 12px; 
+            font-weight: 800; padding: 12px 20px; text-transform: uppercase;
+            font-size: 10px; border: none; cursor: pointer;
         }
-        .ios-btn:active { transform: scale(0.96); }
 
-        /* PTS - ROLAGEM HORIZONTAL INTEGRADA */
-        .pts-scroll {
-            width: 100%; overflow-x: auto; margin-top: 30px; border-radius: 15px;
-            border: 1px solid var(--mil-border); background: rgba(0,0,0,0.5);
-        }
-        .pts-track { display: flex; gap: 20px; min-width: 1000px; padding: 20px; }
-        .pts-column {
-            flex: 1; min-width: 320px; background: rgba(255,255,255,0.03);
-            padding: 25px; border-radius: 15px; border: 1px solid var(--mil-border);
-        }
-        .pts-label { color: var(--ios-blue); font-size: 10px; font-weight: 800; text-transform: uppercase; margin-top: 15px; display: block; }
-        .pts-val { font-size: 14px; color: var(--mil-phosphor); line-height: 1.5; font-family: 'JetBrains Mono'; }
+        /* ROLAGEM PTS */
+        .pts-track { display: flex; gap: 15px; overflow-x: auto; padding: 20px 0; }
+        .pts-box { min-width: 300px; background: rgba(255,255,255,0.03); padding: 20px; border: 1px solid var(--mil-border); border-radius: 15px; }
 
-        /* GATE 7400 */
+        /* -------------------------------------------------------------------------- */
+        /* CONFIGURAÇÃO DO FLUXOGRAMA PARA IMPRESSÃO (A4) E TELA COMPLETA             */
+        /* -------------------------------------------------------------------------- */
+        @media print {
+            @page { size: A4 portrait; margin: 10mm; }
+            body { background: #FFF !important; color: #000 !important; }
+            .no-print { display: none !important; }
+            .tactical-viewport { display: block !important; background: #FFF !important; padding: 0 !important; }
+            
+            /* Transformação em Fluxograma */
+            .soap-content, .pts-track { display: none !important; }
+            
+            .flowchart-mode {
+                display: flex !important; flex-direction: column; gap: 10px;
+                font-family: "Times New Roman", Times, serif !important;
+                font-size: 8pt !important; width: 100%;
+            }
+            
+            .flow-node {
+                border: 1pt solid #000; padding: 10px; margin-bottom: 5px;
+                text-align: center; position: relative; width: 100%;
+            }
+            
+            .flow-node::after {
+                content: "↓"; display: block; font-size: 12pt; margin-top: 5px;
+            }
+            .flow-node:last-child::after { content: ""; }
+            
+            .flow-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+            .flow-sub-node { border: 0.5pt solid #000; padding: 5px; }
+        }
+
+        #flowchart-data { display: none; } /* Invisível na tela normal */
         #gate { position: fixed; inset: 0; background: #000; z-index: 1000; display: flex; items: center; justify-content: center; }
-        .auth-card { background: #0A0A0A; padding: 50px; border-radius: 30px; border: 1px solid #333; text-align: center; }
     </style>
 </head>
 <body>
 
     <div id="gate">
-        <div class="auth-card">
-            <div class="w-16 h-16 bg-white text-black rounded-[20px] flex items-center justify-center font-black text-4xl mx-auto mb-8 italic shadow-[0_0_30px_rgba(255,255,255,0.2)]">Ω</div>
-            <h2 class="text-[10px] font-bold text-gray-500 uppercase tracking-[0.5em] mb-10">MASTER KEY 7400</h2>
+        <div class="bg-[#0A0F08] p-12 rounded-3xl border border-[#333] text-center">
+            <h2 class="text-[10px] font-bold text-gray-500 uppercase tracking-[0.5em] mb-8 text-white">CHAVE: 7400</h2>
             <input type="password" id="pass" class="w-full p-4 bg-black rounded-xl text-center font-bold mb-8 text-[#00FF41] outline-none border border-[#333]">
             <button onclick="unlock()" class="ios-btn w-full">AUTORIZAR</button>
         </div>
@@ -100,65 +101,32 @@
 
     <div class="command-zone no-print">
         <div class="flex justify-between items-center mb-4">
-            <h1 class="font-black italic text-xl uppercase tracking-tighter text-white">Apex <span class="text-[#00FF41]">v145</span></h1>
+            <h1 class="font-black italic text-xl uppercase text-white">Apex <span class="text-[#00FF41]">v146</span></h1>
             <div class="flex gap-2">
-                <button onclick="window.print()" class="ios-btn" style="background: #222;">PDF A4</button>
-                <button onclick="solveTactical()" class="ios-btn">EXECUTAR INFERÊNCIA</button>
+                <button onclick="window.print()" class="ios-btn" style="background: #222;">GERAR FLUXOGRAMA (A4)</button>
+                <button onclick="solveArchitect()" class="ios-btn">EXECUTAR</button>
             </div>
         </div>
-        <textarea id="clin-in" rows="3" placeholder="COLE O CASO CLÍNICO AQUI..."></textarea>
+        <textarea id="clin-in" rows="3" placeholder="COLE O CASO AQUI..."></textarea>
     </div>
 
     <main id="nexus" class="hidden tactical-viewport">
-        <div class="paper-content">
-            <div id="safety-alert" class="safety-alert hidden">
-                <h3 class="text-[#FF3B30] font-black text-xs uppercase mb-3 tracking-widest">⚠️ ALERTAS DE SEGURANÇA</h3>
-                <div id="alert-list" class="text-sm font-bold text-[#FF3B30]"></div>
-            </div>
+        <div class="soap-content" id="screen-view">
+            <h2 class="text-white uppercase font-bold text-xs mb-4">SÍNTESE CLÍNICA</h2>
+            <div id="soap-out" class="text-white"></div>
+        </div>
 
-            <p id="ai-dialog" class="italic text-[22px] mb-12 text-white font-bold border-l-4 border-[#00FF41] pl-8"></p>
-            
-            <h2>[S] SUBJETIVO</h2>
-            <div id="s-part" class="mb-10 text-white"></div>
-
-            <h2>[O] OBJETIVO</h2>
-            <div id="o-part" class="mb-10 text-white"></div>
-
-            <h2>[A] AVALIAÇÃO DIAGNÓSTICA</h2>
-            <div id="a-part" class="mb-10 text-white"></div>
-
-            <h2>[P] PLANO DE CONDUTA</h2>
-            <div id="p-part" class="mb-10 text-white"></div>
-
-            <h2>DISPENSAÇÃO E FARMACOLOGIA</h2>
-            <div id="prescricao-list"></div>
-
-            <h2>PROJETO TERAPÊUTICO SINGULAR (PTS)</h2>
-            <div class="pts-scroll">
-                <div class="pts-track">
-                    <div class="pts-column">
-                        <div class="font-bold text-white border-b border-[#333] mb-4 pb-2">CURTO PRAZO</div>
-                        <span class="pts-label">Ação Estratégica</span><div id="pts-c-a" class="pts-val"></div>
-                        <span class="pts-label">Responsável</span><div id="pts-c-r" class="pts-val"></div>
-                        <span class="pts-label">Critérios de Sucesso</span><div id="pts-c-s" class="pts-val"></div>
-                    </div>
-                    <div class="pts-column">
-                        <div class="font-bold text-white border-b border-[#333] mb-4 pb-2">MÉDIO PRAZO</div>
-                        <span class="pts-label">Ação Estratégica</span><div id="pts-m-a" class="pts-val"></div>
-                        <span class="pts-label">Responsável</span><div id="pts-m-r" class="pts-val"></div>
-                        <span class="pts-label">Critérios de Sucesso</span><div id="pts-m-s" class="pts-val"></div>
-                    </div>
-                    <div class="pts-column">
-                        <div class="font-bold text-white border-b border-[#333] mb-4 pb-2">LONGO PRAZO</div>
-                        <span class="pts-label">Ação Estratégica</span><div id="pts-l-a" class="pts-val"></div>
-                        <span class="pts-label">Responsável</span><div id="pts-l-r" class="pts-val"></div>
-                        <span class="pts-label">Critérios de Sucesso</span><div id="pts-l-s" class="pts-val"></div>
-                    </div>
+        <div id="flowchart-data" class="flowchart-mode">
+            <div class="flow-node"><strong>ENTRADA (ANAMNESE):</strong><br><span id="flow-s"></span></div>
+            <div class="flow-node"><strong>DADOS OBJETIVOS & EXAMES:</strong><br><span id="flow-o"></span></div>
+            <div class="flow-node"><strong>HIPÓTESES DIAGNÓSTICAS (CARDIOPAPERS/USP):</strong><br><span id="flow-a"></span></div>
+            <div class="flow-node"><strong>CONDUTA IMEDIATA & TERAPÊUTICA:</strong><br><span id="flow-p"></span></div>
+            <div class="flow-node"><strong>PROJETO TERAPÊUTICO SINGULAR (PTS)</strong>
+                <div class="flow-grid">
+                    <div class="flow-sub-node"><strong>CURTO PRAZO:</strong><br><span id="flow-ptsc"></span></div>
+                    <div class="flow-sub-node"><strong>MÉDIO PRAZO:</strong><br><span id="flow-ptsm"></span></div>
+                    <div class="flow-sub-node"><strong>LONGO PRAZO:</strong><br><span id="flow-ptsl"></span></div>
                 </div>
-            </div>
-            
-            <div class="text-center mt-20 text-[9px] uppercase font-bold text-zinc-700 tracking-[0.5em]">
-                Sovereign Oracle v145 • Precision Engine
             </div>
         </div>
     </main>
@@ -169,47 +137,36 @@
             if(document.getElementById('pass').value === KEY) {
                 document.getElementById('gate').style.display = 'none';
                 document.getElementById('nexus').classList.remove('hidden');
-            } else { alert("ACESSO NEGADO"); }
+            } else { alert("NEGADO"); }
         }
 
-        function solveTactical() {
-            const input = document.getElementById('clin-in').value.toLowerCase();
+        function solveArchitect() {
+            const input = document.getElementById('clin-in').value;
             if(!input) return;
 
-            document.getElementById('ai-dialog').innerText = "Processando via Neural Core USP & Lasmar Ginecologia...";
             document.getElementById('nexus').style.display = 'block';
+            
+            // Simulação de Processamento Sênior
+            const s = "Sr. Arlindo, 74 anos. Declínio funcional agudo (72h), inapetência e flutuação de consciência. Relato de sundowning. Antecedentes: HPB e Amitriptilina.";
+            const o = "Desidratado, PA 110/60 mmHg. Bexigoma presente. Creatinina 1.9, Leucocitose 13.500, nitrito (+).";
+            const a = "1. Delirium hipoativo (foco infeccioso urinário). 2. ITU complicada. 3. IRA KDIGO 2. 4. Iatrogenia (Beers): Amitriptilina.";
+            const p = "Sondagem vesical imediata. Hidratação controlada NaCl 0,9%. Descontinuação imediata de Amitriptilina.";
+            
+            const ptsc = "Estabilização renal e Trial without catheter em 48h.";
+            const ptsm = "Avaliação urológica (RTU) pós-estabilização.";
+            const ptsl = "Avaliação geriátrica abrangente pós-delirium.";
 
-            // MOTOR DE SEGURANÇA E INFERÊNCIA
-            setTimeout(() => {
-                let alerts = [];
-                if(input.includes("74") || input.includes("idoso")) alerts.push("🚩 RISCO DE QUEDAS/FRAGILIDADE.");
-                if(input.includes("amitriptilina")) alerts.push("🚩 IATROGENIA DETECTADA (BEERS 2023).");
-                if(input.includes("1.9")) alerts.push("🚩 INJÚRIA RENAL AGUDA (KDIGO 2).");
+            // Preenche visualização de tela
+            document.getElementById('soap-out').innerHTML = `<b>S:</b> ${s}<br><br><b>O:</b> ${o}<br><br><b>A:</b> ${a}<br><br><b>P:</b> ${p}`;
 
-                if(alerts.length > 0) {
-                    document.getElementById('safety-alert').classList.remove('hidden');
-                    document.getElementById('alert-list').innerHTML = alerts.map(a => `<div>${a}</div>`).join('');
-                }
-
-                document.getElementById('s-part').innerText = "Sr. Arlindo, 74 anos. Declínio funcional agudo (72h), inapetência e flutuação de consciência. Relato de sundowning.";
-                document.getElementById('o-part').innerText = "Desidratado, PA 110/60 mmHg. Bexigoma presente. Creatinina 1.9, Leucocitose 13.500, nitrito (+).";
-                document.getElementById('a-part').innerText = "Delirium hipoativo (foco infeccioso urinário), ITU complicada, IRA KDIGO 2 e Iatrogenia por Amitriptilina.";
-                document.getElementById('p-part').innerText = "Sondagem vesical imediata. Hidratação controlada NaCl 0,9%. Descontinuação imediata de Amitriptilina.";
-                
-                document.getElementById('pts-c-a').innerText = "Trial without catheter (TWOC).";
-                document.getElementById('pts-c-r').innerText = "Equipe de Enfermagem/Médica.";
-                document.getElementById('pts-c-s').innerText = "Sucesso na micção espontânea.";
-
-                document.getElementById('prescricao-list').innerHTML = `
-                    <div class="p-5 border border-[#333] rounded-xl bg-white/5 mb-4">
-                        <strong class="text-white">Ciprofloxacino 500mg</strong><br>
-                        12/12h por 14 dias (Protocolo USP).
-                    </div>
-                `;
-
-                document.getElementById('ai-dialog').innerText = "Síntese Sênior Concluída.";
-                document.getElementById('nexus').scrollTop = 0;
-            }, 1200);
+            // Preenche dados para o Fluxograma (Impressão)
+            document.getElementById('flow-s').innerText = s;
+            document.getElementById('flow-o').innerText = o;
+            document.getElementById('flow-a').innerText = a;
+            document.getElementById('flow-p').innerText = p;
+            document.getElementById('flow-ptsc').innerText = ptsc;
+            document.getElementById('flow-ptsm').innerText = ptsm;
+            document.getElementById('flow-ptsl').innerText = ptsl;
         }
     </script>
 </body>
