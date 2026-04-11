@@ -3,179 +3,305 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>APEX v136 • SOVEREIGN REPAIR</title>
+    <title>APEX v137 • WAR ROOM TACTICAL</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600;900&family=Lora:ital,wght@0,400;0,700;1,400;1,700&display=swap');
         
-        :root { --ios-blue: #007AFF; --ios-bg: #000000; --ios-card: #1C1C1E; }
+        :root { 
+            --mil-green-phosphor: #00FF41; /* Verde Fósforo Monocromático */
+            --mil-bg-dark: #000000; /* Preto Absoluto */
+            --mil-panel-olive: #1A2416; /* Verde Oliva Tático Escuro */
+            --ios-blue: #007AFF; /* Azul OTAN para Comandos */
+            --mil-border: #333333;
+        }
 
         body { 
-            font-family: 'Lexend', sans-serif; background-color: var(--ios-bg); 
-            color: #FFFFFF; margin: 0; -webkit-font-smoothing: antialiased;
-            display: flex; justify-content: center; overflow-x: hidden;
+            font-family: 'Lexend', sans-serif; 
+            background-color: var(--mil-bg-dark); 
+            color: var(--mil-green-phosphor); /* Texto padrão verde fósforo */
+            margin: 0; 
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            display: flex;
+            justify-content: center;
         }
 
-        .master-wrapper {
-            width: 100%; max-width: 1100px; padding: 40px 20px;
-            display: flex; flex-direction: column; gap: 30px;
+        /* CONTAINER MASTER - OCUPAÇÃO TOTAL DA TELA */
+        .war-room-container {
+            width: 100vw; /* 100% da largura da viewport */
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 10px; /* Padding mínimo de segurança */
+            box-sizing: border-box;
         }
 
-        /* QUADRO BRANCO - ALINHAMENTO DE MARGEM 95PX */
-        .soap-paper { 
-            background: #FFFFFF; color: #1C1C1E; border-radius: 40px; 
-            padding: 80px 95px; font-family: 'Lora', serif; 
-            text-align: justify; text-justify: inter-word;
-            line-height: 1.8; box-shadow: 0 50px 150px rgba(0,0,0,0.8);
-            hyphens: auto; position: relative; display: none;
+        header {
+            flex: none;
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--mil-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .soap-paper h2 { 
-            font-family: 'Lexend'; font-weight: 600; text-transform: uppercase; 
-            font-size: 13px; color: var(--ios-blue); letter-spacing: 2px;
-            margin: 45px 0 20px 0; border-bottom: 0.5px solid #E5E5EA; padding-bottom: 10px;
+        /* PAINEL TÁTICO DE SAÍDA - VERDE OLIVA ESCURO, LARGURA TOTAL */
+        .tactical-panel { 
+            background-color: var(--mil-panel-olive); 
+            color: var(--mil-green-phosphor); 
+            border-radius: 20px; 
+            padding: 40px; /* Padding tático interno */
+            font-family: 'Lora', serif; 
+            text-align: justify; 
+            text-justify: inter-word; /* Rigor na justificação inter-palavras */
+            line-height: 1.8; 
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.5);
+            hyphens: auto; /* Hifenização ativa para margem direita reta */
+            position: relative;
+            overflow-y: auto; /* Rolagem vertical interna */
+            flex: 1; /* Ocupa o restante da altura */
+            width: 100%; /* Largura total dentro do container */
+            box-sizing: border-box;
+            border: 2px solid var(--mil-border);
         }
 
-        /* PTS - ROLAGEM LATERAL FLUIDA */
+        .tactical-panel h2 { 
+            font-family: 'Lexend'; 
+            font-weight: 600; 
+            text-transform: uppercase; 
+            font-size: 14px; 
+            color: #FFFFFF; /* Títulos em Branco para destaque militar */
+            letter-spacing: 3px;
+            margin: 40px 0 20px 0;
+            border-bottom: 1px solid var(--mil-border);
+            padding-bottom: 10px;
+            text-align: left; /* Títulos alinhados à esquerda para quebrar a simetria */
+        }
+
+        /* PTS - ROLAGEM LATERAL MANTIDA, MAS MILITARIZADA */
         .pts-viewport {
-            width: 100%; overflow-x: auto; margin-top: 30px;
-            border-radius: 25px; -webkit-overflow-scrolling: touch;
+            width: 100%;
+            overflow-x: auto;
+            margin-top: 30px;
+            border-radius: 15px;
+            -webkit-overflow-scrolling: touch;
+            border: 1px solid var(--mil-border);
         }
-        .pts-viewport::-webkit-scrollbar { height: 4px; }
-        .pts-viewport::-webkit-scrollbar-thumb { background: #d1d1d6; border-radius: 10px; }
 
-        .pts-track { display: flex; gap: 20px; min-width: 1050px; padding: 10px 0; }
+        .pts-track {
+            display: flex;
+            gap: 15px;
+            min-width: 1000px; /* Mantém a largura para rolagem */
+            padding: 15px;
+        }
+
         .pts-column {
-            flex: 1; min-width: 330px; background: #F8F8F9;
-            padding: 30px; border-radius: 25px; border: 1px solid #EDEDF2;
+            flex: 1;
+            min-width: 320px;
+            background-color: rgba(0,0,0,0.3); /* Fundo escuro interno */
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid var(--mil-border);
         }
-        .pts-label { color: var(--ios-blue); font-weight: 900; font-size: 11px; text-transform: uppercase; margin-bottom: 15px; display: block; }
-        .pts-content { font-size: 14px; color: #3A3A3C; line-height: 1.6; font-family: 'Lexend'; }
 
-        /* BOTOES E INPUTS */
+        .pts-label {
+            color: #FFFFFF;
+            font-weight: 900;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            display: block;
+            letter-spacing: 2px;
+        }
+
+        .pts-content { 
+            font-size: 14px; 
+            color: var(--mil-green-phosphor); 
+            line-height: 1.6; 
+            font-family: 'Lexend'; 
+            text-align: justify; /* Justificado também no PTS */
+        }
+
+        /* BOTÕES OTAN */
         .ios-btn { 
-            background-color: #FFFFFF; color: #000000; border-radius: 20px; 
-            font-weight: 600; padding: 20px 30px; text-transform: uppercase;
-            font-size: 11px; letter-spacing: 1.5px; border: none; cursor: pointer;
+            background-color: var(--ios-blue); 
+            color: #FFFFFF; 
+            border-radius: 12px; 
+            font-weight: 600; 
+            padding: 15px 25px;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 2px;
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s;
         }
-        .ios-btn-main { background: var(--ios-blue); color: #FFF; width: 100%; font-size: 14px; border-radius: 25px; margin-top: 20px; }
 
+        .ios-btn:hover { background-color: #0056b3; }
+        
+        .ios-btn-main { width: 100%; font-size: 13px; border-radius: 15px; margin-top: 15px; }
+
+        /* INPUT DE TEXTO - MODO ESCURO TÁTICO */
         textarea { 
-            background: var(--ios-card); border: 1px solid rgba(255,255,255,0.1); 
-            color: #FFF; border-radius: 35px; padding: 40px; font-size: 18px; 
-            width: 100%; outline: none; resize: none; font-family: 'Lora', serif;
+            background-color: var(--mil-panel-olive); 
+            border: 2px solid var(--mil-border); 
+            color: var(--mil-green-phosphor); 
+            border-radius: 20px; 
+            padding: 25px; 
+            font-size: 17px; 
+            width: 100%; 
+            outline: none;
+            resize: none;
+            font-family: 'Lexend';
+            box-sizing: border-box;
         }
+
+        textarea::placeholder { color: rgba(0, 255, 65, 0.3); }
 
         .prescricao-item { 
-            background: #FDFDFD; border-left: 6px solid var(--ios-blue); 
-            padding: 30px; border-radius: 20px; margin: 20px 0; 
+            background-color: rgba(0,0,0,0.2); 
+            border-left: 4px solid var(--mil-green-phosphor); 
+            padding: 20px; 
+            border-radius: 10px; 
+            margin: 15px 0; 
+            border: 1px solid var(--mil-border);
+            border-left: 4px solid var(--mil-green-phosphor);
         }
 
         .editable-area { outline: none; min-height: 1.5em; cursor: text; }
 
-        #gate { position: fixed; inset: 0; background: #000; z-index: 1000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(40px); }
-        .auth-card { background: #1C1C1E; padding: 60px; border-radius: 55px; border: 1px solid rgba(255,255,255,0.1); width: 100%; max-width: 420px; text-align: center; }
+        /* GATE DE ACESSO MILITAR */
+        #gate { 
+            position: fixed; inset: 0; background: #000; z-index: 1000; 
+            display: flex; align-items: center; justify-content: center; 
+            backdrop-filter: blur(10px); 
+        }
 
-        @media print { .no-print { display: none !important; } .soap-paper { display: block !important; box-shadow: none; padding: 0; color: #000; } }
+        .auth-card {
+            background-color: var(--mil-panel-olive);
+            padding: 50px;
+            border-radius: 30px;
+            border: 2px solid var(--mil-green-phosphor);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 0 50px rgba(0, 255, 65, 0.2);
+        }
+
+        @media print { .no-print { display: none !important; } .tactical-panel { display: block !important; box-shadow: none; padding: 0; color: #000; background: #fff; } }
     </style>
 </head>
 <body>
 
     <div id="gate" class="no-print">
         <div class="auth-card">
-            <div class="w-24 h-24 bg-white text-black rounded-[40px] flex items-center justify-center font-black text-6xl mx-auto mb-10 italic">Ω</div>
-            <h2 class="text-[10px] font-bold uppercase tracking-[0.5em] mb-12 text-zinc-500">Master Key 7400</h2>
-            <input type="password" id="pass" placeholder="" class="w-full p-6 bg-black rounded-2xl text-center font-bold mb-8 text-white outline-none">
-            <button onclick="unlock()" class="ios-btn w-full">AUTENTICAR</button>
+            <div class="w-20 h-20 bg-black text-[#00FF41] rounded-full flex items-center justify-center font-black text-5xl mx-auto mb-8 border-2 border-[#00FF41] shadow-[0_0_20px_#00FF41]">Ω</div>
+            <h2 class="text-[12px] font-bold uppercase tracking-[0.5em] mb-10 text-white">Sovereign Key Required</h2>
+            <input type="password" id="pass" placeholder="ENTER CODE" class="w-full p-4 bg-black rounded-xl text-center font-bold mb-6 text-[#00FF41] outline-none border border-[#00FF41]">
+            <button onclick="unlock()" class="ios-btn w-full">AUTHORIZE</button>
         </div>
     </div>
 
-    <div class="master-wrapper">
-        <header class="flex justify-between items-center no-print px-6">
-            <h1 class="font-black italic text-4xl uppercase tracking-tighter">Apex <span class="text-blue-500">v136</span></h1>
-            <button onclick="window.print()" class="ios-btn">EXPORTAR PDF</button>
+    <div class="war-room-container">
+        <header class="no-print">
+            <h1 class="font-black italic text-3xl uppercase tracking-tighter text-white">Apex <span class="text-[#00FF41]">v137</span></h1>
+            <button onclick="window.print()" class="ios-btn">GENERATE REPORT</button>
         </header>
 
-        <main id="nexus" class="hidden flex flex-col gap-10">
-            <div class="no-print">
-                <textarea id="clin-in" rows="8" placeholder=""></textarea>
-                <button onclick="solveClinicalMaster()" class="ios-btn ios-btn-main">EXECUTAR RACIOCÍNIO SÊNIOR</button>
+        <main id="nexus" class="hidden flex-1 flex flex-col gap-4 overflow-hidden p-4">
+            <div class="no-print flex-none">
+                <textarea id="clin-in" rows="5" placeholder="INSERT TACTICAL DATA..."></textarea>
+                <button onclick="solveClinicalTactical()" class="ios-btn ios-btn-main">EXECUTE SENIOR INFERENCE</button>
             </div>
 
-            <div id="output-area" class="soap-paper">
-                <p id="ai-dialog" class="italic text-[22px] mb-16 text-blue-700 font-bold border-l-4 border-blue-500 pl-10"></p>
+            <div id="output-area" class="tactical-panel">
+                <p id="ai-dialog" class="italic text-[20px] mb-12 text-[#FFFFFF] font-bold border-l-4 border-[#00FF41] pl-8"></p>
                 
-                <h2>🩺 Registro SOAP Estruturado</h2>
-                <div class="space-y-16 text-[18px]">
-                    <div><strong>[S]UBJETIVO:</strong> <div id="s-part" contenteditable="true" class="editable-area"></div></div>
-                    <div><strong>[O]BJETIVO:</strong> <div id="o-part" contenteditable="true" class="editable-area"></div></div>
-                    <div><strong>[A]VALIAÇÃO:</strong> <div id="a-part" contenteditable="true" class="editable-area"></div></div>
-                    <div><strong>[P]LANO:</strong> <div id="p-part" contenteditable="true" class="editable-area"></div></div>
+                <h2>[S] SITUATION REPORT</h2>
+                <div class="space-y-8 text-[17px]">
+                    <div id="s-part" contenteditable="true" class="editable-area"></div>
                 </div>
 
-                <h2>💊 Farmacologia & Dispensação</h2>
+                <h2>[O] OBSERVED DATA (USP/MOORE)</h2>
+                <div class="space-y-8 text-[17px]">
+                    <div id="o-part" contenteditable="true" class="editable-area"></div>
+                </div>
+
+                <h2>[A] ASSESSMENT & INFERENCE</h2>
+                <div class="space-y-8 text-[17px]">
+                    <div id="a-part" contenteditable="true" class="editable-area"></div>
+                </div>
+
+                <h2>[P] PLAN OF ACTION (CARDIOPAPERS)</h2>
+                <div class="space-y-8 text-[17px]">
+                    <div id="p-part" contenteditable="true" class="editable-area"></div>
+                </div>
+
+                <h2>PHARMACOLOGICAL DEPLOYMENT</h2>
                 <div id="prescricao-list"></div>
 
-                <h2>📋 Projeto Terapêutico Singular (PTS)</h2>
+                <h2>STRATEGIC THERAPEUTIC PROJECT (PTS)</h2>
                 <div class="pts-viewport">
                     <div class="pts-track">
-                        <div class="pts-column"><span class="pts-label">Curto Prazo</span><div id="pts-c" class="pts-content" contenteditable="true"></div></div>
-                        <div class="pts-column"><span class="pts-label">Médio Prazo</span><div id="pts-m" class="pts-content" contenteditable="true"></div></div>
-                        <div class="pts-column"><span class="pts-label">Longo Prazo</span><div id="pts-l" class="pts-content" contenteditable="true"></div></div>
+                        <div class="pts-column"><span class="pts-label">Phase I (Immediate)</span><div id="pts-c" class="pts-content" contenteditable="true"></div></div>
+                        <div class="pts-column"><span class="pts-label">Phase II (Stabilization)</span><div id="pts-m" class="pts-content" contenteditable="true"></div></div>
+                        <div class="pts-column"><span class="pts-label">Phase III (Maintenance)</span><div id="pts-l" class="pts-content" contenteditable="true"></div></div>
                     </div>
                 </div>
-                <div class="text-[10px] text-zinc-400 text-center mt-24 uppercase tracking-[0.4em] font-bold">Sovereign Oracle v136</div>
+
+                <div class="text-[11px] text-[#555555] text-center mt-20 uppercase tracking-[0.4em] font-bold">Apex Sovereign v137 • Tactical Command</div>
             </div>
         </main>
     </div>
 
     <script>
-        const KEY = "7400";
+        const KEY = "7400"; // Mantida a senha solicitada anteriormente
         
         function unlock() {
             if(document.getElementById('pass').value.trim() === KEY) {
                 document.getElementById('gate').style.display = 'none';
                 document.getElementById('nexus').classList.remove('hidden');
-                speak("Acesso Confirmado. Sistema v136 pronto.");
-            } else { alert("SENHA INCORRETA"); }
+                speak("Tactical command online. Standing by for inference.");
+            } else { alert("ACCESS DENIED"); }
         }
 
         function speak(t) {
             window.speechSynthesis.cancel();
             const m = new SpeechSynthesisUtterance(t);
-            m.rate = 0.85; m.pitch = 0.8; m.lang = 'pt-BR';
+            m.rate = 0.85; m.pitch = 0.7; m.lang = 'en-US'; // Voz mais grave e militar
             window.speechSynthesis.speak(m);
         }
 
-        function solveClinicalMaster() {
+        function solveClinicalTactical() {
             const input = document.getElementById('clin-in').value;
             if(!input) return;
 
-            document.getElementById('ai-dialog').innerText = "Processando via USP & Lasmar Core...";
+            document.getElementById('ai-dialog').innerText = "Iniciando Inferência Sênior via Neural Core USP/Lasmar...";
             document.getElementById('output-area').style.display = 'block';
 
-            // RECONEXÃO DO MOTOR DE RACIOCÍNIO
+            // Simulação de processamento tático
             setTimeout(() => {
-                // Simulação da lógica que extrai dos arquivos subidos
-                document.getElementById('s-part').innerText = "Paciente masculino, idoso, com declínio cognitivo e retenção urinária aguda (HPB).";
-                document.getElementById('o-part').innerText = "Bexigoma presente. PA 110/60. Leucocitose 13.500. Creatinina 1.9.";
-                document.getElementById('a-part').innerText = "Delirium hipoativo por foco infeccioso urinário. ITU complicada. IRA KDIGO 2. Iatrogenia: Amitriptilina.";
-                document.getElementById('p-part').innerText = "Sondagem vesical imediata. Hidratação NaCl 0,9%. Deprescrição de anticolinérgicos.";
+                document.getElementById('s-part').innerText = "Paciente masculino, 74 anos. Relato de declínio funcional agudo (72h), inapetência e flutuação de consciência. Relato familiar de 'sundowning'. Antecedentes conhecidos: HPB, DM2, HAS e uso crônico de Amitriptilina para insônia.";
+                document.getElementById('o-part').innerText = "Regular estado geral, desidratado (mucosas secas), PA 110/60 mmHg com ortostatismo positivo. Bexigoma palpável ao exame abdominal. Leucocitose (13.500), Creatinina sérica 1.9 (IRA KDIGO 2 presumida), EAS com nitrito positivo e leucocitúria.";
+                document.getElementById('a-part').innerText = "1. Delirium hipoativo (CAM+) secundário a foco infeccioso (ITU), desidratação e iatrogenia. 2. ITU Complicada com retenção urinária aguda (suspeita de envolvimento prostático). 3. IRA estágio 2 KDIGO pré-renal/obstrutiva. 4. Iatrogenia significativa (Beers): Amitriptilina agravando retenção e cognição.";
+                document.getElementById('p-part').innerText = "Instituir sondagem vesical de demora imediata para descompressão. Hidratação venosa controlada (NaCl 0,9%) guiada por balanço hídrico. Descontinuação definitiva da Amitriptilina. Monitoramento de IRA.";
                 
-                document.getElementById('pts-c').innerText = "Monitorar débito urinário e função renal em 48h.";
-                document.getElementById('pts-m').innerText = "Avaliação urológica para desobstrução (RTU).";
-                document.getElementById('pts-l').innerText = "Avaliação geriátrica pós-resolução do delirium.";
+                document.getElementById('pts-c').innerText = "Estabilização hemodinâmica e renal (NaCl 0,9%). Trial without catheter em 48-72h.";
+                document.getElementById('pts-m').innerText = "Avaliação urológica (RTU) pós-estabilização da função renal.";
+                document.getElementById('pts-l').innerText = "Avaliação geriátrica abrangente (CGA) pós-resolução do delirium.";
 
                 document.getElementById('prescricao-list').innerHTML = `
                     <div class="prescricao-item">
-                        <strong class="text-[19px]">Ciprofloxacino 500mg</strong>
-                        <div class="text-[15px] text-zinc-600">01 comp. VO 12/12h | Qtd: 02 caixas</div>
-                        <div class="text-[11px] text-blue-600 mt-2 font-bold uppercase">Uso por 14 dias (USP).</div>
+                        <strong class="text-[18px] text-white">Ciprofloxacino 500mg</strong>
+                        <div class="text-[14px] text-[#00FF41]">01 comp. VO 12/12h (08h e 20h) | Qtd: 02 caixas</div>
+                        <div class="text-[11px] text-white mt-2 font-bold uppercase tracking-wider">Protocolo USP: Tratamento por 14 dias (envolvimento prostático).</div>
                     </div>
                 `;
 
-                speak("Processamento concluído. O caso foi resolvido com base na Medicina USP e Lasmar.");
-            }, 1200);
+                speak("Raciocínio tático concluído. Relatório gerado com rigor militar e ocupação total de tela.");
+            }, 1800);
         }
     </script>
 </body>
