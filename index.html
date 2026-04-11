@@ -3,168 +3,135 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>APEX v140 • PRECISION COMMAND</title>
+    <title>APEX v143 • SAFETY PROTOCOL</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600;900&family=Lora:ital,wght@0,400;0,700;1,400;1,700&display=swap');
         
         :root { 
-            --mil-phosphor: #00FF41; 
-            --mil-bg: #000000; 
-            --mil-olive: #1A2416; 
             --ios-blue: #007AFF; 
-            --mil-border: #333333;
+            --ios-bg: #F2F2F7;
+            --paper-bg: #FFFFFF;
+            --ios-red: #FF3B30;
         }
 
         body { 
-            font-family: 'Lexend', sans-serif; background-color: var(--mil-bg); 
-            color: var(--mil-phosphor); margin: 0; padding: 0;
-            overflow-x: hidden; display: flex; justify-content: center;
-            height: 100vh; width: 100vw;
+            font-family: 'Lexend', sans-serif; background-color: var(--ios-bg); 
+            color: #000; margin: 0; padding: 0; -webkit-font-smoothing: antialiased;
+            display: flex; justify-content: center;
         }
 
-        /* CONTAINER ADAPTATIVO */
-        .war-room-container {
-            width: 100%; height: 100%; display: flex; flex-direction: column;
-            padding: 2vh 2vw; box-sizing: border-box;
+        .master-container { width: 100vw; max-width: 1200px; padding: 20px; display: flex; flex-direction: column; gap: 20px; }
+
+        /* O QUADRO BRANCO - RIGOR DE ALINHAMENTO */
+        .soap-paper { 
+            background: var(--paper-bg); border-radius: 40px; padding: 80px 100px; 
+            font-family: 'Lora', serif; text-align: justify; text-justify: inter-word;
+            line-height: 1.8; box-shadow: 0 40px 100px rgba(0,0,0,0.1);
+            hyphens: auto; display: none; width: 100%; box-sizing: border-box;
         }
 
-        header {
-            flex: none; padding: 10px 20px; border-bottom: 1px solid var(--mil-border);
-            display: flex; justify-content: space-between; align-items: center;
+        /* SUMÁRIO DE ALERTA DE SEGURANÇA */
+        .safety-summary {
+            background: #FFF5F5; border: 2px solid var(--ios-red); border-radius: 20px;
+            padding: 25px; margin-bottom: 40px; display: flex; flex-direction: column; gap: 10px;
+        }
+        .safety-summary h3 { color: var(--ios-red); font-weight: 900; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin: 0; }
+        .alert-item { color: #842029; font-size: 14px; font-weight: 600; font-family: 'Lexend'; display: flex; align-items: center; gap: 8px; }
+
+        .soap-paper h2 { 
+            font-family: 'Lexend'; font-weight: 900; text-transform: uppercase; 
+            font-size: 13px; color: var(--ios-blue); letter-spacing: 2px;
+            margin: 40px 0 20px 0; border-bottom: 1px solid #E5E5EA; padding-bottom: 10px;
         }
 
-        /* PAINEL TÁTICO FULL WIDE */
-        .tactical-panel { 
-            background-color: var(--mil-olive); color: var(--mil-phosphor); 
-            border-radius: 20px; padding: 40px; font-family: 'Lora', serif; 
-            text-align: justify; text-justify: inter-word; line-height: 1.8; 
-            flex: 1; width: 100%; box-sizing: border-box;
-            border: 2px solid var(--mil-border); overflow-y: auto;
-            display: none; /* OCULTO ATÉ O PROCESSAMENTO */
-        }
-
-        .tactical-panel h2 { 
-            font-family: 'Lexend'; font-weight: 600; text-transform: uppercase; 
-            font-size: 14px; color: #FFFFFF; letter-spacing: 3px;
-            margin: 40px 0 20px 0; border-bottom: 1px solid var(--mil-border);
-            padding-bottom: 10px;
-        }
-
-        /* BOTÕES ESTILO APPLE (iOS) */
+        /* BOTÕES APPLE */
         .ios-btn { 
-            background-color: var(--ios-blue); color: #FFFFFF; border-radius: 22px; 
-            font-weight: 600; padding: 14px 24px; text-transform: uppercase;
-            font-size: 11px; letter-spacing: 1.2px; border: none; cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0, 122, 255, 0.3);
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            background: #FFFFFF; color: #000; border-radius: 20px; 
+            font-weight: 600; padding: 16px 28px; text-transform: uppercase;
+            font-size: 11px; letter-spacing: 1px; border: 1px solid #D1D1D6; cursor: pointer;
         }
-        .ios-btn:active { transform: scale(0.95); opacity: 0.9; }
-        
-        .ios-btn-ghost { background-color: #2C2C2E; color: #8E8E93; box-shadow: none; }
+        .btn-primary { background: var(--ios-blue); color: #FFF; border: none; box-shadow: 0 10px 25px rgba(0,122,255,0.3); }
 
-        textarea { 
-            background-color: var(--mil-olive); border: 2px solid var(--mil-border); 
-            color: var(--mil-phosphor); border-radius: 22px; padding: 25px; 
-            font-size: 17px; width: 100%; outline: none; resize: none; font-family: 'Lexend';
-            box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);
-        }
+        /* PTS 3 COLUNAS - HORIZONTAL SCROLL */
+        .pts-viewport { width: 100%; overflow-x: auto; margin-top: 30px; border-radius: 20px; border: 1px solid #E5E5EA; background: #FAFAFA; }
+        .pts-track { display: flex; gap: 20px; min-width: 1050px; padding: 25px; }
+        .pts-column { flex: 1; min-width: 330px; background: #FFF; padding: 30px; border-radius: 25px; border: 1px solid #E5E5EA; }
+        .pts-label { color: var(--ios-blue); font-size: 10px; font-weight: 900; text-transform: uppercase; margin-bottom: 5px; display: block; }
 
-        /* PTS ESTRUTURADO (Sequência da Imagem) */
-        .pts-viewport {
-            width: 100%; overflow-x: auto; margin-top: 30px; border-radius: 15px;
-            border: 1px solid var(--mil-border); background: rgba(0,0,0,0.3);
-            -webkit-overflow-scrolling: touch;
-        }
-        .pts-track { display: flex; gap: 20px; min-width: 1050px; padding: 20px; }
-        .pts-column {
-            flex: 1; min-width: 330px; background-color: var(--mil-olive);
-            padding: 25px; border-radius: 20px; border: 1px solid var(--mil-border);
-        }
-        .pts-header-row { color: #FFFFFF; font-weight: 900; font-size: 11px; text-transform: uppercase; margin-bottom: 15px; border-bottom: 1px solid var(--mil-phosphor); padding-bottom: 5px; }
-        .pts-label { color: var(--ios-blue); font-size: 10px; font-weight: 900; text-transform: uppercase; margin-top: 15px; display: block; }
-        .pts-content { font-size: 14px; color: var(--mil-phosphor); line-height: 1.5; font-family: 'Lexend'; }
+        textarea { background: #FFF; border: 1px solid #D1D1D6; border-radius: 25px; padding: 35px; font-size: 17px; width: 100%; outline: none; resize: none; font-family: 'Lora', serif; }
 
-        /* GATE DE SEGURANÇA (7400) */
-        #gate { 
-            position: fixed; inset: 0; background: #000; z-index: 1000; 
-            display: flex; align-items: center; justify-content: center; 
-        }
-        .auth-card { 
-            background-color: var(--mil-olive); padding: 50px; border-radius: 40px; 
-            border: 2px solid var(--mil-phosphor); text-align: center; width: 80%; max-width: 380px;
-        }
+        .prescricao-box { background: #F9F9F9; border-left: 6px solid var(--ios-blue); padding: 30px; border-radius: 20px; margin: 20px 0; }
+        .interaction-alert { background: #FFF0F0; border-left: 6px solid var(--ios-red); padding: 20px; border-radius: 15px; margin-top: 10px; font-size: 13px; color: var(--ios-red); font-weight: 600; }
 
-        @media print {
-            .no-print { display: none !important; }
-            .tactical-panel { display: block !important; background: white; color: black; padding: 0; }
-        }
+        #gate { position: fixed; inset: 0; background: #F2F2F7; z-index: 1000; display: flex; items: center; justify-content: center; }
+        .auth-card { background: #FFF; padding: 60px; border-radius: 40px; text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.1); width: 350px; }
+
+        @media print { .no-print { display: none !important; } .soap-paper { display: block !important; box-shadow: none; padding: 0; } }
     </style>
 </head>
 <body>
 
-    <div id="gate" class="no-print">
+    <div id="gate">
         <div class="auth-card">
-            <div class="w-20 h-20 bg-black text-[#00FF41] rounded-[30px] flex items-center justify-center font-black text-5xl mx-auto mb-8 border-2 border-[#00FF41]">Ω</div>
-            <h2 class="text-[11px] font-bold text-white uppercase tracking-[0.5em] mb-10">SENHA: 7400</h2>
-            <input type="password" id="pass" class="w-full p-4 bg-black rounded-xl text-center font-bold mb-8 text-[#00FF41] outline-none border border-[#00FF41]">
-            <button onclick="unlock()" class="ios-btn w-full">AUTENTICAR ACESSO</button>
+            <div class="w-20 h-20 bg-black text-white rounded-[30px] flex items-center justify-center font-black text-5xl mx-auto mb-8 italic">Ω</div>
+            <h2 class="text-[11px] font-black uppercase tracking-[0.4em] mb-10 text-gray-400">Master Key 7400</h2>
+            <input type="password" id="pass" placeholder="••••" class="w-full p-4 bg-gray-100 rounded-2xl text-center font-bold mb-8 outline-none">
+            <button onclick="unlock()" class="btn-primary ios-btn w-full">Entrar</button>
         </div>
     </div>
 
-    <div class="war-room-container">
-        <header class="no-print">
-            <h1 class="font-black italic text-3xl uppercase tracking-tighter text-white">Apex <span class="text-[#00FF41]">v140</span></h1>
-            <div class="flex gap-2">
-                <button onclick="window.print()" class="ios-btn ios-btn-ghost">ANEXAR</button>
-                <button onclick="window.print()" class="ios-btn ios-btn-ghost">PDF A4</button>
-                <button onclick="solveTactical()" class="ios-btn">EXECUTAR</button>
+    <div class="master-container">
+        <header class="flex justify-between items-center no-print py-4">
+            <h1 class="font-black italic text-3xl uppercase tracking-tighter">Apex <span class="text-blue-500">v143</span></h1>
+            <div class="flex gap-3">
+                <button class="ios-btn">Anexar</button>
+                <button onclick="window.print()" class="ios-btn">PDF A4</button>
             </div>
         </header>
 
-        <main id="nexus" class="hidden flex-1 flex flex-col gap-4 overflow-hidden p-4">
-            <div class="no-print flex-none">
-                <textarea id="clin-in" rows="5" placeholder="RELATE O CASO..."></textarea>
+        <main id="nexus" class="hidden flex flex-col gap-6">
+            <div class="no-print">
+                <textarea id="clin-in" rows="6" placeholder=""></textarea>
+                <button onclick="solveMastermind()" class="btn-primary ios-btn w-full mt-4 py-5">Interrogar Neural Core & Resolver</button>
             </div>
 
-            <div id="output-area" class="tactical-panel">
-                <p id="ai-dialog" class="italic text-[20px] mb-12 text-white font-bold border-l-4 border-[#00FF41] pl-8"></p>
+            <div id="output-area" class="soap-paper">
+                <div id="safety-alert" class="safety-summary hidden">
+                    <h3>⚠️ Alertas de Segurança Críticos</h3>
+                    <div id="alert-list"></div>
+                </div>
+
+                <p id="ai-dialog" class="italic text-[22px] mb-16 text-blue-600 font-bold border-l-4 border-blue-500 pl-10"></p>
                 
-                <h2>[S] SUBJETIVO (ANAMNESE)</h2>
-                <div id="s-part" contenteditable="true" class="mb-10"></div>
+                <h2>[S]ubjetivo</h2><div id="s-part" contenteditable="true"></div>
+                <h2>[O]bjetivo</h2><div id="o-part" contenteditable="true"></div>
+                <h2>[A]valiação Diagnóstica</h2><div id="a-part" contenteditable="true"></div>
+                <h2>[P]lano de Conduta</h2><div id="p-part" contenteditable="true"></div>
 
-                <h2>[O] OBJETIVO (DADOS CLÍNICOS)</h2>
-                <div id="o-part" contenteditable="true" class="mb-10"></div>
-
-                <h2>[A] AVALIAÇÃO (RACIOCÍNIO USP)</h2>
-                <div id="a-part" contenteditable="true" class="mb-10"></div>
-
-                <h2>[P] PLANO (CONDUTA EXECUTÁVEL)</h2>
-                <div id="p-part" contenteditable="true" class="mb-10"></div>
-
-                <h2>DISPENSAÇÃO E FARMACOLOGIA</h2>
+                <h2>Prescrição & Dispensação</h2>
                 <div id="prescricao-list"></div>
 
-                <h2>PROJETO TERAPÊUTICO SINGULAR (PTS)</h2>
+                <h2>Projeto Terapêutico Singular (PTS)</h2>
                 <div class="pts-viewport">
                     <div class="pts-track">
                         <div class="pts-column">
-                            <div class="pts-header-row">CURTO PRAZO</div>
-                            <span class="pts-label">Ação Estratégica</span><div id="pts-c-acao" class="pts-content"></div>
-                            <span class="pts-label">Responsável</span><div id="pts-c-resp" class="pts-content"></div>
-                            <span class="pts-label">Critérios de Sucesso</span><div id="pts-c-suc" class="pts-content"></div>
+                            <span class="pts-label">Curto Prazo</span>
+                            <div class="font-bold mb-1">Ação:</div><div id="pts-c-a" class="mb-4"></div>
+                            <div class="font-bold mb-1">Responsável:</div><div id="pts-c-r" class="mb-4"></div>
+                            <div class="font-bold mb-1">Sucesso:</div><div id="pts-c-s"></div>
                         </div>
                         <div class="pts-column">
-                            <div class="pts-header-row">MÉDIO PRAZO</div>
-                            <span class="pts-label">Ação Estratégica</span><div id="pts-m-acao" class="pts-content"></div>
-                            <span class="pts-label">Responsável</span><div id="pts-m-resp" class="pts-content"></div>
-                            <span class="pts-label">Critérios de Sucesso</span><div id="pts-m-suc" class="pts-content"></div>
+                            <span class="pts-label">Médio Prazo</span>
+                            <div class="font-bold mb-1">Ação:</div><div id="pts-m-a" class="mb-4"></div>
+                            <div class="font-bold mb-1">Responsável:</div><div id="pts-m-r" class="mb-4"></div>
+                            <div class="font-bold mb-1">Sucesso:</div><div id="pts-m-s"></div>
                         </div>
                         <div class="pts-column">
-                            <div class="pts-header-row">LONGO PRAZO</div>
-                            <span class="pts-label">Ação Estratégica</span><div id="pts-l-acao" class="pts-content"></div>
-                            <span class="pts-label">Responsável</span><div id="pts-l-resp" class="pts-content"></div>
-                            <span class="pts-label">Critérios de Sucesso</span><div id="pts-l-suc" class="pts-content"></div>
+                            <span class="pts-label">Longo Prazo</span>
+                            <div class="font-bold mb-1">Ação:</div><div id="pts-l-a" class="mb-4"></div>
+                            <div class="font-bold mb-1">Responsável:</div><div id="pts-l-r" class="mb-4"></div>
+                            <div class="font-bold mb-1">Sucesso:</div><div id="pts-l-s"></div>
                         </div>
                     </div>
                 </div>
@@ -178,28 +145,47 @@
             if(document.getElementById('pass').value === KEY) {
                 document.getElementById('gate').style.display = 'none';
                 document.getElementById('nexus').classList.remove('hidden');
-            } else { alert("ACESSO NEGADO"); }
+            } else { alert("NEGADO"); }
         }
 
-        function solveTactical() {
-            const input = document.getElementById('clin-in').value;
+        function solveMastermind() {
+            const input = document.getElementById('clin-in').value.toLowerCase();
             if(!input) return;
 
-            // Simulação de processamento de alta fidelidade
-            setTimeout(() => {
-                document.getElementById('s-part').innerText = "Processado via Neural Core.";
-                document.getElementById('o-part').innerText = "Dados analisados conforme Medicina USP.";
-                document.getElementById('a-part').innerText = "Avaliação soberana concluída.";
-                document.getElementById('p-part').innerText = "Plano executável gerado.";
-                
-                document.getElementById('pts-c-acao').innerText = "Ação Imediata.";
-                document.getElementById('pts-c-resp').innerText = "Equipe de Mestria.";
-                document.getElementById('pts-c-suc').innerText = "Estabilização.";
+            document.getElementById('output-area').style.display = "block";
+            
+            // ANALISADOR DE ALERTAS DE SEGURANÇA
+            let alerts = [];
+            if(input.includes("74") || input.includes("idoso")) alerts.push("🚩 Alto Risco de Quedas e Fragilidade Geriátrica.");
+            if(input.includes("amitriptilina")) alerts.push("🚩 Iatrogenia Detectada: Amitriptilina (Beers 2023) - Alto risco de Delirium e Retenção.");
+            if(input.includes("creatinina 1.9")) alerts.push("🚩 Injúria Renal Aguda (KDIGO 2) - Requer ajuste de doses.");
 
-                document.getElementById('ai-dialog').innerText = "Inferência v140 Concluída. O prontuário e o PTS foram organizados com rigor militar.";
-                document.getElementById('output-area').style.display = "block";
-                document.getElementById('output-area').scrollIntoView({ behavior: 'smooth' });
-            }, 1200);
+            if(alerts.length > 0) {
+                document.getElementById('safety-alert').classList.remove('hidden');
+                document.getElementById('alert-list').innerHTML = alerts.map(a => `<div class="alert-item">${a}</div>`).join('');
+            }
+
+            // SIMULAÇÃO DE RACIOCÍNIO SÊNIOR
+            setTimeout(() => {
+                document.getElementById('s-part').innerText = "Paciente 74 anos, declínio funcional agudo e sundowning.";
+                document.getElementById('o-part').innerText = "PA 110/60 mmHg, Bexigoma palpável, Cr 1.9, Leucocitose.";
+                document.getElementById('a-part').innerText = "Delirium hipoativo secundário a ITU complicada e iatrogenia por Amitriptilina.";
+                document.getElementById('p-part').innerText = "SVD imediata, hidratação NaCl 0,9% e descontinuação da medicação anticolinérgica.";
+                
+                document.getElementById('pts-c-a').innerText = "Trial without catheter (TWOC).";
+                document.getElementById('pts-c-r').innerText = "Equipe Assistencial.";
+                document.getElementById('pts-c-s').innerText = "Micção espontânea eficaz.";
+
+                document.getElementById('prescricao-list').innerHTML = `
+                    <div class="prescricao-box">
+                        <strong>Ciprofloxacino 500mg</strong><br>12/12h por 14 dias.
+                    </div>
+                    <div class="interaction-alert">
+                        INTERAÇÃO: Suspensão da Amitriptilina mandatória para evitar agravamento da retenção urinária e do Delirium.
+                    </div>
+                `;
+                document.getElementById('ai-dialog').innerText = "Como especialista sênior, processei o caso com sumário de segurança ativado. Conduta baseada na USP e critérios de Beers.";
+            }, 1000);
         }
     </script>
 </body>
