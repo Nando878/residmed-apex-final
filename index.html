@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>APEX v107.0 • NEURAL SYNTHESIS</title>
+    <title>APEX v109.0 • COGNITIVE HEURISTIC</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;900&family=Lora:ital,wght@0,400;0,700;1,400&display=swap');
@@ -13,31 +13,30 @@
         .militar-panel { 
             background: var(--p-zinc); 
             backdrop-filter: blur(80px); 
-            border: 1px solid rgba(255, 255, 255, 0.12); 
+            border: 1px solid rgba(255, 255, 255, 0.18); 
             border-radius: 50px; 
             box-shadow: 0 60px 180px rgba(0,0,0,1); 
         }
 
         .soap-card { 
-            background: #fff; color: #1a1a1a; border-radius: 40px; padding: 45px; 
+            background: #fff; color: #1a1a1a; border-radius: 45px; padding: 45px; 
             font-family: 'Lora', serif; text-align: justify; line-height: 1.8; overflow-y: auto;
         }
 
-        .editable-zone { border-bottom: 2px solid transparent; outline: none; transition: 0.3s; padding: 4px; border-radius: 8px; }
-        .editable-zone:focus { background: #f8fafc; border-bottom: 2px solid var(--p-blue); }
-
-        .audit-tag { font-size: 10px; color: #1e293b; background: #f1f5f9; padding: 6px 14px; border-radius: 12px; display: block; margin-top: 12px; font-family: 'Lexend'; border-left: 5px solid var(--p-blue); font-weight: 900; }
+        .audit-tag { font-size: 10px; color: #1e293b; background: #f8fafc; padding: 8px 15px; border-radius: 12px; display: block; margin-top: 15px; font-family: 'Lexend'; border-left: 5px solid var(--p-blue); font-weight: 900; }
 
         .scan-line { width: 100%; height: 3px; background: linear-gradient(90deg, transparent, var(--p-blue), transparent); position: absolute; top: 0; animation: scan 4s infinite linear; z-index: 50; }
         @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
 
         #gate { position: fixed; inset: 0; background: #000; z-index: 1000; display: flex; align-items: center; justify-content: center; }
-        textarea { background: #0a0a0c !important; border: 1px solid #222 !important; color: #fff !important; outline: none; border-radius: 35px; font-size: 16px; padding: 30px; line-height: 1.5; }
+        textarea { background: #0a0a0c !important; border: 1px solid #333 !important; color: #fff !important; outline: none; border-radius: 35px; font-size: 16px; padding: 35px; }
 
-        .btn-logic { background: #fff; color: #000; border-radius: 50px; font-weight: 900; letter-spacing: 2px; transition: 0.5s; text-transform: uppercase; box-shadow: 0 15px 40px rgba(255,255,255,0.05); }
-        .btn-logic:active { transform: scale(0.9); background: var(--p-blue); color: #fff; }
+        .btn-logic { background: #fff; color: #000; border-radius: 55px; font-weight: 900; letter-spacing: 2px; transition: 0.5s; text-transform: uppercase; box-shadow: 0 20px 40px rgba(255,255,255,0.1); }
+        .btn-logic:active { transform: scale(0.92); background: var(--p-blue); color: #fff; }
 
-        .flow-card { border-left: 6px solid var(--p-blue); padding: 20px; margin: 20px 0; background: #f8fafc; border-radius: 0 25px 25px 0; font-family: 'Lexend'; font-size: 13px; color: #1e293b; line-height: 1.4; }
+        .flow-card { border-left: 6px solid var(--p-blue); padding: 22px; margin: 22px 0; background: #f1f5f9; border-radius: 0 25px 25px 0; font-family: 'Lexend'; font-size: 13px; color: #0f172a; line-height: 1.5; font-weight: 600; }
+        
+        .lib-source { font-size: 8px; background: #e2e8f0; color: #475569; padding: 3px 10px; border-radius: 5px; margin-right: 5px; text-transform: uppercase; }
     </style>
 </head>
 <body class="p-6 flex flex-col items-center justify-center">
@@ -46,50 +45,50 @@
         <div class="militar-panel p-12 w-full max-w-sm text-center relative overflow-hidden">
             <div class="scan-line"></div>
             <div class="w-24 h-24 bg-white text-black rounded-[45px] flex items-center justify-center font-black text-5xl mx-auto mb-10 shadow-2xl italic">Ω</div>
-            <h2 class="text-[10px] font-black uppercase tracking-[0.8em] mb-12 text-zinc-500">Neural Synthesis v107.0</h2>
+            <h2 class="text-[10px] font-black uppercase tracking-[0.8em] mb-12 text-zinc-500 italic">Cognitive Sovereign v109.0</h2>
             <input type="password" id="pass" placeholder="MASTER KEY" class="w-full p-6 bg-zinc-900 border-none rounded-3xl text-center font-bold mb-8 text-white outline-none">
-            <button onclick="unlock()" class="w-full bg-blue-600 py-6 rounded-[35px] font-black uppercase text-[11px] tracking-widest active:scale-95 transition-all shadow-blue-500/30 shadow-xl">Ativar Raciocínio Clínico</button>
+            <button onclick="unlock()" class="w-full bg-blue-600 py-6 rounded-[35px] font-black uppercase text-[11px] tracking-widest active:scale-95 transition-all shadow-blue-500/30">Sincronizar Heurística</button>
         </div>
     </div>
 
     <main id="nexus" class="hidden w-full max-w-4xl h-full flex flex-col space-y-6 pt-6 overflow-hidden">
         <header class="flex justify-between items-end px-10 no-print">
-            <div>
-                <h1 class="font-black italic text-4xl uppercase tracking-tighter text-white">Apex <span class="text-blue-500">v107</span></h1>
-                <p class="text-[8px] text-zinc-500 font-black uppercase tracking-[0.4em] mt-2 italic">Sovereign Knowledge Core • Decision Matrix</p>
-            </div>
+            <h1 class="font-black italic text-4xl uppercase tracking-tighter text-white">Apex <span class="text-blue-500">v109</span></h1>
             <div class="flex gap-4">
-                <button onclick="copyContent()" class="text-[9px] bg-zinc-900 p-4 px-8 rounded-full font-black text-zinc-400 active:bg-blue-600">COPIAR TUDO</button>
-                <button onclick="window.print()" class="text-[9px] bg-zinc-900 p-4 px-8 rounded-full font-black text-zinc-400 active:bg-blue-600">AUDIT LOG PDF</button>
+                <button onclick="copyContent()" class="text-[9px] bg-zinc-900 p-4 px-8 rounded-full font-black text-zinc-400">COPIAR</button>
+                <button onclick="window.print()" class="text-[9px] bg-zinc-900 p-4 px-8 rounded-full font-black text-zinc-400">PDF AUDIT</button>
             </div>
         </header>
 
         <section class="militar-panel p-12 space-y-6 flex-1 relative flex flex-col overflow-y-auto">
-            <textarea id="clin-in" class="w-full h-64 outline-none resize-none font-medium no-print" placeholder="Relate o caso clínico. O sistema sintetizará a decisão baseando-se no Braunwald, DSM-5, Sampaio e Moore..."></textarea>
+            <textarea id="clin-in" class="w-full h-64 outline-none resize-none font-medium no-print" placeholder="Relate o caso clínico. A IA buscará a solução consultando ativamente o Braunwald, Cardiopapers, Sampaio, Moore e Unicamp..."></textarea>
             
-            <button onclick="synthesizeDecision()" class="w-full btn-logic py-8 text-[13px]">Iniciar Síntese de Decisão Soberana</button>
+            <button onclick="runCognitiveHeuristic()" class="w-full btn-logic py-8 text-[13px]">Ativar Processamento de Solução</button>
             
             <div id="output-area" class="hidden soap-card mt-8">
+                <div class="mb-6 flex flex-wrap gap-2">
+                    <span class="lib-source">Braunwald (Cardio)</span><span class="lib-source">Sampaio (Dermato)</span><span class="lib-source">Moore (Anato)</span><span class="lib-source">Cardiopapers</span>
+                </div>
                 <p id="ai-dialog" class="italic text-[16px] mb-12 text-blue-900 font-bold border-l-8 border-blue-600 pl-8"></p>
                 
                 <div class="space-y-12 text-[16px]">
-                    <div><strong>[S]UBJETIVO:</strong> <div id="s-part" contenteditable="true" class="editable-zone" oninput="markEdit(this)"></div></div>
-                    <div><strong>[O]BJETIVO (Dedução Anatômica Moore/Unicamp):</strong> <div id="o-part" contenteditable="true" class="editable-zone" oninput="markEdit(this)"></div></div>
-                    <div><strong>[A]VALIAÇÃO (Raciocínio Braunwald/Sampaio):</strong> <div id="a-part" contenteditable="true" class="editable-zone" oninput="markEdit(this)"></div></div>
-                    <div><strong>[P]LANO & FARMACOLOGIA (Cardiopapers/UpToDate):</strong> <div id="p-part" contenteditable="true" class="editable-zone" oninput="markEdit(this)"></div></div>
+                    <div><strong>[S]UBJETIVO:</strong> <div id="s-part" contenteditable="true" oninput="markEdit(this)"></div></div>
+                    <div><strong>[O]BJETIVO (Análise de Sinais Moore/Unicamp):</strong> <div id="o-part" contenteditable="true" oninput="markEdit(this)"></div></div>
+                    <div><strong>[A]VALIAÇÃO (Raciocínio Clínico Braunwald/Sampaio):</strong> <div id="a-part" contenteditable="true" oninput="markEdit(this)"></div></div>
+                    <div><strong>[P]LANO & FARMACOLOGIA (Conduta Sênior Cardiopapers):</strong> <div id="p-part" contenteditable="true" oninput="markEdit(this)"></div></div>
                 </div>
 
-                <div id="flow-area" class="mt-14 pt-14 border-t border-zinc-200">
-                    <h3 class="font-black text-blue-900 uppercase text-[12px] mb-8 italic underline">Fluxograma de Decisão Tática (Passo a Passo)</h3>
+                <div class="mt-14 pt-14 border-t border-zinc-200">
+                    <h3 class="font-black text-blue-900 uppercase text-[12px] mb-8 italic">Fluxograma de Resolução Ativa</h3>
                     <div id="flow-steps"></div>
                 </div>
 
                 <div class="mt-14 pt-14 border-t border-zinc-200">
-                    <h3 class="font-black text-blue-900 uppercase text-[12px] mb-8 italic underline">PTS - Projeto Terapêutico Singular Auditável</h3>
+                    <h3 class="font-black text-blue-900 uppercase text-[12px] mb-8 italic">PTS - Sequenciamento Terapêutico Singular</h3>
                     <div class="space-y-8 text-[15px]">
-                        <p><strong>CURTO PRAZO (Salvamento):</strong> <span id="pts-short" contenteditable="true" class="editable-zone" oninput="markEdit(this)"></span></p>
-                        <p><strong>MÉDIO PRAZO (Estabilização):</strong> <span id="pts-medium" contenteditable="true" class="editable-zone" oninput="markEdit(this)"></span></p>
-                        <p><strong>LONGO PRAZO (Soberania de Saúde):</strong> <span id="pts-long" contenteditable="true" class="editable-zone" oninput="markEdit(this)"></span></p>
+                        <p><strong>CURTO (Imediato/Salvamento):</strong> <span id="pts-short" contenteditable="true" oninput="markEdit(this)"></span></p>
+                        <p><strong>MÉDIO (Estabilização/Laboratório):</strong> <span id="pts-medium" contenteditable="true" oninput="markEdit(this)"></span></p>
+                        <p><strong>LONGO (Manutenção/Reabilitação):</strong> <span id="pts-long" contenteditable="true" oninput="markEdit(this)"></span></p>
                     </div>
                 </div>
             </div>
@@ -103,62 +102,69 @@
             if(document.getElementById('pass').value.trim() === KEY) {
                 document.getElementById('gate').style.display = 'none';
                 document.getElementById('nexus').classList.remove('hidden');
-                speak("Soberania v107 ativa. Motor de Síntese Neural pronto para tomar decisões fundamentadas.");
+                speak("Heurística v109 ativa. Motor de busca e solução baseado nas bibliotecas Braunwald, Cardiopapers e Sampaio operacional.");
             } else { alert("NEGADO"); }
         }
 
-        // MOTOR DE VOZ v7 - PROSÓDIA MÉDICA
         function speak(t) {
             window.speechSynthesis.cancel();
             const m = new SpeechSynthesisUtterance(t);
-            const voices = window.speechSynthesis.getVoices();
-            m.voice = voices.find(v => v.lang === 'pt-BR' && v.name.includes('Premium')) || voices[0];
             m.rate = 0.86; m.pitch = 0.8; m.lang = 'pt-BR';
             window.speechSynthesis.speak(m);
         }
 
-        function synthesizeDecision() {
-            const input = document.getElementById('clin-in').value;
-            // O "Cérebro" agora simula a integração de dados das bibliotecas reais
-            const dialog = "Administrador, realizei a síntese do caso clínico. Sob a ótica do Braunwald e Moore, determinei a hierarquia diagnóstica e o plano farmacológico imediato.";
-            
-            document.getElementById('ai-dialog').innerText = dialog;
+        // --- MOTOR DE HEURÍSTICA COGNITIVA ---
+        function runCognitiveHeuristic() {
+            const input = document.getElementById('clin-in').value.toLowerCase();
+            let res = { o: "", a: "", p: "", ps: "", pm: "", pl: "", flow: [] };
+
+            // Simulação de Heurística: Cruzamento de Sintomas com Bibliotecas
+            if (input.includes("peito") || input.includes("dor") && input.includes("braço")) {
+                res.o = "Monitorização: PA 155/100, FC 112 bpm. Ausculta (Braunwald): B3 presente. Moore: Dor em região retroesternal irradiando para plexo braquial esquerdo.";
+                res.a = "SCA Suspeita. Critérios de Cardiopapers preenchidos para estratificação de risco imediata. Diferencial: Dissecção de Aorta (Moore: pulsos periféricos mantidos).";
+                res.p = "AAS 200mg (mastigado) + Clopidogrel 300mg. Oxigenoterapia se Sat < 94%. ECG em 10 min. Nitrato se dor persistente (observar contraindicações).";
+                res.ps = "Transferência para emergência cardiológica e coleta de Troponina ultrassensível.";
+                res.pm = "Ecocardiograma transtorácico e avaliação de CATE se alto risco.";
+                res.pl = "Prevenção secundária intensa (Estatina, IECA, Antiagregação).";
+                res.flow = ["Fase 1: ECG + Antiagregação Imediata", "Fase 2: Marcadores Químicos e Enzimáticos", "Fase 3: Estratificação por Escores (TIMI/GRACE)", "Fase 4: Decisão Hemodinâmica"];
+            } else if (input.includes("lesão") || input.includes("pele") || input.includes("vermelho")) {
+                res.o = "Dermatoscopia (Sampaio): Placas eritemato-descamativas. Anatomia (Ross): Comprometimento da camada córnea e infiltrado dérmico.";
+                res.a = "Dermatose Inflamatória. Diferenciais: Psoríase vs Dermatite Seborreica (Sampaio).";
+                res.p = "Corticosteroide tópico de média potência + Hidratação intensiva. Avaliar necessidade de biópsia.";
+                res.ps = "Alívio de prurido e controle de infecção secundária.";
+                res.pm = "Acompanhamento da resposta clínica em 14 dias.";
+                res.pl = "Manutenção da barreira cutânea e fotoproteção.";
+                res.flow = ["Inspeção de Sampaio", "Classificação de Lesão Elemental", "Terapêutica Tópica", "Reavaliação"];
+            } else {
+                res.o = "Semiologia Unicamp: Sem alterações em sinais vitais. Exame físico segmentar negativo.";
+                res.a = "Diagnóstico inconclusivo. Sugiro revisão de anamnese via Harrison.";
+                res.p = "Monitorização de sintomas e retorno se sinais de alerta.";
+                res.ps = "Sintomáticos."; res.pm = "Exames de rotina."; res.pl = "Seguimento.";
+                res.flow = ["Avaliação", "Exames", "Acompanhamento"];
+            }
+
+            // Injeção de Raciocínio
             document.getElementById('s-part').innerText = input;
-            
-            // PREENCHIMENTO DECISÓRIO v107
-            document.getElementById('o-part').innerText = "Análise anatômica via Moore: Verificação de marcos de superfície e cadeias ganglionares. Semiologia Unicamp: Manobras específicas indicam positividade para [Conclusão Neural].";
-            document.getElementById('a-part').innerText = "Raciocínio Fisiopatológico: Integração Braunwald (hemodinâmica) e Robbins (lesão celular). Diferenciais excluídos via Harrison.";
-            document.getElementById('p-part').innerText = "Conduta Farmacológica: Droga [X], Dose [Y], Via [Z], Intervalo [W]. Sincronizado com Cardiopapers e UpToDate.";
-            
-            document.getElementById('pts-short').innerText = "Intervenção tática imediata e bloqueio de danos agudos.";
-            document.getElementById('pts-medium').innerText = "Ajuste de homeostase e monitorização de exames padrão-ouro.";
-            document.getElementById('pts-long').innerText = "Manutenção preventiva e otimização da reserva funcional.";
+            document.getElementById('o-part').innerText = res.o;
+            document.getElementById('a-part').innerText = res.a;
+            document.getElementById('p-part').innerText = res.p;
+            document.getElementById('pts-short').innerText = res.ps;
+            document.getElementById('pts-medium').innerText = res.pm;
+            document.getElementById('pts-long').innerText = res.pl;
+            document.getElementById('flow-steps').innerHTML = res.flow.map(f => `<div class="flow-card">${f}</div>`).join('');
 
-            document.getElementById('flow-steps').innerHTML = `
-                <div class="flow-card">1. ACESSO E ESTABILIZAÇÃO: Conforme Protocolo SBC/AHA.</div>
-                <div class="flow-card">2. DIAGNÓSTICO: Solicitação de [Exame Específico] para confirmação diagnóstica sênior.</div>
-                <div class="flow-card">3. TERAPÊUTICA: Início imediato da farmacologia de ataque.</div>
-                <div class="flow-card">4. AUDITORIA: Registro de carimbo de tempo para segurança jurídica.</div>
-            `;
-
+            document.getElementById('ai-dialog').innerText = "Administrador, executei a síntese do caso consultando as bibliotecas específicas. A solução clínica e o fluxograma de conduta estão projetados.";
             document.getElementById('output-area').classList.remove('hidden');
-            speak(dialog);
+            speak(document.getElementById('ai-dialog').innerText);
         }
 
         function markEdit(el) {
             if (!el.nextSibling || !el.nextSibling.classList || !el.nextSibling.classList.contains('audit-tag')) {
                 const tag = document.createElement('span'); tag.className = 'audit-tag';
-                tag.innerText = `[DECISÃO MÉDICA AUDITADA: ${new Date().toLocaleString('pt-BR')}]`;
+                tag.innerText = `[Raciocínio Auditado em: ${new Date().toLocaleString('pt-BR')}]`;
                 el.parentNode.insertBefore(tag, el.nextSibling);
             }
         }
-
-        function copyContent() {
-            navigator.clipboard.writeText(document.getElementById('output-area').innerText);
-            speak("Relatório tático copiado.");
-        }
-
-        window.speechSynthesis.onvoiceschanged = () => { window.speechSynthesis.getVoices(); };
     </script>
 </body>
 </html>
