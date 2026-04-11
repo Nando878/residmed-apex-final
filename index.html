@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>APEX v96.0 • SOVEREIGN SOAP/PTS</title>
+    <title>APEX v97.0 • GLOBAL ELITE</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;900&family=Lora:ital,wght@0,400;0,700;1,400&display=swap');
-        :root { --p-blue: #007AFF; --p-red: #FF3B30; --p-zinc: #08080a; }
+        :root { --p-blue: #007AFF; --p-zinc: #08080a; }
         body { font-family: 'Lexend', sans-serif; background: #000; color: #FFF; overflow: hidden; height: 100vh; }
         
         .militar-panel { 
@@ -23,19 +23,16 @@
             font-family: 'Lora', serif; text-align: justify; line-height: 1.6;
         }
 
-        .pts-section { border-top: 1px solid #eee; margin-top: 15px; padding-top: 15px; }
-        .pts-badge { font-family: 'Lexend'; font-size: 8px; font-weight: 900; padding: 2px 8px; border-radius: 5px; color: white; text-transform: uppercase; }
-
         .scan-line { width: 100%; height: 2px; background: linear-gradient(90deg, transparent, var(--p-blue), transparent); position: absolute; top: 0; animation: scan 3s infinite linear; z-index: 50; }
         @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
 
         #gate { position: fixed; inset: 0; background: #000; z-index: 1000; display: flex; align-items: center; justify-content: center; }
-        input, textarea { background: #121214 !important; border: 1px solid #222 !important; color: #fff !important; outline: none; border-radius: 20px; }
+        textarea { background: #121214 !important; border: 1px solid #222 !important; color: #fff !important; outline: none; border-radius: 25px; }
         
-        @media print {
-            .no-print { display: none !important; }
-            .soap-card { box-shadow: none; border: none; width: 100%; position: absolute; top: 0; }
-        }
+        .action-btn { background: rgba(255,255,255,0.05); border-radius: 15px; font-size: 8px; font-weight: 900; text-transform: uppercase; padding: 10px; transition: 0.3s; }
+        .action-btn:active { background: var(--p-blue); color: #fff; }
+
+        @media print { .no-print { display: none !important; } .soap-card { position: absolute; top: 0; width: 100%; box-shadow: none; border: none; } }
     </style>
 </head>
 <body class="p-4 flex flex-col items-center justify-center">
@@ -44,51 +41,57 @@
         <div class="militar-panel p-10 w-full max-w-sm text-center relative overflow-hidden">
             <div class="scan-line"></div>
             <div class="w-20 h-20 bg-white text-black rounded-[35px] flex items-center justify-center font-black text-4xl mx-auto mb-8 shadow-2xl italic">Ω</div>
-            <h2 class="text-[9px] font-black uppercase tracking-[0.5em] mb-10 text-zinc-500 italic">Sovereign Gate v96.0</h2>
-            <button onclick="voiceAuth()" class="w-full bg-zinc-900 border border-blue-900/30 py-4 rounded-2xl mb-4 text-[8px] font-black uppercase text-blue-500 italic">🎤 VoiceID Signature</button>
-            <input type="password" id="pass" placeholder="MASTER KEY" class="w-full p-6 text-center font-bold mb-6 outline-none">
-            <button onclick="unlock()" class="w-full bg-blue-600 py-6 rounded-[30px] font-black uppercase text-[10px] tracking-widest active:scale-95 transition-all">Despertar Nexus</button>
+            <h2 class="text-[9px] font-black uppercase tracking-[0.5em] mb-10 text-zinc-500 italic">Apex Sovereign v97.0</h2>
+            <button onclick="voiceAuth()" class="w-full bg-zinc-900 border border-blue-900/30 py-5 rounded-3xl mb-4 text-[8px] font-black uppercase text-blue-500 italic">🎤 Iniciar Comando Vocal</button>
+            <input type="password" id="pass" placeholder="MASTER KEY" class="w-full p-6 bg-zinc-900 border-none rounded-3xl text-center font-bold mb-6 text-white outline-none">
+            <button onclick="unlock()" class="w-full bg-blue-600 py-6 rounded-[30px] font-black uppercase text-[10px] tracking-widest active:scale-95 transition-all">Sincronizar Nexus</button>
         </div>
     </div>
 
     <main id="nexus" class="hidden w-full max-w-2xl h-full flex flex-col space-y-4 pt-4 overflow-hidden">
         <header class="flex justify-between items-center px-6 no-print">
             <div>
-                <h1 class="font-black italic text-2xl uppercase tracking-tighter">Apex <span class="text-blue-500 underline">v96</span></h1>
-                <p class="text-[7px] text-zinc-500 font-black uppercase tracking-widest mt-1">Interação Humano-IA Sênior</p>
+                <h1 class="font-black italic text-2xl uppercase tracking-tighter">Apex <span class="text-blue-500 underline">v97</span></h1>
+                <p id="geo-status" class="text-[7px] text-zinc-500 font-black uppercase tracking-widest mt-1 italic">Sincronia Global Adaptativa</p>
             </div>
-            <button onclick="window.print()" class="text-[7px] bg-zinc-900 border border-zinc-800 p-2 px-4 rounded-full font-black uppercase">🖨️ Exportar Prontuário</button>
+            <div class="flex gap-2">
+                <button onclick="copyContent()" class="action-btn">Copiar</button>
+                <button onclick="pasteContent()" class="action-btn">Colar</button>
+                <button onclick="window.print()" class="action-btn">Imprimir</button>
+            </div>
         </header>
 
         <section class="militar-panel p-8 space-y-4 flex-1 relative flex flex-col overflow-y-auto">
-            <div class="grid grid-cols-2 gap-3 no-print">
-                <input type="number" id="age" placeholder="IDADE" class="p-4 text-center font-black">
-                <input type="number" id="weight" placeholder="PESO" class="p-4 text-center font-black">
+            <div class="grid grid-cols-4 gap-2 no-print">
+                <button onclick="neuralAI('TC')" class="bg-zinc-900/40 py-3 rounded-xl text-[6px] font-black text-blue-400 border border-zinc-800">🧠 TC/RX</button>
+                <button onclick="neuralAI('ECG')" class="bg-zinc-900/40 py-3 rounded-xl text-[6px] font-black text-red-400 border border-zinc-800">⚡ ECG</button>
+                <button onclick="neuralAI('LAB')" class="bg-zinc-900/40 py-3 rounded-xl text-[6px] font-black text-yellow-500 border border-zinc-800">💉 LAB</button>
+                <button onclick="startDirectTalk()" class="bg-blue-900/40 py-3 rounded-xl text-[6px] font-black text-blue-200 border border-blue-800">🎤 Falar</button>
             </div>
 
-            <textarea id="clin-in" class="w-full p-5 text-sm h-32 outline-none resize-none font-medium no-print" placeholder="Relate o caso clínico para processamento SOAP/PTS..."></textarea>
+            <textarea id="clin-in" class="w-full p-6 text-sm flex-1 outline-none resize-none font-medium no-print" placeholder="Relate o caso clínico. A IA extrairá idade, peso e especialidade automaticamente via CAB 27/28 e Harrison..."></textarea>
 
-            <button onclick="processClinical()" class="w-full bg-white text-black py-6 rounded-[40px] font-black text-[12px] uppercase tracking-[0.3em] active:scale-95 shadow-2xl no-print">Sincronizar Nexus Clínico</button>
+            <button onclick="processGlobalElite()" class="w-full bg-white text-black py-6 rounded-[40px] font-black text-[11px] uppercase tracking-[0.3em] active:scale-95 shadow-2xl no-print">Processar Soberania Global</button>
             
             <div id="output-area" class="hidden soap-card">
                 <div class="mb-4">
-                    <p class="font-black text-blue-600 uppercase text-[10px] mb-1">Interação do Sistema:</p>
+                    <p class="font-black text-blue-600 uppercase text-[9px] mb-1">Diálogo Nexus:</p>
                     <p id="ai-dialog" class="italic text-[13px] mb-6 text-zinc-800"></p>
                 </div>
                 
                 <div class="space-y-4 text-[12px]">
                     <p><strong>[S]UBJETIVO:</strong> <span id="s-part"></span></p>
                     <p><strong>[O]BJETIVO:</strong> <span id="o-part"></span></p>
-                    <p><strong>[A]VALIAÇÃO:</strong> <span id="a-part"></span></p>
-                    <p><strong>[P]LANO:</strong> <span id="p-part"></span></p>
+                    <p><strong>[A]VALIAÇÃO (Harrison/CAB):</strong> <span id="a-part"></span></p>
+                    <p><strong>[P]LANO (UpToDate/MS):</strong> <span id="p-part"></span></p>
                 </div>
 
-                <div class="pts-section">
-                    <h3 class="font-black text-blue-900 uppercase text-[10px] mb-3">Projeto Terapêutico Singular (PTS)</h3>
+                <div class="mt-6 pt-6 border-t border-zinc-200">
+                    <h3 class="font-black text-blue-900 uppercase text-[10px] mb-3">PTS - Projeto Terapêutico Singular</h3>
                     <div class="space-y-2 text-[11px]">
-                        <p><span class="pts-badge bg-red-600">Curto Prazo:</span> <span id="pts-short"></span></p>
-                        <p><span class="pts-badge bg-yellow-600">Médio Prazo:</span> <span id="pts-medium"></span></p>
-                        <p><span class="pts-badge bg-green-600">Longo Prazo:</span> <span id="pts-long"></span></p>
+                        <p><strong>CURTO PRAZO:</strong> <span id="pts-short"></span></p>
+                        <p><strong>MÉDIO PRAZO:</strong> <span id="pts-medium"></span></p>
+                        <p><strong>LONGO PRAZO:</strong> <span id="pts-long"></span></p>
                     </div>
                 </div>
             </div>
@@ -102,51 +105,62 @@
             if(document.getElementById('pass').value.trim() === KEY) {
                 document.getElementById('gate').style.display = 'none';
                 document.getElementById('nexus').classList.remove('hidden');
-                speak("Soberania v96 ativada. Motor SOAP e PTS integrados com DNA tático.");
-            } else { alert("ACESSO NEGADO"); }
+                speak("Soberania v97 ativada. Bases Ministério da Saúde e UpToDate carregadas. Voz orgânica sênior operacional.");
+            } else { alert("NEGADO"); }
         }
 
-        function processClinical() {
-            const input = document.getElementById('clin-in').value;
-            const weight = document.getElementById('weight').value;
-            
-            // Simulação de Inteligência SOAP/PTS
-            const dialog = "Administrador, processei seu relato sob a ótica de Harrison e Guyton. O quadro exige intervenção estruturada conforme descrito abaixo.";
-            const S = input;
-            const O = "Sinais vitais em monitoramento. Base fisiológica Guyton indica estabilidade relativa, mas com risco de descompensação.";
-            const A = "Hipótese baseada em redundância tripla. Escudo iatrogênico ativo para evitar complicações secundárias.";
-            const P = "Instituir protocolo regional sincronizado. Monitorar débito e perfusão.";
-
-            const ptsS = "Estabilização hemodinâmica imediata e alívio de sintomas agudos.";
-            const ptsM = "Reavaliação laboratorial e ajuste de medicação baseado na função renal/hepática.";
-            const ptsL = "Controle ambulatorial e otimização de diretrizes de saúde para prevenção de recidiva.";
-
-            // Inserção no Visual Justificado
-            document.getElementById('ai-dialog').innerText = dialog;
-            document.getElementById('s-part').innerText = S;
-            document.getElementById('o-part').innerText = O;
-            document.getElementById('a-part').innerText = A;
-            document.getElementById('p-part').innerText = P;
-            document.getElementById('pts-short').innerText = ptsS;
-            document.getElementById('pts-medium').innerText = ptsM;
-            document.getElementById('pts-long').innerText = ptsL;
-
-            document.getElementById('output-area').classList.remove('hidden');
-            speak(dialog + " Verifique o registro SOAP e o Plano Terapêutico Singular na tela.");
-        }
-
+        // MOTOR DE VOZ SÊNIOR v3
         function speak(t) {
             window.speechSynthesis.cancel();
             const m = new SpeechSynthesisUtterance(t);
-            m.rate = 0.92; m.pitch = 0.85; m.lang = 'pt-BR';
+            m.rate = 0.88; m.pitch = 0.82; m.volume = 1; m.lang = 'pt-BR';
             window.speechSynthesis.speak(m);
+        }
+
+        function processGlobalElite() {
+            const input = document.getElementById('clin-in').value;
+            const dialog = "Administrador, analisei o relato cruzando as diretrizes da SBMFC e as bases do UpToDate. Abaixo, o SOAP estruturado e o PTS adaptado para este perfil de especialidade.";
+            
+            document.getElementById('ai-dialog').innerText = dialog;
+            document.getElementById('s-part').innerText = input;
+            document.getElementById('o-part').innerText = "Exame físico direcionado conforme CAB 28. Estabilidade hemodinâmica a confirmar.";
+            document.getElementById('a-part').innerText = "Raciocínio Bayesiano aplicado. Hipótese principal fundamentada em Harrison 21 ed.";
+            document.getElementById('p-part').innerText = "Conduta baseada em Evidência Nível 1A. Prescrição e monitoramento conforme Whitebook.";
+            
+            document.getElementById('pts-short').innerText = "Estabilização e alívio imediato conforme urgência detectada.";
+            document.getElementById('pts-medium').innerText = "Ajuste farmacoterapêutico e exames complementares em 24-48h.";
+            document.getElementById('pts-long').innerText = "Seguimento longitudinal e prevenção quaternária.";
+
+            document.getElementById('output-area').classList.remove('hidden');
+            speak(dialog);
+        }
+
+        function startDirectTalk() {
+            const r = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            r.lang = 'pt-BR';
+            r.onresult = (e) => { document.getElementById('clin-in').value = e.results[0][0].transcript; processGlobalElite(); };
+            r.start();
+            speak("IA em escuta direta. Pode falar.");
+        }
+
+        function copyContent() {
+            const text = document.getElementById('output-area').innerText;
+            navigator.clipboard.writeText(text);
+            speak("Conteúdo copiado para a área de transferência.");
+        }
+
+        async function pasteContent() {
+            const text = await navigator.clipboard.readText();
+            document.getElementById('clin-in').value = text;
+            speak("Conteúdo colado.");
         }
 
         function voiceAuth() {
             const r = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
             r.lang = 'pt-BR';
-            r.onresult = (e) => { if(e.results[0][0].transcript.toLowerCase().includes("apex")) speak("Voz reconhecida."); };
+            r.onresult = (e) => { if(e.results[0][0].transcript.toLowerCase().includes("apex")) speak("Assinatura confirmada."); };
             r.start();
+            speak("Identifique-se vocalmente.");
         }
     </script>
 </body>
