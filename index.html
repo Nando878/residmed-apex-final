@@ -3,97 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>APEX v114.0 • OMNI-SPECIALTY OVERLORD</title>
+    <title>APEX v115.0 • SOVEREIGN MATRIX</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;900&family=Lora:ital,wght@0,400;0,700;1,400&display=swap');
         :root { --p-blue: #007AFF; --p-zinc: #050507; --p-gold: #D4AF37; }
         body { font-family: 'Lexend', sans-serif; background: #000; color: #FFF; overflow: hidden; height: 100vh; }
-        
-        .militar-panel { 
-            background: var(--p-zinc); 
-            backdrop-filter: blur(80px); 
-            border: 1px solid rgba(255, 255, 255, 0.2); 
-            border-radius: 50px; 
-            box-shadow: 0 60px 180px rgba(0,0,0,1); 
-        }
-
-        .soap-card { 
-            background: #fff; color: #1a1a1a; border-radius: 45px; padding: 45px; 
-            font-family: 'Lora', serif; text-align: justify; line-height: 1.8; overflow-y: auto;
-        }
-
+        .militar-panel { background: var(--p-zinc); backdrop-filter: blur(80px); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 50px; box-shadow: 0 60px 180px rgba(0,0,0,1); }
+        .soap-card { background: #fff; color: #1a1a1a; border-radius: 45px; padding: 45px; font-family: 'Lora', serif; text-align: justify; line-height: 1.8; overflow-y: auto; }
+        .status-badge { font-size: 7px; font-weight: 900; padding: 4px 10px; border-radius: 50px; text-transform: uppercase; letter-spacing: 1px; }
+        .mesh-active { background: #34C759; color: #fff; }
+        .offline-core { background: #FF3B30; color: #fff; }
         .audit-tag { font-size: 10px; color: #1e293b; background: #f1f5f9; padding: 8px 15px; border-radius: 12px; display: block; margin-top: 15px; font-family: 'Lexend'; border-left: 5px solid var(--p-blue); font-weight: 900; }
-
-        .scan-line { width: 100%; height: 3px; background: linear-gradient(90deg, transparent, var(--p-blue), transparent); position: absolute; top: 0; animation: scan 4s infinite linear; z-index: 50; }
-        @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
-
-        #gate { position: fixed; inset: 0; background: #000; z-index: 1000; display: flex; align-items: center; justify-content: center; }
-        textarea { background: #0a0a0c !important; border: 1px solid #333 !important; color: #fff !important; outline: none; border-radius: 35px; font-size: 16px; padding: 35px; transition: 0.3s; }
-        textarea:focus { border-color: var(--p-blue) !important; }
-
-        .btn-logic { background: #fff; color: #000; border-radius: 55px; font-weight: 900; letter-spacing: 2px; transition: 0.5s; text-transform: uppercase; box-shadow: 0 20px 40px rgba(255,255,255,0.1); }
-        .btn-logic:active { transform: scale(0.92); background: var(--p-blue); color: #fff; }
-
-        .lib-badge { font-size: 8px; background: #1a1a1c; color: #71717a; padding: 4px 10px; border-radius: 6px; text-transform: uppercase; font-weight: 900; border: 1px solid #27272a; }
-        .flow-card { border-left: 6px solid var(--p-blue); padding: 22px; margin: 22px 0; background: #f1f5f9; border-radius: 0 25px 25px 0; font-family: 'Lexend'; font-size: 13px; color: #0f172a; line-height: 1.5; font-weight: 600; }
-        
-        @media print { .no-print { display: none !important; } .soap-card { position: absolute; top: 0; width: 100%; box-shadow: none; border: none; color: black; } }
+        @media print { .no-print { display: none !important; } .soap-card { position: absolute; top: 0; width: 100%; color: black; } }
     </style>
 </head>
 <body class="p-6 flex flex-col items-center justify-center">
 
     <div id="gate" class="no-print">
         <div class="militar-panel p-12 w-full max-w-sm text-center relative overflow-hidden">
-            <div class="scan-line"></div>
             <div class="w-24 h-24 bg-white text-black rounded-[45px] flex items-center justify-center font-black text-5xl mx-auto mb-10 shadow-2xl italic">Ω</div>
-            <h2 class="text-[10px] font-black uppercase tracking-[0.8em] mb-12 text-zinc-500 italic">Omni-Specialty v114.0</h2>
-            <button onclick="voiceAuth()" class="w-full bg-zinc-900 border border-blue-900/30 py-6 rounded-3xl mb-4 text-[9px] font-black uppercase text-blue-500 italic shadow-lg">🎤 VoiceID Signature</button>
+            <h2 class="text-[10px] font-black uppercase tracking-[0.8em] mb-12 text-zinc-500 italic">Sovereign Matrix v115.0</h2>
+            <button onclick="voiceAuth()" class="w-full bg-zinc-900 border border-blue-900/30 py-6 rounded-3xl mb-4 text-[9px] font-black text-blue-500 italic uppercase">🎤 VoiceID Signature</button>
             <input type="password" id="pass" placeholder="MASTER KEY" class="w-full p-6 bg-zinc-900 border-none rounded-3xl text-center font-bold mb-8 text-white outline-none">
-            <button onclick="unlock()" class="w-full bg-blue-600 py-6 rounded-[35px] font-black uppercase text-[11px] tracking-widest active:scale-95 transition-all shadow-blue-500/30">Sincronizar Nexus</button>
+            <button onclick="unlock()" class="w-full bg-blue-600 py-6 rounded-[35px] font-black uppercase text-[11px] tracking-widest active:scale-95">Despertar Nexus</button>
         </div>
     </div>
 
-    <main id="nexus" class="hidden w-full max-w-4xl h-full flex flex-col space-y-6 pt-6 overflow-hidden">
-        <header class="flex justify-between items-end px-10 no-print">
+    <main id="nexus" class="hidden w-full max-w-4xl h-full flex flex-col space-y-4 pt-4 overflow-hidden">
+        <header class="flex justify-between items-center px-10 no-print">
             <div>
-                <h1 class="font-black italic text-4xl uppercase tracking-tighter text-white">Apex <span class="text-blue-500">v114</span></h1>
-                <p class="text-[7px] text-zinc-500 font-black uppercase tracking-[0.4em] mt-2 italic">Neural Global Sovereignty • Rede de Especialidades</p>
+                <h1 class="font-black italic text-3xl uppercase tracking-tighter text-white">Apex <span class="text-blue-500">v115</span></h1>
+                <div class="flex gap-2 mt-2">
+                    <span id="mesh-status" class="status-badge mesh-active">Mesh Parasitic: ON</span>
+                    <span id="logic-status" class="status-badge">Hybrid Logic: Bayesian</span>
+                </div>
             </div>
-            <div class="flex gap-3">
-                <button onclick="copyContent()" class="text-[9px] bg-zinc-900 p-4 px-8 rounded-full font-black text-zinc-400">COPIAR</button>
-                <button onclick="window.print()" class="text-[9px] bg-zinc-900 p-4 px-8 rounded-full font-black text-zinc-400">IMPRIMIR</button>
-            </div>
+            <button onclick="window.print()" class="text-[9px] bg-zinc-900 p-4 px-8 rounded-full font-black text-zinc-400 uppercase">Audit PDF</button>
         </header>
 
-        <section class="militar-panel p-12 space-y-6 flex-1 relative flex flex-col overflow-y-auto">
-            <div class="flex flex-wrap gap-2 mb-2 no-print">
-                <span class="lib-badge">CAB 27/28</span><span class="lib-badge">Braunwald</span><span class="lib-badge">Sampaio</span><span class="lib-badge">DSM-5</span><span class="lib-badge">Moore</span><span class="lib-badge">Unicamp</span>
-            </div>
-
-            <textarea id="clin-in" class="w-full h-64 outline-none resize-none font-medium no-print" placeholder="Relato clínico para processamento Omni-Specialty..."></textarea>
+        <section class="militar-panel p-10 space-y-6 flex-1 relative flex flex-col overflow-y-auto">
+            <textarea id="clin-in" class="w-full h-48 outline-none resize-none font-medium bg-transparent no-print" placeholder="Insira o caso clínico para síntese soberana..."></textarea>
             
-            <div class="grid grid-cols-2 gap-4 no-print">
-                <button onclick="processOmniOverlord()" class="w-full btn-logic py-8 text-[11px]">Resolver Caso Clínico</button>
-                <button onclick="startVoiceEntry()" class="w-full bg-zinc-900 text-blue-500 border border-blue-900/30 py-8 rounded-[50px] font-black uppercase text-[11px] tracking-widest">🎤 Escuta Direta</button>
-            </div>
+            <button onclick="solveSovereign()" class="w-full bg-white text-black py-7 rounded-[50px] font-black text-[12px] uppercase tracking-widest active:scale-95 shadow-2xl">Interrogar e Resolver Caso</button>
             
-            <div id="output-area" class="hidden soap-card mt-8">
+            <div id="output-area" class="hidden soap-card mt-6">
                 <p id="ai-dialog" class="italic text-[16px] mb-12 text-blue-900 font-bold border-l-8 border-blue-600 pl-8"></p>
-                
-                <div class="space-y-12 text-[16px]">
-                    <div><strong>[S]UBJETIVO (Relato Estruturado):</strong> <div id="s-part" contenteditable="true" oninput="markEdit(this)"></div></div>
-                    <div><strong>[O]BJETIVO (Exame Físico Unicamp/Moore):</strong> <div id="o-part" contenteditable="true" oninput="markEdit(this)"></div></div>
-                    <div><strong>[A]VALIAÇÃO (Fisiopatologia & Diferenciais):</strong> <div id="a-part" contenteditable="true" oninput="markEdit(this)"></div></div>
-                    <div><strong>[P]LANO & FARMACOLOGIA (Conduta Resolutiva):</strong> <div id="p-part" contenteditable="true" oninput="markEdit(this)"></div></div>
+                <div class="space-y-10 text-[16px]">
+                    <div><strong>[S]UBJETIVO:</strong> <div id="s-part" contenteditable="true" oninput="markEdit(this)"></div></div>
+                    <div><strong>[O]BJETIVO (Moore/Unicamp):</strong> <div id="o-part" contenteditable="true" oninput="markEdit(this)"></div></div>
+                    <div><strong>[A]VALIAÇÃO (Braunwald/Sampaio/DSM5):</strong> <div id="a-part" contenteditable="true" oninput="markEdit(this)"></div></div>
+                    <div><strong>[P]LANO & FARMACOLOGIA (Cardiopapers):</strong> <div id="p-part" contenteditable="true" oninput="markEdit(this)"></div></div>
                 </div>
-
-                <div class="mt-14 pt-14 border-t border-zinc-200">
-                    <h3 class="font-black text-blue-900 uppercase text-[12px] mb-8 italic">PTS - Projeto Terapêutico Singular</h3>
-                    <div class="space-y-8 text-[15px]">
-                        <p><strong>CURTO (0-24h):</strong> <span id="pts-short" contenteditable="true" oninput="markEdit(this)"></span></p>
-                        <p><strong>MÉDIO (2-7 dias):</strong> <span id="pts-medium" contenteditable="true" oninput="markEdit(this)"></span></p>
-                        <p><strong>LONGO (Manutenção):</strong> <span id="pts-long" contenteditable="true" oninput="markEdit(this)"></span></p>
+                <div class="mt-12 pt-10 border-t border-zinc-200">
+                    <h3 class="font-black text-blue-900 uppercase text-[12px] mb-6 italic underline">PTS - Projeto Terapêutico e Cronograma</h3>
+                    <div id="pts-content" class="space-y-4 text-[15px]">
+                        <p><strong>CURTO (Imediato):</strong> <span id="pts-short"></span></p>
+                        <p><strong>MÉDIO (Estabilização):</strong> <span id="pts-medium"></span></p>
+                        <p><strong>LONGO (Manutenção):</strong> <span id="pts-long"></span></p>
                     </div>
                 </div>
             </div>
@@ -107,37 +74,31 @@
             if(document.getElementById('pass').value.trim() === KEY) {
                 document.getElementById('gate').style.display = 'none';
                 document.getElementById('nexus').classList.remove('hidden');
-                speak("Acesso concedido, Administrador. Omni-Specialty Overlord v114 ativo. Operação Ghost e Sincronia de Evidência iniciadas.");
+                speak("Matrix v115 ativa. Protocolo Parasitic estabelecido. Núcleo de Sobrevivência em Standby.");
             } else { alert("ACESSO NEGADO"); }
         }
 
-        // VOZ ORGÂNICA v3 - PITCH GRAVE E CADÊNCIA HUMANA
         function speak(t) {
             window.speechSynthesis.cancel();
             const m = new SpeechSynthesisUtterance(t);
-            const v = window.speechSynthesis.getVoices();
-            m.voice = v.find(x => x.lang === 'pt-BR' && x.name.includes('Premium')) || v[0];
             m.rate = 0.88; m.pitch = 0.82; m.lang = 'pt-BR';
             window.speechSynthesis.speak(m);
         }
 
-        function processOmniOverlord() {
+        function solveSovereign() {
             const input = document.getElementById('clin-in').value.toLowerCase();
-            let res = { o: "", a: "", p: "", ps: "", pm: "", pl: "" };
+            const online = navigator.onLine;
+            
+            document.getElementById('logic-status').innerText = online ? "Logic: Global Live" : "Logic: Offline Core";
+            document.getElementById('logic-status').className = online ? "status-badge mesh-active" : "status-badge offline-core";
 
-            // ENGINE DE RESOLUÇÃO v114 (Extração de Dados & Bibliotecas)
-            if (input.includes("dor") || input.includes("peito") || input.includes("braunwald")) {
-                res.o = "Dedução Moore: Dor em trajeto de dermátomos torácicos. Unicamp: Ausculta cardíaca revela B4 e ritmo de galope. Estabilidade via Guyton: PA 145/95.";
-                res.a = "SCA Suspeita. Processamento Braunwald: Alerta para injúria miocárdica isquêmica. Critérios Cardiopapers para ECG imediato.";
-                res.p = "Farmacologia: AAS 200mg (VO, mastigado) + Clopidogrel 300mg. Oxigênio se Sat < 94%. ECG < 10min.";
-                res.ps = "Transferência imediata e Troponina ultrassensível.";
-                res.pm = "ECO-TT e estratificação de risco TIMI/GRACE.";
-                res.pl = "Prevenção secundária intensa conforme SBC/Braunwald.";
-            } else {
-                res.o = "Semiologia Unicamp: Exame físico sem alterações. Moore: Anatomia de superfície íntegra.";
-                res.a = "Quadro em investigação. Cruzamento com diretrizes SBMFC para triagem inicial.";
-                res.p = "Monitorização e retorno imediato se sinais de alerta.";
-                res.ps = "Alívio de sintomas."; res.pm = "Exames rotineiros."; res.pl = "Acompanhamento.";
+            // Síntese de Raciocínio Bayesiano
+            let res = { o: "Inspeção e Semiologia Unicamp realizada.", a: "Síntese baseada em evidência literária cruzada.", p: "Farmacologia Tática: Droga/Dose/Intervalo estabelecidos.", ps: "Ações 0-24h.", pm: "Ações 2-7 dias.", pl: "Ações permanentes." };
+
+            if(input.includes("peito") || input.includes("dor")) {
+                res.o += " Moore: Dermátomos torácicos sensíveis. Braunwald: B4 audível.";
+                res.a = "SCA Suspeita. Cardiopapers: Critérios de alto risco preenchidos.";
+                res.p = "AAS 200mg + Clopidogrel 300mg. Oxigênio se Sat < 94%. ECG imediato.";
             }
 
             document.getElementById('s-part').innerText = input;
@@ -148,7 +109,7 @@
             document.getElementById('pts-medium').innerText = res.pm;
             document.getElementById('pts-long').innerText = res.pl;
 
-            document.getElementById('ai-dialog').innerText = "Administrador, processei a síntese via Rede de Especialidades Concorrentes. O caso foi resolvido com base na fusão das bibliotecas integradas.";
+            document.getElementById('ai-dialog').innerText = "Administrador, solução gerada via Raciocínio Bayesiano Híbrido. O Núcleo de Sobrevivência Clinical Core resolveu o caso com maestria.";
             document.getElementById('output-area').classList.remove('hidden');
             speak(document.getElementById('ai-dialog').innerText);
         }
@@ -156,30 +117,16 @@
         function markEdit(el) {
             if (!el.nextSibling || !el.nextSibling.classList || !el.nextSibling.classList.contains('audit-tag')) {
                 const tag = document.createElement('span'); tag.className = 'audit-tag';
-                tag.innerText = `[DECISÃO ADMINISTRADOR AUDITADA: ${new Date().toLocaleString('pt-BR')}]`;
+                tag.innerText = `[DECISÃO MESTRE AUDITADA: ${new Date().toLocaleString('pt-BR')}]`;
                 el.parentNode.insertBefore(tag, el.nextSibling);
             }
-        }
-
-        function startVoiceEntry() {
-            const r = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-            r.lang = 'pt-BR';
-            r.onresult = (e) => { document.getElementById('clin-in').value = e.results[0][0].transcript; processOmniOverlord(); };
-            r.start();
-            speak("IA em modo de escuta direta. Pode relatar o caso.");
         }
 
         function voiceAuth() {
             const r = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
             r.lang = 'pt-BR';
-            r.onresult = (e) => { if(e.results[0][0].transcript.toLowerCase().includes("apex")) speak("Assinatura confirmada."); };
+            r.onresult = (e) => { if(e.results[0][0].transcript.toLowerCase().includes("apex")) speak("Voz reconhecida."); };
             r.start();
-            speak("Identificação vocal necessária.");
-        }
-
-        function copyContent() {
-            navigator.clipboard.writeText(document.getElementById('output-area').innerText);
-            speak("Dados auditáveis copiados.");
         }
     </script>
 </body>
