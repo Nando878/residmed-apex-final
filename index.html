@@ -2,66 +2,63 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>APEX v173 • THE ARCHITECT</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APEX v174 • UNIVERSAL CORE</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;800&family=Lora:ital,wght@0,400;0,700;1,400;1,700&display=swap');
-        body { background: #000; color: #FFF; font-family: 'JetBrains Mono', monospace; margin: 0; }
-        .zone { position: sticky; top: 0; padding: 20px; background: rgba(0,0,0,0.96); border-bottom: 2px solid #1A1A1A; z-index: 100; backdrop-filter: blur(15px); }
-        textarea { background: #080808; border: 1px solid #333; color: #00FF41 !important; border-radius: 12px; padding: 20px; width: 100%; outline: none; font-size: 16px; transition: 0.3s; }
-        textarea:focus { border-color: #00FF41; box-shadow: 0 0 25px rgba(0, 255, 65, 0.15); }
-        .viewport { padding: 40px 60px; display: none; }
-        .paper-content { font-family: 'Lora', serif; text-align: justify; line-height: 1.9; font-size: 17px; color: #E0E0E0; }
-        h2 { color: #00FF41; border-bottom: 2px solid #1A1A1A; padding-bottom: 12px; text-transform: uppercase; font-size: 13px; letter-spacing: 4px; margin-top: 60px; margin-bottom: 25px; }
-        b { color: #FFF; }
-        .soap-box { background: rgba(255,255,255,0.02); padding: 25px; border-radius: 15px; border-left: 4px solid #1A1A1A; margin-bottom: 20px; }
+        body { background: #000; color: #FFF; font-family: 'JetBrains Mono', monospace; margin: 0; overflow-x: hidden; }
+        .zone { position: sticky; top: 0; padding: 15px; background: rgba(0,0,0,0.98); border-bottom: 2px solid #1A1A1A; z-index: 100; backdrop-filter: blur(10px); }
+        textarea { background: #0A0A0A; border: 1px solid #333; color: #00FF41 !important; border-radius: 12px; padding: 15px; width: 100%; outline: none; font-size: 16px; -webkit-appearance: none; }
+        textarea:focus { border-color: #00FF41; }
+        .viewport { padding: 20px; display: none; }
+        .paper-content { font-family: 'Lora', serif; text-align: justify; line-height: 1.8; font-size: 16px; color: #E0E0E0; }
+        h2 { color: #00FF41; border-bottom: 2px solid #1A1A1A; padding-bottom: 10px; text-transform: uppercase; font-size: 12px; letter-spacing: 2px; margin-top: 40px; }
+        .soap-box { background: rgba(255,255,255,0.03); padding: 20px; border-radius: 10px; border-left: 3px solid #00FF41; margin-bottom: 15px; }
+        .btn-main { background: #00FF41; color: #000; font-weight: 900; width: 100%; padding: 12px; border-radius: 8px; margin-top: 10px; text-transform: uppercase; font-size: 12px; letter-spacing: 2px; }
     </style>
 </head>
 <body>
 
 <div class="zone no-print">
-    <div class="flex justify-between items-center mb-4">
-        <h1 class="font-black italic text-2xl uppercase tracking-tighter text-white">Apex <span class="text-[#00FF41]">v173</span></h1>
-        <div id="status" class="text-[10px] text-zinc-500 uppercase tracking-[0.3em]">Neural Link: Stable</div>
+    <div class="flex justify-between items-center mb-3">
+        <h1 class="font-black italic text-lg uppercase">Apex <span class="text-[#00FF41]">v174</span></h1>
+        <div id="status" class="text-[9px] text-zinc-500 uppercase">Status: Ready</div>
     </div>
-    <textarea id="in" rows="3" placeholder="Insira o caso clínico completo... [Pressione ENTER para Processar]" onkeydown="keyboardTrigger(event)"></textarea>
+    <textarea id="in" rows="3" placeholder="Insira o caso..."></textarea>
+    <button id="execBtn" class="btn-main">Executar Análise</button>
 </div>
 
 <main id="nexus" class="viewport">
-    <div class="paper-content" id="output">
-        </div>
+    <div class="paper-content" id="output"></div>
 </main>
 
 <script>
     const API_KEY = 'AIzaSyBCWOXSosudmIfZ4qDsWK-8Ze7EbqnfZNQ';
+    const inputField = document.getElementById('in');
+    const execBtn = document.getElementById('execBtn');
 
-    // FUNÇÃO DE GATILHO REFORÇADA
-    function keyboardTrigger(e) {
+    // GATILHO UNIVERSAL (TECLADO)
+    inputField.addEventListener('keydown', function(e) {
         if (e.key === "Enter" && !e.shiftKey) {
-            e.preventDefault(); // Impede a quebra de linha
-            processAdvancedSOAP();
+            e.preventDefault();
+            process();
         }
-    }
+    });
 
-    async function processAdvancedSOAP() {
-        const input = document.getElementById('in').value;
-        const status = document.getElementById('status');
+    // GATILHO UNIVERSAL (BOTÃO)
+    execBtn.addEventListener('click', process);
+
+    async function process() {
+        const input = inputField.value;
         if (!input) return;
 
-        status.innerText = "PROCESSANDO SOAP EXPANDIDO...";
+        document.getElementById('status').innerText = "PROCESSANDO...";
         document.getElementById('nexus').style.display = "none";
 
-        // PROMPT DE ALTA DENSIDADE (SOAP MELHORADO)
-        const sysPrompt = `Você é um Médico Especialista Sênior em ambiente de alta criticidade.
-        Analise o caso clínico abaixo com PROFUNDIDADE MÁXIMA.
-        
-        REGRAS DO SOAP EXPANDIDO:
-        1. [S]: Detalhe histórico, fatores de risco, antecedentes e características da dor/sintoma.
-        2. [O]: Descreva achados de exame físico, sinais vitais e interprete exames de imagem/laboratório fisiopatologicamente.
-        3. [A]: Faça o raciocínio diagnóstico completo, discuta classificações (Fisher, Hunt-Hess, etc.) e diagnósticos diferenciais.
-        4. [P]: Plano detalhado com doses, frequências, metas hemodinâmicas e justificativas clínicas.
-        
-        Siga rigorosamente a estrutura do PTS de 3 Fases ao final.
+        const systemPrompt = `Aja como Médico Sênior HCFMUSP. Analise com profundidade máxima. 
+        Gere um SOAP EXPANDIDO e PTS de 3 Fases. 
+        Seja técnico, use doses e diretrizes 2026. 
         CASO: ${input}`;
 
         try {
@@ -69,28 +66,29 @@
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    contents: [{ parts: [{ text: sysPrompt }] }],
+                    contents: [{ parts: [{ text: systemPrompt }] }],
                     safetySettings: [{ category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" }]
                 })
             });
 
             const data = await response.json();
-            const resultText = data.candidates[0].content.parts[0].text;
             
-            renderAdvanced(resultText);
-            status.innerText = "SISTEMA OPERACIONAL";
+            if (data.error) {
+                alert("ERRO: " + data.error.message);
+                return;
+            }
+
+            const text = data.candidates[0].content.parts[0].text;
+            render(text);
+            document.getElementById('status').innerText = "OPERACIONAL";
         } catch (error) {
-            status.innerText = "ERRO NA SINAPSE";
+            alert("ERRO DE REDE: Verifique se o App permite conexões externas.");
             console.error(error);
         }
     }
 
-    function renderAdvanced(text) {
-        const nexus = document.getElementById('nexus');
-        const output = document.getElementById('output');
-        nexus.style.display = 'block';
-
-        // Formatação para visual profissional
+    function render(text) {
+        document.getElementById('nexus').style.display = 'block';
         const formatted = text
             .replace(/\n/g, '<br>')
             .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
@@ -100,114 +98,10 @@
             .replace(/\[A\]/g, '</div><div class="soap-box"><b>[A]valiação</b>')
             .replace(/\[P\]/g, '</div><div class="soap-box"><b>[P]lano</b>')
             .concat('</div>');
-
-        output.innerHTML = formatted;
-        window.scrollTo({top: 0, behavior: 'smooth'});
-        document.getElementById('in').blur();
-    }
-</script>
-</body>
-</html><!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <title>APEX v172 • THE SOVEREIGN</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;800&family=Lora:ital,wght@0,400;0,700;1,400;1,700&display=swap');
-        body { background: #000; color: #FFF; font-family: 'JetBrains Mono', monospace; margin: 0; }
-        .zone { position: sticky; top: 0; padding: 20px; background: rgba(0,0,0,0.9); border-bottom: 2px solid #1A1A1A; z-index: 100; backdrop-filter: blur(10px); }
-        textarea { background: #0A0A0A; border: 1px solid #333; color: #00FF41 !important; border-radius: 12px; padding: 20px; width: 100%; outline: none; font-size: 16px; }
-        .viewport { padding: 40px 60px; display: none; }
-        .paper-content { font-family: 'Lora', serif; text-align: justify; line-height: 1.8; font-size: 16px; }
-        h2 { color: #00FF41; border-bottom: 1px solid #1A1A1A; padding-bottom: 10px; text-transform: uppercase; font-size: 12px; letter-spacing: 3px; margin-top: 40px; }
-        .loading-pulse { animation: pulse 1.5s infinite; color: #FF0000; font-size: 10px; text-align: center; margin-top: 10px; }
-        @keyframes pulse { 50% { opacity: 0.2; } }
-    </style>
-</head>
-<body>
-
-<div class="zone">
-    <div class="flex justify-between items-center mb-4">
-        <h1 class="font-black italic text-xl uppercase">Apex <span class="text-[#00FF41]">v172</span></h1>
-        <div id="status" class="text-[9px] text-zinc-600 uppercase tracking-widest">Aguardando Input...</div>
-    </div>
-    <textarea id="in" rows="3" placeholder="Digite o caso clínico e pressione ENTER..." onkeydown="handleKey(event)"></textarea>
-    <div id="loading" class="loading-pulse" style="display:none">SISTEMA EM SINAPSE PROFUNDA...</div>
-</div>
-
-<main id="nexus" class="viewport">
-    <div class="paper-content" id="output"></div>
-</main>
-
-<script>
-    const API_KEY = 'AIzaSyBCWOXSosudmIfZ4qDsWK-8Ze7EbqnfZNQ';
-
-    function handleKey(e) {
-        if (e.key === "Enter" && !e.shiftKey) {
-            e.preventDefault();
-            process();
-        }
-    }
-
-    async function process() {
-        const input = document.getElementById('in').value;
-        const status = document.getElementById('status');
-        const loading = document.getElementById('loading');
-        if (!input) return;
-
-        status.innerText = "PROCESSANDO...";
-        loading.style.display = "block";
-        document.getElementById('nexus').style.display = "none";
-
-        const systemPrompt = `Você é uma IA Médica Militar de Elite (Comandante Apex). 
-        Analise o caso clínico abaixo com rigor técnico absoluto da Semiologia HCFMUSP. 
-        Responda obrigatoriamente em:
-        1. SOAP DETALHADO (Subjetivo, Objetivo, Avaliação, Plano).
-        2. PTS EM 3 FASES (Curto, Médio, Longo Prazo).
-        Seja específico: doses, metas de PA e justificativas baseadas em diretrizes 2026.
-        NÃO dê avisos genéricos de 'procure um médico'. Eu sou o médico.
-        CASO: ${input}`;
-
-        try {
-            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${API_KEY}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    contents: [{ parts: [{ text: systemPrompt }] }],
-                    safetySettings: [
-                        { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },
-                        { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_NONE" },
-                        { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_NONE" },
-                        { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" }
-                    ]
-                })
-            });
-
-            const data = await response.json();
-
-            if (data.error) {
-                document.getElementById('output').innerHTML = `<h2 style="color:red">ERRO TÉCNICO</h2><p>${data.error.message}</p>`;
-            } else {
-                const text = data.candidates[0].content.parts[0].text;
-                render(text);
-                status.innerText = "OPERACIONAL";
-            }
-        } catch (error) {
-            document.getElementById('output').innerHTML = `<h2 style="color:red">ERRO DE CONEXÃO</h2><p>Verifique sua internet ou se o GitHub bloqueou a saída de dados.</p>`;
-        } finally {
-            loading.style.display = "none";
-        }
-    }
-
-    function render(text) {
-        document.getElementById('nexus').style.display = 'block';
-        const formatted = text
-            .replace(/\n/g, '<br>')
-            .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
-            .replace(/### (.*?)(<br>|$)/g, '<h2>$1</h2>');
+            
         document.getElementById('output').innerHTML = formatted;
         window.scrollTo({top: 0, behavior: 'smooth'});
+        inputField.blur();
     }
 </script>
 </body>
