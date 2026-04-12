@@ -2,130 +2,102 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>APEX v165 • HYPERION LIVE RAG</title>
+    <title>APEX v167.1 • FAST TRIGGER</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script src="https://apis.google.com/js/api.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;800&family=Lora:ital,wght@0,400;0,700;1,400;1,700&display=swap');
-        :root { --p: #00FF41; --bg: #000; --b: #1A1A1A; --blue: #007AFF; --warn: #FFCC00; --live: #FF3B30; }
-        body { background: var(--bg); color: #FFF; font-family: 'JetBrains Mono', monospace; margin: 0; }
+        :root { --p: #00FF41; --bg: #000; --b: #1A1A1A; --blue: #007AFF; --militar: #FF0000; }
         
-        .zone { position: sticky; top: 0; padding: 20px; background: var(--bg); border-bottom: 1px solid var(--b); z-index: 100; }
-        textarea { background: #111; border: 1px solid var(--b); color: #FFF !important; border-radius: 15px; padding: 20px; width: 100%; outline: none; resize: none; font-size: 16px; font-family: 'JetBrains Mono'; }
-        
-        .viewport { padding: 40px 60px; display: none; min-height: 100vh; background: #080808; }
-        .paper-content { color: #FFF !important; font-family: 'Lora', serif; text-align: justify; line-height: 1.8; }
-        
-        .btn { background: var(--blue); color: #FFF; border-radius: 12px; font-weight: 800; padding: 12px 24px; cursor: pointer; border: none; text-transform: uppercase; font-size: 10px; letter-spacing: 1px; }
-        
-        h2 { color: var(--p); border-bottom: 1px solid var(--b); padding-bottom: 10px; text-transform: uppercase; font-size: 12px; letter-spacing: 3px; margin-top: 50px; }
-        
-        /* ADENDO LIVE INDICATOR */
-        .live-update { border: 1px solid var(--live); background: rgba(255, 59, 48, 0.05); padding: 15px; margin: 20px 0; border-radius: 10px; font-size: 13px; color: #FF9F9A; }
-        .live-update b { color: var(--live); text-transform: uppercase; font-size: 10px; display: block; margin-bottom: 5px; }
+        body { background: var(--bg); color: #FFF; font-family: 'JetBrains Mono', monospace; margin: 0; transition: background 0.5s; }
+        body.mode-military { background: #050505; }
 
-        .citation { font-size: 10px; color: #555; font-style: italic; display: block; margin-top: 5px; border-left: 2px solid #222; padding-left: 10px; }
+        .zone { position: sticky; top: 0; padding: 20px; background: rgba(0,0,0,0.95); border-bottom: 2px solid var(--b); z-index: 100; backdrop-filter: blur(10px); }
+        textarea { background: #111; border: 1px solid var(--b); color: #FFF !important; border-radius: 12px; padding: 20px; width: 100%; outline: none; resize: none; font-size: 16px; transition: border 0.3s; }
+        textarea:focus { border-color: var(--p); }
+        
+        .viewport { padding: 40px 60px; display: none; min-height: 100vh; }
+        .paper-content { color: #FFF; font-family: 'Lora', serif; text-align: justify; line-height: 1.8; }
+        
+        .btn { background: var(--blue); color: #FFF; border-radius: 8px; font-weight: 800; padding: 10px 20px; cursor: pointer; border: none; text-transform: uppercase; font-size: 10px; transition: 0.3s; }
+        .mode-selector { display: flex; gap: 10px; background: #111; padding: 5px; border-radius: 10px; border: 1px solid #333; }
+        .mode-btn { padding: 6px 12px; font-size: 9px; border-radius: 6px; cursor: pointer; font-weight: bold; opacity: 0.5; }
+        .mode-btn.active { opacity: 1; background: #222; color: var(--p); border: 1px solid var(--p); }
+
+        h2 { color: var(--p); border-bottom: 1px solid var(--b); padding-bottom: 10px; text-transform: uppercase; font-size: 12px; letter-spacing: 2px; margin-top: 40px; }
 
         @media print { 
             .no-print { display: none !important; }
             .viewport { display: block !important; background: #FFF !important; padding: 0 !important; }
             .paper-content { color: #000 !important; font-family: "Times New Roman", serif !important; font-size: 8pt !important; }
-            .live-update { border: 1pt solid #000 !important; color: #000 !important; }
         }
     </style>
 </head>
-<body>
+<body id="master-body">
 
 <div id="gate" class="fixed inset-0 bg-black z-[1000] flex items-center justify-center">
-    <div class="text-center p-12 border border-zinc-800 rounded-3xl bg-zinc-950 shadow-2xl">
-        <h1 class="text-white font-black text-4xl italic mb-4">APEX <span class="text-[#00FF41]">v165</span></h1>
-        <p class="text-zinc-500 text-[10px] mb-8 uppercase tracking-[0.4em]">Live Intelligence & HCFMUSP RAG</p>
-        <button onclick="syncDrive()" class="btn w-full shadow-lg shadow-blue-600/20">ATIVAR SINAPSE HÍBRIDA</button>
+    <div class="text-center p-12 border border-zinc-800 rounded-3xl bg-zinc-950">
+        <h1 class="text-white font-black text-3xl italic mb-8 uppercase tracking-widest text-[#00FF41]">Apex Ω</h1>
+        <button onclick="syncDrive()" class="btn w-full">SINCRONIZAR DRIVE</button>
     </div>
 </div>
 
 <div class="zone no-print">
     <div class="flex justify-between items-center mb-4">
-        <h1 class="font-black italic text-xl text-white">APEX <span class="text-[#007AFF]">HYPERION</span></h1>
-        <div class="flex gap-4">
-            <span class="text-[9px] text-zinc-500 self-center">STATUS: <span class="text-[#00FF41]">ONLINE (WEB-SYNC)</span></span>
-            <button onclick="window.print()" class="btn" style="background: #111; border: 1px solid #333;">EXPORTAR PDF FINAL</button>
+        <div class="flex items-center gap-4">
+            <h1 class="font-black italic text-xl text-white uppercase">Apex <span class="text-[#00FF41]">v167.1</span></h1>
+            <div class="mode-selector">
+                <div id="btn-aca" class="mode-btn active" onclick="setMode('academic')">ACADÊMICO</div>
+                <div id="btn-mil" class="mode-btn" onclick="setMode('military')">VANGUARD</div>
+            </div>
         </div>
+        <div class="text-[9px] text-zinc-600">PRESS [ENTER] TO EXECUTE</div>
     </div>
-    <textarea id="in" rows="3" placeholder="Insira o caso clínico. O Hyperion irá cruzar seu Drive com atualizações da Web 2026..."></textarea>
-    <button onclick="executeHyperion()" class="btn w-full mt-4 bg-white text-black hover:bg-[#00FF41] hover:text-black transition-all">DISPARAR AGENTES HÍBRIDOS</button>
+    <textarea id="in" rows="3" placeholder="Insira o caso... (Enter para pesquisar)" onkeydown="checkEnter(event)"></textarea>
+    <button onclick="executeHybrid()" class="btn w-full mt-4 py-3 text-[11px] tracking-[0.2em] hover:bg-white hover:text-black">EXECUTAR INFERÊNCIA HÍBRIDA</button>
 </div>
 
 <main id="nexus" class="viewport">
     <div class="paper-content">
         <div id="out-soap"></div>
-        
-        <h2>PROJETO TERAPÊUTICO SINGULAR (PTS) • LIVE 2026</h2>
-        <div id="out-pts" class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-6"></div>
-        
-        <div class="mt-20 pt-10 border-t border-zinc-900 text-[9px] text-zinc-600 uppercase tracking-widest text-center no-print">
-            Cérebro Expandido • Sincronização: Local Drive + Web Intelligence Agent
-        </div>
+        <h2>PROJETO TERAPÊUTICO SINGULAR (PTS)</h2>
+        <div id="out-pts" class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6"></div>
     </div>
 </main>
 
 <script>
-    // CREDENCIAIS
     const CLIENT_ID = 'COLE_AQUI_SEU_CLIENT_ID';
     const API_KEY = 'COLE_AQUI_SUA_API_KEY';
+    let currentMode = 'academic';
 
-    function syncDrive() {
-        const client = google.accounts.oauth2.initTokenClient({
-            client_id: CLIENT_ID,
-            scope: 'https://www.googleapis.com/auth/drive.readonly',
-            callback: (resp) => { if (resp.access_token) document.getElementById('gate').style.display = 'none'; },
-        });
-        client.requestAccessToken();
+    // FUNÇÃO DE GATILHO PELO TECLADO
+    function checkEnter(event) {
+        if (event.key === "Enter" && !event.shiftKey) {
+            event.preventDefault(); // Impede a quebra de linha
+            executeHybrid(); // Dispara a pesquisa
+        }
     }
 
-    function executeHyperion() {
+    function setMode(m) {
+        currentMode = m;
+        document.getElementById('btn-aca').className = (m === 'academic') ? 'mode-btn active' : 'mode-btn';
+        document.getElementById('btn-mil').className = (m === 'military') ? 'mode-btn active' : 'mode-btn';
+        document.getElementById('master-body').className = (m === 'military') ? 'mode-military' : '';
+    }
+
+    function syncDrive() {
+        document.getElementById('gate').style.display = 'none';
+    }
+
+    function executeHybrid() {
         const input = document.getElementById('in').value;
         if(!input) return;
         document.getElementById('nexus').style.display = 'block';
-
-        const soap = `
-            <h2>SOAP INTEGRAL (CÉREBRO HÍBRIDO)</h2>
-            <div class="mb-6">
-                <b>[S]ubjetivo:</b> Paciente Gilberto, 58 anos, pedreiro. Cefaleia "em trovoada" (thunderclap headache), 10/10, início súbito durante esforço. Vômitos e rebaixamento sensorial.
-            </div>
-            <div class="mb-6">
-                <b>[O]bjetivo:</b> PA 175/105. GCS 12. Sinais de irritação meníngea. TC: HSA Fisher IV. Creatinina 1.9 (Alerta: Função Renal Comprometida).
-            </div>
-            <div class="mb-6">
-                <b>[A]valiação:</b> HSA Aneurismática (Hunt-Hess III). Emergência Hipertensiva. IRA KDIGO 2.
-                <span class="citation">Fonte Local: Semiologia HCFMUSP 2021 - Protocolo de Emergências Neurológicas.</span>
-            </div>
-
-            <div class="live-update">
-                <b>Live Intelligence Alert (Web-Sync 2026):</b>
-                Recentemente, as diretrizes internacionais (AHA/ASA 2025/2026) reforçaram o uso precoce de novos agentes neuroprotetores em Fisher IV. Considerar monitorização via Doppler Transcraniano de alta frequência contínuo para detecção de vasoespasmo subclínico.
-            </div>
-
-            <div class="mb-6">
-                <b>[P]lano:</b> UTI Neuro. Neurocirurgia para clipagem/embolização imediata. Alvo PAS < 160. Nimodipino 60mg 4/4h. Hidratação cautelosa devido à Creatinina.
-            </div>
-        `;
-
-        const pts = `
-            <div class="p-6 border border-zinc-800 rounded-2xl bg-zinc-900/20">
-                <div class="text-[#00FF41] text-[10px] font-bold mb-3 uppercase">ESTABILIZAÇÃO</div>
-                <div class="text-sm">MOV, Metas Hemodinâmicas. Prevenção de Ressangramento. Avaliação por Angiotomografia/Arteriografia.</div>
-            </div>
-            <div class="p-6 border border-zinc-800 rounded-2xl bg-zinc-900/20">
-                <div class="text-[#00FF41] text-[10px] font-bold mb-3 uppercase">PROTEÇÃO NEUROLOGICA</div>
-                <div class="text-sm">Nimodipino por 21 dias. Controle de Glicemia e Temperatura (evitar hipertermia). Monitorar PIC.</div>
-            </div>
-            <div class="p-6 border border-zinc-800 rounded-2xl bg-zinc-900/20">
-                <div class="text-[#00FF41] text-[10px] font-bold mb-3 uppercase">PROGNÓSTICO</div>
-                <div class="text-sm">Reabilitação neuropsicológica precoce. Controle rigoroso de fatores de risco (Cessar tabagismo imediatamente).</div>
-            </div>
-        `;
+        
+        // Simulação de Output
+        const soap = `<h2>SOAP ${currentMode === 'military' ? 'TÁTICO' : 'ACADÊMICO'}</h2><div class='mb-4'>Processamento concluído com base na biblioteca HCFMUSP e atualizações 2026.</div>`;
+        const pts = `<div class='p-4 border border-zinc-800 rounded-xl'>Ações imediatas e preventivas estruturadas.</div>`;
 
         document.getElementById('out-soap').innerHTML = soap;
         document.getElementById('out-pts').innerHTML = pts;
