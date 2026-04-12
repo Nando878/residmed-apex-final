@@ -2,6 +2,115 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
+    <title>APEX v173 • THE ARCHITECT</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;800&family=Lora:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+        body { background: #000; color: #FFF; font-family: 'JetBrains Mono', monospace; margin: 0; }
+        .zone { position: sticky; top: 0; padding: 20px; background: rgba(0,0,0,0.96); border-bottom: 2px solid #1A1A1A; z-index: 100; backdrop-filter: blur(15px); }
+        textarea { background: #080808; border: 1px solid #333; color: #00FF41 !important; border-radius: 12px; padding: 20px; width: 100%; outline: none; font-size: 16px; transition: 0.3s; }
+        textarea:focus { border-color: #00FF41; box-shadow: 0 0 25px rgba(0, 255, 65, 0.15); }
+        .viewport { padding: 40px 60px; display: none; }
+        .paper-content { font-family: 'Lora', serif; text-align: justify; line-height: 1.9; font-size: 17px; color: #E0E0E0; }
+        h2 { color: #00FF41; border-bottom: 2px solid #1A1A1A; padding-bottom: 12px; text-transform: uppercase; font-size: 13px; letter-spacing: 4px; margin-top: 60px; margin-bottom: 25px; }
+        b { color: #FFF; }
+        .soap-box { background: rgba(255,255,255,0.02); padding: 25px; border-radius: 15px; border-left: 4px solid #1A1A1A; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="zone no-print">
+    <div class="flex justify-between items-center mb-4">
+        <h1 class="font-black italic text-2xl uppercase tracking-tighter text-white">Apex <span class="text-[#00FF41]">v173</span></h1>
+        <div id="status" class="text-[10px] text-zinc-500 uppercase tracking-[0.3em]">Neural Link: Stable</div>
+    </div>
+    <textarea id="in" rows="3" placeholder="Insira o caso clínico completo... [Pressione ENTER para Processar]" onkeydown="keyboardTrigger(event)"></textarea>
+</div>
+
+<main id="nexus" class="viewport">
+    <div class="paper-content" id="output">
+        </div>
+</main>
+
+<script>
+    const API_KEY = 'AIzaSyBCWOXSosudmIfZ4qDsWK-8Ze7EbqnfZNQ';
+
+    // FUNÇÃO DE GATILHO REFORÇADA
+    function keyboardTrigger(e) {
+        if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault(); // Impede a quebra de linha
+            processAdvancedSOAP();
+        }
+    }
+
+    async function processAdvancedSOAP() {
+        const input = document.getElementById('in').value;
+        const status = document.getElementById('status');
+        if (!input) return;
+
+        status.innerText = "PROCESSANDO SOAP EXPANDIDO...";
+        document.getElementById('nexus').style.display = "none";
+
+        // PROMPT DE ALTA DENSIDADE (SOAP MELHORADO)
+        const sysPrompt = `Você é um Médico Especialista Sênior em ambiente de alta criticidade.
+        Analise o caso clínico abaixo com PROFUNDIDADE MÁXIMA.
+        
+        REGRAS DO SOAP EXPANDIDO:
+        1. [S]: Detalhe histórico, fatores de risco, antecedentes e características da dor/sintoma.
+        2. [O]: Descreva achados de exame físico, sinais vitais e interprete exames de imagem/laboratório fisiopatologicamente.
+        3. [A]: Faça o raciocínio diagnóstico completo, discuta classificações (Fisher, Hunt-Hess, etc.) e diagnósticos diferenciais.
+        4. [P]: Plano detalhado com doses, frequências, metas hemodinâmicas e justificativas clínicas.
+        
+        Siga rigorosamente a estrutura do PTS de 3 Fases ao final.
+        CASO: ${input}`;
+
+        try {
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${API_KEY}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [{ parts: [{ text: sysPrompt }] }],
+                    safetySettings: [{ category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" }]
+                })
+            });
+
+            const data = await response.json();
+            const resultText = data.candidates[0].content.parts[0].text;
+            
+            renderAdvanced(resultText);
+            status.innerText = "SISTEMA OPERACIONAL";
+        } catch (error) {
+            status.innerText = "ERRO NA SINAPSE";
+            console.error(error);
+        }
+    }
+
+    function renderAdvanced(text) {
+        const nexus = document.getElementById('nexus');
+        const output = document.getElementById('output');
+        nexus.style.display = 'block';
+
+        // Formatação para visual profissional
+        const formatted = text
+            .replace(/\n/g, '<br>')
+            .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
+            .replace(/### (.*?)(<br>|$)/g, '<h2>$1</h2>')
+            .replace(/\[S\]/g, '<div class="soap-box"><b>[S]ubjetivo</b>')
+            .replace(/\[O\]/g, '</div><div class="soap-box"><b>[O]bjetivo</b>')
+            .replace(/\[A\]/g, '</div><div class="soap-box"><b>[A]valiação</b>')
+            .replace(/\[P\]/g, '</div><div class="soap-box"><b>[P]lano</b>')
+            .concat('</div>');
+
+        output.innerHTML = formatted;
+        window.scrollTo({top: 0, behavior: 'smooth'});
+        document.getElementById('in').blur();
+    }
+</script>
+</body>
+</html><!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
     <title>APEX v172 • THE SOVEREIGN</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
