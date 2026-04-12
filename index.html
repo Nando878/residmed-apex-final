@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>APEX v159 • ABSOLUTE INTEGRITY</title>
+    <title>APEX v160 • DRIVE SYNAPSE</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://apis.google.com/js/api.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;800&family=Lora:ital,wght@0,400;0,700;1,400;1,700&display=swap');
         
@@ -27,6 +28,7 @@
             background: var(--mil-bg); border-bottom: 1px solid var(--mil-border); z-index: 100;
         }
 
+        /* ENTRADA DE DADOS - LETRA BRANCA */
         textarea { 
             background: #111; border: 1px solid var(--mil-border); 
             color: #FFFFFF !important; border-radius: 15px; padding: 20px; 
@@ -39,6 +41,7 @@
             min-height: 100vh;
         }
 
+        /* SOAP INTEGRAL - LETRA BRANCA */
         .paper-content {
             width: 100%; font-family: 'Lora', serif; text-align: justify; 
             text-justify: inter-word; line-height: 1.8; color: #FFFFFF !important;
@@ -56,6 +59,7 @@
             font-size: 11px; border: none; cursor: pointer;
         }
 
+        /* PTS APP VIEW */
         .pts-scroll { width: 100%; overflow-x: auto; margin-top: 30px; border-radius: 15px; border: 1px solid var(--mil-border); background: rgba(0,0,0,0.5); }
         .pts-track { display: flex; gap: 20px; min-width: 1300px; padding: 25px; }
         .pts-column { flex: 1; min-width: 420px; background: rgba(255,255,255,0.03); padding: 30px; border-radius: 20px; border: 1px solid var(--mil-border); }
@@ -77,7 +81,7 @@
         #gate { position: fixed; inset: 0; background: #000; z-index: 1000; display: flex; items: center; justify-content: center; }
     </style>
 </head>
-<body>
+<body onload="handleClientLoad()">
 
     <div id="gate">
         <div class="bg-[#0A0F08] p-12 rounded-3xl border border-[#333] text-center">
@@ -89,37 +93,34 @@
 
     <div class="command-zone no-print">
         <div class="flex justify-between items-center mb-4">
-            <h1 class="font-black italic text-xl uppercase tracking-tighter text-white">Apex <span class="text-[#00FF41]">v159</span></h1>
+            <h1 class="font-black italic text-xl uppercase tracking-tighter text-white">Apex <span class="text-[#00FF41]">v160</span></h1>
             <div class="flex gap-2">
                 <button onclick="window.print()" class="ios-btn" style="background: #222;">GERAR FLUXOGRAMA</button>
                 <button onclick="solveClinicalMaster()" class="ios-btn">EXECUTAR INFERÊNCIA INTEGRAL</button>
             </div>
         </div>
-        <textarea id="clin-in" rows="3" placeholder="Insira o caso clínico aqui..."></textarea>
+        <textarea id="clin-in" rows="3" placeholder="COLE O CASO CLÍNICO..."></textarea>
     </div>
 
     <main id="nexus" class="hidden tactical-viewport">
         <div class="paper-content" id="screen-view">
             <div id="soap-integral-out"></div>
-            
             <h2>PROJETO TERAPÊUTICO SINGULAR (PTS) – MODELO GILBERTO</h2>
             <div class="pts-scroll">
                 <div class="pts-track">
                     <div class="pts-column">
-                        <div class="font-bold text-white border-b border-[#333] mb-4 pb-2">1. CURTO PRAZO (FASE AGUDA)</div>
-                        <span class="pts-label">Medidas e Metas</span><div id="pts-1-1" class="pts-val"></div>
-                        <span class="pts-label">Monitorização/Exames</span><div id="pts-1-2" class="pts-val"></div>
-                        <span class="pts-label">Farmacologia Hospitalar</span><div id="pts-1-3" class="pts-val"></div>
+                        <div class="font-bold text-white border-b border-[#333] mb-4 pb-2">1. CURTO PRAZO</div>
+                        <span class="pts-label">Metas e Medidas</span><div id="pts-1-1" class="pts-val"></div>
+                        <span class="pts-label">Monitorização HCFMUSP</span><div id="pts-1-2" class="pts-val"></div>
                     </div>
                     <div class="pts-column">
-                        <div class="font-bold text-white border-b border-[#333] mb-4 pb-2">2. MÉDIO PRAZO (MANEJO)</div>
-                        <span class="pts-label">Complicações/Vasoespasmo</span><div id="pts-2-1" class="pts-val"></div>
-                        <span class="pts-label">Reabilitação Precoce</span><div id="pts-2-2" class="pts-val"></div>
-                        <span class="pts-label">Critérios de Alta</span><div id="pts-2-3" class="pts-val"></div>
+                        <div class="font-bold text-white border-b border-[#333] mb-4 pb-2">2. FARMACOLOGIA</div>
+                        <span class="pts-label">Hospitalar (Integral)</span><div id="pts-2-1" class="pts-val"></div>
+                        <span class="pts-label">Profilaxias</span><div id="pts-2-2" class="pts-val"></div>
                     </div>
                     <div class="pts-column">
-                        <div class="font-bold text-white border-b border-[#333] mb-4 pb-2">3. LONGO PRAZO (ALTA)</div>
-                        <span class="pts-label">Prescrição e Estilo de Vida</span><div id="pts-3-1" class="pts-val"></div>
+                        <div class="font-bold text-white border-b border-[#333] mb-4 pb-2">3. MÉDIO/LONGO PRAZO</div>
+                        <span class="pts-label">Reabilitação e Alta</span><div id="pts-3-1" class="pts-val"></div>
                         <span class="pts-label">Sinais de Alarme</span><div id="pts-3-2" class="pts-val"></div>
                     </div>
                 </div>
@@ -127,7 +128,7 @@
         </div>
 
         <div id="flowchart-data" class="flowchart-mode">
-            <div class="flow-node"><span class="flow-header">REGISTRO SOAP INTEGRAL (HCFMUSP)</span><div id="f-soap"></div></div>
+            <div class="flow-node"><span class="flow-header">REGISTRO SOAP INTEGRAL (HCFMUSP CORE)</span><div id="f-soap"></div></div>
             <div class="flow-node"><span class="flow-header">PTS - PLANO TÁTICO INTEGRAL</span><div id="f-pts"></div></div>
             <div class="flow-node" style="border: 1.5pt solid #000;"><span class="flow-header">SINAIS DE ALARME E SEGURANÇA</span><div id="f-alarm"></div></div>
         </div>
@@ -135,11 +136,22 @@
 
     <script>
         const KEY = "7400";
+        
+        // --- GABINETE DE INTEGRAÇÃO DRIVE ---
+        function handleClientLoad() { gapi.load('client:auth2', initClient); }
+        function initClient() {
+            gapi.client.init({
+                apiKey: 'SUA_API_KEY', // Administrador, insira aqui sua API Key do Google Cloud
+                discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"],
+                scope: 'https://www.googleapis.com/auth/drive.readonly'
+            });
+        }
+
         function unlock() {
             if(document.getElementById('pass').value === KEY) {
                 document.getElementById('gate').style.display = 'none';
                 document.getElementById('nexus').classList.remove('hidden');
-            } else { alert("NEGADO"); }
+            } else { alert("ACESSO NEGADO"); }
         }
 
         function solveClinicalMaster() {
@@ -148,29 +160,24 @@
             document.getElementById('nexus').style.display = 'block';
 
             setTimeout(() => {
-                // SOAP INTEGRAL - VOLUME MÁXIMO (MODELO RECOMENDADO)
+                // SOAP INTEGRAL - ABSOLUTO
                 const s = "[S]ubjetivo: Paciente Gilberto, 58 anos, pedreiro (Classe C). Trazido pela emergência com cefaleia holocraniana de início súbito, intensidade máxima (10/10), descrita como “a pior da vida”, seguida de vômitos em jato e rebaixamento flutuante do nível de consciência. Antecedentes: Hipertensão Arterial Sistêmica não controlada e tabagismo (30 anos-maço). Sem alergias conhecidas.";
                 const o = "[O]bjetivo: Estado geral regular. Escala de Glasgow 12 (O3, V4, M5). PA: 175/105 mmHg; FC: 88 bpm. Rigidez de nuca presente (Brudzinski +). Exame segmentar sem alterações relevantes em tórax e abdome. TC de crânio sem contraste: Hemorragia Subaracnoidea Fisher IV. Laboratorial: Creatinina 1,9 mg/dL (Injúria Renal Aguda KDIGO estágio 2); leucocitose 13.500/mm³; glicemia 165 mg/dL. ECG com alterações inespecíficas da repolarização.";
-                const a = "[A]valiação / Diagnósticos: 1. Hemorragia Subaracnoidea aneurismática suspeita – Hunt-Hess III / Fisher IV (alto risco de hidrocefalia, vasoespasmo e isquemia cerebral tardia). 2. Emergência hipertensiva com lesão em órgão-alvo (SNC). 3. Injúria Renal Aguda KDIGO estágio 2 (provavelmente pré-renal; monitorar evolução). 4. Fatores de risco cardiovascular: HAS não controlada, tabagismo e idade.";
-                const p = "[P]lano / Projeto Terapêutico Singular (PTS) – Modelo Gilberto: Internação imediata em UTI Neuro / UTI AVC. ABCDE + protocolo MOV. Cabeceira elevada a 30°. Monitorização invasiva de PA (meta PAS < 160 mmHg antes da cirurgia). Avaliação urgente por neurocirurgia.";
+                const a = "[A]valiação / Diagnósticos: 1. Hemorragia Subaracnoidea aneurismática suspeita – Hunt-Hess III / Fisher IV. 2. Emergência hipertensiva com lesão em órgão-alvo (SNC). 3. Injúria Renal Aguda KDIGO estágio 2. 4. Fatores de risco cardiovascular: HAS não controlada, tabagismo e idade.";
+                const p = "[P]lano / PTS Modelo Gilberto: Internação imediata em UTI Neuro / UTI AVC. ABCDE + protocolo MOV. Cabeceira elevada a 30°. Monitorização invasiva de PA (meta PAS < 160 mmHg antes da cirurgia). Avaliação urgente por neurocirurgia.";
 
-                document.getElementById('soap-integral-out').innerHTML = `<h2>SOAP INTEGRAL (GABARITO USP)</h2>${s}<br><br>${o}<br><br>${a}<br><br>${p}`;
+                document.getElementById('soap-integral-out').innerHTML = `<h2>SOAP INTEGRAL (VOLUME MÁXIMO)</h2>${s}<br><br>${o}<br><br>${a}<br><br>${p}`;
                 
-                // PTS 4 FASES - VOLUME MÁXIMO
-                document.getElementById('pts-1-1').innerText = "ABCDE + Protocolo MOV; Internar em UTI Neuro; Cabeceira 30°; Metas: PAS < 160 mmHg (antes da cirurgia), SatO2 >95%, PPC >70 mmHg, PIC <20 mmHg, Glicemia 140-180 mg/dL; Euvolemia rigorosa.";
-                document.getElementById('pts-1-2').innerText = "Neurocheck 1/1h; Avaliação Neurocirurgia urgente; Arteriografia (DSA); TC Crânio seriado; ECG 12 derivações; Painel completo (Troponina, Gasometria, TGO/TGP, Eletrólitos).";
-                document.getElementById('pts-1-3').innerText = "Nimodipino 60mg VO/SNE 4/4h (21 dias); Levetiracetam: Ataque 20mg/kg EV + Manutenção 1g 12/12h; Controle PA: Nicardipino ou Nitroprussiato BIC; Tramadol 100mg EV 6/6h.";
-                
-                document.getElementById('pts-2-1').innerText = "Monitorização de vasoespasmo (Doppler transcraniano); Se isquemia tardia: induzir hipertensão (PAS 160-180 com Noradrenalina); Manejo da IRA: Otimizar volemia e evitar nefrotóxicos.";
-                document.getElementById('pts-2-2').innerText = "Reabilitação multidisciplinar precoce (Fisio, Fono, Psico); Monitorar eletrólitos e função renal diariamente; Mobilização precoce orientada.";
-                document.getElementById('pts-2-3').innerText = "Ausência de vasoespasmo clinicamente significativo após 14 dias; Estabilidade hemodinâmica e neurológica; Desmame de DVE concluído.";
+                document.getElementById('pts-1-1').innerText = "ABCDE + Protocolo MOV; Internar UTI Neuro; Metas: PAS < 160 mmHg (pré-op), SatO2 >95%, PPC >70, PIC <20, Glicemia 140-180.";
+                document.getElementById('pts-1-2').innerText = "Neurocheck 1/1h; Arteriografia; TC Crânio seriado; Painel HCFMUSP completo (Troponina, Gasometria, Eletrólitos).";
+                document.getElementById('pts-2-1').innerText = "Nimodipino 60mg VO/SNE 4/4h (21 dias); Levetiracetam: Ataque 20mg/kg EV + Manutenção 1g 12/12h; Controle PA: BIC.";
+                document.getElementById('pts-2-2').innerText = "Profilaxia TEV; Tramadol 100mg EV 6/6h; Omeprazol 40mg VO; Dieta enteral após estabilidade.";
+                document.getElementById('pts-3-1').innerText = "Monitorar vasoespasmo; Reabilitação precoce; Meta alta após 14 dias; Meta ambulatorial PA <130/80 (Losartana + HCTZ).";
+                document.getElementById('pts-3-2').innerText = "Cefaleia explosiva, déficit motor novo, convulsão, febre ou queda brusca do estado geral.";
 
-                document.getElementById('pts-3-1').innerText = "Losartana 50mg + HCTZ 12,5mg (Meta <130/80); Dieta DASH; Sal <5g; Perda de peso 5-10%; Atividade física >150 min/semana; Cessação do tabagismo.";
-                document.getElementById('pts-3-2').innerText = "Cefaleia súbita intensa, novo déficit motor/sensitivo, convulsão, febre, vômitos persistentes ou queda do estado geral.";
-
-                // FLUXOGRAMA PDF
+                // FLUXOGRAMA
                 document.getElementById('f-soap').innerHTML = `${s}<br><br>${o}<br><br>${a}`;
-                document.getElementById('f-pts').innerHTML = `<b>Fase 1:</b> ${document.getElementById('pts-1-1').innerText}<br><b>Fase 2:</b> ${document.getElementById('pts-2-1').innerText}`;
+                document.getElementById('f-pts').innerHTML = `<b>Metas:</b> ${document.getElementById('pts-1-1').innerText}<br><b>Farma:</b> ${document.getElementById('pts-2-1').innerText}`;
                 document.getElementById('f-alarm').innerText = document.getElementById('pts-3-2').innerText;
 
                 window.scrollTo({ top: 0, behavior: 'smooth' });
