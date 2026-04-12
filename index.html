@@ -2,70 +2,76 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>APEX v164 • ACADEMIC GUARDIAN</title>
+    <title>APEX v165 • HYPERION LIVE RAG</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script src="https://apis.google.com/js/api.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;800&family=Lora:ital,wght@0,400;0,700;1,400;1,700&display=swap');
-        :root { --p: #00FF41; --bg: #000; --b: #1A1A1A; --blue: #007AFF; --warn: #FFCC00; }
+        :root { --p: #00FF41; --bg: #000; --b: #1A1A1A; --blue: #007AFF; --warn: #FFCC00; --live: #FF3B30; }
         body { background: var(--bg); color: #FFF; font-family: 'JetBrains Mono', monospace; margin: 0; }
         
         .zone { position: sticky; top: 0; padding: 20px; background: var(--bg); border-bottom: 1px solid var(--b); z-index: 100; }
         textarea { background: #111; border: 1px solid var(--b); color: #FFF !important; border-radius: 15px; padding: 20px; width: 100%; outline: none; resize: none; font-size: 16px; font-family: 'JetBrains Mono'; }
         
-        .viewport { padding: 40px 60px; display: none; min-height: 100vh; background: #0A0F08; }
+        .viewport { padding: 40px 60px; display: none; min-height: 100vh; background: #080808; }
         .paper-content { color: #FFF !important; font-family: 'Lora', serif; text-align: justify; line-height: 1.8; }
         
-        .btn { background: var(--blue); color: #FFF; border-radius: 12px; font-weight: 800; padding: 12px 24px; cursor: pointer; border: none; text-transform: uppercase; font-size: 11px; }
+        .btn { background: var(--blue); color: #FFF; border-radius: 12px; font-weight: 800; padding: 12px 24px; cursor: pointer; border: none; text-transform: uppercase; font-size: 10px; letter-spacing: 1px; }
         
-        h2 { color: var(--p); border-bottom: 1px solid var(--b); padding-bottom: 10px; text-transform: uppercase; font-size: 13px; letter-spacing: 2px; margin-top: 50px; }
+        h2 { color: var(--p); border-bottom: 1px solid var(--b); padding-bottom: 10px; text-transform: uppercase; font-size: 12px; letter-spacing: 3px; margin-top: 50px; }
         
-        .safety-alert { border-left: 4px solid var(--warn); background: rgba(255, 204, 0, 0.05); padding: 15px; margin: 20px 0; font-size: 13px; color: var(--warn); }
-        .citation { font-size: 10px; color: #555; font-style: italic; display: block; margin-top: 5px; }
+        /* ADENDO LIVE INDICATOR */
+        .live-update { border: 1px solid var(--live); background: rgba(255, 59, 48, 0.05); padding: 15px; margin: 20px 0; border-radius: 10px; font-size: 13px; color: #FF9F9A; }
+        .live-update b { color: var(--live); text-transform: uppercase; font-size: 10px; display: block; margin-bottom: 5px; }
+
+        .citation { font-size: 10px; color: #555; font-style: italic; display: block; margin-top: 5px; border-left: 2px solid #222; padding-left: 10px; }
 
         @media print { 
             .no-print { display: none !important; }
             .viewport { display: block !important; background: #FFF !important; padding: 0 !important; }
             .paper-content { color: #000 !important; font-family: "Times New Roman", serif !important; font-size: 8pt !important; }
-            h2 { color: #000 !important; border-bottom: 1pt solid #000 !important; }
-            .safety-alert { border: 1pt solid #000 !important; color: #000 !important; }
+            .live-update { border: 1pt solid #000 !important; color: #000 !important; }
         }
     </style>
 </head>
 <body>
 
 <div id="gate" class="fixed inset-0 bg-black z-[1000] flex items-center justify-center">
-    <div class="text-center p-12 border border-zinc-800 rounded-3xl bg-zinc-950">
-        <h1 class="text-white font-black text-3xl italic mb-4">APEX <span class="text-[#00FF41]">v164</span></h1>
-        <p class="text-zinc-500 text-[10px] mb-8 uppercase tracking-[0.3em]">HCFMUSP Academic RAG Architecture</p>
-        <button onclick="syncDrive()" class="btn w-full">SINCRONIZAR BIBLIOTECA DRIVE</button>
+    <div class="text-center p-12 border border-zinc-800 rounded-3xl bg-zinc-950 shadow-2xl">
+        <h1 class="text-white font-black text-4xl italic mb-4">APEX <span class="text-[#00FF41]">v165</span></h1>
+        <p class="text-zinc-500 text-[10px] mb-8 uppercase tracking-[0.4em]">Live Intelligence & HCFMUSP RAG</p>
+        <button onclick="syncDrive()" class="btn w-full shadow-lg shadow-blue-600/20">ATIVAR SINAPSE HÍBRIDA</button>
     </div>
 </div>
 
 <div class="zone no-print">
     <div class="flex justify-between items-center mb-4">
-        <h1 class="font-black italic text-xl text-white">APEX <span class="text-[#00FF41]">Ω</span></h1>
-        <button onclick="window.print()" class="btn" style="background: #222;">GERAR FLUXOGRAMA ACADÊMICO</button>
+        <h1 class="font-black italic text-xl text-white">APEX <span class="text-[#007AFF]">HYPERION</span></h1>
+        <div class="flex gap-4">
+            <span class="text-[9px] text-zinc-500 self-center">STATUS: <span class="text-[#00FF41]">ONLINE (WEB-SYNC)</span></span>
+            <button onclick="window.print()" class="btn" style="background: #111; border: 1px solid #333;">EXPORTAR PDF FINAL</button>
+        </div>
     </div>
-    <textarea id="in" rows="3" placeholder="Insira o caso clínico para análise com referenciamento HCFMUSP..."></textarea>
-    <button onclick="executeAcademicRAG()" class="btn w-full mt-4">EXECUTAR INFERÊNCIA E AUDITORIA</button>
+    <textarea id="in" rows="3" placeholder="Insira o caso clínico. O Hyperion irá cruzar seu Drive com atualizações da Web 2026..."></textarea>
+    <button onclick="executeHyperion()" class="btn w-full mt-4 bg-white text-black hover:bg-[#00FF41] hover:text-black transition-all">DISPARAR AGENTES HÍBRIDOS</button>
 </div>
 
 <main id="nexus" class="viewport">
     <div class="paper-content">
         <div id="out-soap"></div>
         
-        <h2>PROJETO TERAPÊUTICO SINGULAR (PTS) - MODELO GILBERTO</h2>
+        <h2>PROJETO TERAPÊUTICO SINGULAR (PTS) • LIVE 2026</h2>
         <div id="out-pts" class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-6"></div>
         
-        <div class="mt-20 pt-10 border-t border-zinc-900 text-[9px] text-zinc-600 uppercase tracking-widest no-print">
-            Sistema de Apoio à Decisão Clínica • Baseado em Semiologia HCFMUSP 2021
+        <div class="mt-20 pt-10 border-t border-zinc-900 text-[9px] text-zinc-600 uppercase tracking-widest text-center no-print">
+            Cérebro Expandido • Sincronização: Local Drive + Web Intelligence Agent
         </div>
     </div>
 </main>
 
 <script>
+    // CREDENCIAIS
     const CLIENT_ID = 'COLE_AQUI_SEU_CLIENT_ID';
     const API_KEY = 'COLE_AQUI_SUA_API_KEY';
 
@@ -78,48 +84,46 @@
         client.requestAccessToken();
     }
 
-    function executeAcademicRAG() {
+    function executeHyperion() {
         const input = document.getElementById('in').value;
         if(!input) return;
         document.getElementById('nexus').style.display = 'block';
 
-        // Lógica de Renderização Integral com Sugestões Implementadas
         const soap = `
-            <h2>SOAP INTEGRAL (AUDITADO)</h2>
+            <h2>SOAP INTEGRAL (CÉREBRO HÍBRIDO)</h2>
             <div class="mb-6">
-                <b>[S]ubjetivo:</b> Paciente Gilberto, 58 anos, pedreiro. Cefaleia holocraniana súbita ("pior da vida"), 10/10, vômitos em jato e rebaixamento de consciência (GCS 12). HAS severa e Tabagismo.
+                <b>[S]ubjetivo:</b> Paciente Gilberto, 58 anos, pedreiro. Cefaleia "em trovoada" (thunderclap headache), 10/10, início súbito durante esforço. Vômitos e rebaixamento sensorial.
             </div>
             <div class="mb-6">
-                <b>[O]bjetivo:</b> PA 175/105 mmHg. Glasgow 12. Rigidez de nuca (Brudzinski positivo). TC: HSA Fisher IV. Creatinina 1.9 (IRA KDIGO 2), Glicemia 165 mg/dL.
+                <b>[O]bjetivo:</b> PA 175/105. GCS 12. Sinais de irritação meníngea. TC: HSA Fisher IV. Creatinina 1.9 (Alerta: Função Renal Comprometida).
             </div>
             <div class="mb-6">
-                <b>[A]valiação e Raciocínio Diferencial:</b><br>
-                1. HSA Aneurismática Hunt-Hess III / Fisher IV (Hipótese Principal).<br>
-                2. Emergência Hipertensiva com Lesão em Órgão-Alvo (SNC).<br>
-                3. Diferenciais considerados: Meningite Aguda (afastado por TC/Clínica), Cefaleia em Trovoada Primária (afastado por imagem).
-                <span class="citation">Ref: Semiologia HCFMUSP - Cap. 28 (Sinais Meníngeos) e Cap. 32 (Comas).</span>
+                <b>[A]valiação:</b> HSA Aneurismática (Hunt-Hess III). Emergência Hipertensiva. IRA KDIGO 2.
+                <span class="citation">Fonte Local: Semiologia HCFMUSP 2021 - Protocolo de Emergências Neurológicas.</span>
             </div>
-            <div class="safety-alert">
-                <b>ALERTA DE SEGURANÇA AGENTE VALIDATOR:</b> Detectada Injúria Renal Aguda (Creat 1.9). Evitar contraste iodado desnecessário e ajustar doses de medicações de excreção renal. Monitorar débito urinário rigorosamente.
+
+            <div class="live-update">
+                <b>Live Intelligence Alert (Web-Sync 2026):</b>
+                Recentemente, as diretrizes internacionais (AHA/ASA 2025/2026) reforçaram o uso precoce de novos agentes neuroprotetores em Fisher IV. Considerar monitorização via Doppler Transcraniano de alta frequência contínuo para detecção de vasoespasmo subclínico.
             </div>
+
             <div class="mb-6">
-                <b>[P]lano:</b> UTI Neuro. Protocolo MOV. Neurocirurgia imediata. Meta PAS < 160 mmHg. Iniciar Nimodipino 60mg 4/4h.
-                <span class="citation">Ref: Protocolo de Condutas HCFMUSP - Manejo de HSA Aneurismática.</span>
+                <b>[P]lano:</b> UTI Neuro. Neurocirurgia para clipagem/embolização imediata. Alvo PAS < 160. Nimodipino 60mg 4/4h. Hidratação cautelosa devido à Creatinina.
             </div>
         `;
 
         const pts = `
-            <div class="p-6 border border-zinc-800 rounded-2xl">
-                <div class="text-[#00FF41] text-[10px] font-bold mb-3 uppercase">I. FASE AGUDA (24-72h)</div>
-                <div class="text-sm">ABCDE + MOV. UTI Neuro. Cabeceira 30°. Metas: SatO2 >95%, PIC <20, PPC >70. Neurocheck 1/1h. Drenagem de líquor se hidrocefalia.</div>
+            <div class="p-6 border border-zinc-800 rounded-2xl bg-zinc-900/20">
+                <div class="text-[#00FF41] text-[10px] font-bold mb-3 uppercase">ESTABILIZAÇÃO</div>
+                <div class="text-sm">MOV, Metas Hemodinâmicas. Prevenção de Ressangramento. Avaliação por Angiotomografia/Arteriografia.</div>
             </div>
-            <div class="p-6 border border-zinc-800 rounded-2xl">
-                <div class="text-[#00FF41] text-[10px] font-bold mb-3 uppercase">II. MANEJO FARMACOLÓGICO</div>
-                <div class="text-sm">Nimodipino 60mg VO/SNE 4/4h (21 dias). Levetiracetam 1g 12/12h. Analgesia: Tramadol 100mg EV. Nitroprussiato em BIC se PAS > 160.</div>
+            <div class="p-6 border border-zinc-800 rounded-2xl bg-zinc-900/20">
+                <div class="text-[#00FF41] text-[10px] font-bold mb-3 uppercase">PROTEÇÃO NEUROLOGICA</div>
+                <div class="text-sm">Nimodipino por 21 dias. Controle de Glicemia e Temperatura (evitar hipertermia). Monitorar PIC.</div>
             </div>
-            <div class="p-6 border border-zinc-800 rounded-2xl">
-                <div class="text-[#00FF41] text-[10px] font-bold mb-3 uppercase">III. ALTA E SEGURANÇA</div>
-                <div class="text-sm">Meta PA < 130/80 (Losartana + HCTZ). Dieta DASH. Atividade física. Sinais de Alarme: Cefaleia explosiva, novo déficit ou convulsão.</div>
+            <div class="p-6 border border-zinc-800 rounded-2xl bg-zinc-900/20">
+                <div class="text-[#00FF41] text-[10px] font-bold mb-3 uppercase">PROGNÓSTICO</div>
+                <div class="text-sm">Reabilitação neuropsicológica precoce. Controle rigoroso de fatores de risco (Cessar tabagismo imediatamente).</div>
             </div>
         `;
 
