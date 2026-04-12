@@ -2,174 +2,142 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>APEX v161 • WORKSPACE BRIDGE</title>
+    <title>APEX v163 • RAG DYNAMIC AGENTS</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://accounts.google.com/gsi/client" onload="initTokenClient()" async defer></script>
-    <script src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="https://apis.google.com/js/api.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;800&family=Lora:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+        :root { --p: #00FF41; --bg: #000; --b: #1A1A1A; --blue: #007AFF; }
+        body { background: var(--bg); color: #FFF; font-family: 'JetBrains Mono', monospace; margin: 0; }
         
-        :root { 
-            --mil-phosphor: #00FF41; 
-            --mil-bg: #000000; 
-            --mil-olive: #0A0F08;
-            --mil-border: #1A1A1A;
-            --ios-blue: #007AFF;
-        }
+        /* INTERFACE ONYX */
+        .zone { position: sticky; top: 0; padding: 20px; background: var(--bg); border-bottom: 1px solid var(--b); z-index: 100; }
+        textarea { background: #111; border: 1px solid var(--b); color: #FFF !important; border-radius: 15px; padding: 20px; width: 100%; outline: none; resize: none; font-size: 16px; font-family: 'JetBrains Mono'; }
+        
+        .viewport { padding: 40px 60px; display: none; min-height: 100vh; background: #0A0F08; }
+        .paper-content { color: #FFF !important; font-family: 'Lora', serif; text-align: justify; line-height: 1.8; }
+        
+        .btn { background: var(--blue); color: #FFF; border-radius: 12px; font-weight: 800; padding: 12px 24px; cursor: pointer; border: none; text-transform: uppercase; font-size: 11px; transition: 0.3s; }
+        .btn:hover { opacity: 0.8; transform: translateY(-2px); }
+        
+        h2 { color: var(--p); border-bottom: 1px solid var(--b); padding-bottom: 10px; text-transform: uppercase; font-size: 14px; letter-spacing: 2px; margin-top: 40px; }
+        
+        /* AGENTES INDICATORS */
+        .agent-status { display: flex; gap: 10px; margin-bottom: 20px; }
+        .badge { font-size: 9px; padding: 4px 8px; border-radius: 4px; border: 1px solid var(--b); color: #555; }
+        .badge.active { color: var(--p); border-color: var(--p); animation: pulse 2s infinite; }
 
-        html, body { background-color: var(--mil-bg); margin: 0; padding: 0; width: 100vw; min-height: 100vh; overflow-x: hidden; overflow-y: auto; }
-        body { display: flex; flex-direction: column; font-family: 'JetBrains Mono', monospace; }
+        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
 
-        .command-zone { position: sticky; top: 0; padding: 20px; background: var(--mil-bg); border-bottom: 1px solid var(--mil-border); z-index: 100; }
-
-        /* TEXTO BRANCO NA ENTRADA */
-        textarea { background: #111; border: 1px solid var(--mil-border); color: #FFFFFF !important; border-radius: 15px; padding: 20px; font-size: 16px; width: 100%; outline: none; resize: none; }
-
-        .tactical-viewport { width: 100%; background-color: var(--mil-olive); padding: 40px 60px; display: none; min-height: 100vh; }
-
-        /* TEXTO BRANCO INTEGRAL NO SOAP */
-        .paper-content { width: 100%; font-family: 'Lora', serif; text-align: justify; line-height: 1.8; color: #FFFFFF !important; }
-
-        h2 { font-family: 'JetBrains Mono'; font-weight: 800; text-transform: uppercase; font-size: 14px; color: var(--mil-phosphor); letter-spacing: 3px; margin: 50px 0 30px 0; border-bottom: 1px solid var(--mil-border); padding-bottom: 10px; }
-
-        .ios-btn { background-color: var(--ios-blue); color: #FFFFFF; border-radius: 12px; font-weight: 800; padding: 12px 24px; text-transform: uppercase; font-size: 11px; border: none; cursor: pointer; }
-
-        /* PTS ESTRUTURADO */
-        .pts-scroll { width: 100%; overflow-x: auto; margin-top: 30px; border-radius: 15px; border: 1px solid var(--mil-border); background: rgba(0,0,0,0.5); }
-        .pts-track { display: flex; gap: 20px; min-width: 1300px; padding: 25px; }
-        .pts-column { flex: 1; min-width: 420px; background: rgba(255,255,255,0.03); padding: 30px; border-radius: 20px; border: 1px solid var(--mil-border); }
-        .pts-label { color: var(--ios-blue); font-size: 10px; font-weight: 800; text-transform: uppercase; margin-top: 15px; display: block; border-left: 3px solid var(--ios-blue); padding-left: 8px; }
-        .pts-val { font-size: 14px; color: #FFFFFF; line-height: 1.6; margin-top: 8px; }
-
-        @media print {
-            @page { size: A4 portrait; margin: 8mm; }
+        @media print { 
             .no-print { display: none !important; }
-            body { background: #FFF !important; color: #000 !important; }
-            .tactical-viewport { display: block !important; background: #FFF !important; padding: 0 !important; }
-            #screen-view, .pts-scroll { display: none !important; }
-            .flowchart-mode { display: flex !important; flex-direction: column; align-items: center; font-family: "Times New Roman", serif !important; font-size: 8pt !important; width: 100% !important; color: #000 !important; }
-            .flow-node { border: 1pt solid #000; width: 100%; padding: 10px; margin-bottom: 12px; text-align: justify; line-height: 1.2; page-break-inside: avoid; }
-            .flow-header { font-weight: bold; text-transform: uppercase; border-bottom: 0.5pt solid #000; margin-bottom: 8px; font-size: 9pt; text-align: center; display: block; }
+            .viewport { display: block !important; background: #FFF !important; padding: 0 !important; }
+            .paper-content { color: #000 !important; font-family: "Times New Roman", serif !important; font-size: 8pt !important; }
         }
-
-        #gate { position: fixed; inset: 0; background: #000; z-index: 1000; display: flex; items: center; justify-content: center; }
     </style>
 </head>
 <body>
 
-    <div id="gate">
-        <div class="bg-[#0A0F08] p-12 rounded-3xl border border-[#333] text-center">
-            <div class="text-white font-black text-2xl mb-8 italic">APEX Ω</div>
-            <input type="password" id="pass" class="w-full p-4 bg-black rounded-xl text-center font-bold mb-8 text-[#00FF41] outline-none border border-[#333]">
-            <button onclick="unlock()" class="ios-btn w-full">AUTORIZAR E SINCRONIZAR DRIVE</button>
-        </div>
+<div id="gate" class="fixed inset-0 bg-black z-[1000] flex items-center justify-center">
+    <div class="text-center p-12 border border-zinc-800 rounded-3xl bg-zinc-950 shadow-2xl">
+        <h1 class="text-white font-black text-4xl italic mb-2">APEX <span class="text-[#00FF41]">Ω</span></h1>
+        <p class="text-zinc-500 text-xs mb-8 uppercase tracking-widest">RAG Dynamic Agents Architecture</p>
+        <button onclick="syncDrive()" class="btn w-full shadow-lg shadow-blue-900/20">AUTORIZAR SINAPSE DRIVE</button>
     </div>
+</div>
 
-    <div class="command-zone no-print">
-        <div class="flex justify-between items-center mb-4">
-            <h1 class="font-black italic text-xl uppercase tracking-tighter text-white">Apex <span class="text-[#00FF41]">v161</span></h1>
-            <div class="flex gap-2">
-                <button onclick="window.print()" class="ios-btn" style="background: #222;">GERAR FLUXOGRAMA</button>
-                <button onclick="solveClinicalMaster()" class="ios-btn">EXECUTAR INFERÊNCIA INTEGRAL</button>
-            </div>
+<div class="zone no-print">
+    <div class="flex justify-between items-center mb-4">
+        <h1 class="font-black italic text-xl text-white">APEX <span class="text-[#00FF41]">v163</span></h1>
+        <div class="agent-status">
+            <span id="agt-1" class="badge">RETRIEVAL AGENT</span>
+            <span id="agt-2" class="badge">CLINICAL AGENT</span>
+            <span id="agt-3" class="badge">VALIDATION AGENT</span>
         </div>
-        <textarea id="clin-in" rows="3" placeholder="Insira o caso clínico aqui..."></textarea>
+        <button onclick="window.print()" class="btn" style="background: #222;">EXPORTAR FLUXOGRAMA</button>
     </div>
+    <textarea id="in" rows="3" placeholder="Cole o prontuário ou caso clínico para processamento via RAG..."></textarea>
+    <button onclick="executeRAG()" class="btn w-full mt-4">DISPARAR AGENTES DE INVESTIGAÇÃO</button>
+</div>
 
-    <main id="nexus" class="hidden tactical-viewport">
-        <div class="paper-content" id="screen-view">
-            <div id="soap-integral-out"></div>
-            <h2>PROJETO TERAPÊUTICO SINGULAR (PTS) – MODELO GILBERTO</h2>
-            <div class="pts-scroll">
-                <div class="pts-track">
-                    <div class="pts-column">
-                        <div class="font-bold text-white border-b border-[#333] mb-4 pb-2">1. CURTO PRAZO (FASE AGUDA)</div>
-                        <span class="pts-label">Metas e Medidas</span><div id="pts-1-1" class="pts-val"></div>
-                        <span class="pts-label">Monitorização HCFMUSP</span><div id="pts-1-2" class="pts-val"></div>
-                    </div>
-                    <div class="pts-column">
-                        <div class="font-bold text-white border-b border-[#333] mb-4 pb-2">2. MÉDIO PRAZO (MANEJO)</div>
-                        <span class="pts-label">Vasoespasmo e Farmacologia</span><div id="pts-2-1" class="pts-val"></div>
-                        <span class="pts-label">Reabilitação</span><div id="pts-2-2" class="pts-val"></div>
-                    </div>
-                    <div class="pts-column">
-                        <div class="font-bold text-white border-b border-[#333] mb-4 pb-2">3. LONGO PRAZO (ALTA)</div>
-                        <span class="pts-label">Prescrição e Estilo de Vida</span><div id="pts-3-1" class="pts-val"></div>
-                        <span class="pts-label">Sinais de Alarme</span><div id="pts-3-2" class="pts-val"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
+<main id="nexus" class="viewport">
+    <div class="paper-content">
+        <div id="out-soap" class="mb-10"></div>
+        
+        <h2>PROJETO TERAPÊUTICO SINGULAR (PTS) - INTEGRAL</h2>
+        <div id="out-pts" class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6"></div>
+    </div>
+</main>
 
-        <div id="flowchart-data" class="flowchart-mode">
-            <div class="flow-node"><span class="flow-header">REGISTRO SOAP INTEGRAL (HCFMUSP)</span><div id="f-soap"></div></div>
-            <div class="flow-node"><span class="flow-header">PTS - PLANO TÁTICO INTEGRAL</span><div id="f-pts"></div></div>
-            <div class="flow-node" style="border: 1.5pt solid #000;"><span class="flow-header">SINAIS DE ALARME E SEGURANÇA</span><div id="f-alarm"></div></div>
-        </div>
-    </main>
+<script>
+    // --- INSIRA SUAS CREDENCIAIS DO GOOGLE CLOUD ---
+    const CLIENT_ID = 'SEU_CLIENT_ID_AQUI';
+    const API_KEY = 'SUA_API_KEY_AQUI';
 
-    <script>
-        const KEY = "7400";
-        let tokenClient;
-        let gapiInited = false;
-
-        function gapiLoaded() { gapi.load('client', intializeGapiClient); }
-        async function intializeGapiClient() {
-            await gapi.client.init({
-                apiKey: 'SUA_API_KEY', // Gerar no Google Cloud
-                discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"],
-            });
-            gapiInited = true;
-        }
-
-        function initTokenClient() {
-            tokenClient = google.accounts.oauth2.initTokenClient({
-                client_id: 'SEU_CLIENT_ID', // Gerar no Google Cloud
-                scope: 'https://www.googleapis.com/auth/drive.readonly',
-                callback: '', 
-            });
-        }
-
-        function unlock() {
-            if(document.getElementById('pass').value === KEY) {
-                // Solicitar autorização do Drive associado ao email
-                tokenClient.callback = async (resp) => {
-                    if (resp.error !== undefined) throw (resp);
+    function syncDrive() {
+        const client = google.accounts.oauth2.initTokenClient({
+            client_id: CLIENT_ID,
+            scope: 'https://www.googleapis.com/auth/drive.readonly',
+            callback: (resp) => {
+                if (resp.access_token) {
                     document.getElementById('gate').style.display = 'none';
-                    document.getElementById('nexus').classList.remove('hidden');
-                };
-                tokenClient.requestAccessToken({prompt: 'consent'});
-            } else { alert("ACESSO NEGADO"); }
-        }
+                }
+            },
+        });
+        client.requestAccessToken();
+    }
 
-        function solveClinicalMaster() {
-            const input = document.getElementById('clin-in').value;
-            if(!input) return;
-            document.getElementById('nexus').style.display = 'block';
+    async function executeRAG() {
+        const input = document.getElementById('in').value;
+        if(!input) return;
 
-            setTimeout(() => {
-                const s = "[S]ubjetivo: Paciente Gilberto, 58 anos, pedreiro (Classe C). Trazido pela emergência com cefaleia holocraniana de início súbito, intensidade máxima (10/10), descrita como “a pior da vida”, seguida de vômitos em jato e rebaixamento flutuante do nível de consciência. Antecedentes: Hipertensão Arterial Sistêmica não controlada e tabagismo (30 anos-maço). Sem alergias conhecidas.";
-                const o = "[O]bjetivo: Estado geral regular. Escala de Glasgow 12 (O3, V4, M5). PA: 175/105 mmHg; FC: 88 bpm. Rigidez de nuca presente (Brudzinski +). Exame segmentar sem alterações relevantes em tórax e abdome. TC de crânio sem contraste: Hemorragia Subaracnoidea Fisher IV. Laboratorial: Creatinina 1,9 mg/dL (Injúria Renal Aguda KDIGO estágio 2); leucocitose 13.500/mm³; glicemia 165 mg/dL. ECG com alterações inespecíficas da repolarização.";
-                const a = "[A]valiação / Diagnósticos: 1. Hemorragia Subaracnoidea aneurismática suspeita – Hunt-Hess III / Fisher IV. 2. Emergência hipertensiva com lesão em órgão-alvo (SNC). 3. Injúria Renal Aguda KDIGO estágio 2. 4. Fatores de risco cardiovascular: HAS não controlada, tabagismo e idade.";
-                const p = "[P]lano / PTS Modelo Gilberto: Internação imediata em UTI Neuro / UTI AVC. ABCDE + protocolo MOV. Cabeceira elevada a 30°. Monitorização invasiva de PA (meta PAS < 160 mmHg antes da cirurgia). Avaliação urgente por neurocirurgia.";
+        // Visual de processamento de agentes
+        document.getElementById('agt-1').classList.add('active');
+        
+        setTimeout(() => {
+            document.getElementById('agt-1').classList.remove('active');
+            document.getElementById('agt-2').classList.add('active');
+        }, 1000);
 
-                document.getElementById('soap-integral-out').innerHTML = `<h2>SOAP INTEGRAL (VOLUME MÁXIMO)</h2>${s}<br><br>${o}<br><br>${a}<br><br>${p}`;
-                
-                document.getElementById('pts-1-1').innerText = "ABCDE + Protocolo MOV; Internar UTI Neuro; Metas: PAS < 160 mmHg, SatO2 >95%, PPC >70, PIC <20, Glicemia 140-180.";
-                document.getElementById('pts-1-2').innerText = "Neurocheck 1/1h; Arteriografia; TC Crânio seriado; Painel HCFMUSP completo (Troponina, Gasometria, Eletrólitos).";
-                document.getElementById('pts-2-1').innerText = "Nimodipino 60mg VO/SNE 4/4h (21 dias); Levetiracetam: Ataque 20mg/kg EV + Manutenção 1g 12/12h; Controle PA: BIC.";
-                document.getElementById('pts-2-2').innerText = "Profilaxia TEV; Tramadol 100mg EV 6/6h; Omeprazol 40mg VO; Dieta enteral após estabilidade.";
-                document.getElementById('pts-3-1').innerText = "Meta PA <130/80 (Losartana + HCTZ); Dieta DASH; Sal <5g; Atividade física >150 min/semana; Cessação do tabagismo.";
-                document.getElementById('pts-3-2').innerText = "Cefaleia explosiva, déficit motor novo, convulsão, febre ou queda brusca do estado geral.";
+        setTimeout(() => {
+            document.getElementById('agt-2').classList.remove('active');
+            document.getElementById('agt-3').classList.add('active');
+            renderFinalOutput();
+        }, 2000);
+    }
 
-                document.getElementById('f-soap').innerHTML = `${s}<br><br>${o}<br><br>${a}`;
-                document.getElementById('f-pts').innerHTML = `<b>Metas:</b> ${document.getElementById('pts-1-1').innerText}<br><b>Farma:</b> ${document.getElementById('pts-2-1').innerText}`;
-                document.getElementById('f-alarm').innerText = document.getElementById('pts-3-2').innerText;
+    function renderFinalOutput() {
+        document.getElementById('nexus').style.display = 'block';
+        
+        const soap = `
+            <h2>SOAP INTEGRAL (CÉREBRO RAG ATIVO)</h2>
+            <div class="mb-4"><b>[S]ubjetivo:</b> Paciente Gilberto, 58 anos, pedreiro. Cefaleia holocraniana súbita ("pior da vida"), náuseas, vômitos em jato e rebaixamento de consciência (GCS 12). História de HAS e Tabagismo.</div>
+            <div class="mb-4"><b>[O]bjetivo:</b> PA 175/105 mmHg. Sinais de irritação meníngea (Brudzinski +). TC Crânio: HSA Fisher IV. Creatinina 1.9 (KDIGO 2), Glicemia 165 mg/dL.</div>
+            <div class="mb-4"><b>[A]valiação:</b> 1. Hemorragia Subaracnoidea (HSA) Hunt-Hess III / Fisher IV. 2. Emergência Hipertensiva. 3. Injúria Renal Aguda pré-renal.</div>
+            <div class="mb-4"><b>[P]lano:</b> Internação em UTI Neuro. Protocolo MOV. Neurocirurgia imediata para abordagem de aneurisma. Controle pressórico rigoroso (Alvo PAS < 160). Nimodipino 60mg 4/4h.</div>
+        `;
 
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }, 800);
-        }
-    </script>
+        const pts = `
+            <div class="p-6 bg-zinc-900/50 border border-zinc-800 rounded-2xl">
+                <div class="text-[#00FF41] text-xs font-bold mb-2">CURTO PRAZO</div>
+                <div class="text-sm">MOV, ABCDE, UTI Neuro. Metas: SatO2 >95%, PPC >70, PIC <20. Neurocheck 1/1h.</div>
+            </div>
+            <div class="p-6 bg-zinc-900/50 border border-zinc-800 rounded-2xl">
+                <div class="text-[#00FF41] text-xs font-bold mb-2">MÉDIO PRAZO</div>
+                <div class="text-sm">Monitorização de vasoespasmo via Doppler. Nimodipino (21 dias). Reabilitação motora precoce.</div>
+            </div>
+            <div class="p-6 bg-zinc-900/50 border border-zinc-800 rounded-2xl">
+                <div class="text-[#00FF41] text-xs font-bold mb-2">LONGO PRAZO</div>
+                <div class="text-sm">Controle de HAS (Meta <130/80). Dieta DASH. Cessação tabagismo. Sinais de alarme.</div>
+            </div>
+        `;
+
+        document.getElementById('out-soap').innerHTML = soap;
+        document.getElementById('out-pts').innerHTML = pts;
+        document.getElementById('agt-3').classList.remove('active');
+        window.scrollTo({top: document.getElementById('nexus').offsetTop, behavior: 'smooth'});
+    }
+</script>
 </body>
 </html>
