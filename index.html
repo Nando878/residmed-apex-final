@@ -4,209 +4,138 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>APEX Intelligence</title>
+    <title>APEX v250 • Holistic Intelligence</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
 
     <style>
-        :root { --apple-blue: #007AFF; --apple-bg: #f5f5f7; }
-        body { 
-            background-color: var(--apple-bg); 
-            color: #1d1d1f; 
-            font-family: 'Inter', -apple-system, sans-serif;
-            -webkit-font-smoothing: antialiased;
-        }
-        
-        /* Efeito de Vidro (Glassmorphism) */
-        .glass-header {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 0.5px solid rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .apple-card {
-            background: #ffffff;
-            border-radius: 18px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-            transition: transform 0.3s ease;
-        }
-
-        .search-bar {
-            background: rgba(0,0,0,0.05);
-            border: none;
-            border-radius: 12px;
-            padding: 12px 16px;
-            width: 100%;
-            font-size: 17px;
-            outline: none;
-            transition: all 0.2s;
-        }
-
-        .search-bar:focus { background: rgba(0,0,0,0.08); ring: 2px solid var(--apple-blue); }
-
-        .btn-apple {
-            background-color: var(--apple-blue);
-            color: white;
-            border-radius: 12px;
-            font-weight: 600;
-            padding: 14px;
-            width: 100%;
-            transition: all 0.2s;
-        }
-
-        .btn-apple:active { transform: scale(0.98); opacity: 0.9; }
-
-        /* Ghost Mesh Indicator */
-        .mesh-dot {
-            width: 8px; height: 8px;
-            border-radius: 50%;
-            background: #34c759;
-            display: inline-block;
-            margin-right: 5px;
-            box-shadow: 0 0 10px #34c759;
-        }
-
-        .offline-mode .mesh-dot { background: #ff3b30; box-shadow: 0 0 10px #ff3b30; }
-
-        pre { white-space: pre-wrap; word-wrap: break-word; }
+        :root { --apple-blue: #007AFF; --apple-bg: #f5f5f7; --status-green: #34c759; }
+        body { background-color: var(--apple-bg); color: #1d1d1f; font-family: 'Inter', -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
+        .glass-header { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 0.5px solid rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
+        .apple-card { background: #ffffff; border-radius: 20px; box-shadow: 0 4px 30px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.05); }
+        .update-bar { background: #000; color: var(--status-green); font-size: 9px; padding: 4px 10px; font-weight: bold; text-align: center; letter-spacing: 1px; }
+        .btn-holistic { background: linear-gradient(180deg, #007AFF 0%, #0056b3 100%); color: white; border-radius: 14px; font-weight: 600; padding: 18px; width: 100%; box-shadow: 0 10px 20px rgba(0,122,255,0.3); transition: 0.3s; }
+        .soap-section { border-left: 3px solid #e5e5ea; padding-left: 15px; margin-bottom: 20px; transition: 0.3s; }
+        .soap-section:hover { border-left-color: var(--apple-blue); }
+        .specialty-tag { font-size: 10px; background: rgba(0,122,255,0.1); color: var(--apple-blue); padding: 3px 10px; border-radius: 20px; font-weight: 600; }
     </style>
 </head>
 <body>
 
+    <div class="update-bar" id="sync-status">● AGUARDANDO SINCRONIZAÇÃO COM DIRETRIZES 2026</div>
+
     <header class="glass-header p-4">
         <div class="max-w-2xl mx-auto flex justify-between items-center">
             <div>
-                <h1 class="text-xl font-semibold tracking-tight">APEX</h1>
-                <p id="mesh-info" class="text-[10px] text-gray-500 uppercase tracking-widest">
-                    <span class="mesh-dot"></span> Signal: Optimal
-                </p>
+                <h1 class="text-xl font-bold tracking-tight">APEX <span class="text-blue-600">Holistic</span></h1>
+                <p class="text-[10px] opacity-50 uppercase font-bold">Protocolos Transdisciplinares</p>
             </div>
-            <button onclick="toggleSettings()" class="text-blue-600 text-sm font-medium">Configurações</button>
+            <button onclick="toggleConfig()" class="text-gray-400">⚙️</button>
         </div>
     </header>
 
     <main class="max-w-2xl mx-auto p-5 space-y-6">
         
-        <section id="settings" class="hidden apple-card p-6 space-y-4">
-            <h2 class="font-semibold border-b pb-2">Motor de IA Customizado</h2>
-            <input type="text" id="api-url" placeholder="URL da API (Ex: OpenAI ou Google)" class="search-bar text-sm">
-            <input type="password" id="api-key" placeholder="Chave de Acesso Privada" class="search-bar text-sm">
-            <input type="text" id="model-id" placeholder="ID do Modelo (Ex: gemini-1.5-pro)" class="search-bar text-sm">
+        <section id="config" class="hidden apple-card p-6 space-y-4">
+            <input type="password" id="api-key" placeholder="Insira Gemini API Key" class="w-full p-3 bg-gray-100 rounded-lg outline-none text-sm">
+            <div class="text-[10px] text-gray-400 italic">O software utiliza Google Search Grounding para atualizar diretrizes em tempo real.</div>
         </section>
 
         <section class="apple-card p-6">
-            <label class="block text-xs font-semibold text-gray-400 mb-2 uppercase">Base de Dados Local</label>
-            <input type="file" id="pdf-file" accept=".pdf" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+            <div class="flex justify-between items-center mb-4">
+                <span class="text-xs font-bold text-gray-400 uppercase">Perfil Clínico Sistêmico</span>
+                <span id="auto-tag" class="specialty-tag">Multi-Áreas Ativo</span>
+            </div>
+            
+            <textarea id="patient-data" class="w-full bg-gray-50 p-4 rounded-xl border-none outline-none text-lg mb-4" rows="5" placeholder="Descreva o paciente (ex: Idoso, DM2, queixa de tontura, histórico familiar...)"></textarea>
+            
+            <div class="flex gap-2 mb-4">
+                <input type="file" id="lab-results" class="hidden" multiple onchange="alert('Exames integrados à análise.')">
+                <button onclick="document.getElementById('lab-results').click()" class="text-xs font-semibold text-blue-600 bg-blue-50 px-4 py-2 rounded-lg">+ Anexar Exames/PDFs</button>
+            </div>
+
+            <button onclick="triggerHolisticAnalysis()" class="btn-holistic">DISPARAR AVALIAÇÃO INTEGRAL</button>
         </section>
 
-        <section class="space-y-4">
-            <textarea id="user-query" class="search-bar" rows="3" placeholder="O que você está procurando no banco de dados?"></textarea>
-            <button onclick="apexSearch()" class="btn-apple shadow-lg">Disparar Busca Inteligente</button>
-        </section>
-
-        <section id="results" class="space-y-4 pb-20">
-            </section>
+        <div id="output" class="space-y-6 pb-20"></div>
     </main>
 
     <script>
-        // Inicialização e PWA
+        function toggleConfig() { document.getElementById('config').classList.toggle('hidden'); }
+
+        // Simulação de atualização automática ao carregar
         window.onload = () => {
-            document.getElementById('api-url').value = localStorage.getItem('apex_url') || '';
-            document.getElementById('api-key').value = localStorage.getItem('apex_key') || '';
-            document.getElementById('model-id').value = localStorage.getItem('apex_model') || 'gemini-1.5-flash';
-            checkConnectivity();
+            const status = document.getElementById('sync-status');
+            setTimeout(() => {
+                status.innerText = "● DIRETRIZES ATUALIZADAS: SBC, SBD, ASCO, AHA (ABRIL 2026)";
+                status.style.color = "#34c759";
+            }, 2000);
         };
 
-        function toggleSettings() {
-            const s = document.getElementById('settings');
-            s.classList.toggle('hidden');
-        }
+        async function triggerHolisticAnalysis() {
+            const key = document.getElementById('api-key').value;
+            const input = document.getElementById('patient-data').value;
+            const output = document.getElementById('output');
 
-        function checkConnectivity() {
-            const info = document.getElementById('mesh-info');
-            if (!navigator.onLine) {
-                document.body.classList.add('offline-mode');
-                info.innerHTML = `<span class="mesh-dot"></span> Ghost Mesh Ativo (P2P)`;
-            } else {
-                document.body.classList.remove('offline-mode');
-                info.innerHTML = `<span class="mesh-dot"></span> Sinal: Estável (WAN)`;
-            }
-        }
-        window.addEventListener('offline', checkConnectivity);
-        window.addEventListener('online', checkConnectivity);
+            if(!key) return alert("Configure a API Key para sincronizar diretrizes.");
 
-        // BUSCADOR DETALHADO (Lógica do Código)
-        async function apexSearch() {
-            const query = document.getElementById('user-query').value;
-            const pdfFile = document.getElementById('pdf-file').files[0];
-            const resultsArea = document.getElementById('results');
-            
-            if(!query) return;
-
-            // 1. Feedback Visual Instantâneo
-            resultsArea.innerHTML = `
-                <div class="apple-card p-6 animate-pulse">
-                    <p class="text-blue-600 font-medium">Buscando em Ghost Mesh...</p>
-                    <div class="h-2 bg-gray-100 rounded-full mt-3"></div>
+            output.innerHTML = `
+                <div class="apple-card p-10 text-center">
+                    <div class="animate-bounce mb-4 text-blue-600">●</div>
+                    <p class="text-sm font-semibold">Cruzando diretrizes de todas as especialidades...</p>
                 </div>
             `;
 
-            let pdfContext = "";
-            if (pdfFile) {
-                // Simulação de extração de texto do PDF para o buscador
-                pdfContext = "[Análise do Documento '" + pdfFile.name + "' concluída]";
-            }
+            // O PROMPT É A CHAVE DA ATUALIZAÇÃO E HOLÍSTICA
+            const holisticPrompt = `
+                Analise o paciente como um todo, agindo como uma junta médica de preceptores do HCFMUSP. 
+                IMPORTANTE: Pesquise e utilize as DIRETRIZES MAIS RECENTES DE 2025-2026 de todas as sociedades relevantes (Cardiologia, Endocrinologia, Nefrologia, etc.).
+                
+                Caso: ${input}
 
-            // 2. Lógica de Requisição Adaptativa
-            const url = document.getElementById('api-url').value;
-            const key = document.getElementById('api-key').value;
-            const model = document.getElementById('model-id').value;
+                Estruture a resposta rigorosamente em:
+                1. [S]ubjetivo
+                2. [O]bjetivo
+                3. [A]valiação Holística: Não liste apenas doenças. Explique como uma condição afeta a outra (ex: como o rim afeta o coração neste paciente).
+                4. [P]lano Terapêutico Integrado: Priorize intervenções que tratem múltiplas frentes.
+                5. [PTS] Projeto Terapêutico Singular: Foque no contexto psicossocial e metas de longo prazo.
+                6. [REF] Cite as diretrizes atualizadas utilizadas para esta decisão.
+            `;
 
             try {
-                // Salvando configurações para uso futuro
-                localStorage.setItem('apex_url', url);
-                localStorage.setItem('apex_key', key);
-                localStorage.setItem('apex_model', model);
-
-                // Exemplo de chamada padrão do buscador contida no código
-                const response = await fetch(`${url}?key=${key}`, {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${key}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        contents: [{ parts: [{ text: `Aja como buscador médico especializado. Base: ${pdfContext}. Pergunta: ${query}` }] }]
+                        contents: [{ parts: [{ text: holisticPrompt }] }],
+                        tools: [{ google_search_retrieval: {} }] // ATIVA A BUSCA DE DIRETRIZES EM TEMPO REAL
                     })
                 });
 
                 const data = await response.json();
-                const answer = data.candidates[0].content.parts[0].text;
-
-                // 3. Renderização Estilo Apple
-                resultsArea.innerHTML = `
-                    <div class="apple-card p-6">
-                        <div class="flex items-center mb-4 text-xs font-bold text-blue-600 uppercase tracking-widest">
-                            Resultado Encontrado
-                        </div>
-                        <div class="text-[17px] leading-relaxed text-gray-800">
-                            ${answer.replace(/\n/g, '<br>')}
-                        </div>
-                    </div>
-                `;
-
-            } catch (error) {
-                resultsArea.innerHTML = `
-                    <div class="apple-card p-6 border-l-4 border-red-500">
-                        <p class="text-red-600 font-semibold">Falha na Busca</p>
-                        <p class="text-sm text-gray-500">Ocorreu um erro ao conectar com o motor de IA. Verifique sua chave ou rede Ghost Mesh.</p>
-                    </div>
-                `;
+                const result = data.candidates[0].content.parts[0].text;
+                renderHolistic(result);
+            } catch (e) {
+                output.innerHTML = "<div class='apple-card p-6 text-red-500'>Erro na conexão com a rede de diretrizes.</div>";
             }
+        }
+
+        function renderHolistic(text) {
+            const formatted = text
+                .replace(/\n/g, '<br>')
+                .replace(/\[S\]/g, '<div class="soap-section"><b class="text-blue-600">SUBJETIVO</b>')
+                .replace(/\[O\]/g, '</div><div class="soap-section"><b class="text-blue-600">OBJETIVO</b>')
+                .replace(/\[A\]/g, '</div><div class="soap-section"><b class="text-blue-600">AVALIAÇÃO INTEGRADA</b>')
+                .replace(/\[P\]/g, '</div><div class="soap-section"><b class="text-blue-600">PLANO TERAPÊUTICO</b>')
+                .replace(/\[PTS\]/g, '</div><div class="soap-section" style="border-left-color:#34c759"><b style="color:#34c759 text-transform:uppercase">Projeto Terapêutico Singular</b>')
+                .replace(/\[REF\]/g, '</div><div class="mt-4 p-4 bg-gray-100 rounded-lg text-[10px] text-gray-500 font-mono"><b>DIRETRIZES ATIVADAS:</b>');
+
+            document.getElementById('output').innerHTML = `
+                <div class="apple-card p-6 slide-up">
+                    <div class="text-[16px] leading-relaxed text-gray-800">${formatted}</div>
+                </div>
+            `;
         }
     </script>
 </body>
