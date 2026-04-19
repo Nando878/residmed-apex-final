@@ -1,34 +1,91 @@
+import requests
+import hashlib
 import json
+import os
+import io
+from datetime import datetime
 
-# Criando um conteúdo padrão para o sistema de evolução de DNA
-# Baseado no erro que vimos, o sistema espera uma estrutura de dados
-dna_data = {
-    "version": "1.0.0",
-    "last_sync": "2024-05-20",
-    "project_name": "Helios Nuvem",
-    "dna_sequences": [
-        {
-            "id": "alpha-01",
-            "type": "base_evolution",
-            "status": "active",
-            "values": [0.12, 0.45, 0.89, 0.33]
+# Tenta importar PyPDF2 para extração de texto
+try:
+    import PyPDF2
+except ImportError:
+    os.system('pip install PyPDF2')
+    import PyPDF2
+
+# --- CONFIGURAÇÃO DE FONTES (URLs das Sociedades Médicas) ---
+SOURCES = [
+    {"nome": "Diretriz Cardio SBC", "url": "https://aberto.cardiol.br/diretriz/exemplo.pdf"},
+    {"nome": "Manual de Perícia Federal", "url": "https://www.gov.br/servidor/exemplo.pdf"}
+]
+
+def get_hash(data):
+    return hashlib.sha256(data).hexdigest()
+
+def extract_text_from_pdf(pdf_content):
+    try:
+        pdf_file = io.BytesIO(pdf_content)
+        reader = PyPDF2.PdfReader(pdf_file)
+        text = ""
+        for page in reader.pages:
+            content = page.extract_text()
+            if content:
+                text += content + " "
+        return text.strip()
+    except Exception as e:
+        return f"Erro na extração: {str(e)}"
+
+def run_helios_sync():
+    print(f"🚀 Iniciando HELIOS DNA Sync - {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    
+    extracted_sinapses = []
+
+    # 1. Processamento das Diretrizes (Scraping)
+    for source in SOURCES:
+        try:
+            print(f"🔍 Varrendo: {source['nome']}...")
+            response = requests.get(source['url'], timeout=30, headers={'User-Agent': 'Mozilla/5.0'})
+            
+            if response.status_code == 200:
+                content = response.content
+                doc_hash = get_hash(content)
+                raw_text = extract_text_from_pdf(content)
+                
+                # Estrutura compatível com o Dexie (IA-PEX v1000)
+                extracted_sinapses.append({
+                    "id": f"synapse-{doc_hash[:8]}",
+                    "nome": source['nome'],
+                    "hash": doc_hash,
+                    "materia": "Atualização Automática",
+                    "texto": raw_text,
+                    "source": source['url'],
+                    "provenance": f"Crawler Helios: {datetime.now().isoformat()}",
+                    "data": int(datetime.now().timestamp() * 1000)
+                })
+                print(f"✅ {source['nome']} processado com sucesso.")
+            else:
+                print(f"❌ Erro {response.status_code} em {source['nome']}")
+        except Exception as e:
+            print(f"⚠️ Falha crítica em {source['nome']}: {e}")
+
+    # 2. Integração com o seu DNA_DATA (Configurações de Nuvem)
+    full_payload = {
+        "version": "1.0.0",
+        "last_sync": datetime.now().strftime("%Y-%m-%d"),
+        "project_name": "Helios Nuvem",
+        "system_config": {
+            "auto_sync": True,
+            "cloud_provider": "Vercel/GitHub",
+            "encryption": "SHA-256 Enabled"
         },
-        {
-            "id": "beta-02",
-            "type": "advanced_sync",
-            "status": "pending",
-            "values": [0.99, 0.11, 0.22, 0.55]
-        }
-    ],
-    "system_config": {
-        "auto_sync": True,
-        "cloud_provider": "Vercel",
-        "encryption": "enabled"
+        # Aqui injetamos os dados capturados pelo crawler
+        "dna_sequences": extracted_sinapses 
     }
-}
 
-file_path = 'dna_evolution.json'
-with open(file_path, 'w', encoding='utf-8') as f:
-    json.dump(dna_data, f, indent=4, ensure_ascii=False)
+    # 3. Salvamento do Arquivo Final
+    with open('dna_evolution.json', 'w', encoding='utf-8') as f:
+        json.dump(full_payload, f, ensure_ascii=False, indent=4)
+    
+    print(f"🧬 DNA EVOLUTION concluído. {len(extracted_sinapses)} sinapses integradas.")
 
-print(f"Arquivo {file_path} criado com sucesso.")
+if __name__ == "__main__":
+    run_helios_sync()
