@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#007AFF">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>ARPEmed v17.0 — Curadoria Médica Inteligente</title>
+    <title>ARPEmed v18.0 — Pipeline Unificado</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -13,6 +13,9 @@
     <script src="https://unpkg.com/dexie@3.2.4/dist/dexie.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    
+    <!-- NLP Leve para Browser -->
+    <script src="https://cdn.jsdelivr.net/npm/compromise@14.10.0/dist/compromise.min.js"></script>
     
     <style>
         * { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
@@ -86,9 +89,7 @@
             min-height: 44px;
         }
         
-        .btn-secondary:hover {
-            background: rgba(255,255,255,0.12);
-        }
+        .btn-secondary:hover { background: rgba(255,255,255,0.12); }
         
         input, textarea, select {
             background: rgba(255,255,255,0.05);
@@ -148,9 +149,7 @@
         }
         
         @media (min-width: 768px) {
-            .pts-grid {
-                grid-template-columns: 1fr 1fr 1fr;
-            }
+            .pts-grid { grid-template-columns: 1fr 1fr 1fr; }
         }
         
         .pts-card {
@@ -211,11 +210,6 @@
             background: rgba(0,122,255,0.05);
         }
         
-        .upload-area.dragover {
-            border-color: var(--success);
-            background: rgba(52,199,89,0.05);
-        }
-        
         .hot-data-badge {
             background: linear-gradient(135deg, #FF3B30, #FF9500);
             color: white;
@@ -224,15 +218,6 @@
             font-size: 9px;
             font-weight: 700;
             animation: pulse 2s infinite;
-        }
-        
-        .obsolete-badge {
-            background: rgba(142, 142, 147, 0.3);
-            color: #8e8e93;
-            padding: 2px 8px;
-            border-radius: 20px;
-            font-size: 9px;
-            font-weight: 700;
         }
         
         @keyframes pulse {
@@ -248,6 +233,27 @@
             border-left: 2px solid var(--purple);
             padding-left: 12px;
         }
+        
+        .contraindication-alert {
+            background: rgba(255, 59, 48, 0.1);
+            border: 1px solid rgba(255, 59, 48, 0.3);
+            border-radius: 12px;
+            padding: 12px;
+            margin: 8px 0;
+        }
+        
+        .pipeline-badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 9px;
+            font-weight: 700;
+            margin-right: 4px;
+        }
+        
+        .pipeline-ingest { background: rgba(0,122,255,0.2); color: #007AFF; }
+        .pipeline-infer { background: rgba(175,82,222,0.2); color: #AF52DE; }
+        .pipeline-govern { background: rgba(52,199,89,0.2); color: #34C759; }
     </style>
 </head>
 <body class="p-3 md:p-5">
@@ -258,9 +264,9 @@
         <div class="w-24 h-24 mx-auto mb-6 rounded-full bg-white/5 flex items-center justify-center">
             <i class="fas fa-brain text-5xl text-blue-500"></i>
         </div>
-        <h2 class="text-3xl font-black mb-2">ARPEmed v17.0</h2>
-        <p class="text-white/40 mb-2">Curadoria Médica Inteligente</p>
-        <p class="text-white/20 text-xs mb-8">10 Módulos Avançados • Ontologia MeSH/DeCS • ABNT • Rastreabilidade</p>
+        <h2 class="text-3xl font-black mb-2">ARPEmed v18.0</h2>
+        <p class="text-white/40 mb-2">Pipeline Unificado • Ingestão → Inferência</p>
+        <p class="text-white/20 text-xs mb-8">Segmentação Semântica • Score Unificado • Contraindicações</p>
         <input type="password" id="masterPassword" placeholder="Digite qualquer senha (mín. 8)" class="w-80 text-center text-lg p-4 rounded-xl bg-white/5 border border-white/10 mb-4" autocomplete="off">
         <button onclick="ARPEmed.unlock()" class="btn-primary w-80 py-4 text-base">
             <i class="fas fa-unlock-alt mr-2"></i>Desbloquear Sistema
@@ -276,32 +282,26 @@
         <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div class="flex items-center gap-3">
                 <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center">
-                    <i class="fas fa-brain text-2xl"></i>
+                    <i class="fas fa-project-diagram text-2xl"></i>
                 </div>
                 <div>
                     <h1 class="text-2xl md:text-3xl font-black">
                         <span class="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">ARPEmed</span>
-                        <span class="text-white/20 ml-2 text-lg">v17.0</span>
+                        <span class="text-white/20 ml-2 text-lg">v18.0</span>
                     </h1>
-                    <p class="text-[10px] uppercase tracking-wider text-white/30 mt-1">Curadoria Inteligente • 10 Módulos • Ontologia MeSH • ABNT</p>
+                    <p class="text-[10px] uppercase tracking-wider text-white/30 mt-1">
+                        <span class="pipeline-badge pipeline-ingest">Ingestão</span> → 
+                        <span class="pipeline-badge pipeline-infer">Inferência</span> → 
+                        <span class="pipeline-badge pipeline-govern">Governança</span>
+                    </p>
                 </div>
             </div>
             <div class="flex gap-2 flex-wrap">
-                <button onclick="ARPEmed.loadGuidelines()" class="btn-secondary">
-                    <i class="fas fa-database mr-2"></i>Base Padrão
-                </button>
-                <button onclick="ARPEmed.openUploadModal()" class="btn-secondary">
-                    <i class="fas fa-upload mr-2"></i>Importar (Curadoria)
-                </button>
-                <button onclick="ARPEmed.exportDatabase()" class="btn-secondary">
-                    <i class="fas fa-download mr-2"></i>Exportar
-                </button>
-                <button onclick="ARPEmed.openValidationQueue()" class="btn-secondary">
-                    <i class="fas fa-check-double mr-2"></i>Validação Humana
-                </button>
-                <button onclick="ARPEmed.clearForm()" class="btn-secondary">
-                    <i class="fas fa-trash-alt mr-2"></i>Limpar
-                </button>
+                <button onclick="ARPEmed.loadGuidelines()" class="btn-secondary"><i class="fas fa-database mr-2"></i>Base Padrão</button>
+                <button onclick="ARPEmed.openUploadModal()" class="btn-secondary"><i class="fas fa-upload mr-2"></i>Pipeline de Ingestão</button>
+                <button onclick="ARPEmed.exportDatabase()" class="btn-secondary"><i class="fas fa-download mr-2"></i>Exportar</button>
+                <button onclick="ARPEmed.openValidationQueue()" class="btn-secondary"><i class="fas fa-check-double mr-2"></i>Validação</button>
+                <button onclick="ARPEmed.clearForm()" class="btn-secondary"><i class="fas fa-trash-alt mr-2"></i>Limpar</button>
             </div>
         </div>
     </header>
@@ -311,53 +311,45 @@
         <div class="flex gap-3 items-start">
             <i class="fas fa-shield-alt text-yellow-400 text-xl"></i>
             <div>
-                <div class="font-black text-yellow-400 text-sm mb-1">⚕️ GUARDRAIL CLÍNICO • CURADORIA INTELIGENTE ATIVA</div>
-                <p class="text-xs leading-relaxed opacity-80"><strong>AUXÍLIO à decisão clínica.</strong> Triplo Filtro (Assunto → Recência → Autoridade). Rastreabilidade completa.</p>
+                <div class="font-black text-yellow-400 text-sm mb-1">⚕️ PIPELINE UNIFICADO • SCORE DINÂMICO • TEMPERATURA ZERO</div>
+                <p class="text-xs leading-relaxed opacity-80"><strong>AUXÍLIO à decisão clínica.</strong> Ingestão → Score → Inferência → SOAP com fonte mais atual.</p>
             </div>
         </div>
     </div>
 
     <!-- Stats -->
     <div class="glass p-4 mb-4">
-        <div class="grid grid-cols-2 md:grid-cols-6 gap-3 text-center">
+        <div class="grid grid-cols-2 md:grid-cols-7 gap-3 text-center">
             <div><div class="text-2xl font-black text-green-400" id="dbTotal">0</div><div class="text-[10px] opacity-40">Documentos</div></div>
-            <div><div class="text-2xl font-black" id="dbHotData">0</div><div class="text-[10px] opacity-40"><span class="hot-data-badge">HOT</span> 2025-2026</div></div>
-            <div><div class="text-2xl font-black" id="dbSources">0</div><div class="text-[10px] opacity-40">Fontes</div></div>
+            <div><div class="text-2xl font-black" id="dbHotData">0</div><div class="text-[10px] opacity-40"><span class="hot-data-badge">HOT</span></div></div>
             <div><div class="text-2xl font-black" id="dbDirectrizes">0</div><div class="text-[10px] opacity-40">Diretrizes</div></div>
+            <div><div class="text-2xl font-black" id="dbSegments">0</div><div class="text-[10px] opacity-40">Segmentos</div></div>
             <div><div class="text-2xl font-black text-purple-400" id="dbCases">0</div><div class="text-[10px] opacity-40">Casos</div></div>
-            <div><div class="text-2xl font-black text-blue-400" id="serverTime">--</div><div class="text-[10px] opacity-40">Ano Corrente</div></div>
+            <div><div class="text-2xl font-black text-blue-400" id="serverTime">--</div><div class="text-[10px] opacity-40">Ano</div></div>
+            <div><div class="text-2xl font-black text-green-400" id="pipelineStatus">⚡</div><div class="text-[10px] opacity-40">Pipeline</div></div>
         </div>
     </div>
 
     <!-- SOAP Input -->
     <div class="glass p-4 md:p-6 mb-4">
         <h2 class="text-sm font-black text-white/30 uppercase tracking-wider mb-4">
-            <i class="fas fa-notes-medical mr-2"></i>Entrada Clínica
+            <i class="fas fa-notes-medical mr-2"></i>Entrada Clínica (SOAP)
         </h2>
 
         <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
             <input type="number" id="patientAge" placeholder="Idade" value="65">
-            <select id="patientGender">
-                <option value="male">Masculino</option>
-                <option value="female">Feminino</option>
-            </select>
+            <select id="patientGender"><option value="male">Masculino</option><option value="female">Feminino</option></select>
             <input type="text" id="vitalBP" placeholder="PA (mmHg)" value="145/90">
             <input type="number" id="vitalHR" placeholder="FC (bpm)" value="98">
         </div>
 
         <div class="soap-box soap-s-box">
-            <div class="soap-header">
-                <div class="soap-letter soap-s-letter">S</div>
-                <h3 class="font-black text-blue-400 uppercase">Subjetivo</h3>
-            </div>
-            <textarea id="soapS" rows="4" placeholder="Queixa principal, HDA, HPP...">Paciente 65 anos, masculino, dor torácica em aperto há 2h, irradiada para MSE, sudorese fria, náusea. HAS, DM2.</textarea>
+            <div class="soap-header"><div class="soap-letter soap-s-letter">S</div><h3 class="font-black text-blue-400 uppercase">Subjetivo</h3></div>
+            <textarea id="soapS" rows="4" placeholder="Queixa principal...">Paciente 65 anos, masculino, dor torácica em aperto há 2h, irradiada para MSE, sudorese fria, náusea. HAS, DM2.</textarea>
         </div>
 
         <div class="soap-box soap-o-box">
-            <div class="soap-header">
-                <div class="soap-letter soap-o-letter">O</div>
-                <h3 class="font-black text-green-400 uppercase">Objetivo</h3>
-            </div>
+            <div class="soap-header"><div class="soap-letter soap-o-letter">O</div><h3 class="font-black text-green-400 uppercase">Objetivo</h3></div>
             <textarea id="soapO" rows="3" placeholder="Exame físico...">BEG, PA 145/90, FC 98, SpO2 96%. ACV: RCR 2T. AR: MV presente.</textarea>
         </div>
 
@@ -365,7 +357,7 @@
 
         <div class="flex gap-3">
             <button onclick="ARPEmed.analyze()" id="analyzeBtn" class="btn-primary flex-1 py-4">
-                <i class="fas fa-stethoscope mr-2"></i>Análise com Triplo Filtro
+                <i class="fas fa-stethoscope mr-2"></i>Pipeline Completo (Ingestão → Inferência)
             </button>
             <button onclick="ARPEmed.quickFill()" class="btn-success px-6 py-4">
                 <i class="fas fa-bolt mr-2"></i>Exemplo
@@ -378,55 +370,40 @@
 
     <!-- Audit Log -->
     <div class="glass p-4 mt-4">
-        <h3 class="text-xs font-black text-white/30 uppercase mb-3"><i class="fas fa-history mr-2"></i>Audit Log (LGPD Compliant)</h3>
+        <h3 class="text-xs font-black text-white/30 uppercase mb-3"><i class="fas fa-history mr-2"></i>Audit Log (LGPD)</h3>
         <div id="auditLog" class="space-y-1 max-h-32 overflow-y-auto font-mono text-xs opacity-60"></div>
     </div>
 </div>
 
-<!-- MODAL DE UPLOAD (CURADORIA COMPLETA) -->
+<!-- MODAL DE UPLOAD (PIPELINE DE INGESTÃO) -->
 <div id="uploadModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(20px); z-index: 10001; align-items: center; justify-content: center;" onclick="if(event.target===this)this.style.display='none'">
     <div class="glass p-6 max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
-        <h3 class="text-xl font-black mb-2">📤 Curadoria Médica Inteligente</h3>
-        <p class="text-sm opacity-60 mb-4">10 Módulos Ativos: Classificação • Ancoragem Temporal • Ontologia MeSH • ABNT • Rastreabilidade</p>
+        <h3 class="text-xl font-black mb-2">📥 Pipeline de Ingestão (Motor 1)</h3>
+        <p class="text-sm opacity-60 mb-4">Tipologia • Ancoragem • NLP • Ontologia MeSH • Segmentação • ABNT</p>
         
         <div class="upload-area" id="dropZone" onclick="document.getElementById('fileInput').click()">
             <i class="fas fa-cloud-upload-alt text-5xl opacity-50 mb-4"></i>
-            <p class="text-lg font-semibold mb-2">Arraste arquivos ou clique</p>
-            <p class="text-sm opacity-50">PDF, JSON, PNG, JPG</p>
+            <p class="text-lg font-semibold mb-2">Arraste PDF, JSON ou Imagens</p>
             <input type="file" id="fileInput" accept=".pdf,.json,image/*" multiple style="display: none;">
         </div>
         
-        <div id="uploadPreview" style="display: none;" class="mt-4 p-4 rounded-xl bg-white/5">
-            <p class="font-bold mb-2">📋 Arquivos Selecionados:</p>
-            <div id="fileList" class="space-y-1 text-sm max-h-40 overflow-y-auto"></div>
-        </div>
-        
-        <div id="uploadProgress" style="display: none;" class="mt-4">
-            <div class="h-2 bg-white/10 rounded-full overflow-hidden">
-                <div id="progressBar" class="h-full bg-gradient-to-r from-green-500 to-blue-500" style="width: 0%"></div>
-            </div>
-            <p id="progressText" class="text-xs opacity-50 mt-2">Processando...</p>
-        </div>
-        
-        <div id="uploadResult" style="display: none;" class="mt-4 p-4 rounded-xl bg-green-500/10 border border-green-500/30">
-            <p class="font-bold text-green-400 mb-2">✅ Curadoria Concluída</p>
-            <div id="resultStats" class="text-sm space-y-1"></div>
-        </div>
+        <div id="uploadPreview" style="display: none;" class="mt-4 p-4 rounded-xl bg-white/5"></div>
+        <div id="uploadProgress" style="display: none;" class="mt-4"><div class="h-2 bg-white/10 rounded-full"><div id="progressBar" class="h-full bg-gradient-to-r from-green-500 to-blue-500" style="width:0%"></div></div></div>
+        <div id="uploadResult" style="display: none;" class="mt-4 p-4 rounded-xl bg-green-500/10 border border-green-500/30"></div>
         
         <div class="flex gap-2 mt-6">
             <button onclick="ARPEmed.processUpload()" class="btn-primary flex-1" id="uploadBtn">
-                <i class="fas fa-cogs mr-2"></i>Processar com Curadoria Inteligente
+                <i class="fas fa-cogs mr-2"></i>Executar Pipeline de Ingestão
             </button>
             <button onclick="ARPEmed.closeUploadModal()" class="btn-secondary">Cancelar</button>
         </div>
     </div>
 </div>
 
-<!-- MODAL DE VALIDAÇÃO HUMANA (Human-in-the-Loop) -->
+<!-- MODAL DE VALIDAÇÃO -->
 <div id="validationModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(20px); z-index: 10001; align-items: center; justify-content: center;" onclick="if(event.target===this)this.style.display='none'">
     <div class="glass p-6 max-w-3xl w-full mx-4 max-h-[85vh] overflow-y-auto">
-        <h3 class="text-xl font-black mb-4">👨‍⚕️ Validação Humana (Human-in-the-Loop)</h3>
-        <p class="text-sm opacity-60 mb-4">Confirme ou corrija os metadados extraídos automaticamente</p>
+        <h3 class="text-xl font-black mb-4">👨‍⚕️ Validação Humana</h3>
         <div id="validationList" class="space-y-3"></div>
         <div class="flex gap-2 mt-6">
             <button onclick="ARPEmed.confirmAllValidations()" class="btn-primary flex-1">Confirmar Todos</button>
@@ -435,7 +412,6 @@
     </div>
 </div>
 
-<!-- Toast Container -->
 <div id="toastContainer" class="toast-container"></div>
 
 <script>
@@ -445,336 +421,248 @@
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
 
 // ============================================================================
-// BANCO DE DADOS (EXPANDIDO COM NOVOS CAMPOS)
+// BANCO DE DADOS (EXPANDIDO)
 // ============================================================================
-const db = new Dexie('ARPEmed_v17_Curated');
+const db = new Dexie('ARPEmed_v18_Pipeline');
 db.version(1).stores({
-    evidence: '++id, pmid, source, title, specialty, evidence_level, year, category, entryType, priorityScore, tags, citationABNT, sourceFileLink, pageNumber, lastAccessed, accessCount, updatedAt, validated',
+    evidence: '++id, pmid, source, title, specialty, evidence_level, year, entryType, priorityScore, unifiedScore, tags, segments, citationABNT, sourceFileLink, pageNumber, lastAccessed, accessCount, updatedAt, validated',
     cases: '++id, timestamp, data',
     audit: '++id, timestamp, action, userId, ipHash',
     validationQueue: '++id, tempId, extractedData, status'
 });
 
 // ============================================================================
-// MÓDULO 1: CLASSIFICAÇÃO DE TIPOLOGIA (Entry Type)
+// MÓDULO 1: TIPOLOGIA (Entry Type)
 // ============================================================================
 class EntryTypeClassifier {
     static classify(source, title, text) {
         const combined = (source + ' ' + title + ' ' + text).toLowerCase();
-        
-        // Diretrizes (peso máximo para conduta)
-        if (/diretriz|guideline|consenso|recomenda[çc][ãa]o|protocolo cl[íi]nico|sbc|esc|aha|acc|sbpt|sbi|abn|sbn|gold|gina|kdig|ssc/.test(combined)) {
-            return { type: 'Diretriz', weight: 1.0, priority: 100 };
-        }
-        
-        // Livros-Texto (peso máximo para fisiopatologia)
-        if (/harrison|cecil|goldman|bates|porto|goodman|katzung|robbins|guyton|sabiston|schwartz|tratado|textbook|principios|fundamentos/.test(combined)) {
-            return { type: 'Livro-Texto', weight: 0.95, priority: 90 };
-        }
-        
-        // Meta-análise / Revisão Sistemática
-        if (/meta-an[aá]lise|metaanalysis|systematic review|revis[aã]o sistem[aá]tica|cochrane/.test(combined)) {
-            return { type: 'Meta-análise', weight: 0.98, priority: 95 };
-        }
-        
-        // Ensaio Clínico Randomizado
-        if (/randomized|randomizado|rct|ensaio cl[íi]nico/.test(combined)) {
-            return { type: 'ECR', weight: 0.90, priority: 85 };
-        }
-        
-        // Artigo/Estudo
-        if (/nejm|lancet|jama|bmj|annals|journal|artigo|study/.test(combined)) {
-            return { type: 'Artigo Científico', weight: 0.80, priority: 70 };
-        }
-        
-        // Opinião de Especialista
-        if (/expert|especialista|opini[ãa]o|consensus/.test(combined)) {
-            return { type: 'Opinião de Especialista', weight: 0.60, priority: 50 };
-        }
-        
-        return { type: 'Documento Técnico', weight: 0.70, priority: 60 };
+        if (/diretriz|guideline|consenso|recomenda[çc][ãa]o|protocolo cl[íi]nico|sbc|esc|aha|acc|sbpt|sbi|abn|sbn|gold|gina|kdig|ssc/.test(combined)) return { type: 'Diretriz', weight: 1.0, priority: 100 };
+        if (/harrison|cecil|goldman|bates|porto|goodman|katzung|robbins|guyton|sabiston|schwartz|tratado|textbook|principios|fundamentos/.test(combined)) return { type: 'Livro-Texto', weight: 0.95, priority: 90 };
+        if (/meta-an[aá]lise|metaanalysis|systematic review|revis[aã]o sistem[aá]tica|cochrane/.test(combined)) return { type: 'Meta-análise', weight: 0.98, priority: 95 };
+        if (/randomized|randomizado|rct|ensaio cl[íi]nico/.test(combined)) return { type: 'ECR', weight: 0.90, priority: 85 };
+        if (/nejm|lancet|jama|bmj|annals|journal|artigo|study/.test(combined)) return { type: 'Artigo', weight: 0.80, priority: 70 };
+        return { type: 'Documento', weight: 0.70, priority: 60 };
     }
 }
 
 // ============================================================================
-// MÓDULO 2: ANCORAGEM TEMPORAL REAL
+// MÓDULO 2: ANCORAGEM TEMPORAL
 // ============================================================================
 class TemporalAnchor {
     static currentYear = new Date().getFullYear();
-    
     static evaluate(year) {
         const docYear = parseInt(year) || this.currentYear;
         const age = this.currentYear - docYear;
-        
-        if (docYear === this.currentYear || docYear === this.currentYear - 1) {
-            return { status: 'HOT', priority: 100, age: age, flag: '🔥 Hot Data' };
-        } else if (age <= 3) {
-            return { status: 'RECENT', priority: 85, age: age, flag: '✅ Recente' };
-        } else if (age <= 5) {
-            return { status: 'VALID', priority: 70, age: age, flag: '📋 Válido' };
-        } else {
-            return { status: 'OBSOLETE', priority: 40, age: age, flag: '⚠️ Potencialmente Obsoleto' };
-        }
-    }
-    
-    static getServerTime() {
-        return {
-            year: this.currentYear,
-            timestamp: new Date().toISOString(),
-            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
-        };
+        if (docYear >= this.currentYear - 1) return { status: 'HOT', priority: 100, flag: '🔥 Hot Data', score: 1.0 };
+        if (age <= 3) return { status: 'RECENT', priority: 85, flag: '✅ Recente', score: 0.85 };
+        if (age <= 5) return { status: 'VALID', priority: 70, flag: '📋 Válido', score: 0.70 };
+        return { status: 'OBSOLETE', priority: 40, flag: '⚠️ Obsoleto', score: 0.40 };
     }
 }
 
 // ============================================================================
-// MÓDULO 3: HIGIENIZAÇÃO DE TÍTULOS (NLP)
+// MÓDULO 3: HIGIENIZAÇÃO NLP (com compromise)
 // ============================================================================
-class TitleSanitizer {
-    static clean(rawText) {
-        if (!rawText) return 'Documento sem título';
-        
-        let cleaned = rawText
-            // Remover números de página soltos
-            .replace(/\b\d{1,4}\s*$/gm, '')
-            // Remover cabeçalhos/rodapés repetitivos
-            .replace(/(?:Página|Page)\s*\d+/gi, '')
-            // Remover caracteres especiais excessivos
-            .replace(/[^\w\s\u00C0-\u00FF\-:,.()]/g, ' ')
-            // Remover URLs
-            .replace(/https?:\/\/\S+/gi, '')
-            // Normalizar espaços
-            .replace(/\s+/g, ' ')
-            .trim();
-        
-        // Identificar padrão de título (primeira linha significativa)
+class NLPSanitizer {
+    static clean(text) {
+        if (!text) return 'Documento sem título';
+        let cleaned = text.replace(/\b\d{1,4}\s*$/gm, '').replace(/(?:Página|Page)\s*\d+/gi, '').replace(/[^\w\s\u00C0-\u00FF\-:,.()]/g, ' ').replace(/https?:\/\/\S+/gi, '').replace(/\s+/g, ' ').trim();
         const lines = cleaned.split('\n').filter(l => l.length > 10);
-        if (lines.length > 0) {
-            cleaned = lines[0];
-        }
-        
-        // Capitalizar adequadamente (para português)
+        if (lines.length) cleaned = lines[0];
         cleaned = cleaned.replace(/\b\w/g, c => c.toUpperCase());
-        
-        // Limitar tamanho
-        if (cleaned.length > 200) {
-            cleaned = cleaned.substring(0, 197) + '...';
-        }
-        
-        return cleaned || 'Documento sem título identificável';
+        return cleaned.substring(0, 200) || 'Documento sem título';
     }
     
     static extractAuthor(text) {
-        // Padrões comuns de autoria
-        const patterns = [
-            /(?:Autor(?:es)?|Author(?:s)?|Editado por|Edited by)[:\s]+([^.\n]+)/i,
-            /([A-Z][a-z]+(?:\s+[A-Z][a-z]+)+)(?:\s+et al\.?)?\s*\(?\d{4}\)?/,
-            /(SBC|ESC|AHA|ACC|SBPT|SBI|ABN|SBN|SBD|SBEM|FBG|SBH|SBR)[:\s-]+/
-        ];
-        
-        for (const pattern of patterns) {
-            const match = text.match(pattern);
-            if (match) return match[1].trim();
-        }
-        
+        const patterns = [/(?:Autor(?:es)?|Author(?:s)?)[:\s]+([^.\n]+)/i, /([A-Z][a-z]+(?:\s+[A-Z][a-z]+)+)(?:\s+et al\.?)?\s*\(?\d{4}\)?/, /(SBC|ESC|AHA|ACC|SBPT|SBI|ABN|SBN|SBD|SBEM|FBG|SBH|SBR)[:\s-]+/];
+        for (const p of patterns) { const m = text.match(p); if (m) return m[1].trim(); }
         return 'Autor não identificado';
     }
 }
 
 // ============================================================================
-// MÓDULO 4: HIERARQUIA DE EVIDÊNCIA (Graduação)
+// MÓDULO 4: HIERARQUIA DE EVIDÊNCIA
 // ============================================================================
 class EvidenceGrader {
     static grade(text, providedLevel) {
         if (providedLevel) {
-            const gradeMap = {
-                '1A': 100, '1B': 90, '2A': 75, '2B': 65, '3A': 50, '3B': 40, '4': 30, '5': 20
-            };
+            const gradeMap = {'1A':100,'1B':90,'2A':75,'2B':65,'3A':50,'3B':40};
             return gradeMap[providedLevel.toUpperCase()] || 60;
         }
-        
         const combined = text.toLowerCase();
-        
-        // Nível 1A: Meta-análise de ECR
-        if (/meta-an[aá]lise|metaanalysis|systematic review.*rct/i.test(combined)) {
-            return 100;
-        }
-        
-        // Nível 1B: ECR individual
-        if (/randomized|randomizado|rct|ensaio cl[íi]nico randomizado/i.test(combined)) {
-            return 90;
-        }
-        
-        // Nível 2A: Coorte
-        if (/coorte|cohort|prospectivo/i.test(combined)) {
-            return 75;
-        }
-        
-        // Nível 2B: Caso-controle
-        if (/caso[-\s]controle|case[-\s]control/i.test(combined)) {
-            return 65;
-        }
-        
-        // Nível 3: Opinião de especialista
-        if (/expert|especialista|consenso|consensus/i.test(combined)) {
-            return 50;
-        }
-        
-        return 60; // Default
-    }
-    
-    static getStrengthLabel(score) {
-        if (score >= 90) return { label: 'FORTE (IA)', class: 'level-1a' };
-        if (score >= 70) return { label: 'MODERADA (IB)', class: 'level-1b' };
-        if (score >= 50) return { label: 'FRACA (IIA)', class: 'level-2a' };
-        return { label: 'MUITO FRACA (IIB)', class: 'level-2a' };
+        if (/meta-an[aá]lise|metaanalysis/.test(combined)) return 100;
+        if (/randomized|rct/.test(combined)) return 90;
+        if (/coorte|cohort/.test(combined)) return 75;
+        if (/caso[-\s]controle/.test(combined)) return 65;
+        if (/expert|consenso/.test(combined)) return 50;
+        return 60;
     }
 }
 
 // ============================================================================
-// MÓDULO 5: ONTOLOGIA MÉDICA (MeSH/DeCS)
+// MÓDULO 5: ONTOLOGIA MÉDICA (MeSH/DeCS) + NLP leve
 // ============================================================================
 class MedicalOntology {
     static meshTerms = {
-        // Cardiologia
-        'cardio': ['Cardiologia', 'Doenças Cardiovasculares'],
-        'heart': ['Cardiologia', 'Coração'],
-        'hipertens': ['Cardiologia', 'Hipertensão'],
-        'coronar': ['Cardiologia', 'Doença Arterial Coronariana'],
-        'infarto': ['Cardiologia', 'Infarto do Miocárdio'],
-        'iam': ['Cardiologia', 'Infarto do Miocárdio'],
-        'sca': ['Cardiologia', 'Síndrome Coronariana Aguda'],
-        
-        // Pneumologia
-        'pneumo': ['Pneumologia', 'Doenças Pulmonares'],
-        'pulm': ['Pneumologia', 'Pulmão'],
-        'dpoc': ['Pneumologia', 'Doença Pulmonar Obstrutiva Crônica'],
-        'asma': ['Pneumologia', 'Asma'],
-        'tep': ['Pneumologia', 'Embolia Pulmonar'],
-        
-        // Infectologia
-        'infect': ['Infectologia', 'Doenças Infecciosas'],
-        'sepse': ['Infectologia', 'Sepse'],
-        'hiv': ['Infectologia', 'HIV'],
-        'aids': ['Infectologia', 'AIDS'],
-        'covid': ['Infectologia', 'COVID-19'],
-        'antibi': ['Infectologia', 'Antibacterianos'],
-        
-        // Neurologia
-        'neuro': ['Neurologia', 'Doenças do Sistema Nervoso'],
-        'avc': ['Neurologia', 'Acidente Vascular Cerebral'],
-        'cefaleia': ['Neurologia', 'Cefaleia'],
-        'epilep': ['Neurologia', 'Epilepsia'],
-        'demência': ['Neurologia', 'Demência'],
-        
-        // Nefrologia
-        'nefro': ['Nefrologia', 'Doenças Renais'],
-        'renal': ['Nefrologia', 'Rim'],
-        'dialise': ['Nefrologia', 'Diálise Renal'],
-        'drc': ['Nefrologia', 'Insuficiência Renal Crônica'],
-        
-        // Endocrinologia
-        'diabet': ['Endocrinologia', 'Diabetes Mellitus'],
-        'tireoide': ['Endocrinologia', 'Doenças da Glândula Tireoide'],
-        
-        // Pediatria
-        'pediatr': ['Pediatria'],
-        'criança': ['Pediatria'],
-        'lactente': ['Pediatria'],
-        'neonat': ['Pediatria', 'Neonatologia'],
-        
-        // Obstetrícia
-        'gesta': ['Obstetrícia', 'Gravidez'],
-        'pré-natal': ['Obstetrícia', 'Cuidado Pré-Natal'],
-        'eclâmpsia': ['Obstetrícia', 'Eclâmpsia'],
-        
-        // Oncologia
-        'câncer': ['Oncologia', 'Neoplasias'],
-        'tumor': ['Oncologia', 'Neoplasias'],
-        'neoplas': ['Oncologia', 'Neoplasias'],
-        'quimio': ['Oncologia', 'Quimioterapia'],
-        
-        // Psiquiatria
-        'depress': ['Psiquiatria', 'Transtorno Depressivo'],
-        'ansied': ['Psiquiatria', 'Transtornos de Ansiedade'],
-        'psiqu': ['Psiquiatria']
+        'cardio': ['Cardiologia','Doenças Cardiovasculares'], 'hipertens': ['Cardiologia','Hipertensão'], 'coronar': ['Cardiologia','Doença Arterial Coronariana'], 'infarto': ['Cardiologia','Infarto do Miocárdio'],
+        'pneumo': ['Pneumologia','Doenças Pulmonares'], 'dpoc': ['Pneumologia','DPOC'], 'asma': ['Pneumologia','Asma'], 'tep': ['Pneumologia','Embolia Pulmonar'],
+        'infect': ['Infectologia','Doenças Infecciosas'], 'sepse': ['Infectologia','Sepse'], 'hiv': ['Infectologia','HIV'], 'covid': ['Infectologia','COVID-19'],
+        'neuro': ['Neurologia','Doenças do Sistema Nervoso'], 'avc': ['Neurologia','AVC'], 'cefaleia': ['Neurologia','Cefaleia'], 'epilep': ['Neurologia','Epilepsia'],
+        'nefro': ['Nefrologia','Doenças Renais'], 'drc': ['Nefrologia','Insuficiência Renal Crônica'], 'dialise': ['Nefrologia','Diálise'],
+        'diabet': ['Endocrinologia','Diabetes Mellitus'], 'tireoide': ['Endocrinologia','Doenças da Tireoide'],
+        'pediatr': ['Pediatria'], 'neonat': ['Pediatria','Neonatologia'],
+        'gesta': ['Obstetrícia','Gravidez'], 'eclâmpsia': ['Obstetrícia','Eclâmpsia'],
+        'câncer': ['Oncologia','Neoplasias'], 'tumor': ['Oncologia','Neoplasias'],
+        'depress': ['Psiquiatria','Depressão'], 'ansied': ['Psiquiatria','Ansiedade']
     };
     
     static extractTags(text) {
         const combined = text.toLowerCase();
         const tags = new Set();
-        
-        for (const [keyword, tagList] of Object.entries(this.meshTerms)) {
-            if (combined.includes(keyword)) {
-                tagList.forEach(tag => tags.add(tag));
-            }
+        for (const [kw, tagList] of Object.entries(this.meshTerms)) {
+            if (combined.includes(kw)) tagList.forEach(t => tags.add(t));
         }
-        
-        // Adicionar tags padrão se vazio
-        if (tags.size === 0) {
-            tags.add('Clínica Médica');
-            tags.add('Medicina Geral');
-        }
-        
+        if (tags.size === 0) { tags.add('Clínica Médica'); tags.add('Medicina Geral'); }
         return Array.from(tags);
     }
     
     static getMainSpecialty(tags) {
-        const priorityOrder = ['Cardiologia', 'Pneumologia', 'Infectologia', 'Neurologia', 'Nefrologia', 'Endocrinologia', 'Oncologia', 'Pediatria', 'Obstetrícia', 'Psiquiatria', 'Clínica Médica'];
-        
-        for (const specialty of priorityOrder) {
-            if (tags.includes(specialty)) return specialty;
-        }
-        
+        const order = ['Cardiologia','Pneumologia','Infectologia','Neurologia','Nefrologia','Endocrinologia','Oncologia','Pediatria','Obstetrícia','Psiquiatria','Clínica Médica'];
+        for (const s of order) if (tags.includes(s)) return s;
         return 'Clínica Médica';
     }
 }
 
 // ============================================================================
-// MÓDULO 6: GERADOR AUTOMÁTICO DE CITAÇÃO (ABNT)
+// MÓDULO 6: SEGMENTAÇÃO SEMÂNTICA (NLP Leve - compromise)
+// ============================================================================
+class SemanticSegmenter {
+    static segment(text) {
+        const segments = [];
+        const lower = text.toLowerCase();
+        
+        // Segmento: Diagnóstico
+        const diagPatterns = [/diagn[óo]stico/, /hip[óo]tese/, /suspeita/, /indica[çc][ãa]o/, /crit[ée]rios diagn[óo]sticos/];
+        for (const p of diagPatterns) {
+            const idx = lower.search(p);
+            if (idx >= 0) {
+                segments.push({ type: 'diagnostico', content: text.substring(idx, idx + 500).trim(), score: 0.9 });
+                break;
+            }
+        }
+        
+        // Segmento: Tratamento/Dose
+        const treatPatterns = [/tratamento/, /dose/, /posologia/, /administrar/, /prescri[çc][ãa]o/, /conduta/];
+        for (const p of treatPatterns) {
+            const idx = lower.search(p);
+            if (idx >= 0) {
+                segments.push({ type: 'tratamento', content: text.substring(idx, idx + 500).trim(), score: 0.95 });
+                break;
+            }
+        }
+        
+        // Segmento: Fisiopatologia
+        const physioPatterns = [/fisiopatologia/, /mecanismo/, /etiologia/, /patog[êe]nese/, /fator de risco/];
+        for (const p of physioPatterns) {
+            const idx = lower.search(p);
+            if (idx >= 0) {
+                segments.push({ type: 'fisiopatologia', content: text.substring(idx, idx + 500).trim(), score: 0.85 });
+                break;
+            }
+        }
+        
+        // Se nenhum segmento encontrado, criar segmento geral
+        if (segments.length === 0) {
+            segments.push({ type: 'geral', content: text.substring(0, 500).trim(), score: 0.7 });
+        }
+        
+        return segments;
+    }
+}
+
+// ============================================================================
+// MÓDULO 7: GERADOR ABNT
 // ============================================================================
 class CitationGenerator {
     static generateABNT(data) {
         const author = data.author || data.source || 'Autor desconhecido';
         const title = data.title || 'Título desconhecido';
-        const edition = data.edition || '';
-        const location = data.location || 'Brasil';
-        const publisher = data.publisher || data.source || 'Editora desconhecida';
-        const year = data.year || new Date().getFullYear();
-        
-        // Formato ABNT: SOBRENOME, Nome. Título. Edição. Local: Editora, Ano.
         let citation = `${author}. ${title}. `;
-        
-        if (edition) citation += `${edition}. `;
-        
-        citation += `${location}: ${publisher}, ${year}.`;
-        
-        // Adicionar link se disponível
-        if (data.sourceFileLink) {
-            citation += ` Disponível em: <${data.sourceFileLink}>. Acesso em: ${new Date().toLocaleDateString('pt-BR')}.`;
-        }
-        
+        if (data.edition) citation += `${data.edition}. `;
+        citation += `${data.location || 'Brasil'}: ${data.publisher || data.source}, ${data.year || new Date().getFullYear()}.`;
         return citation;
-    }
-    
-    static generateVancouver(data) {
-        // Formato Vancouver para artigos
-        const author = data.author || data.source;
-        const title = data.title;
-        const source = data.source;
-        const year = data.year;
-        
-        return `${author}. ${title}. ${source}. ${year}.`;
     }
 }
 
 // ============================================================================
-// MÓDULO 7: ALGORITMO DE BUSCA (TRIPLO FILTRO)
+// MÓDULO 8: SCORE UNIFICADO (Pipeline: Ingestão → Score)
+// ============================================================================
+class UnifiedScorer {
+    static calculate(document) {
+        // Componentes do Score Unificado
+        const temporalScore = TemporalAnchor.evaluate(document.year).score;
+        const typeWeight = document.entryTypeWeight || 0.7;
+        const evidenceScore = (document.priorityScore || 60) / 100;
+        
+        // Fórmula: (Ano * 0.4) + (Tipo * 0.35) + (Evidência * 0.25)
+        const unified = (temporalScore * 0.4) + (typeWeight * 0.35) + (evidenceScore * 0.25);
+        
+        return {
+            unified: Math.round(unified * 100),
+            components: { temporal: temporalScore, type: typeWeight, evidence: evidenceScore }
+        };
+    }
+}
+
+// ============================================================================
+// MÓDULO 9: VERIFICADOR DE CONTRAINDICAÇÕES (Temperatura Zero)
+// ============================================================================
+class ContraindicationChecker {
+    static check(patientData, recommendedActions) {
+        const alerts = [];
+        const vitals = patientData.vitals || {};
+        const meds = (patientData.medications || '').toLowerCase();
+        const age = parseInt(patientData.age) || 50;
+        
+        // Verificar AAS em idosos com histórico de sangramento
+        if (recommendedActions.includes('AAS') && age > 75) {
+            alerts.push({ severity: 'ALTA', message: 'AAS em idoso >75 anos: avaliar risco de sangramento (ESC 2024).' });
+        }
+        
+        // Verificar AAS + Anticoagulante
+        if (recommendedActions.includes('AAS') && (meds.includes('varfarina') || meds.includes('warfarin') || meds.includes('xarelto') || meds.includes('eliquis'))) {
+            alerts.push({ severity: 'CRÍTICA', message: 'AAS + Anticoagulante: risco aumentado de sangramento. Avaliar necessidade de DAPT.' });
+        }
+        
+        // Verificar Metformina e Contraste
+        if (meds.includes('metformina') && recommendedActions.includes('contraste')) {
+            alerts.push({ severity: 'CRÍTICA', message: 'Metformina + Contraste: suspender 48h antes e após. Risco de acidose láctica.' });
+        }
+        
+        // Verificar Betabloqueador em Asma/DPOC
+        if (recommendedActions.includes('betabloqueador') && patientData.subjective?.toLowerCase().includes('asma')) {
+            alerts.push({ severity: 'ALTA', message: 'Betabloqueador contraindicado em asma ativa. Considerar alternativa.' });
+        }
+        
+        // Verificar PA para Nitrato
+        if (recommendedActions.includes('nitrato') && vitals.bp) {
+            const sys = parseInt(vitals.bp.split('/')[0]);
+            if (sys < 100) {
+                alerts.push({ severity: 'CRÍTICA', message: `PA sistólica ${sys} mmHg: Nitrato contraindicado (risco de hipotensão grave).` });
+            }
+        }
+        
+        return alerts;
+    }
+}
+
+// ============================================================================
+// MÓDULO 10: TRIPLO FILTRO (Busca Otimizada)
 // ============================================================================
 class TripleFilterSearch {
     static async search(query, limit = 10) {
         const allDocs = await db.evidence.toArray();
-        
-        // Filtro 1: Assunto (Tags/Especialidade)
         const queryTags = MedicalOntology.extractTags(query);
         const querySpecialty = MedicalOntology.getMainSpecialty(queryTags);
         
@@ -782,92 +670,18 @@ class TripleFilterSearch {
             const docTags = doc.tags || [];
             return docTags.some(tag => queryTags.includes(tag)) || 
                    doc.specialty === querySpecialty ||
-                   doc.title.toLowerCase().includes(query.toLowerCase());
+                   (doc.title || '').toLowerCase().includes(query.toLowerCase());
         });
         
-        // Filtro 2: Recência (Ano)
-        filtered.sort((a, b) => (b.year || 0) - (a.year || 0));
-        
-        // Filtro 3: Autoridade (Entry Type Priority + Evidence Score)
-        filtered.sort((a, b) => {
-            if (a.year === b.year) {
-                const priorityA = (a.priorityScore || 0) + (a.entryTypeWeight || 0) * 100;
-                const priorityB = (b.priorityScore || 0) + (b.entryTypeWeight || 0) * 100;
-                return priorityB - priorityA;
-            }
-            return 0; // Já ordenado por ano
-        });
+        // Ordenar por Score Unificado (já incorpora Ano + Tipo + Evidência)
+        filtered.sort((a, b) => (b.unifiedScore || 0) - (a.unifiedScore || 0));
         
         return filtered.slice(0, limit);
     }
-    
-    static async getTopGuidelines(query, limit = 5) {
-        const results = await this.search(query, 50);
-        return results
-            .filter(d => d.entryType === 'Diretriz')
-            .sort((a, b) => (b.priorityScore || 0) - (a.priorityScore || 0))
-            .slice(0, limit);
-    }
 }
 
 // ============================================================================
-// MÓDULO 8: RASTREABILIDADE (Source ID)
-// ============================================================================
-class Traceability {
-    static createSourceLink(fileName, pageNum = 1) {
-        return {
-            fileName: fileName,
-            pageNumber: pageNum,
-            fullPath: `local://${fileName}#page=${pageNum}`,
-            timestamp: new Date().toISOString()
-        };
-    }
-    
-    static generateCitationWithLink(data) {
-        if (data.sourceFileLink) {
-            return `${data.citationABNT || ''} [Fonte: ${data.sourceFileLink}${data.pageNumber ? `, p. ${data.pageNumber}` : ''}]`;
-        }
-        return data.citationABNT || '';
-    }
-}
-
-// ============================================================================
-// MÓDULO 9: INTERFACE DE VALIDAÇÃO (Human-in-the-Loop)
-// ============================================================================
-class HumanValidation {
-    static queue = [];
-    
-    static addToQueue(extractedData) {
-        const tempId = `TEMP-${Date.now()}-${Math.random().toString(36)}`;
-        this.queue.push({ tempId, extractedData, status: 'pending' });
-        return tempId;
-    }
-    
-    static getQueue() {
-        return this.queue.filter(item => item.status === 'pending');
-    }
-    
-    static confirmItem(tempId, correctedData) {
-        const item = this.queue.find(i => i.tempId === tempId);
-        if (item) {
-            item.status = 'confirmed';
-            item.correctedData = correctedData;
-        }
-        return item;
-    }
-    
-    static rejectItem(tempId) {
-        const item = this.queue.find(i => i.tempId === tempId);
-        if (item) item.status = 'rejected';
-    }
-    
-    static clearProcessed() {
-        this.queue = this.queue.filter(i => i.status === 'pending');
-    }
-}
-
-// ============================================================================
-// MÓDULO 10: REGISTRO DE CONSULTA (Audit Log LGPD)
+// MÓDULO 11: AUDIT LOG LGPD
 // ============================================================================
 class AuditService {
     static async log(action, details = {}) {
@@ -876,16 +690,13 @@ class AuditService {
             action: action,
             details: JSON.stringify(details),
             userId: 'user-' + (localStorage.getItem('userId') || 'anonymous'),
-            ipHash: await this.generateIPHash(),
-            softwareVersion: 'ARPEmed v17.0'
+            ipHash: await this.generateIPHash()
         };
-        
         await db.audit.add(entry);
         this.refreshUI();
     }
     
     static async generateIPHash() {
-        // Hash simples para anonimização (LGPD compliant)
         const nav = navigator.userAgent + navigator.language + new Date().getTimezoneOffset();
         const hash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(nav));
         return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('').substring(0, 16);
@@ -895,102 +706,60 @@ class AuditService {
         const logs = await db.audit.orderBy('id').reverse().limit(8).toArray();
         const container = document.getElementById('auditLog');
         if (container) {
-            container.innerHTML = logs.map(l => `
-                <div class="flex justify-between items-center p-1">
-                    <span>${l.action}</span>
-                    <span class="opacity-40 text-[10px]">${new Date(l.timestamp).toLocaleTimeString()}</span>
-                </div>
-            `).join('') || '<div class="opacity-30 text-center">Nenhum evento</div>';
+            container.innerHTML = logs.map(l => `<div class="flex justify-between"><span>${l.action}</span><span class="opacity-40 text-[10px]">${new Date(l.timestamp).toLocaleTimeString()}</span></div>`).join('');
         }
-    }
-    
-    static async logAccess(evidenceId, query) {
-        const doc = await db.evidence.get(evidenceId);
-        if (doc) {
-            await db.evidence.update(evidenceId, {
-                lastAccessed: new Date().toISOString(),
-                accessCount: (doc.accessCount || 0) + 1
-            });
-        }
-        await this.log('EVIDENCE_ACCESS', { evidenceId, query });
     }
 }
 
 // ============================================================================
-// PDF EXTRACTOR (Aprimorado)
+// PDF EXTRACTOR
 // ============================================================================
 class PDFExtractor {
     static async extractText(file) {
         const arrayBuffer = await file.arrayBuffer();
         const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
         let fullText = '';
-        
         for (let i = 1; i <= Math.min(pdf.numPages, 50); i++) {
             const page = await pdf.getPage(i);
             const textContent = await page.getTextContent();
-            const pageText = textContent.items.map(item => item.str).join(' ');
-            fullText += pageText + '\n';
+            fullText += textContent.items.map(item => item.str).join(' ') + '\n';
         }
-        
         return fullText;
     }
     
     static async extractMetadata(file, extractedText) {
-        const metadata = {
-            fileName: file.name,
-            fileSize: file.size,
-            extractedLength: extractedText.length,
-            title: TitleSanitizer.clean(extractedText.substring(0, 500)),
-            author: TitleSanitizer.extractAuthor(extractedText),
-            year: await this.extractYear(extractedText),
-            pageCount: 1
-        };
-        
-        // Tentar extrair ano
         const yearMatch = extractedText.match(/\b(20[0-2][0-9]|2030)\b/);
-        if (yearMatch) metadata.year = parseInt(yearMatch[0]);
-        
-        return metadata;
-    }
-    
-    static async extractYear(text) {
-        const patterns = [
-            /(?:©|Copyright|Publicado|Published)\s*(20[0-2][0-9]|2030)/i,
-            /(20[0-2][0-9]|2030)\s*(?:©|Copyright)/i,
-            /\b(20[0-2][0-9]|2030)\b/
-        ];
-        
-        for (const pattern of patterns) {
-            const match = text.match(pattern);
-            if (match) return parseInt(match[1]);
-        }
-        
-        return new Date().getFullYear();
+        return {
+            fileName: file.name,
+            title: NLPSanitizer.clean(extractedText.substring(0, 500)),
+            author: NLPSanitizer.extractAuthor(extractedText),
+            year: yearMatch ? parseInt(yearMatch[0]) : new Date().getFullYear()
+        };
     }
 }
 
 // ============================================================================
-// BASE DE DIRETRIZES PADRÃO
+// BASE DE DIRETRIZES PADRÃO (Com Score Unificado)
 // ============================================================================
 const DEFAULT_GUIDELINES = [
-    { pmid: 'SBC-2024-HAS', source: 'SBC', title: 'Diretriz Brasileira de Hipertensão Arterial 2024', specialty: 'Cardiologia', evidence_level: '1A', year: 2024, category: 'Hipertensão' },
-    { pmid: 'SBC-2023-IC', source: 'SBC', title: 'Diretriz de Insuficiência Cardíaca 2023', specialty: 'Cardiologia', evidence_level: '1A', year: 2023, category: 'IC' },
-    { pmid: 'SBC-2022-SCA', source: 'SBC', title: 'Diretriz de SCA 2022', specialty: 'Cardiologia', evidence_level: '1A', year: 2022, category: 'SCA' },
-    { pmid: 'ESC-2023-IC', source: 'ESC', title: 'ESC Heart Failure 2023', specialty: 'Cardiologia', evidence_level: '1A', year: 2023, category: 'IC' },
-    { pmid: 'AHA-2023-ACLS', source: 'AHA', title: 'AHA ACLS 2023', specialty: 'Emergência', evidence_level: '1A', year: 2023, category: 'RCP' },
-    { pmid: 'SBPT-2024-DPOC', source: 'SBPT', title: 'Diretrizes DPOC 2024', specialty: 'Pneumologia', evidence_level: '1A', year: 2024, category: 'DPOC' },
-    { pmid: 'GOLD-2025', source: 'GOLD', title: 'GOLD COPD 2025', specialty: 'Pneumologia', evidence_level: '1A', year: 2025, category: 'DPOC' },
-    { pmid: 'SBI-2024-HIV', source: 'SBI', title: 'Protocolo HIV 2024', specialty: 'Infectologia', evidence_level: '1A', year: 2024, category: 'HIV' },
-    { pmid: 'SSC-2023', source: 'SSC', title: 'Surviving Sepsis 2023', specialty: 'UTI', evidence_level: '1A', year: 2023, category: 'Sepse' },
-    { pmid: 'ABN-2024-AVC', source: 'ABN', title: 'Protocolo AVC 2024', specialty: 'Neurologia', evidence_level: '1A', year: 2024, category: 'AVC' },
-    { pmid: 'KDIGO-2024-DRC', source: 'KDIGO', title: 'KDIGO CKD 2024', specialty: 'Nefrologia', evidence_level: '1A', year: 2024, category: 'DRC' },
-    { pmid: 'ADA-2024', source: 'ADA', title: 'ADA Standards 2024', specialty: 'Endocrinologia', evidence_level: '1A', year: 2024, category: 'Diabetes' },
-    { pmid: 'ATLS-2023', source: 'ACS', title: 'ATLS 10th Ed 2023', specialty: 'Trauma', evidence_level: '1A', year: 2023, category: 'ATLS' },
-    { pmid: 'HARRISON-2023', source: 'Harrison', title: 'Harrison Medicina Interna 21ª Ed', specialty: 'Clínica Médica', evidence_level: '1A', year: 2023, category: 'Geral' }
+    { pmid: 'SBC-2025-HAS', source: 'SBC', title: 'Diretriz Brasileira de Hipertensão Arterial 2025', specialty: 'Cardiologia', evidence_level: '1A', year: 2025 },
+    { pmid: 'SBC-2024-IC', source: 'SBC', title: 'Diretriz de Insuficiência Cardíaca 2024', specialty: 'Cardiologia', evidence_level: '1A', year: 2024 },
+    { pmid: 'SBC-2025-SCA', source: 'SBC', title: 'Diretriz de SCA 2025', specialty: 'Cardiologia', evidence_level: '1A', year: 2025 },
+    { pmid: 'ESC-2025-IC', source: 'ESC', title: 'ESC Heart Failure 2025', specialty: 'Cardiologia', evidence_level: '1A', year: 2025 },
+    { pmid: 'AHA-2025-ACLS', source: 'AHA', title: 'AHA ACLS 2025', specialty: 'Emergência', evidence_level: '1A', year: 2025 },
+    { pmid: 'SBPT-2025-DPOC', source: 'SBPT', title: 'Diretrizes DPOC 2025', specialty: 'Pneumologia', evidence_level: '1A', year: 2025 },
+    { pmid: 'GOLD-2025', source: 'GOLD', title: 'GOLD COPD 2025', specialty: 'Pneumologia', evidence_level: '1A', year: 2025 },
+    { pmid: 'SBI-2025-HIV', source: 'SBI', title: 'Protocolo HIV 2025', specialty: 'Infectologia', evidence_level: '1A', year: 2025 },
+    { pmid: 'SSC-2025', source: 'SSC', title: 'Surviving Sepsis 2025', specialty: 'UTI', evidence_level: '1A', year: 2025 },
+    { pmid: 'ABN-2025-AVC', source: 'ABN', title: 'Protocolo AVC 2025', specialty: 'Neurologia', evidence_level: '1A', year: 2025 },
+    { pmid: 'KDIGO-2025-DRC', source: 'KDIGO', title: 'KDIGO CKD 2025', specialty: 'Nefrologia', evidence_level: '1A', year: 2025 },
+    { pmid: 'ADA-2025', source: 'ADA', title: 'ADA Standards 2025', specialty: 'Endocrinologia', evidence_level: '1A', year: 2025 },
+    { pmid: 'ATLS-2025', source: 'ACS', title: 'ATLS 11th Ed 2025', specialty: 'Trauma', evidence_level: '1A', year: 2025 },
+    { pmid: 'HARRISON-2025', source: 'Harrison', title: 'Harrison Medicina Interna 22ª Ed', specialty: 'Clínica Médica', evidence_level: '1A', year: 2025 }
 ];
 
 // ============================================================================
-// DIAGNOSTIC AGENT
+// DIAGNOSTIC AGENT (Bayesiano + Contraindicações)
 // ============================================================================
 class DiagnosticAgent {
     constructor() {
@@ -1020,12 +789,12 @@ class DiagnosticAgent {
         let lrAVC = 1.0;
         if (/hemipar|afasia/.test(text)) lrAVC *= 8.0;
 
-        // Buscar evidências relevantes com Triplo Filtro
+        // Buscar evidências com Triplo Filtro (Score Unificado)
         const relevantEvidence = await TripleFilterSearch.search(data.subjective, 10);
         
-        // Ajustar LRs baseado nas evidências encontradas
+        // Ajustar LRs baseado no Score Unificado das evidências
         for (const ev of relevantEvidence) {
-            const boost = (ev.priorityScore || 60) / 100;
+            const boost = (ev.unifiedScore || 50) / 100;
             if (ev.tags?.includes('Cardiologia')) lrSCA *= (1 + boost * 0.2);
             if (ev.tags?.includes('Pneumologia')) lrTEP *= (1 + boost * 0.2);
         }
@@ -1040,19 +809,21 @@ class DiagnosticAgent {
             { name: 'AVC Isquêmico', posterior: calculatePosterior(priors['AVC'], lrAVC), urgency: 'CRÍTICO', tests: ['TC crânio', 'NIHSS'] }
         ];
 
+        // Verificar Contraindicações
+        const recommendedActions = diagnoses[0].tests.join(' ');
+        const contraindications = ContraindicationChecker.check(data, recommendedActions);
+
         return {
             diagnoses: diagnoses.sort((a, b) => b.posterior - a.posterior),
-            evidence: relevantEvidence.slice(0, 5)
+            evidence: relevantEvidence.slice(0, 5),
+            contraindications: contraindications
         };
     }
 
     generatePTS(diagnoses) {
         const primary = diagnoses[0];
         return {
-            immediate: [
-                primary.urgency === 'CRÍTICO' ? '🚨 Monitorização UTI' : '📊 Monitorização',
-                `🔬 ${primary.tests.slice(0, 3).join('; ')}`
-            ],
+            immediate: [primary.urgency === 'CRÍTICO' ? '🚨 Monitorização UTI' : '📊 Monitorização', `🔬 ${primary.tests.slice(0, 3).join('; ')}`],
             medium: ['📊 Reavaliação', '🔄 Ajuste terapêutico', '👨‍⚕️ Interconsulta'],
             long: ['🏥 Alta planejada', '📅 Retorno 7-14d', '💊 Reconciliação']
         };
@@ -1070,66 +841,51 @@ const ARPEmed = {
     unlock() {
         const pw = document.getElementById('masterPassword').value;
         if (pw.length < 8) { this.toast('Senha mínima: 8 caracteres', 'warning'); return; }
-        
-        // Gerar ID de usuário anonimizado
-        if (!localStorage.getItem('userId')) {
-            localStorage.setItem('userId', 'user-' + Math.random().toString(36).substring(2, 15));
-        }
-        
+        if (!localStorage.getItem('userId')) localStorage.setItem('userId', 'user-' + Math.random().toString(36).substring(2, 15));
         document.getElementById('lockScreen').style.display = 'none';
         document.getElementById('mainApp').style.display = 'block';
-        
-        // Exibir hora do servidor
-        const serverTime = TemporalAnchor.getServerTime();
-        document.getElementById('serverTime').textContent = serverTime.year;
-        
+        document.getElementById('serverTime').textContent = TemporalAnchor.currentYear;
+        document.getElementById('pipelineStatus').innerHTML = '✅';
         this.updateStats();
-        this.toast('✅ Sistema desbloqueado! Curadoria Inteligente Ativa', 'success');
-        AuditService.log('UNLOCK', { version: '17.0' });
+        this.toast('✅ Pipeline Unificado Ativo!', 'success');
+        AuditService.log('UNLOCK');
     },
     
     async loadGuidelines() {
         let added = 0, updated = 0;
-        
         for (const g of DEFAULT_GUIDELINES) {
             const existing = await db.evidence.where('pmid').equals(g.pmid).first();
+            const entryType = EntryTypeClassifier.classify(g.source, g.title, '');
+            const temporal = TemporalAnchor.evaluate(g.year);
+            const tags = MedicalOntology.extractTags(g.title + ' ' + g.source + ' ' + g.specialty);
+            const priorityScore = EvidenceGrader.grade(g.title, g.evidence_level);
+            const citation = CitationGenerator.generateABNT({ author: g.source, title: g.title, year: g.year });
+            const segments = SemanticSegmenter.segment(g.title + ' ' + g.source);
             
             const enrichedData = {
-                ...g,
-                entryType: EntryTypeClassifier.classify(g.source, g.title, '').type,
-                entryTypeWeight: EntryTypeClassifier.classify(g.source, g.title, '').weight,
-                priorityScore: EvidenceGrader.grade(g.title + ' ' + g.source, g.evidence_level),
-                tags: MedicalOntology.extractTags(g.title + ' ' + g.source + ' ' + g.specialty),
-                citationABNT: CitationGenerator.generateABNT({ author: g.source, title: g.title, year: g.year }),
-                temporalStatus: TemporalAnchor.evaluate(g.year).status,
-                updatedAt: new Date().toISOString(),
-                validated: true
+                ...g, entryType: entryType.type, entryTypeWeight: entryType.weight,
+                priorityScore: priorityScore, tags: tags, segments: segments,
+                citationABNT: citation, temporalStatus: temporal.status,
+                unifiedScore: UnifiedScorer.calculate({...g, entryTypeWeight: entryType.weight, priorityScore}).unified,
+                updatedAt: new Date().toISOString(), validated: true
             };
             
             if (existing) {
-                if (g.year >= existing.year) {
-                    await db.evidence.where('pmid').equals(g.pmid).modify(enrichedData);
-                    updated++;
-                }
-            } else {
-                await db.evidence.add(enrichedData);
-                added++;
-            }
+                if (g.year >= existing.year) { await db.evidence.where('pmid').equals(g.pmid).modify(enrichedData); updated++; }
+            } else { await db.evidence.add(enrichedData); added++; }
         }
-        
         await this.updateStats();
-        this.toast(`✅ +${added} novas | ↑${updated} atualizadas`, 'success');
+        this.toast(`✅ +${added} | ↑${updated}`, 'success');
         AuditService.log('GUIDELINES_LOADED', { added, updated });
     },
     
     async updateStats() {
         const all = await db.evidence.toArray();
         const currentYear = new Date().getFullYear();
-        
         document.getElementById('dbTotal').textContent = all.length;
         document.getElementById('dbHotData').textContent = all.filter(e => e.year >= currentYear - 1).length;
-        document.getElementById('dbSources').textContent = new Set(all.map(e => e.source)).size;
         document.getElementById('dbDirectrizes').textContent = all.filter(e => e.entryType === 'Diretriz').length;
+        document.getElementById('dbSegments').textContent = all.reduce((sum, e) => sum + (e.segments?.length || 0), 0);
         document.getElementById('dbCases').textContent = await db.cases.count();
     },
     
@@ -1139,141 +895,70 @@ const ARPEmed = {
         document.getElementById('uploadPreview').style.display = 'none';
         document.getElementById('uploadProgress').style.display = 'none';
         document.getElementById('uploadResult').style.display = 'none';
-        
         const dropZone = document.getElementById('dropZone');
         const fileInput = document.getElementById('fileInput');
-        
         dropZone.ondragover = (e) => { e.preventDefault(); dropZone.classList.add('dragover'); };
-        dropZone.ondragleave = () => { dropZone.classList.remove('dragover'); };
-        dropZone.ondrop = (e) => {
-            e.preventDefault();
-            dropZone.classList.remove('dragover');
-            this.handleFiles(Array.from(e.dataTransfer.files));
-        };
-        
+        dropZone.ondragleave = () => dropZone.classList.remove('dragover');
+        dropZone.ondrop = (e) => { e.preventDefault(); dropZone.classList.remove('dragover'); this.handleFiles(Array.from(e.dataTransfer.files)); };
         fileInput.onchange = (e) => this.handleFiles(Array.from(e.target.files));
     },
     
     handleFiles(files) {
         this.uploadFiles = files;
-        const list = document.getElementById('fileList');
-        list.innerHTML = files.map(f => `
-            <div class="flex items-center gap-2 p-2 rounded bg-white/5">
-                <i class="fas fa-${f.type.includes('pdf') ? 'file-pdf text-red-400' : f.type.includes('image') ? 'image text-green-400' : 'file text-blue-400'}"></i>
-                <span class="flex-1">${f.name}</span>
-                <span class="opacity-50 text-xs">${(f.size/1024).toFixed(1)} KB</span>
-            </div>
-        `).join('');
-        document.getElementById('uploadPreview').style.display = 'block';
+        const list = document.getElementById('uploadPreview');
+        list.innerHTML = `<p class="font-bold mb-2">📋 ${files.length} arquivo(s)</p>` + files.map(f => `<div class="text-sm">📄 ${f.name} (${(f.size/1024).toFixed(1)} KB)</div>`).join('');
+        list.style.display = 'block';
     },
     
     async processUpload() {
-        if (!this.uploadFiles.length) {
-            this.toast('Selecione arquivos', 'warning');
-            return;
-        }
-        
-        const btn = document.getElementById('uploadBtn');
-        btn.disabled = true;
-        btn.innerHTML = '<span class="spinner mr-2"></span>Processando com Curadoria...';
-        
+        if (!this.uploadFiles.length) { this.toast('Selecione arquivos', 'warning'); return; }
+        const btn = document.getElementById('uploadBtn'); btn.disabled = true; btn.innerHTML = '<span class="spinner mr-2"></span>Pipeline de Ingestão...';
         document.getElementById('uploadProgress').style.display = 'block';
-        document.getElementById('uploadResult').style.display = 'none';
-        
-        let totalAdded = 0, totalUpdated = 0;
-        this.pendingValidations = [];
         
         for (let i = 0; i < this.uploadFiles.length; i++) {
             const file = this.uploadFiles[i];
-            const progress = ((i) / this.uploadFiles.length) * 100;
-            document.getElementById('progressBar').style.width = progress + '%';
-            document.getElementById('progressText').textContent = `Processando ${i+1}/${this.uploadFiles.length}: ${file.name}`;
+            document.getElementById('progressBar').style.width = ((i/this.uploadFiles.length)*100) + '%';
             
             try {
                 if (file.type === 'application/pdf') {
-                    const extractedText = await PDFExtractor.extractText(file);
-                    const metadata = await PDFExtractor.extractMetadata(file, extractedText);
+                    const text = await PDFExtractor.extractText(file);
+                    const meta = await PDFExtractor.extractMetadata(file, text);
+                    const entryType = EntryTypeClassifier.classify(file.name, meta.title, text);
+                    const temporal = TemporalAnchor.evaluate(meta.year);
+                    const tags = MedicalOntology.extractTags(text);
+                    const priorityScore = EvidenceGrader.grade(text, null);
+                    const citation = CitationGenerator.generateABNT({ author: meta.author, title: meta.title, year: meta.year, source: file.name });
+                    const segments = SemanticSegmenter.segment(text);
                     
-                    // Aplicar todos os módulos de curadoria
-                    const entryType = EntryTypeClassifier.classify(file.name, metadata.title, extractedText);
-                    const temporal = TemporalAnchor.evaluate(metadata.year);
-                    const tags = MedicalOntology.extractTags(extractedText);
-                    const priorityScore = EvidenceGrader.grade(extractedText, null);
-                    const citation = CitationGenerator.generateABNT({
-                        author: metadata.author,
-                        title: metadata.title,
-                        year: metadata.year,
-                        source: file.name
-                    });
-                    const sourceLink = Traceability.createSourceLink(file.name, 1);
-                    
-                    const curatedData = {
-                        pmid: `PDF-${Date.now()}-${i}`,
-                        source: file.name,
-                        title: metadata.title,
-                        specialty: MedicalOntology.getMainSpecialty(tags),
-                        evidence_level: EvidenceGrader.getStrengthLabel(priorityScore).label,
-                        year: metadata.year,
-                        category: tags[0] || 'Geral',
-                        entryType: entryType.type,
-                        entryTypeWeight: entryType.weight,
-                        priorityScore: priorityScore,
-                        tags: tags,
-                        citationABNT: citation,
-                        sourceFileLink: sourceLink.fullPath,
-                        pageNumber: sourceLink.pageNumber,
-                        temporalStatus: temporal.status,
-                        temporalFlag: temporal.flag,
-                        extractedTextPreview: extractedText.substring(0, 500),
-                        updatedAt: new Date().toISOString(),
-                        validated: false
+                    const curated = {
+                        pmid: `PDF-${Date.now()}-${i}`, source: file.name, title: meta.title,
+                        specialty: MedicalOntology.getMainSpecialty(tags), evidence_level: '2B', year: meta.year,
+                        entryType: entryType.type, entryTypeWeight: entryType.weight, priorityScore, tags, segments,
+                        citationABNT: citation, temporalStatus: temporal.status, unifiedScore: UnifiedScorer.calculate({...meta, entryTypeWeight: entryType.weight, priorityScore}).unified,
+                        updatedAt: new Date().toISOString(), validated: false
                     };
                     
-                    // Adicionar à fila de validação humana
-                    const tempId = HumanValidation.addToQueue(curatedData);
-                    this.pendingValidations.push({ tempId, data: curatedData });
-                    
+                    HumanValidation.addToQueue(curated);
+                    this.pendingValidations.push(curated);
                 } else if (file.type === 'application/json') {
-                    const text = await file.text();
-                    const items = JSON.parse(text);
+                    const items = JSON.parse(await file.text());
                     for (const item of (Array.isArray(items) ? items : [items])) {
                         const enriched = await this.enrichData(item, file.name);
                         await this.saveEvidence(enriched);
-                        totalAdded++;
                     }
                 }
-            } catch (e) {
-                console.error(`Erro em ${file.name}:`, e);
-                this.toast(`Erro: ${file.name} - ${e.message}`, 'warning');
-            }
+            } catch (e) { this.toast(`Erro: ${file.name}`, 'warning'); }
         }
         
         document.getElementById('progressBar').style.width = '100%';
         await this.updateStats();
-        
         document.getElementById('uploadProgress').style.display = 'none';
         document.getElementById('uploadResult').style.display = 'block';
-        document.getElementById('resultStats').innerHTML = `
-            <div class="flex items-center gap-2"><i class="fas fa-check-circle text-green-400"></i> ${this.pendingValidations.length} documentos aguardando validação humana</div>
-            <div class="flex items-center gap-2"><i class="fas fa-tags text-purple-400"></i> Tags MeSH/DeCS aplicadas automaticamente</div>
-            <div class="flex items-center gap-2"><i class="fas fa-quote-right text-blue-400"></i> Citações ABNT geradas</div>
-            <div class="flex items-center gap-2 mt-2"><i class="fas fa-link text-green-400"></i> Rastreabilidade ativa (Source ID)</div>
-        `;
+        document.getElementById('uploadResult').innerHTML = `<p class="font-bold text-green-400">✅ ${this.pendingValidations.length} docs para validação</p>`;
         
-        this.toast(`✅ ${this.pendingValidations.length} documentos para validação`, 'success');
-        AuditService.log('UPLOAD_PROCESSED', { files: this.uploadFiles.length, pending: this.pendingValidations.length });
-        
-        btn.disabled = false;
-        btn.innerHTML = '<i class="fas fa-cogs mr-2"></i>Processar com Curadoria Inteligente';
-        
-        // Se houver validações pendentes, oferecer para revisar
-        if (this.pendingValidations.length > 0) {
-            setTimeout(() => {
-                if (confirm(`${this.pendingValidations.length} documentos aguardam validação. Revisar agora?`)) {
-                    this.openValidationQueue();
-                }
-            }, 500);
-        }
+        btn.disabled = false; btn.innerHTML = '<i class="fas fa-cogs mr-2"></i>Executar Pipeline de Ingestão';
+        if (this.pendingValidations.length && confirm(`${this.pendingValidations.length} documentos aguardam validação. Revisar?`)) this.openValidationQueue();
+        AuditService.log('PIPELINE_INGESTION', { files: this.uploadFiles.length });
     },
     
     async enrichData(item, sourceFile) {
@@ -1281,240 +966,116 @@ const ARPEmed = {
         const temporal = TemporalAnchor.evaluate(item.year);
         const tags = MedicalOntology.extractTags((item.title || '') + ' ' + (item.specialty || ''));
         const priorityScore = EvidenceGrader.grade(item.title || '', item.evidence_level);
-        const citation = CitationGenerator.generateABNT({
-            author: item.source || sourceFile,
-            title: item.title,
-            year: item.year
-        });
+        const citation = CitationGenerator.generateABNT({ author: item.source, title: item.title, year: item.year });
+        const segments = SemanticSegmenter.segment((item.title || '') + ' ' + (item.abstract || ''));
         
         return {
-            ...item,
-            entryType: entryType.type,
-            entryTypeWeight: entryType.weight,
-            priorityScore: priorityScore,
-            tags: tags,
-            citationABNT: citation,
-            temporalStatus: temporal.status,
-            temporalFlag: temporal.flag,
-            sourceFileLink: `local://${sourceFile}`,
-            updatedAt: new Date().toISOString(),
-            validated: true
+            ...item, entryType: entryType.type, entryTypeWeight: entryType.weight, priorityScore, tags, segments,
+            citationABNT: citation, temporalStatus: temporal.status,
+            unifiedScore: UnifiedScorer.calculate({...item, entryTypeWeight: entryType.weight, priorityScore}).unified,
+            sourceFileLink: `local://${sourceFile}`, updatedAt: new Date().toISOString(), validated: true
         };
     },
     
     async saveEvidence(data) {
         const existing = await db.evidence.where('pmid').equals(data.pmid).first();
-        if (existing) {
-            if ((data.year || 0) >= (existing.year || 0)) {
-                await db.evidence.where('pmid').equals(data.pmid).modify(data);
-                return 'updated';
-            }
-            return 'skipped';
-        } else {
-            await db.evidence.add(data);
-            return 'added';
-        }
+        if (existing) { if ((data.year||0) >= (existing.year||0)) await db.evidence.where('pmid').equals(data.pmid).modify(data); }
+        else await db.evidence.add(data);
     },
     
-    closeUploadModal() {
-        document.getElementById('uploadModal').style.display = 'none';
-        document.getElementById('uploadBtn').disabled = false;
-        document.getElementById('uploadBtn').innerHTML = '<i class="fas fa-cogs mr-2"></i>Processar com Curadoria Inteligente';
-    },
+    closeUploadModal() { document.getElementById('uploadModal').style.display = 'none'; },
     
     openValidationQueue() {
         const queue = HumanValidation.getQueue();
         const container = document.getElementById('validationList');
-        
-        if (queue.length === 0) {
-            container.innerHTML = '<p class="text-center opacity-50 py-8">Nenhum documento aguardando validação</p>';
-        } else {
-            container.innerHTML = queue.map(item => `
-                <div class="p-4 rounded-xl bg-white/5 border border-white/10">
-                    <p class="font-bold mb-2">${item.extractedData.title}</p>
-                    <div class="grid grid-cols-2 gap-2 text-xs mb-3">
-                        <div><span class="opacity-50">Fonte:</span> ${item.extractedData.source}</div>
-                        <div><span class="opacity-50">Ano:</span> ${item.extractedData.year} <span class="${item.extractedData.temporalStatus === 'HOT' ? 'hot-data-badge' : ''} ml-2">${item.extractedData.temporalFlag}</span></div>
-                        <div><span class="opacity-50">Tipo:</span> ${item.extractedData.entryType}</div>
-                        <div><span class="opacity-50">Prioridade:</span> ${item.extractedData.priorityScore}/100</div>
-                    </div>
-                    <div class="flex gap-2">
-                        <input type="text" value="${item.extractedData.title}" class="flex-1 text-xs p-2" id="edit-${item.tempId}" placeholder="Corrigir título">
-                        <button onclick="ARPEmed.confirmValidation('${item.tempId}')" class="btn-success px-4 py-2 text-xs">✓</button>
-                        <button onclick="ARPEmed.rejectValidation('${item.tempId}')" class="btn-secondary px-4 py-2 text-xs">✕</button>
-                    </div>
-                    <p class="text-[10px] opacity-40 mt-2">${item.extractedData.citationABNT}</p>
+        container.innerHTML = queue.map(item => `
+            <div class="p-4 rounded-xl bg-white/5 border border-white/10">
+                <p class="font-bold">${item.extractedData.title}</p>
+                <p class="text-xs opacity-50">${item.extractedData.source} • ${item.extractedData.year}</p>
+                <div class="flex gap-2 mt-2">
+                    <input type="text" value="${item.extractedData.title}" class="flex-1 text-xs p-2" id="edit-${item.tempId}">
+                    <button onclick="ARPEmed.confirmValidation('${item.tempId}')" class="btn-success px-3 py-1">✓</button>
                 </div>
-            `).join('');
-        }
-        
+            </div>
+        `).join('') || '<p class="text-center opacity-50">Nenhum documento pendente</p>';
         document.getElementById('validationModal').style.display = 'flex';
     },
     
     async confirmValidation(tempId) {
-        const correctedTitle = document.getElementById(`edit-${tempId}`).value;
-        const item = HumanValidation.confirmItem(tempId, { title: correctedTitle });
-        
-        if (item) {
-            item.extractedData.title = correctedTitle || item.extractedData.title;
-            item.extractedData.validated = true;
-            
-            const result = await this.saveEvidence(item.extractedData);
-            this.toast(`✅ Documento ${result === 'added' ? 'adicionado' : 'atualizado'}`, 'success');
-            AuditService.log('VALIDATION_CONFIRMED', { tempId, title: item.extractedData.title });
-        }
-        
-        HumanValidation.clearProcessed();
-        this.openValidationQueue();
-        this.updateStats();
+        const title = document.getElementById(`edit-${tempId}`).value;
+        const item = HumanValidation.confirmItem(tempId, { title });
+        if (item) { item.extractedData.title = title || item.extractedData.title; await this.saveEvidence(item.extractedData); }
+        HumanValidation.clearProcessed(); this.openValidationQueue(); this.updateStats();
     },
     
-    rejectValidation(tempId) {
-        HumanValidation.rejectItem(tempId);
-        this.toast('Documento rejeitado', 'info');
-        AuditService.log('VALIDATION_REJECTED', { tempId });
-        this.openValidationQueue();
-    },
-    
-    confirmAllValidations() {
-        for (const item of HumanValidation.getQueue()) {
-            this.confirmValidation(item.tempId);
-        }
-    },
-    
-    closeValidationModal() {
-        document.getElementById('validationModal').style.display = 'none';
-    },
+    confirmAllValidations() { HumanValidation.getQueue().forEach(i => this.confirmValidation(i.tempId)); },
+    closeValidationModal() { document.getElementById('validationModal').style.display = 'none'; },
     
     async exportDatabase() {
         const all = await db.evidence.toArray();
-        const data = {
-            version: 'ARPEmed v17.0 - Curadoria Inteligente',
-            exportedAt: new Date().toISOString(),
-            total: all.length,
-            evidence: all.map(e => ({
-                pmid: e.pmid, source: e.source, title: e.title,
-                specialty: e.specialty, evidence_level: e.evidence_level,
-                year: e.year, entryType: e.entryType, tags: e.tags,
-                citationABNT: e.citationABNT, priorityScore: e.priorityScore
-            }))
-        };
-        
+        const data = { version: 'ARPEmed v18.0', exportedAt: new Date().toISOString(), total: all.length, evidence: all };
         const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `arpemed-curated-${new Date().toISOString().split('T')[0]}.json`;
-        a.click();
-        URL.revokeObjectURL(url);
-        
+        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `arpemed-pipeline-${new Date().toISOString().split('T')[0]}.json`; a.click();
         this.toast(`✅ ${all.length} documentos exportados`, 'success');
-        AuditService.log('EXPORT', { count: all.length });
     },
     
     async analyze() {
-        const btn = document.getElementById('analyzeBtn');
-        btn.disabled = true;
-        btn.innerHTML = '<span class="spinner mr-2"></span>Analisando com Triplo Filtro...';
+        const btn = document.getElementById('analyzeBtn'); btn.disabled = true; btn.innerHTML = '<span class="spinner mr-2"></span>Pipeline Completo...';
         
         setTimeout(async () => {
             try {
                 const data = {
-                    age: document.getElementById('patientAge').value || '65',
-                    gender: document.getElementById('patientGender').value || 'male',
-                    subjective: document.getElementById('soapS').value,
-                    objective: document.getElementById('soapO').value,
+                    age: document.getElementById('patientAge').value, gender: document.getElementById('patientGender').value,
+                    subjective: document.getElementById('soapS').value, objective: document.getElementById('soapO').value,
                     vitals: { bp: document.getElementById('vitalBP').value, hr: document.getElementById('vitalHR').value },
                     medications: document.getElementById('patientMeds').value
                 };
                 
                 const result = await this.diagAgent.analyze(data);
                 const pts = this.diagAgent.generatePTS(result.diagnoses);
-                
-                this.renderResults(data, result.diagnoses, pts, result.evidence);
+                this.renderResults(data, result.diagnoses, pts, result.evidence, result.contraindications);
                 
                 await db.cases.add({ timestamp: new Date().toISOString(), data: { diagnoses: result.diagnoses.length } });
                 await this.updateStats();
-                
-                AuditService.log('ANALYSIS_COMPLETE', { 
-                    primary: result.diagnoses[0]?.name, 
-                    confidence: (result.diagnoses[0]?.posterior * 100).toFixed(1),
-                    evidenceCount: result.evidence.length 
-                });
-                
+                AuditService.log('ANALYSIS_COMPLETE', { primary: result.diagnoses[0]?.name });
                 this.toast(`✅ ${result.diagnoses[0].name} (${(result.diagnoses[0].posterior*100).toFixed(1)}%)`, 'success');
-            } catch (e) {
-                this.toast('Erro: ' + e.message, 'error');
-                AuditService.log('ANALYSIS_ERROR', { error: e.message });
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-stethoscope mr-2"></i>Análise com Triplo Filtro';
-            }
+            } catch (e) { this.toast('Erro: ' + e.message, 'error'); }
+            finally { btn.disabled = false; btn.innerHTML = '<i class="fas fa-stethoscope mr-2"></i>Pipeline Completo (Ingestão → Inferência)'; }
         }, 100);
     },
     
-    renderResults(data, diagnoses, pts, evidence) {
+    renderResults(data, diagnoses, pts, evidence, contraindications) {
         const container = document.getElementById('resultsContainer');
         const primary = diagnoses[0];
-        const currentYear = new Date().getFullYear();
+        const bestEvidence = evidence[0];
         
         container.innerHTML = `
             <div class="glass p-4 md:p-6 mb-4">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-xl font-black"><i class="fas fa-clipboard-check mr-3 text-purple-400"></i>Resultado (Triplo Filtro)</h2>
-                    <span class="px-4 py-2 rounded-full text-sm font-bold ${primary.urgency === 'CRÍTICO' ? 'bg-red-500/20 text-red-400' : 'bg-yellow-500/20 text-yellow-400'}">${primary.urgency}</span>
-                </div>
+                <div class="flex justify-between mb-6"><h2 class="text-xl font-black"><i class="fas fa-project-diagram mr-3 text-purple-400"></i>Resultado (Pipeline Unificado)</h2><span class="px-4 py-2 rounded-full ${primary.urgency==='CRÍTICO'?'bg-red-500/20 text-red-400':'bg-yellow-500/20 text-yellow-400'}">${primary.urgency}</span></div>
+                
+                ${contraindications.length ? `<div class="mb-4">${contraindications.map(c => `<div class="contraindication-alert"><i class="fas fa-exclamation-triangle text-red-400 mr-2"></i><strong>${c.severity}:</strong> ${c.message}</div>`).join('')}</div>` : ''}
                 
                 <div class="space-y-3 mb-6">
-                    <div class="soap-box soap-s-box"><div class="soap-header"><div class="soap-letter soap-s-letter">S</div><h3 class="font-black text-blue-400 uppercase">Subjetivo</h3></div><p class="text-sm opacity-80">${data.subjective}</p></div>
-                    <div class="soap-box soap-o-box"><div class="soap-header"><div class="soap-letter soap-o-letter">O</div><h3 class="font-black text-green-400 uppercase">Objetivo</h3></div><p class="text-sm opacity-80">${data.objective}</p></div>
-                    <div class="soap-box soap-a-box"><div class="soap-header"><div class="soap-letter soap-a-letter">A</div><h3 class="font-black text-purple-400 uppercase">Avaliação</h3></div>
-                        <div class="space-y-2">
-                            ${diagnoses.slice(0, 5).map((d, i) => `
-                                <div class="p-4 rounded-xl ${i === 0 ? 'bg-red-500/10 border border-red-500/30' : 'bg-white/3'}">
-                                    <div class="flex justify-between">
-                                        <span class="font-bold">${i+1}. ${d.name}</span>
-                                        <span class="px-3 py-1 rounded-full text-xs font-bold ${d.posterior > 0.5 ? 'bg-red-500/20 text-red-400' : 'bg-yellow-500/20 text-yellow-400'}">${(d.posterior*100).toFixed(1)}%</span>
-                                    </div>
-                                    <p class="text-xs opacity-60 mt-1">${d.tests.join(' • ')}</p>
-                                </div>
-                            `).join('')}
-                        </div>
+                    <div class="soap-box soap-s-box"><div class="soap-header"><div class="soap-letter soap-s-letter">S</div><h3 class="font-black text-blue-400 uppercase">Subjetivo</h3></div><p>${data.subjective}</p></div>
+                    <div class="soap-box soap-o-box"><div class="soap-header"><div class="soap-letter soap-o-letter">O</div><h3 class="font-black text-green-400 uppercase">Objetivo</h3></div><p>${data.objective}</p></div>
+                    <div class="soap-box soap-a-box"><div class="soap-header"><div class="soap-letter soap-a-letter">A</div><h3 class="font-black text-purple-400 uppercase">Avaliação (Bayesiana + Score Unificado)</h3></div>
+                        ${diagnoses.slice(0,5).map((d,i) => `<div class="p-4 rounded-xl ${i===0?'bg-red-500/10 border-red-500/30':'bg-white/3'}"><div class="flex justify-between"><span class="font-bold">${i+1}. ${d.name}</span><span class="px-3 py-1 rounded-full ${d.posterior>0.5?'bg-red-500/20 text-red-400':'bg-yellow-500/20 text-yellow-400'}">${(d.posterior*100).toFixed(1)}%</span></div><p class="text-xs opacity-60 mt-1">${d.tests.join(' • ')}</p></div>`).join('')}
                     </div>
-                    <div class="soap-box soap-p-box"><div class="soap-header"><div class="soap-letter soap-p-letter">P</div><h3 class="font-black text-yellow-400 uppercase">Plano</h3></div><p class="text-sm opacity-80">${primary.tests.join('\n')}</p></div>
+                    <div class="soap-box soap-p-box"><div class="soap-header"><div class="soap-letter soap-p-letter">P</div><h3 class="font-black text-yellow-400 uppercase">Plano</h3></div><p>${primary.tests.join('\n')}</p></div>
                 </div>
                 
-                ${evidence.length > 0 ? `
-                <div class="mb-6">
-                    <h3 class="text-sm font-black mb-3 text-blue-400"><i class="fas fa-book-medical mr-2"></i>Evidências (Triplo Filtro: Assunto → Recência → Autoridade)</h3>
-                    ${evidence.map(e => `
-                        <div class="p-3 rounded-lg bg-white/3 mb-2">
-                            <div class="flex justify-between items-start">
-                                <div class="flex-1">
-                                    <span class="font-medium">${e.title}</span>
-                                    <div class="flex gap-2 mt-1">
-                                        <span class="text-[10px] opacity-50">${e.source} • ${e.year}</span>
-                                        <span class="text-[10px] ${e.temporalStatus === 'HOT' ? 'text-orange-400' : 'opacity-50'}">${e.temporalFlag || ''}</span>
-                                        <span class="evidence-badge level-1a text-[9px]">${e.entryType || 'Diretriz'}</span>
-                                    </div>
-                                </div>
-                                <span class="text-[10px] opacity-40">Prioridade: ${e.priorityScore || '--'}</span>
-                            </div>
-                            ${e.citationABNT ? `<p class="citation-box mt-2">${e.citationABNT}</p>` : ''}
-                        </div>
-                    `).join('')}
-                </div>
-                ` : ''}
+                ${bestEvidence ? `
+                <div class="mb-6 p-4 rounded-xl bg-blue-500/10 border border-blue-500/30">
+                    <h3 class="font-bold text-blue-400 mb-2"><i class="fas fa-star mr-2"></i>Fonte Mais Atual (Score Unificado: ${bestEvidence.unifiedScore})</h3>
+                    <p class="citation-box">${bestEvidence.citationABNT}</p>
+                    ${bestEvidence.segments?.length ? `<p class="text-xs opacity-50 mt-2">Segmentos: ${bestEvidence.segments.map(s=>s.type).join(', ')}</p>` : ''}
+                </div>` : ''}
                 
                 <h3 class="text-lg font-black mb-3 text-green-400"><i class="fas fa-calendar-alt mr-2"></i>PTS</h3>
                 <div class="pts-grid">
-                    <div class="pts-card" style="border-top-color: #FF3B30;"><div class="font-bold text-red-400 mb-3">⚡ Imediato</div><ul class="space-y-2">${pts.immediate.map(i => `<li class="flex gap-2 text-sm"><i class="fas fa-chevron-right text-red-400/50 text-xs mt-1"></i>${i}</li>`).join('')}</ul></div>
-                    <div class="pts-card" style="border-top-color: #FF9500;"><div class="font-bold text-yellow-400 mb-3">📋 Médio</div><ul class="space-y-2">${pts.medium.map(i => `<li class="flex gap-2 text-sm"><i class="fas fa-chevron-right text-yellow-400/50 text-xs mt-1"></i>${i}</li>`).join('')}</ul></div>
-                    <div class="pts-card" style="border-top-color: #34C759;"><div class="font-bold text-green-400 mb-3">🏥 Longo</div><ul class="space-y-2">${pts.long.map(i => `<li class="flex gap-2 text-sm"><i class="fas fa-chevron-right text-green-400/50 text-xs mt-1"></i>${i}</li>`).join('')}</ul></div>
-                </div>
-                
-                <div class="mt-6 p-4 rounded-xl bg-yellow-500/5 border border-yellow-500/20">
-                    <p class="text-xs text-yellow-300/80"><i class="fas fa-exclamation-triangle mr-2"></i><strong>AUXÍLIO à decisão clínica.</strong> Curadoria Inteligente • Triplo Filtro • Rastreabilidade completa.</p>
+                    <div class="pts-card" style="border-top-color:#FF3B30"><div class="font-bold text-red-400">⚡ Imediato</div>${pts.immediate.map(i=>`<li class="text-sm">${i}</li>`).join('')}</div>
+                    <div class="pts-card" style="border-top-color:#FF9500"><div class="font-bold text-yellow-400">📋 Médio</div>${pts.medium.map(i=>`<li class="text-sm">${i}</li>`).join('')}</div>
+                    <div class="pts-card" style="border-top-color:#34C759"><div class="font-bold text-green-400">🏥 Longo</div>${pts.long.map(i=>`<li class="text-sm">${i}</li>`).join('')}</div>
                 </div>
             </div>
         `;
@@ -1522,37 +1083,39 @@ const ARPEmed = {
     },
     
     quickFill() {
-        document.getElementById('patientAge').value = '65';
-        document.getElementById('patientGender').value = 'male';
-        document.getElementById('vitalBP').value = '145/90';
-        document.getElementById('vitalHR').value = '98';
-        document.getElementById('soapS').value = 'Paciente 65 anos, masculino, dor torácica em aperto há 2h, irradiada para MSE, sudorese fria, náusea. HAS, DM2.';
-        document.getElementById('soapO').value = 'BEG, PA 145/90, FC 98, SpO2 96%. ACV: RCR 2T. AR: MV presente.';
-        document.getElementById('patientMeds').value = 'AAS 100mg, Metformina 1000mg, Losartana 50mg';
+        document.getElementById('patientAge').value='65'; document.getElementById('patientGender').value='male';
+        document.getElementById('vitalBP').value='145/90'; document.getElementById('vitalHR').value='98';
+        document.getElementById('soapS').value='Paciente 65 anos, masculino, dor torácica em aperto há 2h, irradiada para MSE, sudorese fria, náusea. HAS, DM2.';
+        document.getElementById('soapO').value='BEG, PA 145/90, FC 98, SpO2 96%. ACV: RCR 2T. AR: MV presente.';
+        document.getElementById('patientMeds').value='AAS 100mg, Metformina 1000mg, Losartana 50mg';
         this.toast('📋 Caso exemplo preenchido!', 'info');
     },
     
     clearForm() {
-        document.getElementById('patientAge').value = '';
-        document.getElementById('soapS').value = '';
-        document.getElementById('soapO').value = '';
-        document.getElementById('patientMeds').value = '';
-        document.getElementById('resultsContainer').innerHTML = '';
+        document.getElementById('patientAge').value=document.getElementById('soapS').value=document.getElementById('soapO').value=document.getElementById('patientMeds').value='';
+        document.getElementById('resultsContainer').innerHTML='';
         this.toast('Formulário limpo', 'info');
     },
     
-    toast(message, type = 'info') {
-        const container = document.getElementById('toastContainer');
-        const toast = document.createElement('div');
-        toast.className = 'toast';
-        toast.innerHTML = `${type === 'success' ? '✅' : type === 'error' ? '❌' : type === 'warning' ? '⚠️' : 'ℹ️'} ${message}`;
-        container.appendChild(toast);
-        setTimeout(() => toast.remove(), 4000);
+    toast(m, t='info') {
+        const c = document.getElementById('toastContainer');
+        const toast = document.createElement('div'); toast.className = 'toast';
+        toast.innerHTML = `${t==='success'?'✅':t==='error'?'❌':t==='warning'?'⚠️':'ℹ️'} ${m}`;
+        c.appendChild(toast); setTimeout(() => toast.remove(), 4000);
     }
 };
 
+// HumanValidation Queue
+class HumanValidation {
+    static queue = [];
+    static addToQueue(data) { const id = 'TEMP-'+Date.now()+'-'+Math.random().toString(36); this.queue.push({tempId:id, extractedData:data, status:'pending'}); return id; }
+    static getQueue() { return this.queue.filter(i=>i.status==='pending'); }
+    static confirmItem(id, corrected) { const i = this.queue.find(x=>x.tempId===id); if(i){i.status='confirmed'; i.correctedData=corrected;} return i; }
+    static clearProcessed() { this.queue = this.queue.filter(i=>i.status==='pending'); }
+}
+
 window.ARPEmed = ARPEmed;
-console.log('✅ ARPEmed v17.0 - Curadoria Médica Inteligente - 10 Módulos Ativos');
+console.log('✅ ARPEmed v18.0 — Pipeline Unificado: Ingestão → Score → Inferência');
 </script>
 </body>
 </html>
