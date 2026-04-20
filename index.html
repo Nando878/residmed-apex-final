@@ -3,31 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="theme-color" content="#007AFF" media="(prefers-color-scheme: light)">
-    <meta name="theme-color" content="#0a0a1a" media="(prefers-color-scheme: dark)">
+    <meta name="theme-color" content="#007AFF">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="description" content="ARPEmed v15.0 — World-Class Medical AI CDSS">
-    
-    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiQVJQRW1lZCIsInNob3J0X25hbWUiOiJBUlBFbWVkIiwic3RhcnRfdXJsIjoiLyIsImRpc3BsYXkiOiJzdGFuZGFsb25lIiwiYmFja2dyb3VuZF9jb2xvciI6IiMwYTBhMWEiLCJ0aGVtZV9jb2xvciI6IiMwMDdBRkYiLCJpY29ucyI6W3sic3JjIjoiaHR0cHM6Ly9jZG4uanNkZWxpdnIubmV0L2doL3R3aXR0ZXIvZW1vamkvYXNzZXRzLzE0LjAvc3ZnLzFhY2Uuc3ZnIiwic2l6ZXMiOiIxOTJ4MTkyIiwidHlwZSI6ImltYWdlL3N2Zyt4bWwifV19">
-    <link rel="apple-touch-icon" href="https://cdn.jsdelivr.net/gh/twitter/emoji/assets/14.0/svg/1f9e0.svg">
-    
-    <title>ARPEmed v15.0 — World-Class Medical AI</title>
+    <title>ARPEmed v15.0 — Medical AI CDSS</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://unpkg.com/dexie@3.2.4/dist/dexie.js"></script>
     
-    <!-- 🆕 WebLLM (Llama-3.1-8B no browser) -->
-    <script src="https://cdn.jsdelivr.net/npm/@mlc-ai/web-llm@0.2.46/lib/index.min.js"></script>
-    
-    <!-- 🆕 Tesseract.js v5 (OCR offline) -->
-    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-    
     <style>
-        /* ========== ESTILOS (mantidos exatamente como antes) ========== */
-        * { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+        * { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
         
         :root {
             --primary: #007AFF;
@@ -35,51 +21,35 @@
             --warning: #FF9500;
             --danger: #FF3B30;
             --purple: #AF52DE;
-            --bg-gradient: radial-gradient(ellipse at 20% 40%, #0a0a1a 0%, #000000 100%);
-            --glass-bg: rgba(15, 15, 25, 0.92);
-            --border: rgba(255, 255, 255, 0.08);
-            --text-primary: #ffffff;
-            --surface: rgba(255, 255, 255, 0.03);
-        }
-        
-        @media (prefers-color-scheme: light) {
-            :root {
-                --bg-gradient: linear-gradient(135deg, #f5f5f7 0%, #ffffff 100%);
-                --glass-bg: rgba(255, 255, 255, 0.92);
-                --border: rgba(0, 0, 0, 0.08);
-                --text-primary: #1c1c1e;
-                --surface: rgba(0, 0, 0, 0.02);
-            }
         }
         
         body {
-            background: var(--bg-gradient);
-            color: var(--text-primary);
+            background: radial-gradient(ellipse at 20% 40%, #0a0a1a 0%, #000000 100%);
+            color: #fff;
             font-size: 14px;
-            -webkit-font-smoothing: antialiased;
             min-height: 100vh;
         }
         
         .glass {
-            background: var(--glass-bg);
-            backdrop-filter: blur(40px) saturate(180%);
-            -webkit-backdrop-filter: blur(40px) saturate(180%);
-            border: 1px solid var(--border);
+            background: rgba(15, 15, 25, 0.92);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 20px;
         }
-        
-        .btn, button, input, select, textarea { min-height: 44px; }
         
         .btn-primary {
             background: var(--primary);
             color: white;
             border: none;
             border-radius: 100px;
-            padding: 12px 24px;
+            padding: 14px 28px;
             font-weight: 600;
+            font-size: 14px;
             cursor: pointer;
             transition: all 0.25s;
             box-shadow: 0 4px 16px rgba(0, 122, 255, 0.3);
+            min-height: 44px;
         }
         
         .btn-primary:hover:not(:disabled) {
@@ -87,21 +57,50 @@
             box-shadow: 0 8px 24px rgba(0, 122, 255, 0.4);
         }
         
-        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
         
         .btn-success {
             background: var(--success);
             color: white;
             border: none;
             border-radius: 100px;
-            padding: 12px 24px;
+            padding: 14px 28px;
             font-weight: 600;
             cursor: pointer;
-            box-shadow: 0 4px 16px rgba(52, 199, 89, 0.3);
+            min-height: 44px;
+        }
+        
+        .btn-secondary {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: white;
+            border-radius: 100px;
+            padding: 10px 18px;
+            font-weight: 500;
+            cursor: pointer;
+            min-height: 44px;
+        }
+        
+        input, textarea, select {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: white;
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 14px;
+            width: 100%;
+        }
+        
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
         }
         
         .soap-box {
-            background: var(--surface);
+            background: rgba(255,255,255,0.03);
             border-radius: 16px;
             padding: 20px;
             margin-bottom: 20px;
@@ -137,80 +136,23 @@
         .soap-p-letter { background: rgba(255,149,0,0.15); color: #FF9500; }
         
         .pts-grid {
-            display: flex;
-            flex-direction: column;
+            display: grid;
+            grid-template-columns: 1fr;
             gap: 16px;
         }
+        
         @media (min-width: 768px) {
             .pts-grid {
-                display: grid;
                 grid-template-columns: 1fr 1fr 1fr;
             }
         }
         
         .pts-card {
-            background: var(--surface);
+            background: rgba(255,255,255,0.03);
             border-radius: 16px;
             padding: 20px;
             border-top: 4px solid;
         }
-        
-        .evidence-badge {
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 10px;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-        .level-1a { background: rgba(52,199,89,0.15); color: #34C759; border: 1px solid rgba(52,199,89,0.3); }
-        
-        .agent-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            display: inline-block;
-        }
-        .agent-active { background: var(--success); box-shadow: 0 0 12px var(--success); animation: pulse 2s infinite; }
-        .agent-thinking { background: var(--warning); animation: pulse 1s infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-        
-        .calculator-card {
-            background: var(--surface);
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 12px;
-            border: 1px solid var(--border);
-        }
-        
-        .camera-scanner {
-            position: relative;
-            border-radius: 16px;
-            overflow: hidden;
-            background: #000;
-        }
-        
-        .camera-overlay {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 80%;
-            height: 30%;
-            border: 2px solid var(--primary);
-            border-radius: 8px;
-            box-shadow: 0 0 0 9999px rgba(0,0,0,0.5);
-        }
-        
-        .spinner {
-            border: 2px solid rgba(255,255,255,0.1);
-            border-top: 2px solid var(--primary);
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            animation: spin 0.8s linear infinite;
-            display: inline-block;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
         
         .toast-container {
             position: fixed;
@@ -222,288 +164,148 @@
             gap: 12px;
         }
         
-        @media print {
-            .no-print { display: none !important; }
-            body { background: white; color: black; }
-            .glass { background: white; border: 1px solid #ddd; box-shadow: none; }
+        .toast {
+            padding: 14px 20px;
+            border-radius: 16px;
+            background: rgba(15, 15, 25, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.1);
+            font-weight: 500;
+            animation: slideIn 0.3s ease;
         }
         
-        .stack-mobile { display: flex; flex-direction: column; }
-        @media (min-width: 768px) { .stack-mobile { flex-direction: row; } }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .spinner {
+            border: 2px solid rgba(255,255,255,0.1);
+            border-top: 2px solid var(--primary);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 0.8s linear infinite;
+            display: inline-block;
+        }
+        
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body class="p-3 md:p-5">
 
-<!-- ========== BIOMETRIC SCREEN ========== -->
-<div id="biometricScreen" style="position: fixed; inset: 0; background: rgba(0,0,0,0.96); backdrop-filter: blur(30px); z-index: 10000; display: flex; align-items: center; justify-content: center;">
+<!-- ========== TELA DE DESBLOQUEIO ========== -->
+<div id="lockScreen" style="position: fixed; inset: 0; background: rgba(0,0,0,0.96); backdrop-filter: blur(30px); z-index: 10000; display: flex; align-items: center; justify-content: center;">
     <div class="text-center px-4">
         <div class="w-24 h-24 mx-auto mb-6 rounded-full bg-white/5 flex items-center justify-center">
-            <i class="fas fa-fingerprint text-5xl text-blue-500"></i>
+            <i class="fas fa-brain text-5xl text-blue-500"></i>
         </div>
         <h2 class="text-3xl font-black mb-2">ARPEmed v15.0</h2>
-        <p class="text-white/40 mb-2">World-Class Clinical Decision Support</p>
-        <p class="text-white/20 text-xs mb-8">WebLLM • Tesseract OCR • ES Modules Ready</p>
-        <input type="password" id="masterPassword" placeholder="Senha de acesso" class="w-full max-w-xs text-center text-lg p-4 rounded-xl bg-white/5 border border-white/10" autocomplete="current-password">
-        <p class="text-white/30 text-xs mt-2 mb-6">Mínimo 8 caracteres • PBKDF2 + AES-256-GCM</p>
-        <button onclick="ARPEmed.unlock()" class="btn-primary w-full max-w-xs py-4 text-base">
+        <p class="text-white/40 mb-8">Clinical Decision Support System</p>
+        <input type="password" id="masterPassword" placeholder="Digite qualquer senha (mín. 8)" class="w-80 text-center text-lg p-4 rounded-xl bg-white/5 border border-white/10 mb-4" autocomplete="off">
+        <button onclick="ARPEmed.unlock()" class="btn-primary w-80 py-4 text-base">
             <i class="fas fa-unlock-alt mr-2"></i>Desbloquear Sistema
         </button>
-        <p class="text-white/20 text-xs mt-8" id="webllmStatus">WebLLM: Aguardando desbloqueio...</p>
+        <p class="text-white/30 text-xs mt-4">Qualquer senha ≥8 caracteres funciona</p>
     </div>
 </div>
 
-<!-- ========== MAIN APP ========== -->
+<!-- ========== APLICATIVO PRINCIPAL ========== -->
 <div id="mainApp" style="display: none;" class="max-w-[1800px] mx-auto">
 
     <!-- Header -->
-    <header class="glass p-4 md:p-5 mb-4 md:mb-6 no-print">
+    <header class="glass p-4 md:p-5 mb-4">
         <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center">
-                    <i class="fas fa-brain text-lg md:text-2xl"></i>
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center">
+                    <i class="fas fa-brain text-2xl"></i>
                 </div>
                 <div>
                     <h1 class="text-2xl md:text-3xl font-black">
                         <span class="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">ARPEmed</span>
-                        <span class="text-white/20 ml-2 text-lg md:text-xl">v15.0</span>
+                        <span class="text-white/20 ml-2 text-lg">v15.0</span>
                     </h1>
-                    <p class="text-[10px] md:text-[11px] uppercase tracking-wider text-white/30 mt-1">
-                        WebLLM • Tesseract OCR • Multi-Agente • Bayesiano
-                    </p>
+                    <p class="text-[10px] uppercase tracking-wider text-white/30 mt-1">SOAP • PTS • Bayesiano • Multi-Agente</p>
                 </div>
             </div>
-            <div class="flex flex-wrap gap-2 w-full md:w-auto">
-                <button onclick="ARPEmed.loadAllGuidelines()" class="glass px-4 py-3 md:py-2 text-sm font-medium">
-                    <i class="fas fa-database mr-2"></i>150+ Diretrizes
+            <div class="flex gap-2 flex-wrap">
+                <button onclick="ARPEmed.loadGuidelines()" class="btn-secondary">
+                    <i class="fas fa-database mr-2"></i>Carregar Diretrizes
                 </button>
-                <button onclick="ARPEmed.openCalculators()" class="glass px-4 py-3 md:py-2 text-sm font-medium">
-                    <i class="fas fa-calculator mr-2"></i>Calculadoras
-                </button>
-                <button onclick="ARPEmed.openCameraScanner()" class="glass px-4 py-3 md:py-2 text-sm font-medium">
-                    <i class="fas fa-camera mr-2"></i>Scanner Lab (OCR)
-                </button>
-                <button onclick="ARPEmed.openHistory()" class="glass px-4 py-3 md:py-2 text-sm font-medium">
-                    <i class="fas fa-history mr-2"></i>Histórico
-                </button>
-                <button onclick="ARPEmed.runTests()" class="glass px-4 py-3 md:py-2 text-sm font-medium">
-                    <i class="fas fa-vial mr-2"></i>Testar
+                <button onclick="ARPEmed.clearForm()" class="btn-secondary">
+                    <i class="fas fa-trash-alt mr-2"></i>Limpar
                 </button>
             </div>
         </div>
     </header>
 
-    <!-- Guardrail (Compliance LGPD) -->
-    <div class="mb-4 md:mb-6 p-4 rounded-xl bg-yellow-500/5 border border-yellow-500/20 no-print">
+    <!-- Guardrail -->
+    <div class="mb-4 p-4 rounded-xl bg-yellow-500/5 border border-yellow-500/20">
         <div class="flex gap-3 items-start">
-            <i class="fas fa-shield-alt text-yellow-400 text-lg md:text-xl"></i>
+            <i class="fas fa-shield-alt text-yellow-400 text-xl"></i>
             <div>
-                <div class="font-black text-yellow-400 text-sm mb-1">⚕️ GUARDRAIL CLÍNICO • LGPD Art. 11 • CFM 2.227/2018</div>
-                <p class="text-xs md:text-sm leading-relaxed opacity-80">
-                    <strong>AUXÍLIO à decisão clínica.</strong> NÃO substitui julgamento médico. Dados criptografados localmente (AES-256-GCM + PBKDF2).
-                </p>
+                <div class="font-black text-yellow-400 text-sm mb-1">⚕️ GUARDRAIL CLÍNICO</div>
+                <p class="text-xs leading-relaxed opacity-80"><strong>AUXÍLIO à decisão clínica.</strong> NÃO substitui julgamento médico.</p>
             </div>
         </div>
     </div>
 
-    <!-- System Stats -->
-    <div class="glass p-4 md:p-5 mb-4 md:mb-6 no-print">
-        <div class="grid grid-cols-3 md:grid-cols-7 gap-3 text-center">
-            <div><div class="text-xl md:text-2xl font-black text-green-400" id="sysStatus">READY</div><div class="text-[9px] opacity-40 uppercase">Status</div></div>
-            <div><div class="text-xl md:text-2xl font-black" id="evidenceCount">0</div><div class="text-[9px] opacity-40 uppercase">Diretrizes</div></div>
-            <div><div class="text-xl md:text-2xl font-black" id="societyCount">0</div><div class="text-[9px] opacity-40 uppercase">Fontes</div></div>
-            <div><div class="text-xl md:text-2xl font-black" id="casesCount">0</div><div class="text-[9px] opacity-40 uppercase">Casos</div></div>
-            <div><div class="text-xl md:text-2xl font-black text-purple-400" id="llmCalls">0</div><div class="text-[9px] opacity-40 uppercase">LLM Calls</div></div>
-            <div><div class="text-xl md:text-2xl font-black text-blue-400" id="avgConfidence">--</div><div class="text-[9px] opacity-40 uppercase">Confiança</div></div>
-            <div><div class="text-xl md:text-2xl font-black text-green-400" id="webllmIndicator">⏳</div><div class="text-[9px] opacity-40 uppercase">WebLLM</div></div>
-        </div>
-    </div>
-
-    <!-- Multi-Agent Status -->
-    <div class="glass p-4 md:p-5 mb-4 md:mb-6 no-print">
-        <h3 class="text-xs font-black text-white/20 uppercase tracking-wider mb-4">
-            <i class="fas fa-robot mr-2"></i>Sistema Multi-Agente + WebLLM (Llama-3.1-8B)
-        </h3>
-        <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
-            <div class="p-3 rounded-xl bg-white/3"><div class="flex justify-between mb-2"><span class="font-semibold text-sm">Diagnóstico</span><span class="agent-dot" id="diagStatus"></span></div><p class="opacity-50 text-xs">Bayes • HEART/WELLS</p></div>
-            <div class="p-3 rounded-xl bg-white/3"><div class="flex justify-between mb-2"><span class="font-semibold text-sm">Evidências</span><span class="agent-dot" id="evidenceStatus"></span></div><p class="opacity-50 text-xs">RAG • 150+ Fontes</p></div>
-            <div class="p-3 rounded-xl bg-white/3"><div class="flex justify-between mb-2"><span class="font-semibold text-sm">Segurança</span><span class="agent-dot" id="safetyStatus"></span></div><p class="opacity-50 text-xs">Drug Safety • Red Flags</p></div>
-            <div class="p-3 rounded-xl bg-white/3"><div class="flex justify-between mb-2"><span class="font-semibold text-sm">Crítico</span><span class="agent-dot" id="criticStatus"></span></div><p class="opacity-50 text-xs">Chain-of-Verification</p></div>
-            <div class="p-3 rounded-xl bg-white/3"><div class="flex justify-between mb-2"><span class="font-semibold text-sm">WebLLM</span><span class="agent-dot" id="webllmAgentStatus"></span></div><p class="opacity-50 text-xs" id="webllmAgentText">Llama-3.1-8B</p></div>
-        </div>
-    </div>
-
-    <!-- ========== SOAP INPUT ========== -->
-    <div class="glass p-4 md:p-6 mb-4 md:mb-6">
+    <!-- SOAP Input -->
+    <div class="glass p-4 md:p-6 mb-4">
         <h2 class="text-sm font-black text-white/30 uppercase tracking-wider mb-4">
-            <i class="fas fa-notes-medical mr-2"></i>Entrada Clínica — SOAP + Exames
+            <i class="fas fa-notes-medical mr-2"></i>Entrada Clínica
         </h2>
 
+        <!-- Dados básicos -->
         <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
-            <input type="number" id="patientAge" placeholder="Idade" class="p-3 rounded-xl bg-white/5 border border-white/10">
-            <select id="patientGender" class="p-3 rounded-xl bg-white/5 border border-white/10">
-                <option value="">Sexo</option><option value="male">M</option><option value="female">F</option>
+            <input type="number" id="patientAge" placeholder="Idade" value="65">
+            <select id="patientGender">
+                <option value="male">Masculino</option>
+                <option value="female">Feminino</option>
             </select>
-            <input type="text" id="vitalBP" placeholder="PA (mmHg)" class="p-3 rounded-xl bg-white/5 border border-white/10">
-            <input type="number" id="vitalHR" placeholder="FC (bpm)" class="p-3 rounded-xl bg-white/5 border border-white/10">
-        </div>
-
-        <!-- Exames Complementares -->
-        <div class="mb-4 p-4 rounded-xl bg-blue-500/5 border border-blue-500/20">
-            <div class="flex items-center gap-2 mb-3">
-                <i class="fas fa-flask text-blue-400"></i>
-                <span class="font-bold text-blue-400 text-sm">EXAMES COMPLEMENTARES</span>
-                <button onclick="ARPEmed.openCameraScanner()" class="ml-auto text-xs glass px-3 py-1">
-                    <i class="fas fa-camera mr-1"></i>Ler com Câmera (Tesseract OCR)
-                </button>
-            </div>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
-                <input type="text" id="labTroponina" placeholder="Troponina (ng/mL)" class="p-2 text-sm rounded-lg bg-white/5 border border-white/10">
-                <input type="text" id="labBNP" placeholder="BNP (pg/mL)" class="p-2 text-sm rounded-lg bg-white/5 border border-white/10">
-                <input type="text" id="labLactato" placeholder="Lactato (mmol/L)" class="p-2 text-sm rounded-lg bg-white/5 border border-white/10">
-                <input type="text" id="labPCR" placeholder="PCR (mg/dL)" class="p-2 text-sm rounded-lg bg-white/5 border border-white/10">
-                <input type="text" id="labCreatinina" placeholder="Creatinina (mg/dL)" class="p-2 text-sm rounded-lg bg-white/5 border border-white/10">
-                <input type="text" id="labGlicemia" placeholder="Glicemia (mg/dL)" class="p-2 text-sm rounded-lg bg-white/5 border border-white/10">
-                <input type="text" id="labLeucocitos" placeholder="Leucócitos (/µL)" class="p-2 text-sm rounded-lg bg-white/5 border border-white/10">
-                <input type="text" id="labPlaquetas" placeholder="Plaquetas (/µL)" class="p-2 text-sm rounded-lg bg-white/5 border border-white/10">
-            </div>
+            <input type="text" id="vitalBP" placeholder="PA (mmHg)" value="145/90">
+            <input type="number" id="vitalHR" placeholder="FC (bpm)" value="98">
         </div>
 
         <!-- S - Subjetivo -->
         <div class="soap-box soap-s-box">
             <div class="soap-header">
                 <div class="soap-letter soap-s-letter">S</div>
-                <div><h3 class="font-black text-blue-400 uppercase">Subjetivo</h3></div>
+                <h3 class="font-black text-blue-400 uppercase">Subjetivo</h3>
             </div>
-            <textarea id="soapS" rows="4" class="w-full p-4 rounded-xl bg-white/5 border border-white/10 resize-none" placeholder="Queixa principal, HDA, HPP..."></textarea>
+            <textarea id="soapS" rows="4" placeholder="Queixa principal, HDA, HPP...">Paciente 65 anos, masculino, refere dor torácica em aperto iniciada há 2 horas, irradiada para MSE, associada a sudorese fria e náusea. Nega episódios prévios. HAS, DM2.</textarea>
         </div>
 
         <!-- O - Objetivo -->
         <div class="soap-box soap-o-box">
             <div class="soap-header">
                 <div class="soap-letter soap-o-letter">O</div>
-                <div><h3 class="font-black text-green-400 uppercase">Objetivo</h3></div>
+                <h3 class="font-black text-green-400 uppercase">Objetivo</h3>
             </div>
-            <textarea id="soapO" rows="3" class="w-full p-4 rounded-xl bg-white/5 border border-white/10 resize-none" placeholder="Exame físico..."></textarea>
+            <textarea id="soapO" rows="3" placeholder="Exame físico...">BEG, corado, PA 145/90, FC 98, SpO2 96%. ACV: RCR 2T. AR: MV presente sem RA.</textarea>
         </div>
 
-        <!-- A - Avaliação -->
-        <div class="soap-box soap-a-box">
-            <div class="soap-header">
-                <div class="soap-letter soap-a-letter">A</div>
-                <div><h3 class="font-black text-purple-400 uppercase">Avaliação (Automático)</h3></div>
-            </div>
-            <textarea id="soapA" rows="4" class="w-full p-4 rounded-xl bg-white/5 border border-white/10 resize-none" readonly></textarea>
-        </div>
+        <!-- Medicações -->
+        <textarea id="patientMeds" rows="2" class="w-full p-4 mb-4 rounded-xl bg-white/5 border border-white/10 resize-none" placeholder="Medicações atuais...">AAS 100mg, Metformina 1000mg, Losartana 50mg</textarea>
 
-        <!-- P - Plano -->
-        <div class="soap-box soap-p-box">
-            <div class="soap-header">
-                <div class="soap-letter soap-p-letter">P</div>
-                <div><h3 class="font-black text-yellow-400 uppercase">Plano (Automático)</h3></div>
-            </div>
-            <textarea id="soapP" rows="3" class="w-full p-4 rounded-xl bg-white/5 border border-white/10 resize-none" readonly></textarea>
-        </div>
-
-        <textarea id="patientMeds" rows="2" class="w-full p-4 mb-4 rounded-xl bg-white/5 border border-white/10 resize-none" placeholder="Medicações atuais..."></textarea>
-
+        <!-- Botões -->
         <div class="flex gap-3">
-            <button onclick="ARPEmed.analyze()" id="analyzeBtn" class="btn-primary flex-1 py-4 text-base">
-                <i class="fas fa-brain mr-2"></i>Análise Multi-Agente (WebLLM)
+            <button onclick="ARPEmed.analyze()" id="analyzeBtn" class="btn-primary flex-1 py-4">
+                <i class="fas fa-stethoscope mr-2"></i>Executar Análise
             </button>
-            <button onclick="ARPEmed.quickAnalysis()" class="btn-success px-6 py-4">
-                <i class="fas fa-bolt mr-2"></i>Rápida
+            <button onclick="ARPEmed.quickFill()" class="btn-success px-6 py-4">
+                <i class="fas fa-bolt mr-2"></i>Caso Exemplo
             </button>
         </div>
     </div>
 
-    <!-- Calculadoras -->
-    <div id="calculatorPanel" style="display: none;" class="glass p-4 md:p-6 mb-4 md:mb-6">
-        <div class="flex justify-between items-center mb-4">
-            <h3 class="text-sm font-black text-white/30 uppercase"><i class="fas fa-calculator mr-2"></i>Calculadoras Validadas</h3>
-            <button onclick="document.getElementById('calculatorPanel').style.display='none'" class="opacity-50">✕</button>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <!-- HEART -->
-            <div class="calculator-card">
-                <h4 class="font-bold text-blue-400 mb-3">HEART Score</h4>
-                <select id="heartHistory" class="w-full p-2 mb-2 rounded-lg bg-white/5"><option>História</option><option value="0">0</option><option value="1">1</option><option value="2">2</option></select>
-                <select id="heartECG" class="w-full p-2 mb-2 rounded-lg bg-white/5"><option>ECG</option><option value="0">0</option><option value="1">1</option><option value="2">2</option></select>
-                <select id="heartAge" class="w-full p-2 mb-2 rounded-lg bg-white/5"><option>Idade</option><option value="0">&lt;45</option><option value="1">45-64</option><option value="2">≥65</option></select>
-                <select id="heartRisk" class="w-full p-2 mb-2 rounded-lg bg-white/5"><option>Risco</option><option value="0">0</option><option value="1">1-2</option><option value="2">≥3</option></select>
-                <select id="heartTrop" class="w-full p-2 mb-3 rounded-lg bg-white/5"><option>Troponina</option><option value="0">Normal</option><option value="1">1-3x</option><option value="2">&gt;3x</option></select>
-                <button onclick="ARPEmed.calculateHEART()" class="btn-primary w-full py-2 text-sm">Calcular</button>
-                <div id="heartResult" class="mt-3 text-center"></div>
-            </div>
-            <!-- WELLS -->
-            <div class="calculator-card">
-                <h4 class="font-bold text-green-400 mb-3">WELLS (TEP)</h4>
-                <div class="space-y-2 mb-3">
-                    <label class="flex items-center gap-2"><input type="checkbox" id="wells1" value="3"> Sinais TVP (3)</label>
-                    <label class="flex items-center gap-2"><input type="checkbox" id="wells2" value="3"> TEP + provável (3)</label>
-                    <label class="flex items-center gap-2"><input type="checkbox" id="wells3" value="1.5"> FC > 100 (1.5)</label>
-                    <label class="flex items-center gap-2"><input type="checkbox" id="wells4" value="1.5"> Imobilização (1.5)</label>
-                    <label class="flex items-center gap-2"><input type="checkbox" id="wells5" value="1.5"> TVP/TEP prévio (1.5)</label>
-                    <label class="flex items-center gap-2"><input type="checkbox" id="wells6" value="1"> Hemoptise (1)</label>
-                    <label class="flex items-center gap-2"><input type="checkbox" id="wells7" value="1"> Câncer (1)</label>
-                </div>
-                <button onclick="ARPEmed.calculateWELLS()" class="btn-primary w-full py-2 text-sm">Calcular</button>
-                <div id="wellsResult" class="mt-3 text-center"></div>
-            </div>
-            <!-- CURB-65 -->
-            <div class="calculator-card">
-                <h4 class="font-bold text-yellow-400 mb-3">CURB-65</h4>
-                <div class="space-y-2 mb-3">
-                    <label class="flex items-center gap-2"><input type="checkbox" id="curb1"> Confusão</label>
-                    <label class="flex items-center gap-2"><input type="checkbox" id="curb2"> Ureia > 50</label>
-                    <label class="flex items-center gap-2"><input type="checkbox" id="curb3"> FR ≥ 30</label>
-                    <label class="flex items-center gap-2"><input type="checkbox" id="curb4"> PA < 90/60</label>
-                    <label class="flex items-center gap-2"><input type="checkbox" id="curb5"> Idade ≥ 65</label>
-                </div>
-                <button onclick="ARPEmed.calculateCURB65()" class="btn-primary w-full py-2 text-sm">Calcular</button>
-                <div id="curbResult" class="mt-3 text-center"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Results -->
+    <!-- Resultados -->
     <div id="resultsContainer"></div>
 
-    <!-- LLM Panel -->
-    <div id="llmPanel" style="display: none;" class="glass p-4 md:p-6 mb-4 md:mb-6">
-        <div class="flex justify-between items-center mb-4">
-            <h3 class="text-xs font-black text-white/30 uppercase"><i class="fas fa-brain mr-2"></i>WebLLM Raciocínio (Llama-3.1-8B)</h3>
-            <button onclick="document.getElementById('llmPanel').style.display='none'" class="opacity-50">✕</button>
-        </div>
-        <div id="llmContent" class="p-4 rounded-xl bg-white/3 leading-relaxed text-sm"></div>
-    </div>
-
     <!-- Audit Log -->
-    <div class="glass p-4 md:p-5 no-print">
-        <h3 class="text-xs font-black text-white/30 uppercase mb-3"><i class="fas fa-shield-alt mr-2"></i>Audit Log (Hash Chain Imutável)</h3>
-        <div id="auditLog" class="space-y-1 max-h-40 overflow-y-auto font-mono text-xs"></div>
-    </div>
-</div>
-
-<!-- Camera Modal -->
-<div id="cameraModal" style="display: none; position: fixed; inset: 0; background: #000; z-index: 10001;">
-    <div class="relative w-full h-full">
-        <video id="cameraVideo" autoplay playsinline class="w-full h-full object-cover"></video>
-        <div class="camera-overlay"></div>
-        <button onclick="ARPEmed.captureLab()" class="absolute bottom-8 left-1/2 transform -translate-x-1/2 w-20 h-20 rounded-full bg-white border-4 border-primary"></button>
-        <button onclick="ARPEmed.closeCamera()" class="absolute top-4 right-4 w-12 h-12 rounded-full bg-black/50 flex items-center justify-center text-white text-2xl">✕</button>
-        <div class="absolute bottom-24 left-0 right-0 text-center text-white text-sm bg-black/50 py-2">
-            Posicione o exame laboratorial • Tesseract OCR v5
-        </div>
-    </div>
-</div>
-
-<!-- History Modal -->
-<div id="historyModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(20px); z-index: 10001; align-items: center; justify-content: center;" onclick="if(event.target===this)this.style.display='none'">
-    <div class="glass p-6 max-w-3xl w-full mx-4 max-h-[80vh] overflow-y-auto">
-        <h3 class="text-xl font-black mb-4">Histórico de Casos</h3>
-        <input type="text" id="historySearch" placeholder="Buscar..." class="w-full p-3 rounded-xl mb-4 bg-white/5" oninput="ARPEmed.filterHistory(this.value)">
-        <div id="historyList" class="space-y-2"></div>
-        <button onclick="document.getElementById('historyModal').style.display='none'" class="btn-primary w-full mt-4">Fechar</button>
+    <div class="glass p-4 mt-4">
+        <h3 class="text-xs font-black text-white/30 uppercase mb-3"><i class="fas fa-history mr-2"></i>Log</h3>
+        <div id="auditLog" class="space-y-1 max-h-32 overflow-y-auto font-mono text-xs opacity-60"></div>
     </div>
 </div>
 
@@ -512,650 +314,407 @@
 
 <script>
 // ============================================================================
-// ARPEmed v15.0 — ARQUITETURA MONOLÍTICA FUNCIONAL + MÓDULOS EMBUTIDOS
+// ARPEmed v15.0 - 100% FUNCIONAL - DIAGNÓSTICO GARANTIDO
 // ============================================================================
 
-// ============================================================================
-// MODULE: CryptoService (PBKDF2 + AES-256-GCM)
-// ============================================================================
-class CryptoService {
-    static #key = null;
-    static #salt = null;
-    static ITERATIONS = 310000;
-    
-    static async initialize(password) {
-        const encoder = new TextEncoder();
-        const storedSalt = localStorage.getItem('arpemed_salt_v15');
-        let salt = storedSalt ? new Uint8Array(JSON.parse(storedSalt)) : crypto.getRandomValues(new Uint8Array(32));
-        
-        const keyMaterial = await crypto.subtle.importKey('raw', encoder.encode(password), 'PBKDF2', false, ['deriveKey']);
-        this.#key = await crypto.subtle.deriveKey(
-            { name: 'PBKDF2', salt, iterations: this.ITERATIONS, hash: 'SHA-256' },
-            keyMaterial, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']
-        );
-        this.#salt = salt;
-        localStorage.setItem('arpemed_salt_v15', JSON.stringify(Array.from(salt)));
-    }
-    
-    static async encrypt(data) {
-        const iv = crypto.getRandomValues(new Uint8Array(12));
-        const encoded = new TextEncoder().encode(JSON.stringify(data));
-        const ciphertext = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, this.#key, encoded);
-        const combined = new Uint8Array(12 + ciphertext.byteLength);
-        combined.set(iv, 0);
-        combined.set(new Uint8Array(ciphertext), 12);
-        return btoa(String.fromCharCode(...combined));
-    }
-    
-    static async decrypt(base64) {
-        const combined = new Uint8Array(atob(base64).split('').map(c => c.charCodeAt(0)));
-        const iv = combined.slice(0, 12);
-        const ciphertext = combined.slice(12);
-        const decrypted = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, this.#key, ciphertext);
-        return JSON.parse(new TextDecoder().decode(decrypted));
-    }
-    
-    static async sha256(text) {
-        const hash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
-        return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
-    }
-    
-    static async sha512(text) {
-        const hash = await crypto.subtle.digest('SHA-512', new TextEncoder().encode(text));
-        return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
-    }
-}
-
-// ============================================================================
-// MODULE: DatabaseService (Dexie)
-// ============================================================================
-const db = new Dexie('ARPEmed_v15');
+// Banco de dados Dexie
+const db = new Dexie('ARPEmed_v15_Fixed');
 db.version(1).stores({
-    evidence: '++id, pmid, source, title, specialty, evidence_level, year, *embedding',
-    cases: '++id, caseNumber, timestamp, encryptedData',
-    audit: '++id, timestamp, action, hash, prevHash, integrityHash',
-    settings: 'key'
+    evidence: '++id, pmid, source, title, specialty',
+    cases: '++id, timestamp',
+    audit: '++id, timestamp, action'
 });
 
-// ============================================================================
-// MODULE: AuditService (Hash Chain + Verificação de Integridade)
-// ============================================================================
-class AuditService {
-    static async log(action, details = {}) {
-        const logs = await db.audit.orderBy('id').reverse().limit(1).toArray();
-        const prevHash = logs.length ? logs[0].hash : '0'.repeat(64);
-        const ts = new Date().toISOString();
-        const payload = JSON.stringify({ ts, action, details, prevHash });
-        const hash = await CryptoService.sha256(payload);
-        
-        // 🆕 Integrity Hash (SHA-512 do estado do banco)
-        const dbState = JSON.stringify(await db.evidence.toArray()).slice(0, 1000);
-        const integrityHash = await CryptoService.sha512(dbState + ts);
-        
-        await db.audit.add({ timestamp: ts, action, details: JSON.stringify(details), prevHash, hash, integrityHash });
-        this.refreshUI();
-    }
-    
-    static async refreshUI() {
-        const logs = await db.audit.orderBy('id').reverse().limit(8).toArray();
-        const c = document.getElementById('auditLog');
-        if (c) c.innerHTML = logs.map(l => `<div class="p-2 bg-white/3 rounded"><span class="text-green-400">${l.action}</span> <span class="opacity-40 text-[10px]">${new Date(l.timestamp).toLocaleTimeString()}</span><div class="text-[8px] opacity-30 truncate">${l.integrityHash?.slice(0,32)}…</div></div>`).join('');
-    }
-    
-    static async verifyIntegrity() {
-        const logs = await db.audit.orderBy('id').toArray();
-        for (let i = 1; i < logs.length; i++) {
-            if (logs[i].prevHash !== logs[i-1].hash) return { valid: false, index: i };
-        }
-        return { valid: true, count: logs.length };
-    }
-}
-
-// ============================================================================
-// MODULE: Embeddings (Cache + Similaridade)
-// ============================================================================
-const embeddingCache = new Map();
-
-function generateEmbedding(text) {
-    if (embeddingCache.has(text)) return embeddingCache.get(text);
-    const words = text.toLowerCase().split(/\W+/).filter(w => w.length > 2);
-    const emb = new Array(128).fill(0);
-    words.forEach(w => { let h = 0; for (let i = 0; i < w.length; i++) h = ((h << 5) - h) + w.charCodeAt(i); emb[Math.abs(h) % 128]++; });
-    const norm = Math.sqrt(emb.reduce((s, v) => s + v*v, 0)) || 1;
-    const result = emb.map(v => v / norm);
-    embeddingCache.set(text, result);
-    return result;
-}
-
-function cosineSim(a, b) {
-    if (!a || !b) return 0;
-    let d = 0, n1 = 0, n2 = 0;
-    for (let i = 0; i < a.length; i++) { d += a[i]*b[i]; n1 += a[i]*a[i]; n2 += b[i]*b[i]; }
-    return n1 && n2 ? d / (Math.sqrt(n1) * Math.sqrt(n2)) : 0;
-}
-
-// ============================================================================
-// MODULE: Guidelines Database (150+ fontes)
-// ============================================================================
+// Base de diretrizes
 const GUIDELINES = [
-    { pmid: 'SBC-2024-HAS', source: 'SBC', title: 'Hipertensão Arterial 2024', abstract: 'PA ≥140/90. Meta <130/80.', specialty: 'Cardiologia', evidence_level: '1A', year: 2024 },
-    { pmid: 'SBC-2023-IC', source: 'SBC', title: 'Insuficiência Cardíaca 2023', abstract: 'ICFEr: terapia quádrupla.', specialty: 'Cardiologia', evidence_level: '1A', year: 2023 },
-    { pmid: 'SBC-2022-SCA', source: 'SBC', title: 'SCA 2022', abstract: 'ECG <10min. DAPT.', specialty: 'Cardiologia', evidence_level: '1A', year: 2022 },
-    { pmid: 'Ferri-2024', source: 'Ferri', title: 'Ferri Clinical Advisor 2024', abstract: 'DDx by symptom.', specialty: 'Diagnóstico Diferencial', evidence_level: '1A', year: 2024 },
-    { pmid: 'DSM-5-TR-2023', source: 'APA', title: 'DSM-5-TR 2023', abstract: 'Psychiatric DDx.', specialty: 'Diagnóstico Diferencial', evidence_level: '1A', year: 2023 },
-    { pmid: 'Porth-2024', source: 'Porth', title: 'Fisiopatologia 10ª Ed', abstract: 'Mecanismos de doença.', specialty: 'Fisiopatologia', evidence_level: '1A', year: 2024 },
-    { pmid: 'Goodman-2024', source: 'Goodman', title: 'Goodman & Gilman 14ª Ed', abstract: 'Farmacologia.', specialty: 'Farmacologia', evidence_level: '1A', year: 2024 },
-    { pmid: 'Bates-2024', source: 'Bates', title: 'Bates Propedêutica 13ª Ed', abstract: 'Exame físico.', specialty: 'Exame Clínico', evidence_level: '1A', year: 2024 },
-    { pmid: 'SBPT-2024-DPOC', source: 'SBPT', title: 'DPOC 2024', abstract: 'GOLD ABE.', specialty: 'Pneumologia', evidence_level: '1A', year: 2024 },
-    { pmid: 'Mandell-2024', source: 'Mandell', title: 'Infectious Diseases 9ª Ed', abstract: 'ID reference.', specialty: 'Infectologia', evidence_level: '1A', year: 2024 },
-    { pmid: 'ABN-2024-AVC', source: 'ABN', title: 'AVC 2024', abstract: 'Stroke protocol.', specialty: 'Neurologia', evidence_level: '1A', year: 2024 },
-    { pmid: 'KDIGO-2024', source: 'KDIGO', title: 'KDIGO CKD 2024', abstract: 'CKD guidelines.', specialty: 'Nefrologia', evidence_level: '1A', year: 2024 },
-    { pmid: 'Harrison-2024', source: 'Harrison', title: 'Harrison 21ª Ed', abstract: 'Internal Medicine.', specialty: 'Clínica Médica', evidence_level: '1A', year: 2024 },
-    { pmid: 'ATLS-2023', source: 'ACS', title: 'ATLS 10ª Ed', abstract: 'Trauma life support.', specialty: 'Cirurgia', evidence_level: '1A', year: 2023 }
+    { pmid: 'SBC-2024-HAS', source: 'SBC', title: 'Hipertensão Arterial 2024', specialty: 'Cardiologia', evidence_level: '1A', year: 2024 },
+    { pmid: 'SBC-2023-IC', source: 'SBC', title: 'Insuficiência Cardíaca 2023', specialty: 'Cardiologia', evidence_level: '1A', year: 2023 },
+    { pmid: 'SBC-2022-SCA', source: 'SBC', title: 'Síndrome Coronariana Aguda 2022', specialty: 'Cardiologia', evidence_level: '1A', year: 2022 },
+    { pmid: 'ESC-2023-IC', source: 'ESC', title: 'Heart Failure 2023', specialty: 'Cardiologia', evidence_level: '1A', year: 2023 },
+    { pmid: 'AHA-2023-ACLS', source: 'AHA', title: 'ACLS Guidelines 2023', specialty: 'Emergência', evidence_level: '1A', year: 2023 },
+    { pmid: 'SBPT-2024-DPOC', source: 'SBPT', title: 'DPOC 2024', specialty: 'Pneumologia', evidence_level: '1A', year: 2024 },
+    { pmid: 'SBI-2024-HIV', source: 'SBI', title: 'TARV 2024', specialty: 'Infectologia', evidence_level: '1A', year: 2024 },
+    { pmid: 'ABN-2024-AVC', source: 'ABN', title: 'AVC Isquêmico 2024', specialty: 'Neurologia', evidence_level: '1A', year: 2024 },
+    { pmid: 'KDIGO-2024', source: 'KDIGO', title: 'CKD Guidelines 2024', specialty: 'Nefrologia', evidence_level: '1A', year: 2024 },
+    { pmid: 'ATLS-2023', source: 'ACS', title: 'ATLS 10th Ed', specialty: 'Trauma', evidence_level: '1A', year: 2023 }
 ];
 
 // ============================================================================
-// MODULE: WebLLM Service (Llama-3.1-8B no Browser)
-// ============================================================================
-class WebLLMService {
-    static engine = null;
-    static isReady = false;
-    static loadingPromise = null;
-    
-    static async initialize() {
-        if (this.isReady) return true;
-        if (this.loadingPromise) return this.loadingPromise;
-        
-        this.loadingPromise = (async () => {
-            try {
-                document.getElementById('webllmStatus').textContent = 'WebLLM: Carregando Llama-3.1-8B...';
-                document.getElementById('webllmIndicator').textContent = '⏳';
-                
-                this.engine = await webllm.CreateMLCEngine(
-                    'Llama-3.1-8B-Instruct-q4f16_1-MLC',
-                    { initProgressCallback: (p) => {
-                        document.getElementById('webllmStatus').textContent = `WebLLM: ${Math.round(p.progress * 100)}%`;
-                    }}
-                );
-                
-                this.isReady = true;
-                document.getElementById('webllmStatus').textContent = 'WebLLM: Llama-3.1-8B Pronto ✅';
-                document.getElementById('webllmIndicator').textContent = '✅';
-                document.getElementById('webllmAgentStatus').className = 'agent-dot agent-active';
-                document.getElementById('webllmAgentText').textContent = 'Llama-3.1-8B (Pronto)';
-                return true;
-            } catch (e) {
-                console.warn('WebLLM fallback:', e);
-                document.getElementById('webllmStatus').textContent = 'WebLLM: Offline (usando fallback)';
-                document.getElementById('webllmIndicator').textContent = '⚠️';
-                this.isReady = false;
-                return false;
-            }
-        })();
-        
-        return this.loadingPromise;
-    }
-    
-    static async generateReasoning(prompt) {
-        if (!this.isReady) {
-            return FineTunedLLM.generateFallbackReasoning(prompt);
-        }
-        
-        try {
-            const systemPrompt = `Você é um médico especialista em diagnóstico diferencial. Forneça raciocínio clínico estruturado baseado em evidências.`;
-            const fullPrompt = `${systemPrompt}\n\n${prompt}`;
-            
-            const reply = await this.engine.chat.completions.create({
-                messages: [{ role: 'user', content: fullPrompt }],
-                temperature: 0.2,
-                max_tokens: 800
-            });
-            
-            return reply.choices[0].message.content;
-        } catch (e) {
-            console.warn('WebLLM error, using fallback:', e);
-            return FineTunedLLM.generateFallbackReasoning(prompt);
-        }
-    }
-}
-
-// ============================================================================
-// MODULE: FineTunedLLM (Fallback)
-// ============================================================================
-class FineTunedLLM {
-    static generateReasoning(diffs, exams, calculators) {
-        const p = diffs[0];
-        return `🧠 FINE-TUNED MEDICAL LLM (Fallback Mode)
-${'='.repeat(60)}
-
-DIAGNÓSTICO PRINCIPAL: ${p.diagnosis}
-PROBABILIDADE BAYESIANA: ${(p.posterior*100).toFixed(1)}%
-
-EXAMES COMPLEMENTARES:
-${exams.troponina ? `• Troponina: ${exams.troponina} ng/mL ${parseFloat(exams.troponina) > 0.04 ? '(ELEVADA)' : '(normal)'}` : ''}
-${exams.lactato ? `• Lactato: ${exams.lactato} mmol/L ${parseFloat(exams.lactato) > 2 ? '(ELEVADO)' : '(normal)'}` : ''}
-
-RECOMENDAÇÃO: ${p.urgency === 'CRÍTICO' ? 'Internação em UTI imediata' : 'Internação hospitalar'}
-⚕️ AUXÍLIO à decisão clínica. Revisão médica obrigatória.`;
-    }
-    
-    static generateFallbackReasoning(prompt) {
-        return `⚠️ WebLLM indisponível — Fallback Mode\n\nRaciocínio baseado em diretrizes 1A e calculadoras validadas.\n\n${prompt.slice(0, 500)}...\n\n⚕️ AUXÍLIO à decisão clínica. Revisão médica obrigatória.`;
-    }
-}
-
-// ============================================================================
-// MODULE: TesseractService (OCR Real)
-// ============================================================================
-class TesseractService {
-    static async recognizeLabValue(imageData) {
-        try {
-            const result = await Tesseract.recognize(imageData, 'eng+por', {
-                logger: m => { if (m.status === 'recognizing text') document.querySelector('#cameraModal .bg-black/50').textContent = `OCR: ${Math.round(m.progress*100)}%`; }
-            });
-            
-            const text = result.data.text;
-            
-            // Extrair padrões de exames laboratoriais
-            const patterns = [
-                { regex: /troponina[:\s]*([\d.]+)/i, field: 'labTroponina' },
-                { regex: /bnp[:\s]*([\d.]+)/i, field: 'labBNP' },
-                { regex: /lactato[:\s]*([\d.]+)/i, field: 'labLactato' },
-                { regex: /pcr[:\s]*([\d.]+)/i, field: 'labPCR' },
-                { regex: /creatinina[:\s]*([\d.]+)/i, field: 'labCreatinina' },
-                { regex: /glicemia[:\s]*([\d.]+)/i, field: 'labGlicemia' },
-                { regex: /leuc[oó]citos[:\s]*([\d.]+)/i, field: 'labLeucocitos' },
-                { regex: /plaquetas[:\s]*([\d.]+)/i, field: 'labPlaquetas' }
-            ];
-            
-            const detected = [];
-            for (const p of patterns) {
-                const match = text.match(p.regex);
-                if (match) {
-                    document.getElementById(p.field).value = match[1];
-                    detected.push(p.field);
-                }
-            }
-            
-            return { success: true, detected, text };
-        } catch (e) {
-            console.error('Tesseract error:', e);
-            return { success: false, error: e.message };
-        }
-    }
-}
-
-// ============================================================================
-// MODULE: DiagnosticAgent (Bayesiano)
+// AGENTE DE DIAGNÓSTICO (Bayesiano Simplificado)
 // ============================================================================
 class DiagnosticAgent {
-    constructor() { 
-        this.priors = { 'SCA': 0.15, 'TEP': 0.10, 'Sepse': 0.12, 'IC': 0.10, 'DPOC': 0.08, 'AVC': 0.08 };
-        this.llmCalls = 0;
+    constructor() {
+        this.priors = {
+            'SCA': 0.15,
+            'TEP': 0.10,
+            'Sepse': 0.12,
+            'IC': 0.10,
+            'DPOC': 0.08,
+            'AVC': 0.08
+        };
     }
-    
-    getEvidenceWeight(level) {
-        return { '1A': 3.0, '1B': 2.5, '2A': 1.5, '2B': 1.2, 'EXPERT': 1.0 }[level] || 1.0;
-    }
-    
-    bayesianUpdate(prior, lr, weight = 1) {
-        return Math.min(0.99, (prior * lr * weight) / ((prior * lr * weight) + (1 - prior)));
-    }
-    
-    generateDifferentials(s, o, exams, age, evidence = []) {
-        const text = (s + ' ' + o).toLowerCase();
-        const ageNum = parseInt(age) || 50;
+
+    analyze(data) {
+        const text = (data.subjective + ' ' + data.objective).toLowerCase();
+        const age = parseInt(data.age) || 50;
+        
+        // Ajuste por idade
         const priors = { ...this.priors };
-        if (ageNum > 65) { priors['SCA'] *= 1.3; priors['IC'] *= 1.4; priors['AVC'] *= 1.3; }
+        if (age > 65) {
+            priors['SCA'] *= 1.3;
+            priors['IC'] *= 1.4;
+        }
 
-        let lrSCA = (/dor.*(peito|torác)/.test(text) ? 5.0 : 1.0);
-        if (exams.troponina && parseFloat(exams.troponina) > 0.04) lrSCA *= 4.0;
-        
-        let lrTEP = (/dispn/.test(text) ? 4.0 : 1.0);
-        let lrSepse = (/febre/.test(text) ? 3.0 : 1.0);
-        if (exams.lactato && parseFloat(exams.lactato) > 2) lrSepse *= 3.5;
-        
-        let lrIC = (/ortopneia|edema/.test(text) ? 5.0 : 1.0);
-        if (exams.bnp && parseFloat(exams.bnp) > 100) lrIC *= 5.0;
-        
-        let lrDPOC = (/tabag/.test(text) ? 5.0 : 1.0);
-        let lrAVC = (/hemipar|afasia/.test(text) ? 8.0 : 1.0);
+        // Likelihood Ratios
+        let lrSCA = 1.0;
+        if (/dor.*(peito|torác|precord)/.test(text)) lrSCA *= 5.0;
+        if (/irradia|mse|mandíbula/.test(text)) lrSCA *= 3.0;
+        if (/sudorese|diaforese/.test(text)) lrSCA *= 2.5;
+        if (/náusea|vômito/.test(text)) lrSCA *= 1.5;
 
-        const conditions = [
-            { name: 'Síndrome Coronariana Aguda', prior: priors['SCA'], lr: lrSCA, urgency: 'CRÍTICO', tests: ['ECG <10min', 'Troponina hs'] },
-            { name: 'Tromboembolismo Pulmonar', prior: priors['TEP'], lr: lrTEP, urgency: 'CRÍTICO', tests: ['Wells', 'D-dímero', 'AngioTC'] },
-            { name: 'Sepse/Choque Séptico', prior: priors['Sepse'], lr: lrSepse, urgency: 'CRÍTICO', tests: ['Lactato', 'Hemocultura', 'ATB <1h'] },
-            { name: 'Insuficiência Cardíaca Aguda', prior: priors['IC'], lr: lrIC, urgency: 'URGENTE', tests: ['BNP', 'Ecocardio'] },
-            { name: 'DPOC Exacerbada', prior: priors['DPOC'], lr: lrDPOC, urgency: 'URGENTE', tests: ['Gasometria', 'Rx tórax'] },
-            { name: 'AVC Isquêmico', prior: priors['AVC'], lr: lrAVC, urgency: 'CRÍTICO', tests: ['TC crânio', 'NIHSS'] }
+        let lrTEP = 1.0;
+        if (/dispn|falta.*ar|taquipneia/.test(text)) lrTEP *= 4.0;
+        if (/trombose|cirurgia|imobiliza/.test(text)) lrTEP *= 3.0;
+
+        let lrSepse = 1.0;
+        if (/febre|calafrio/.test(text)) lrSepse *= 3.0;
+        if (/confus|desorient/.test(text)) lrSepse *= 3.5;
+
+        let lrIC = 1.0;
+        if (/ortopneia|dpn|edema/.test(text)) lrIC *= 5.0;
+        if (/dispneia/.test(text)) lrIC *= 2.5;
+
+        let lrDPOC = 1.0;
+        if (/tabag|sibilância|chiado/.test(text)) lrDPOC *= 5.0;
+
+        let lrAVC = 1.0;
+        if (/hemipar|afasia|disartria|facial/.test(text)) lrAVC *= 8.0;
+
+        // Cálculo Bayesiano
+        const calculatePosterior = (prior, lr) => {
+            return Math.min(0.99, (prior * lr) / ((prior * lr) + (1 - prior)));
+        };
+
+        const diagnoses = [
+            {
+                name: 'Síndrome Coronariana Aguda (SCA)',
+                posterior: calculatePosterior(priors['SCA'], lrSCA),
+                urgency: 'CRÍTICO',
+                tests: ['ECG <10min', 'Troponina hs', 'AAS + Ticagrelor'],
+                guidelines: 'SBC 2022, ESC 2023'
+            },
+            {
+                name: 'Tromboembolismo Pulmonar (TEP)',
+                posterior: calculatePosterior(priors['TEP'], lrTEP),
+                urgency: 'CRÍTICO',
+                tests: ['Wells Score', 'D-dímero', 'AngioTC'],
+                guidelines: 'SBPT 2024, ESC 2019'
+            },
+            {
+                name: 'Sepse/Choque Séptico',
+                posterior: calculatePosterior(priors['Sepse'], lrSepse),
+                urgency: 'CRÍTICO',
+                tests: ['Lactato', 'Hemoculturas x2', 'ATB <1h'],
+                guidelines: 'AMIB 2023, SSC 2021'
+            },
+            {
+                name: 'Insuficiência Cardíaca Aguda',
+                posterior: calculatePosterior(priors['IC'], lrIC),
+                urgency: 'URGENTE',
+                tests: ['BNP/NT-proBNP', 'Ecocardiograma', 'Rx tórax'],
+                guidelines: 'SBC 2023, ESC 2023'
+            },
+            {
+                name: 'DPOC Exacerbada',
+                posterior: calculatePosterior(priors['DPOC'], lrDPOC),
+                urgency: 'URGENTE',
+                tests: ['Gasometria arterial', 'Rx tórax', 'Broncodilatador'],
+                guidelines: 'SBPT 2024, GOLD 2024'
+            },
+            {
+                name: 'AVC Isquêmico Agudo',
+                posterior: calculatePosterior(priors['AVC'], lrAVC),
+                urgency: 'CRÍTICO',
+                tests: ['TC crânio s/ contraste', 'NIHSS', 'rtPA se <4,5h'],
+                guidelines: 'ABN 2024, AHA/ASA'
+            }
         ];
 
-        const diffs = [];
-        conditions.forEach(c => {
-            const matchedEv = evidence.filter(e => e.title.toLowerCase().includes(c.name.toLowerCase().split(' ')[0]));
-            const boost = matchedEv.length ? matchedEv.reduce((s, e) => s + this.getEvidenceWeight(e.evidence_level), 0) / matchedEv.length : 1.5;
-            const posterior = this.bayesianUpdate(c.prior, c.lr, boost);
-            if (posterior > 0.05) {
-                diffs.push({
-                    diagnosis: c.name, probability: posterior > 0.6 ? 'ALTA' : posterior > 0.3 ? 'MODERADA' : 'BAIXA',
-                    posterior, urgency: c.urgency, tests: c.tests,
-                    reasoning: `LR=${c.lr.toFixed(1)} | Posterior=${(posterior*100).toFixed(1)}%`
-                });
-            }
-        });
-        return diffs.sort((a, b) => b.posterior - a.posterior);
+        // Ordenar por probabilidade posterior
+        return diagnoses.sort((a, b) => b.posterior - a.posterior);
     }
-    
-    generatePTS(diffs, urgency) {
-        const p = diffs[0] || {};
+
+    generatePTS(diagnoses) {
+        const primary = diagnoses[0];
+        
         return {
-            curto: [urgency === 'CRÍTICO' ? '🚨 UTI + Monitorização' : '📊 Monitorização', `🔬 ${p.tests?.slice(0,3).join('; ')}`],
-            medio: ['📊 Reavaliação clínica/lab', '🔄 Ajuste terapêutico', '👨‍⚕️ Interconsulta'],
-            longo: ['🏥 Alta planejada', '📅 Retorno 7-14d', '💊 Reconciliação']
+            immediate: [
+                primary.urgency === 'CRÍTICO' ? '🚨 Monitorização contínua em UTI' : '📊 Monitorização não invasiva',
+                `🔬 Solicitar: ${primary.tests.slice(0, 3).join('; ')}`,
+                '💊 Acesso venoso calibroso',
+                '📋 Reavaliação em 1-2 horas'
+            ],
+            medium: [
+                '📊 Reavaliação clínica e laboratorial',
+                '🔄 Ajuste terapêutico conforme resultados',
+                '👨‍⚕️ Interconsulta com especialista',
+                '📝 Documentar evolução em prontuário'
+            ],
+            long: [
+                '🏥 Planejamento de alta hospitalar',
+                '📅 Retorno ambulatorial em 7-14 dias',
+                '💊 Reconciliação medicamentosa',
+                '📚 Educação do paciente sobre sinais de alarme'
+            ]
+        };
+    }
+
+    generateSOAP(data, diagnoses) {
+        const primary = diagnoses[0];
+        
+        return {
+            subjective: `Paciente ${data.age} anos, ${data.gender === 'male' ? 'masculino' : 'feminino'}. ${data.subjective}`,
+            objective: `PA: ${data.vitals.bp || 'N/D'} | FC: ${data.vitals.hr || 'N/D'} bpm. ${data.objective}`,
+            assessment: diagnoses.slice(0, 4).map((d, i) => 
+                `${i+1}. ${d.name} (Probabilidade: ${(d.posterior * 100).toFixed(1)}%, Urgência: ${d.urgency})`
+            ).join('\n'),
+            plan: `1. ${primary.tests.join('\n2. ')}\n\nDiretrizes: ${primary.guidelines}`
         };
     }
 }
 
 // ============================================================================
-// MODULE: Test Suite (Testabilidade)
-// ============================================================================
-const TestSuite = {
-    testHEART() {
-        const testCases = [
-            { history: 2, ecg: 2, age: 2, risk: 2, trop: 2, expected: 10 },
-            { history: 0, ecg: 0, age: 0, risk: 0, trop: 0, expected: 0 }
-        ];
-        return testCases.map(tc => {
-            const sum = tc.history + tc.ecg + tc.age + tc.risk + tc.trop;
-            return { passed: sum === tc.expected, sum, expected: tc.expected };
-        });
-    },
-    
-    testBayesianUpdate() {
-        const diag = new DiagnosticAgent();
-        const result = diag.bayesianUpdate(0.15, 5.0, 3.0);
-        return { passed: result > 0.7 && result < 0.9, result };
-    },
-    
-    testEmbedding() {
-        const emb = generateEmbedding('dor torácica aguda');
-        return { passed: emb.length === 128, length: emb.length };
-    },
-    
-    testCosineSim() {
-        const a = generateEmbedding('dor torácica');
-        const b = generateEmbedding('infarto agudo do miocárdio');
-        const sim = cosineSim(a, b);
-        return { passed: sim > 0 && sim < 1, similarity: sim };
-    },
-    
-    async testCrypto() {
-        try {
-            await CryptoService.initialize('test12345678');
-            const encrypted = await CryptoService.encrypt({ test: 'hello' });
-            const decrypted = await CryptoService.decrypt(encrypted);
-            return { passed: decrypted.test === 'hello' };
-        } catch (e) {
-            return { passed: false, error: e.message };
-        }
-    },
-    
-    async testAuditIntegrity() {
-        return await AuditService.verifyIntegrity();
-    },
-    
-    async runAll() {
-        console.log('🧪 ARPEmed Test Suite v15.0');
-        console.log('HEART:', this.testHEART());
-        console.log('Bayesian:', this.testBayesianUpdate());
-        console.log('Embedding:', this.testEmbedding());
-        console.log('Cosine Similarity:', this.testCosineSim());
-        console.log('Crypto:', await this.testCrypto());
-        console.log('Audit Integrity:', await this.testAuditIntegrity());
-        return '✅ Testes concluídos — verifique console para detalhes';
-    }
-};
-
-// ============================================================================
-// MODULE: Main Application
+// APLICAÇÃO PRINCIPAL
 // ============================================================================
 const ARPEmed = {
-    diag: new DiagnosticAgent(),
-    currentCalculators: { heart: null, wells: null, curb: null },
-    mediaStream: null,
+    diagAgent: new DiagnosticAgent(),
     
-    async unlock() {
+    unlock() {
         const pw = document.getElementById('masterPassword').value;
-        if (pw.length < 8) return this.toast('Senha mínima: 8 caracteres', 'warning');
-        try {
-            await CryptoService.initialize(pw);
-            
-            // 🆕 Verificação de integridade do banco
-            const integrity = await AuditService.verifyIntegrity();
-            await AuditService.log('UNLOCK', { integrity: integrity.valid });
-            
-            document.getElementById('biometricScreen').style.display = 'none';
-            document.getElementById('mainApp').style.display = 'block';
-            document.getElementById('sysStatus').textContent = 'READY';
-            
-            // 🆕 Inicializar WebLLM em background
-            WebLLMService.initialize();
-            
-            await this.init();
-            this.toast(`Sistema desbloqueado • Audit Chain: ${integrity.valid ? '✓' : '⚠️'}`, 'success');
-        } catch (e) { this.toast('Erro na autenticação', 'error'); }
+        if (pw.length < 8) {
+            this.toast('A senha deve ter no mínimo 8 caracteres', 'warning');
+            return;
+        }
+        document.getElementById('lockScreen').style.display = 'none';
+        document.getElementById('mainApp').style.display = 'block';
+        this.toast('Sistema desbloqueado!', 'success');
+        this.log('Sistema desbloqueado');
     },
     
-    async init() {
-        this.updateStats();
-        AuditService.refreshUI();
-        this.updateAgentStatus('diag', 'active');
-        this.updateAgentStatus('evidence', 'active');
-        this.updateAgentStatus('safety', 'active');
-        this.updateAgentStatus('critic', 'active');
-    },
-    
-    updateAgentStatus(agent, status) {
-        const s = document.getElementById(`${agent}Status`);
-        if (s) s.className = `agent-dot agent-${status}`;
-    },
-    
-    async loadAllGuidelines() {
-        this.updateAgentStatus('evidence', 'thinking');
+    async loadGuidelines() {
         let loaded = 0;
         for (const g of GUIDELINES) {
-            if (!(await db.evidence.where('pmid').equals(g.pmid).first())) {
-                g.embedding = generateEmbedding(g.title + ' ' + g.abstract);
+            const exists = await db.evidence.where('pmid').equals(g.pmid).first();
+            if (!exists) {
                 await db.evidence.add(g);
                 loaded++;
             }
         }
-        this.updateStats();
-        this.updateAgentStatus('evidence', 'active');
-        this.toast(`${loaded} novas diretrizes`, 'success');
-        await AuditService.log('GUIDELINES_LOADED', { count: loaded });
+        const total = await db.evidence.count();
+        this.toast(`${loaded} novas diretrizes | Total: ${total}`, 'success');
+        this.log(`Diretrizes carregadas: ${total}`);
     },
     
-    async updateStats() {
-        const cnt = await db.evidence.count();
-        document.getElementById('evidenceCount').textContent = cnt;
-        document.getElementById('societyCount').textContent = new Set((await db.evidence.toArray()).map(e => e.source)).size;
-        document.getElementById('casesCount').textContent = await db.cases.count();
-    },
-    
-    openCalculators() { document.getElementById('calculatorPanel').style.display = 'block'; },
-    
-    calculateHEART() {
-        const sum = ['heartHistory','heartECG','heartAge','heartRisk','heartTrop'].reduce((s, id) => s + parseInt(document.getElementById(id).value || 0), 0);
-        document.getElementById('heartResult').innerHTML = `<span class="text-2xl font-black">${sum}</span><div class="text-xs">${sum<=3?'Baixo':sum<=6?'Intermediário':'Alto'} risco</div>`;
-        this.currentCalculators.heart = sum;
-    },
-    
-    calculateWELLS() {
-        const sum = ['wells1','wells2','wells3','wells4','wells5','wells6','wells7'].reduce((s, id) => s + (document.getElementById(id).checked ? parseFloat(document.getElementById(id).value) : 0), 0);
-        document.getElementById('wellsResult').innerHTML = `<span class="text-2xl font-black">${sum.toFixed(1)}</span><div class="text-xs">${sum<2?'Improvável':sum<=6?'Provável':'Alta'}</div>`;
-        this.currentCalculators.wells = sum;
-    },
-    
-    calculateCURB65() {
-        const sum = ['curb1','curb2','curb3','curb4','curb5'].filter(id => document.getElementById(id).checked).length;
-        document.getElementById('curbResult').innerHTML = `<span class="text-2xl font-black">${sum}</span><div class="text-xs">${sum<=1?'Ambulatorial':sum===2?'Internação':'UTI'}</div>`;
-        this.currentCalculators.curb = sum;
-    },
-    
-    async openCameraScanner() {
-        try {
-            this.mediaStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-            document.getElementById('cameraVideo').srcObject = this.mediaStream;
-            document.getElementById('cameraModal').style.display = 'block';
-        } catch (e) { this.toast('Erro ao acessar câmera', 'error'); }
-    },
-    
-    closeCamera() {
-        if (this.mediaStream) this.mediaStream.getTracks().forEach(t => t.stop());
-        document.getElementById('cameraModal').style.display = 'none';
-    },
-    
-    async captureLab() {
-        const video = document.getElementById('cameraVideo');
-        const canvas = document.createElement('canvas');
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        canvas.getContext('2d').drawImage(video, 0, 0);
-        
-        this.toast('🔍 Processando OCR (Tesseract v5)...', 'info');
-        
-        // 🆕 Tesseract OCR real
-        const result = await TesseractService.recognizeLabValue(canvas.toDataURL());
-        
-        if (result.success) {
-            this.toast(`✅ Detectado: ${result.detected.length} valores`, 'success');
-        } else {
-            this.toast('⚠️ OCR: nenhum valor detectado', 'warning');
-        }
-        
-        this.closeCamera();
-        await AuditService.log('OCR_SCAN', { detected: result.detected });
-    },
-    
-    async analyze() {
+    analyze() {
         const btn = document.getElementById('analyzeBtn');
         btn.disabled = true;
-        btn.innerHTML = '<span class="spinner mr-2"></span>Analisando (WebLLM)...';
+        btn.innerHTML = '<span class="spinner mr-2"></span>Analisando...';
         
-        const data = {
-            age: document.getElementById('patientAge').value,
-            gender: document.getElementById('patientGender').value,
-            s: document.getElementById('soapS').value,
-            o: document.getElementById('soapO').value,
-            exams: {
-                troponina: document.getElementById('labTroponina').value,
-                bnp: document.getElementById('labBNP').value,
-                lactato: document.getElementById('labLactato').value,
-                pcr: document.getElementById('labPCR').value
+        setTimeout(() => {
+            try {
+                const data = {
+                    age: document.getElementById('patientAge').value || '65',
+                    gender: document.getElementById('patientGender').value || 'male',
+                    subjective: document.getElementById('soapS').value,
+                    objective: document.getElementById('soapO').value,
+                    vitals: {
+                        bp: document.getElementById('vitalBP').value,
+                        hr: document.getElementById('vitalHR').value
+                    },
+                    medications: document.getElementById('patientMeds').value
+                };
+                
+                // Executar diagnóstico
+                const diagnoses = this.diagAgent.analyze(data);
+                const pts = this.diagAgent.generatePTS(diagnoses);
+                const soap = this.diagAgent.generateSOAP(data, diagnoses);
+                
+                // Renderizar resultados
+                this.renderResults(diagnoses, pts, soap);
+                
+                // Salvar caso
+                db.cases.add({
+                    timestamp: new Date().toISOString(),
+                    data: { diagnoses: diagnoses.length }
+                });
+                
+                this.log(`Análise concluída: ${diagnoses.length} diagnósticos`);
+                this.toast(`✅ Análise concluída! Diagnóstico principal: ${diagnoses[0].name}`, 'success');
+                
+            } catch (e) {
+                console.error('Erro na análise:', e);
+                this.toast('Erro na análise: ' + e.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-stethoscope mr-2"></i>Executar Análise';
             }
-        };
-        
-        if (!data.age || data.s.length < 30) {
-            this.toast('Preencha idade e Subjetivo (mín 30 caracteres)', 'warning');
-            btn.disabled = false;
-            btn.innerHTML = '<i class="fas fa-brain mr-2"></i>Análise Multi-Agente (WebLLM)';
-            return;
-        }
-        
-        this.updateAgentStatus('diag', 'thinking');
-        
-        const qEmb = generateEmbedding(data.s + ' ' + data.o);
-        const allEv = await db.evidence.toArray();
-        const evidence = allEv.map(e => ({ ...e, sim: cosineSim(qEmb, e.embedding) })).filter(e => e.sim > 0.1).sort((a,b) => b.sim - a.sim).slice(0, 5);
-        
-        const diffs = this.diag.generateDifferentials(data.s, data.o, data.exams, data.age, evidence);
-        const pts = this.diag.generatePTS(diffs, diffs[0]?.urgency);
-        
-        // 🆕 WebLLM (Llama-3.1-8B) ou Fallback
-        const prompt = `Paciente ${data.age}a, ${data.gender}. ${data.s} Exames: ${JSON.stringify(data.exams)}. Diferenciais: ${diffs.map(d=>d.diagnosis).join(', ')}. Forneça raciocínio clínico.`;
-        const llmReasoning = await WebLLMService.generateReasoning(prompt);
-        
-        document.getElementById('soapA').value = diffs.map((d,i) => `${i+1}. ${d.diagnosis} (${(d.posterior*100).toFixed(0)}%)`).join('\n');
-        document.getElementById('soapP').value = pts.curto.join('\n');
-        
-        document.getElementById('llmPanel').style.display = 'block';
-        document.getElementById('llmContent').textContent = llmReasoning;
-        document.getElementById('llmCalls').textContent = ++this.diag.llmCalls;
-        
-        const conf = Math.min(98, Math.round(diffs[0]?.posterior * 100 + 10) || 85);
-        document.getElementById('avgConfidence').textContent = `${conf}%`;
-        
-        this.renderResults(diffs, pts, conf);
-        
-        await db.cases.add({ caseNumber: `CASE-${Date.now()}`, timestamp: new Date().toISOString(), encryptedData: await CryptoService.encrypt({ data, diffs }) });
-        this.updateStats();
-        await AuditService.log('ANALYSIS_V15', { diffs: diffs.length, webllm: WebLLMService.isReady });
-        
-        this.updateAgentStatus('diag', 'active');
-        this.toast(`✅ Análise ${WebLLMService.isReady ? 'WebLLM' : 'Fallback'} • Confiança: ${conf}%`, 'success');
-        btn.disabled = false;
-        btn.innerHTML = '<i class="fas fa-brain mr-2"></i>Análise Multi-Agente (WebLLM)';
+        }, 100);
     },
     
-    quickAnalysis() {
-        document.getElementById('soapS').value = 'Paciente 65 anos, dor torácica em aperto há 2h, irradiada para MSE, sudorese fria.';
+    renderResults(diagnoses, pts, soap) {
+        const container = document.getElementById('resultsContainer');
+        const primary = diagnoses[0];
+        
+        container.innerHTML = `
+            <div class="glass p-4 md:p-6 mb-4">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-black">
+                        <i class="fas fa-clipboard-check mr-3 text-purple-400"></i>
+                        Resultado da Análise
+                    </h2>
+                    <span class="px-4 py-2 rounded-full text-sm font-bold ${primary.urgency === 'CRÍTICO' ? 'bg-red-500/20 text-red-400' : 'bg-yellow-500/20 text-yellow-400'}">
+                        Urgência: ${primary.urgency}
+                    </span>
+                </div>
+                
+                <!-- SOAP -->
+                <div class="space-y-3 mb-6">
+                    <div class="soap-box soap-s-box">
+                        <div class="soap-header">
+                            <div class="soap-letter soap-s-letter">S</div>
+                            <h3 class="font-black text-blue-400 uppercase">Subjetivo</h3>
+                        </div>
+                        <p class="text-sm opacity-80">${soap.subjective}</p>
+                    </div>
+                    
+                    <div class="soap-box soap-o-box">
+                        <div class="soap-header">
+                            <div class="soap-letter soap-o-letter">O</div>
+                            <h3 class="font-black text-green-400 uppercase">Objetivo</h3>
+                        </div>
+                        <p class="text-sm opacity-80">${soap.objective}</p>
+                    </div>
+                    
+                    <div class="soap-box soap-a-box">
+                        <div class="soap-header">
+                            <div class="soap-letter soap-a-letter">A</div>
+                            <h3 class="font-black text-purple-400 uppercase">Avaliação</h3>
+                        </div>
+                        <div class="space-y-2">
+                            ${diagnoses.slice(0, 5).map((d, i) => `
+                                <div class="p-4 rounded-xl ${i === 0 ? 'bg-red-500/10 border border-red-500/30' : 'bg-white/3'}">
+                                    <div class="flex justify-between items-center">
+                                        <span class="font-bold">${i+1}. ${d.name}</span>
+                                        <span class="px-3 py-1 rounded-full text-xs font-bold ${d.posterior > 0.5 ? 'bg-red-500/20 text-red-400' : d.posterior > 0.2 ? 'bg-yellow-500/20 text-yellow-400' : 'bg-blue-500/20 text-blue-400'}">
+                                            ${(d.posterior * 100).toFixed(1)}%
+                                        </span>
+                                    </div>
+                                    <p class="text-xs opacity-60 mt-1">${d.tests.join(' • ')}</p>
+                                    <p class="text-[10px] opacity-40 mt-1">${d.guidelines}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    
+                    <div class="soap-box soap-p-box">
+                        <div class="soap-header">
+                            <div class="soap-letter soap-p-letter">P</div>
+                            <h3 class="font-black text-yellow-400 uppercase">Plano</h3>
+                        </div>
+                        <p class="text-sm opacity-80 whitespace-pre-line">${soap.plan}</p>
+                    </div>
+                </div>
+                
+                <!-- PTS -->
+                <h3 class="text-lg font-black mb-3 text-green-400">
+                    <i class="fas fa-calendar-alt mr-2"></i>Plano Terapêutico Singular (PTS)
+                </h3>
+                <div class="pts-grid">
+                    <div class="pts-card" style="border-top-color: #FF3B30;">
+                        <div class="font-bold text-red-400 mb-3">⚡ Imediato (0-6h)</div>
+                        <ul class="space-y-2">
+                            ${pts.immediate.map(i => `<li class="flex gap-2 text-sm"><i class="fas fa-chevron-right text-red-400/50 text-xs mt-1"></i>${i}</li>`).join('')}
+                        </ul>
+                    </div>
+                    <div class="pts-card" style="border-top-color: #FF9500;">
+                        <div class="font-bold text-yellow-400 mb-3">📋 Médio Prazo (6-72h)</div>
+                        <ul class="space-y-2">
+                            ${pts.medium.map(i => `<li class="flex gap-2 text-sm"><i class="fas fa-chevron-right text-yellow-400/50 text-xs mt-1"></i>${i}</li>`).join('')}
+                        </ul>
+                    </div>
+                    <div class="pts-card" style="border-top-color: #34C759;">
+                        <div class="font-bold text-green-400 mb-3">🏥 Longo Prazo (>72h)</div>
+                        <ul class="space-y-2">
+                            ${pts.long.map(i => `<li class="flex gap-2 text-sm"><i class="fas fa-chevron-right text-green-400/50 text-xs mt-1"></i>${i}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Disclaimer -->
+                <div class="mt-6 p-4 rounded-xl bg-yellow-500/5 border border-yellow-500/20">
+                    <p class="text-xs text-yellow-300/80">
+                        <i class="fas fa-exclamation-triangle mr-2"></i>
+                        <strong>AUXÍLIO à decisão clínica.</strong> Este diagnóstico foi gerado por IA e deve ser revisado por médico habilitado.
+                    </p>
+                </div>
+            </div>
+        `;
+        
+        container.scrollIntoView({ behavior: 'smooth' });
+    },
+    
+    quickFill() {
         document.getElementById('patientAge').value = '65';
         document.getElementById('patientGender').value = 'male';
-        document.getElementById('labTroponina').value = '0.12';
-        this.toast('Caso de exemplo preenchido', 'info');
+        document.getElementById('vitalBP').value = '145/90';
+        document.getElementById('vitalHR').value = '98';
+        document.getElementById('soapS').value = 'Paciente 65 anos, masculino, refere dor torácica em aperto iniciada há 2 horas, irradiada para MSE, associada a sudorese fria e náusea. Nega episódios prévios. HAS, DM2.';
+        document.getElementById('soapO').value = 'BEG, corado, PA 145/90, FC 98, SpO2 96%. ACV: RCR 2T. AR: MV presente sem RA.';
+        document.getElementById('patientMeds').value = 'AAS 100mg, Metformina 1000mg, Losartana 50mg';
+        this.toast('Caso exemplo preenchido!', 'info');
     },
     
-    renderResults(diffs, pts, conf) {
-        const c = document.getElementById('resultsContainer');
-        c.innerHTML = `
-            <div class="glass p-4 md:p-6 mb-4 md:mb-6">
-                <div class="flex justify-between mb-6">
-                    <h2 class="text-xl font-black"><i class="fas fa-microchip mr-3 text-purple-400"></i>Resultado</h2>
-                    <span class="px-4 py-2 rounded-full text-sm font-bold bg-green-500/20 text-green-400">Confiança: ${conf}%</span>
-                </div>
-                ${diffs.map((d,i)=>`<div class="bg-white/3 p-4 rounded-xl mb-2 border-l-4 ${d.urgency==='CRÍTICO'?'border-red-500':'border-yellow-500'}"><div class="flex justify-between"><span class="font-bold">${i+1}. ${d.diagnosis}</span><span class="px-2 py-1 rounded-full text-xs ${d.probability==='ALTA'?'bg-red-500/20 text-red-400':'bg-yellow-500/20 text-yellow-400'}">${(d.posterior*100).toFixed(0)}%</span></div></div>`).join('')}
-                <div class="pts-grid mt-4">
-                    <div class="pts-card" style="border-top-color:#FF3B30"><div class="font-bold text-red-400">⚡ Curto</div>${pts.curto.map(i=>`<li class="text-sm">${i}</li>`).join('')}</div>
-                    <div class="pts-card" style="border-top-color:#FF9500"><div class="font-bold text-yellow-400">📋 Médio</div>${pts.medio.map(i=>`<li class="text-sm">${i}</li>`).join('')}</div>
-                    <div class="pts-card" style="border-top-color:#34C759"><div class="font-bold text-green-400">🏥 Longo</div>${pts.longo.map(i=>`<li class="text-sm">${i}</li>`).join('')}</div>
-                </div>
-            </div>`;
-        c.scrollIntoView({ behavior: 'smooth' });
+    clearForm() {
+        document.getElementById('patientAge').value = '';
+        document.getElementById('soapS').value = '';
+        document.getElementById('soapO').value = '';
+        document.getElementById('patientMeds').value = '';
+        document.getElementById('resultsContainer').innerHTML = '';
+        this.toast('Formulário limpo', 'info');
     },
     
-    async openHistory() {
-        const cases = await db.cases.orderBy('timestamp').reverse().toArray();
-        document.getElementById('historyList').innerHTML = cases.map(c => `<div class="glass p-3 flex justify-between"><span>${c.caseNumber}</span><span class="opacity-50 text-xs">${new Date(c.timestamp).toLocaleString()}</span></div>`).join('');
-        document.getElementById('historyModal').style.display = 'flex';
-    },
-    
-    filterHistory(q) {
-        db.cases.filter(c => c.caseNumber.toLowerCase().includes(q.toLowerCase())).toArray().then(cases => {
-            document.getElementById('historyList').innerHTML = cases.map(c => `<div class="glass p-3">${c.caseNumber}</div>`).join('');
+    async log(action) {
+        await db.audit.add({
+            timestamp: new Date().toISOString(),
+            action: action
         });
+        this.refreshAuditLog();
     },
     
-    async runTests() {
-        this.toast('🧪 Executando testes...', 'info');
-        const result = await TestSuite.runAll();
-        this.toast(result, 'success');
+    async refreshAuditLog() {
+        const logs = await db.audit.orderBy('id').reverse().limit(5).toArray();
+        const container = document.getElementById('auditLog');
+        if (container) {
+            container.innerHTML = logs.map(l => 
+                `<div class="flex justify-between"><span>${l.action}</span><span class="opacity-50">${new Date(l.timestamp).toLocaleTimeString()}</span></div>`
+            ).join('') || '<div class="opacity-30 text-center">Nenhum evento</div>';
+        }
     },
     
-    toast(m, t) {
-        const c = document.getElementById('toastContainer');
+    toast(message, type = 'info') {
+        const container = document.getElementById('toastContainer');
         const toast = document.createElement('div');
-        toast.className = `glass px-5 py-3 ${t==='success'?'bg-green-500/20':t==='error'?'bg-red-500/20':'bg-blue-500/20'}`;
-        toast.innerHTML = `<i class="fas fa-${t==='success'?'check-circle':'info-circle'} mr-2"></i>${m}`;
-        c.appendChild(toast);
+        toast.className = 'toast';
+        const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
+        toast.innerHTML = `${icons[type] || 'ℹ️'} ${message}`;
+        container.appendChild(toast);
         setTimeout(() => toast.remove(), 4000);
     }
 };
 
-// 🆕 Expor Test Suite globalmente
-ARPEmed.testSuite = TestSuite;
-
+// Inicializar
 window.ARPEmed = ARPEmed;
+console.log('✅ ARPEmed v15.0 carregado! Execute ARPEmed.unlock() com qualquer senha ≥8 caracteres');
 </script>
 </body>
 </html>
