@@ -1,1413 +1,1786 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="theme-color" content="#007AFF">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>ARPEmed v18.0 — Pipeline Unificado + Banco Integrado</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#007AFF">
+<title>ARPEmed v19.0 — Pipeline Unificado</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="https://unpkg.com/dexie@3.2.4/dist/dexie.js"></script>
+<style>
+*{font-family:'Inter',-apple-system,sans-serif;margin:0;padding:0;box-sizing:border-box}
+:root{
+  --primary:#007AFF;--success:#34C759;--warning:#FF9500;
+  --danger:#FF3B30;--purple:#AF52DE;--bg:#000010;
+}
+body{background:radial-gradient(ellipse at 20% 40%,#0a0a1a,#000);color:#fff;font-size:14px;min-height:100vh}
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script src="https://unpkg.com/dexie@3.2.4/dist/dexie.js"></script>
-    <!-- PDF.js carregado com defer para não travar o app -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js" defer></script>
+/* ── GLASS ── */
+.glass{background:rgba(15,15,25,.93);backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);
+       border:1px solid rgba(255,255,255,.08);border-radius:20px}
 
-    <style>
-        *{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;margin:0;padding:0;box-sizing:border-box}
-        :root{--primary:#007AFF;--success:#34C759;--warning:#FF9500;--danger:#FF3B30;--purple:#AF52DE}
-        body{background:radial-gradient(ellipse at 20% 40%,#0a0a1a 0%,#000 100%);color:#fff;font-size:14px;min-height:100vh}
+/* ── BOTÕES ── */
+.btn{border:none;border-radius:100px;padding:11px 22px;font-weight:600;font-size:13px;
+     cursor:pointer;transition:all .2s;min-height:42px;display:inline-flex;align-items:center;gap:6px}
+.btn-primary{background:var(--primary);color:#fff;box-shadow:0 4px 16px rgba(0,122,255,.3)}
+.btn-primary:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,122,255,.4)}
+.btn-primary:disabled{opacity:.45;cursor:not-allowed}
+.btn-success{background:var(--success);color:#fff}
+.btn-warning{background:var(--warning);color:#fff}
+.btn-danger{background:var(--danger);color:#fff}
+.btn-secondary{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);color:#fff}
+.btn-secondary:hover{background:rgba(255,255,255,.13)}
+.btn-purple{background:var(--purple);color:#fff}
 
-        .glass{background:rgba(15,15,25,.92);backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);border:1px solid rgba(255,255,255,.08);border-radius:20px}
+/* ── INPUTS ── */
+input,textarea,select{
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
+  color:#fff;border-radius:12px;padding:11px 15px;font-size:14px;width:100%;
+  transition:border-color .2s
+}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--primary)}
+select option{background:#111;color:#fff}
+textarea{resize:vertical}
 
-        .btn-primary{background:var(--primary);color:#fff;border:none;border-radius:100px;padding:12px 24px;font-weight:600;font-size:14px;cursor:pointer;transition:all .25s;box-shadow:0 4px 16px rgba(0,122,255,.3);min-height:44px}
-        .btn-primary:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,122,255,.4)}
-        .btn-primary:disabled{opacity:.5;cursor:not-allowed}
-        .btn-success{background:var(--success);color:#fff;border:none;border-radius:100px;padding:12px 24px;font-weight:600;cursor:pointer;min-height:44px}
-        .btn-secondary{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#fff;border-radius:100px;padding:10px 18px;font-weight:500;cursor:pointer;min-height:44px}
-        .btn-secondary:hover{background:rgba(255,255,255,.12)}
+/* ── SOAP ── */
+.soap-box{background:rgba(255,255,255,.025);border-radius:16px;padding:18px;margin-bottom:16px;border-left:4px solid}
+.soap-s{border-color:#007AFF}.soap-o{border-color:#34C759}.soap-a{border-color:#AF52DE}.soap-p{border-color:#FF9500}
+.soap-ltr{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:20px}
+.soap-ls{background:rgba(0,122,255,.15);color:#007AFF}
+.soap-lo{background:rgba(52,199,89,.15);color:#34C759}
+.soap-la{background:rgba(175,82,222,.15);color:#AF52DE}
+.soap-lp{background:rgba(255,149,0,.15);color:#FF9500}
 
-        input,textarea,select{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:#fff;border-radius:12px;padding:12px 16px;font-size:14px;width:100%}
-        input:focus,textarea:focus,select:focus{outline:none;border-color:var(--primary)}
-        select option{background:#1a1a2e;color:#fff}
+/* ── TOASTS ── */
+.toast-wrap{position:fixed;top:18px;right:18px;z-index:99998;display:flex;flex-direction:column;gap:8px;max-width:320px}
+.toast{padding:11px 16px;border-radius:13px;background:rgba(10,10,20,.97);backdrop-filter:blur(20px);
+       border:1px solid rgba(255,255,255,.1);font-size:13px;font-weight:500;
+       animation:slideR .3s ease;word-break:break-word}
+@keyframes slideR{from{transform:translateX(110%);opacity:0}to{transform:translateX(0);opacity:1}}
 
-        .soap-box{background:rgba(255,255,255,.03);border-radius:16px;padding:20px;margin-bottom:20px;border-left:4px solid}
-        .soap-s-box{border-left-color:#007AFF}.soap-o-box{border-left-color:#34C759}.soap-a-box{border-left-color:#AF52DE}.soap-p-box{border-left-color:#FF9500}
-        .soap-header{display:flex;align-items:center;gap:12px;margin-bottom:16px}
-        .soap-letter{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:22px}
-        .soap-s-letter{background:rgba(0,122,255,.15);color:#007AFF}
-        .soap-o-letter{background:rgba(52,199,89,.15);color:#34C759}
-        .soap-a-letter{background:rgba(175,82,222,.15);color:#AF52DE}
-        .soap-p-letter{background:rgba(255,149,0,.15);color:#FF9500}
+/* ── SPINNER ── */
+.spin{border:2px solid rgba(255,255,255,.1);border-top:2px solid var(--primary);
+      border-radius:50%;width:17px;height:17px;animation:rot .8s linear infinite;display:inline-block;vertical-align:middle}
+@keyframes rot{to{transform:rotate(360deg)}}
 
-        .pts-grid{display:grid;grid-template-columns:1fr;gap:16px}
-        @media(min-width:768px){.pts-grid{grid-template-columns:1fr 1fr 1fr}}
-        .pts-card{background:rgba(255,255,255,.03);border-radius:16px;padding:20px;border-top:4px solid}
+/* ── HOT BADGE ── */
+.hot{background:linear-gradient(135deg,#FF3B30,#FF9500);color:#fff;padding:1px 7px;
+     border-radius:20px;font-size:8px;font-weight:700;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}
 
-        /* TOASTS — topo direito para não colidir com o painel */
-        .toast-container{position:fixed;top:20px;right:20px;z-index:99999;display:flex;flex-direction:column;gap:10px;max-width:340px}
-        .toast{padding:12px 18px;border-radius:14px;background:rgba(15,15,25,.97);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.1);font-weight:500;font-size:13px;animation:slideInRight .3s ease}
-        @keyframes slideInRight{from{transform:translateX(110%);opacity:0}to{transform:translateX(0);opacity:1}}
+/* ── UPLOAD AREA ── */
+.drop-area{border:2px dashed rgba(255,255,255,.2);border-radius:18px;padding:36px;
+           text-align:center;transition:all .3s;cursor:pointer}
+.drop-area:hover,.drop-area.dragover{border-color:var(--primary);background:rgba(0,122,255,.06)}
 
-        /* PAINEL DE DIAGNÓSTICO EM TEMPO REAL */
-        #devPanel{
-            position:fixed;bottom:20px;right:20px;width:360px;max-height:420px;
-            background:rgba(8,8,18,.97);border:1px solid rgba(255,255,255,.1);
-            border-radius:18px;z-index:89999;display:flex;flex-direction:column;
-            box-shadow:0 8px 32px rgba(0,0,0,.6);backdrop-filter:blur(20px);
-            transition:all .3s ease;
-        }
-        #devPanel.collapsed{max-height:46px;overflow:hidden}
-        #devPanelHeader{
-            display:flex;align-items:center;justify-content:space-between;
-            padding:10px 16px;border-bottom:1px solid rgba(255,255,255,.07);
-            cursor:pointer;user-select:none;flex-shrink:0;
-        }
-        #devPanelHeader:hover{background:rgba(255,255,255,.03);border-radius:18px 18px 0 0}
-        #devPanelTitle{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.5);display:flex;align-items:center;gap:8px}
-        #devPanelToggle{font-size:11px;color:rgba(255,255,255,.3);cursor:pointer}
-        #devPanelBody{overflow-y:auto;flex:1;padding:10px 14px;display:flex;flex-direction:column;gap:4px;font-family:'Courier New',monospace;font-size:11px}
-        #devPanelStatus{padding:6px 14px;border-top:1px solid rgba(255,255,255,.07);font-size:10px;color:rgba(255,255,255,.3);flex-shrink:0}
+/* ── MONITOR PANEL (canto inferior direito) ── */
+#monitor{
+  position:fixed;bottom:18px;right:18px;width:370px;
+  background:rgba(6,6,16,.97);border:1px solid rgba(255,255,255,.1);
+  border-radius:18px;z-index:89990;display:flex;flex-direction:column;
+  box-shadow:0 8px 36px rgba(0,0,0,.7);backdrop-filter:blur(24px);
+  transition:max-height .3s ease;max-height:420px;
+}
+#monitor.collapsed{max-height:44px;overflow:hidden}
+#monHead{display:flex;align-items:center;justify-content:space-between;
+         padding:10px 15px;border-bottom:1px solid rgba(255,255,255,.07);
+         cursor:pointer;user-select:none;flex-shrink:0;border-radius:18px 18px 0 0}
+#monHead:hover{background:rgba(255,255,255,.03)}
+#monBody{overflow-y:auto;flex:1;padding:8px 12px;display:flex;flex-direction:column;gap:3px;
+         font-family:'Courier New',monospace;font-size:10.5px}
+#monFoot{padding:5px 14px;border-top:1px solid rgba(255,255,255,.07);font-size:10px;
+         color:rgba(255,255,255,.3);flex-shrink:0}
+.mln{padding:3px 6px;border-radius:5px;line-height:1.55;word-break:break-all;color:rgba(255,255,255,.65)}
+.mln.ok{color:#34C759}
+.mln.warn{color:#FF9500}
+/* ERRO = marca-texto vermelho */
+.mln.err{
+  background:rgba(255,59,48,.88)!important;color:#fff!important;
+  border-left:4px solid #FF3B30;padding-left:8px;font-weight:700;
+  border-radius:4px;text-shadow:0 1px 2px rgba(0,0,0,.5);
+}
+.mln.dbg{color:#60a5fa}
+.mdot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:6px;flex-shrink:0}
+.mdot.blink{animation:dotBlink 1s infinite}
+@keyframes dotBlink{0%,100%{opacity:1}50%{opacity:.2}}
 
-        .dev-line{padding:3px 6px;border-radius:6px;line-height:1.5;word-break:break-all}
-        .dev-line.info{color:rgba(255,255,255,.6)}
-        .dev-line.success{color:#34C759}
-        .dev-line.warn{color:#FF9500}
-        /* ERRO: destaque estilo marca-texto vermelho */
-        .dev-line.error{
-            color:#fff;
-            background:rgba(255,59,48,.85);
-            border-left:4px solid #FF3B30;
-            padding-left:8px;
-            border-radius:4px;
-            font-weight:700;
-        }
-        .dev-dot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:6px;flex-shrink:0}
-        .dev-dot.pulse{animation:dotPulse 1s infinite}
-        @keyframes dotPulse{0%,100%{opacity:1}50%{opacity:.3}}
+/* ── MODAL (editor / upload / human-loop) ── */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.88);backdrop-filter:blur(18px);
+          z-index:10500;display:none;align-items:center;justify-content:center}
+.modal-bg.open{display:flex}
+.modal-box{background:rgba(12,12,22,.98);border:1px solid rgba(255,255,255,.1);border-radius:22px;
+           padding:28px;width:100%;max-height:88vh;overflow-y:auto}
 
-        .spinner{border:2px solid rgba(255,255,255,.1);border-top:2px solid var(--primary);border-radius:50%;width:18px;height:18px;animation:spin .8s linear infinite;display:inline-block;vertical-align:middle}
-        @keyframes spin{to{transform:rotate(360deg)}}
+/* ── TABELA DE LR ── */
+.lr-table{width:100%;border-collapse:collapse;font-size:12px}
+.lr-table th{padding:8px 10px;text-align:left;color:rgba(255,255,255,.4);font-weight:600;
+             border-bottom:1px solid rgba(255,255,255,.07);font-size:11px;text-transform:uppercase}
+.lr-table td{padding:7px 10px;border-bottom:1px solid rgba(255,255,255,.05);vertical-align:middle}
+.lr-table tr:hover td{background:rgba(255,255,255,.03)}
+.lr-table input[type=number]{width:70px;padding:4px 8px;border-radius:8px;font-size:12px;text-align:center}
+.lr-table input[type=text]{padding:4px 8px;border-radius:8px;font-size:12px}
 
-        .upload-area{border:2px dashed rgba(255,255,255,.2);border-radius:20px;padding:40px;text-align:center;transition:all .3s;cursor:pointer}
-        .upload-area:hover{border-color:var(--primary);background:rgba(0,122,255,.05)}
-        .hot-data-badge{background:linear-gradient(135deg,#FF3B30,#FF9500);color:#fff;padding:2px 8px;border-radius:20px;font-size:9px;font-weight:700;animation:pulse 2s infinite}
-        @keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
-        .contraindication-alert{background:rgba(255,59,48,.1);border:1px solid rgba(255,59,48,.3);border-radius:12px;padding:12px;margin:8px 0}
-    </style>
+/* ── SHORTCUT BADGE ── */
+.kbd{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:6px;
+     padding:2px 7px;font-size:10px;font-family:'Courier New',monospace;color:rgba(255,255,255,.7)}
+
+/* ── HUMAN-LOOP QUEUE ── */
+.hl-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+         border-radius:14px;padding:16px;margin-bottom:12px}
+
+/* ── PROGRESS BAR ── */
+.prog-wrap{background:rgba(255,255,255,.08);border-radius:99px;height:5px;overflow:hidden}
+.prog-bar{height:100%;background:linear-gradient(90deg,#34C759,#007AFF);border-radius:99px;transition:width .3s}
+
+/* ── CONTRAIN ALERT ── */
+.ci-alert{background:rgba(255,59,48,.1);border:1px solid rgba(255,59,48,.3);border-radius:11px;padding:11px;margin:7px 0}
+
+/* ── PTS GRID ── */
+.pts-grid{display:grid;grid-template-columns:1fr;gap:14px}
+@media(min-width:768px){.pts-grid{grid-template-columns:1fr 1fr 1fr}}
+.pts-card{background:rgba(255,255,255,.03);border-radius:15px;padding:18px;border-top:4px solid}
+
+/* scroll */
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:4px}
+</style>
 </head>
-
 <body class="p-3 md:p-5">
 
-<!-- ═══════════════════════════════════════════════
-     TELA DE DESBLOQUEIO
-════════════════════════════════════════════════ -->
-<div id="lockScreen" style="position:fixed;inset:0;background:rgba(0,0,0,.96);backdrop-filter:blur(30px);z-index:10000;display:flex;align-items:center;justify-content:center">
-    <div class="text-center px-4">
-        <div class="w-24 h-24 mx-auto mb-6 rounded-full flex items-center justify-center" style="background:rgba(255,255,255,.05)">
-            <i class="fas fa-brain text-5xl text-blue-500"></i>
-        </div>
-        <h2 class="text-3xl font-black mb-2">ARPEmed v18.0</h2>
-        <p class="mb-2" style="color:rgba(255,255,255,.4)">Pipeline Unificado • Banco Integrado</p>
-        <p class="text-xs mb-8" style="color:rgba(255,255,255,.2)">+65 Diretrizes • Diagnóstico Bayesiano Corrigido</p>
-        <input type="password" id="masterPassword" placeholder="Digite qualquer senha (mín. 8 caracteres)"
-               style="width:320px;text-align:center;font-size:16px;padding:16px;border-radius:14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:#fff;display:block;margin:0 auto 16px"
-               autocomplete="off">
-        <button onclick="ARPEmed.unlock()" class="btn-primary" style="width:320px;padding:16px;font-size:15px">
-            <i class="fas fa-unlock-alt mr-2"></i>Desbloquear Sistema
-        </button>
-        <p id="lockMsg" style="margin-top:12px;font-size:12px;color:#FF3B30;min-height:18px"></p>
+<!-- ══════════════════════════════════════════════
+     LOCK SCREEN
+══════════════════════════════════════════════ -->
+<div id="lockScreen" style="position:fixed;inset:0;background:rgba(0,0,0,.97);z-index:20000;
+     display:flex;align-items:center;justify-content:center;backdrop-filter:blur(30px)">
+  <div style="text-align:center;padding:0 20px;max-width:400px;width:100%">
+    <div style="width:90px;height:90px;border-radius:50%;background:rgba(0,122,255,.15);
+         display:flex;align-items:center;justify-content:center;margin:0 auto 24px">
+      <i class="fas fa-brain" style="font-size:42px;color:#007AFF"></i>
     </div>
+    <h1 style="font-size:28px;font-weight:900;margin-bottom:6px">ARPEmed <span style="color:rgba(255,255,255,.25);font-size:16px">v19.0</span></h1>
+    <p style="color:rgba(255,255,255,.35);margin-bottom:4px;font-size:13px">Pipeline Unificado • Modo Offline Total</p>
+    <p style="color:rgba(255,255,255,.18);font-size:11px;margin-bottom:28px">
+      Bayesiano • NLP Client-Side • LGPD Audit • Human-in-the-Loop
+    </p>
+    <input type="password" id="masterPwd" placeholder="Senha de acesso (mín. 8 caracteres)"
+      style="width:100%;text-align:center;font-size:15px;padding:15px;border-radius:14px;margin-bottom:12px">
+    <button onclick="App.unlock()" class="btn btn-primary" style="width:100%;padding:15px;font-size:15px;justify-content:center">
+      <i class="fas fa-unlock-alt"></i>&nbsp; Desbloquear Sistema
+    </button>
+    <p id="lockErr" style="color:#FF3B30;font-size:12px;margin-top:10px;min-height:18px"></p>
+    <div style="margin-top:24px;display:flex;justify-content:center;gap:12px;flex-wrap:wrap">
+      <span style="font-size:11px;color:rgba(255,255,255,.25)"><span class="kbd">Ctrl+B</span> Fórmula Bayes</span>
+      <span style="font-size:11px;color:rgba(255,255,255,.25)"><span class="kbd">Ctrl+L</span> Editar LRs</span>
+      <span style="font-size:11px;color:rgba(255,255,255,.25)"><span class="kbd">Ctrl+D</span> Debug</span>
+    </div>
+  </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════
-     APLICATIVO PRINCIPAL
-════════════════════════════════════════════════ -->
-<div id="mainApp" style="display:none" class="max-w-[1800px] mx-auto">
+<!-- ══════════════════════════════════════════════
+     APP PRINCIPAL
+══════════════════════════════════════════════ -->
+<div id="mainApp" style="display:none;max-width:1800px;margin:0 auto">
 
-    <!-- Header -->
-    <header class="glass p-4 md:p-5 mb-4">
-        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-            <div class="flex items-center gap-3">
-                <div class="w-12 h-12 rounded-2xl flex items-center justify-center" style="background:linear-gradient(135deg,#7c3aed,#2563eb)">
-                    <i class="fas fa-brain text-2xl"></i>
-                </div>
-                <div>
-                    <h1 class="text-2xl md:text-3xl font-black">
-                        <span style="background:linear-gradient(90deg,#a78bfa,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent">ARPEmed</span>
-                        <span style="color:rgba(255,255,255,.2);margin-left:8px;font-size:18px">v18.0</span>
-                    </h1>
-                    <p class="text-[10px] uppercase tracking-wider mt-1" style="color:rgba(255,255,255,.3)">+65 Diretrizes • Diagnóstico Corrigido • Pipeline Completo</p>
-                </div>
-            </div>
-            <div class="flex gap-2 flex-wrap">
-                <button onclick="ARPEmed.loadGuidelines(true)" class="btn-secondary"><i class="fas fa-database mr-2"></i>Recarregar Base</button>
-                <button onclick="ARPEmed.openUploadModal()" class="btn-secondary"><i class="fas fa-upload mr-2"></i>Importar</button>
-                <button onclick="ARPEmed.exportDatabase()" class="btn-secondary"><i class="fas fa-download mr-2"></i>Exportar</button>
-                <button onclick="ARPEmed.clearForm()" class="btn-secondary"><i class="fas fa-trash-alt mr-2"></i>Limpar</button>
-            </div>
+  <!-- HEADER -->
+  <header class="glass p-4 md:p-5 mb-4">
+    <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="width:48px;height:48px;border-radius:16px;background:linear-gradient(135deg,#7c3aed,#2563eb);
+             display:flex;align-items:center;justify-content:center">
+          <i class="fas fa-brain" style="font-size:22px"></i>
         </div>
-    </header>
+        <div>
+          <h1 style="font-size:24px;font-weight:900">
+            <span style="background:linear-gradient(90deg,#a78bfa,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent">ARPEmed</span>
+            <span style="color:rgba(255,255,255,.2);font-size:14px;margin-left:6px">v19.0</span>
+          </h1>
+          <p style="font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.3);margin-top:2px">
+            Pipeline Unificado • Offline Total • LGPD
+          </p>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button onclick="App.loadGuidelines(true)" class="btn btn-secondary"><i class="fas fa-database"></i> Recarregar</button>
+        <button onclick="App.openUpload()" class="btn btn-secondary"><i class="fas fa-upload"></i> Importar</button>
+        <button onclick="App.exportDB()" class="btn btn-secondary"><i class="fas fa-download"></i> Exportar</button>
+        <button onclick="App.openHumanLoop()" class="btn btn-secondary"><i class="fas fa-user-check"></i> Revisão</button>
+        <button onclick="App.clearForm()" class="btn btn-secondary"><i class="fas fa-trash-alt"></i> Limpar</button>
+      </div>
+    </div>
+    <!-- Atalhos visíveis -->
+    <div style="margin-top:12px;display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+      <span style="font-size:11px;color:rgba(255,255,255,.3)">Atalhos:</span>
+      <button onclick="App.openBayesEditor()" class="btn btn-secondary" style="font-size:11px;padding:5px 12px;min-height:0">
+        <span class="kbd">Ctrl+B</span>&nbsp; Fórmula Bayesiana
+      </button>
+      <button onclick="App.openLREditor()" class="btn btn-secondary" style="font-size:11px;padding:5px 12px;min-height:0">
+        <span class="kbd">Ctrl+L</span>&nbsp; Likelihood Ratios
+      </button>
+      <button onclick="App.openDebug()" class="btn btn-secondary" style="font-size:11px;padding:5px 12px;min-height:0">
+        <span class="kbd">Ctrl+D</span>&nbsp; Debug / Logs
+      </button>
+      <button onclick="App.openAuditLog()" class="btn btn-secondary" style="font-size:11px;padding:5px 12px;min-height:0">
+        <span class="kbd">Ctrl+A</span>&nbsp; Audit Log
+      </button>
+    </div>
+  </header>
 
-    <!-- Guardrail -->
-    <div class="mb-4 p-4 rounded-xl" style="background:rgba(234,179,8,.05);border:1px solid rgba(234,179,8,.2)">
-        <div class="flex gap-3 items-start">
-            <i class="fas fa-shield-alt text-yellow-400 text-xl mt-1"></i>
-            <div>
-                <div class="font-black text-yellow-400 text-sm mb-1">GUARDRAIL CLÍNICO — AUXÍLIO À DECISÃO</div>
-                <p class="text-xs opacity-80">Este sistema é um <strong>apoio clínico</strong>. Diagnóstico e conduta são responsabilidade exclusiva do profissional de saúde.</p>
-            </div>
+  <!-- GUARDRAIL -->
+  <div style="margin-bottom:14px;padding:14px 18px;border-radius:14px;
+              background:rgba(234,179,8,.05);border:1px solid rgba(234,179,8,.2)">
+    <div style="display:flex;gap:10px;align-items:flex-start">
+      <i class="fas fa-shield-alt" style="color:#EAB308;font-size:18px;margin-top:2px"></i>
+      <div>
+        <div style="font-weight:800;color:#EAB308;font-size:13px;margin-bottom:4px">
+          ⚕️ GUARDRAIL CLÍNICO ATIVO — TEMPERATURA ZERO — AUXÍLIO À DECISÃO
         </div>
+        <p style="font-size:12px;opacity:.75;line-height:1.5">
+          Sistema determinístico: cada resposta cita a fonte mais atual disponível.
+          <strong>Diagnóstico e conduta são responsabilidade exclusiva do profissional de saúde.</strong>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="glass p-4 mb-4">
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px" id="statsGrid">
+      <div style="text-align:center"><div class="text-2xl font-black text-green-400" id="sTot">0</div><div style="font-size:10px;opacity:.4">Documentos</div></div>
+      <div style="text-align:center"><div class="text-2xl font-black text-orange-400" id="sHot">0</div><div style="font-size:10px;opacity:.4"><span class="hot">HOT 2025+</span></div></div>
+      <div style="text-align:center"><div class="text-2xl font-black text-blue-400" id="sDir">0</div><div style="font-size:10px;opacity:.4">Diretrizes</div></div>
+      <div style="text-align:center"><div class="text-2xl font-black text-purple-400" id="sCas">0</div><div style="font-size:10px;opacity:.4">Casos Analisados</div></div>
+      <div style="text-align:center"><div class="text-2xl font-black text-yellow-400" id="sHL">0</div><div style="font-size:10px;opacity:.4">Fila Revisão</div></div>
+      <div style="text-align:center"><div class="text-2xl font-black text-cyan-400" id="sYear">—</div><div style="font-size:10px;opacity:.4">Ano Sistema</div></div>
+    </div>
+  </div>
+
+  <!-- SOAP INPUT -->
+  <div class="glass p-4 md:p-6 mb-4">
+    <h2 style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;
+               color:rgba(255,255,255,.3);margin-bottom:16px">
+      <i class="fas fa-notes-medical" style="margin-right:8px"></i>Entrada Clínica — SOAP
+    </h2>
+
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px" class="md:grid-cols-4">
+      <input type="number" id="iAge" placeholder="Idade (anos)" value="65" min="0" max="130">
+      <select id="iGender">
+        <option value="M">Masculino</option>
+        <option value="F">Feminino</option>
+      </select>
+      <input type="text" id="iBP" placeholder="PA ex: 145/90 mmHg" value="145/90">
+      <input type="number" id="iHR" placeholder="FC (bpm)" value="98" min="0" max="300">
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px">
+      <input type="number" id="iTemp" placeholder="Temp (°C) ex: 38.5" step="0.1" min="34" max="42">
+      <input type="number" id="iSPO2" placeholder="SpO2 (%)" value="96" min="50" max="100">
     </div>
 
-    <!-- Stats -->
-    <div class="glass p-4 mb-4">
-        <div class="grid grid-cols-2 md:grid-cols-5 gap-3 text-center">
-            <div><div class="text-2xl font-black text-green-400" id="dbTotal">0</div><div class="text-[10px] opacity-40">Documentos</div></div>
-            <div><div class="text-2xl font-black text-orange-400" id="dbHotData">0</div><div class="text-[10px] opacity-40"><span class="hot-data-badge">HOT</span></div></div>
-            <div><div class="text-2xl font-black text-blue-400" id="dbDirectrizes">0</div><div class="text-[10px] opacity-40">Diretrizes</div></div>
-            <div><div class="text-2xl font-black text-purple-400" id="dbCases">0</div><div class="text-[10px] opacity-40">Casos</div></div>
-            <div><div class="text-2xl font-black text-blue-400" id="serverTime">—</div><div class="text-[10px] opacity-40">Ano</div></div>
-        </div>
+    <div class="soap-box soap-s">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+        <div class="soap-ltr soap-ls">S</div>
+        <h3 style="font-weight:800;color:#60a5fa;text-transform:uppercase;font-size:13px">Subjetivo — Queixa Principal</h3>
+      </div>
+      <textarea id="iS" rows="4" placeholder="Queixa principal, história da doença atual, antecedentes, fatores de risco...">Paciente 65 anos, masculino, dor torácica em aperto há 2h, irradiada para MSE, sudorese fria, náusea. HAS, DM2.</textarea>
     </div>
 
-    <!-- SOAP Input -->
-    <div class="glass p-4 md:p-6 mb-4">
-        <h2 class="text-sm font-black uppercase tracking-wider mb-4" style="color:rgba(255,255,255,.3)">
-            <i class="fas fa-notes-medical mr-2"></i>Entrada Clínica (SOAP)
-        </h2>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
-            <input type="number" id="patientAge" placeholder="Idade (anos)" value="65" min="0" max="130">
-            <select id="patientGender">
-                <option value="male">Masculino</option>
-                <option value="female">Feminino</option>
-            </select>
-            <input type="text" id="vitalBP" placeholder="PA ex: 145/90" value="145/90">
-            <input type="number" id="vitalHR" placeholder="FC (bpm)" value="98" min="0" max="300">
-        </div>
-
-        <div class="soap-box soap-s-box">
-            <div class="soap-header">
-                <div class="soap-letter soap-s-letter">S</div>
-                <h3 class="font-black text-blue-400 uppercase">Subjetivo — Queixa Principal</h3>
-            </div>
-            <textarea id="soapS" rows="4" placeholder="Descreva a queixa principal, história da doença atual, antecedentes...">Paciente 65 anos, masculino, dor torácica em aperto há 2h, irradiada para MSE, sudorese fria, náusea. HAS, DM2.</textarea>
-        </div>
-
-        <div class="soap-box soap-o-box">
-            <div class="soap-header">
-                <div class="soap-letter soap-o-letter">O</div>
-                <h3 class="font-black text-green-400 uppercase">Objetivo — Exame Físico e Dados</h3>
-            </div>
-            <textarea id="soapO" rows="3" placeholder="Sinais vitais, exame físico, resultados laboratoriais...">BEG, PA 145/90, FC 98, SpO2 96%. ACV: RCR 2T, sem sopros. AR: MV presente bilateralmente.</textarea>
-        </div>
-
-        <textarea id="patientMeds" rows="2" class="w-full p-4 mb-4 rounded-xl resize-none" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1)" placeholder="Medicações em uso (ex: AAS 100mg, Metformina 1000mg)...">AAS 100mg, Metformina 1000mg, Losartana 50mg</textarea>
-
-        <div class="flex gap-3">
-            <button onclick="ARPEmed.analyze()" id="analyzeBtn" class="btn-primary flex-1 py-4" disabled title="Aguardando carregar a base de dados...">
-                <i class="fas fa-stethoscope mr-2"></i>Executar Análise Diagnóstica
-            </button>
-            <button onclick="ARPEmed.quickFill()" class="btn-success px-6 py-4">
-                <i class="fas fa-bolt mr-2"></i>Exemplo
-            </button>
-        </div>
+    <div class="soap-box soap-o">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+        <div class="soap-ltr soap-lo">O</div>
+        <h3 style="font-weight:800;color:#34C759;text-transform:uppercase;font-size:13px">Objetivo — Exame Físico e Dados</h3>
+      </div>
+      <textarea id="iO" rows="3" placeholder="Exame físico, sinais vitais, auscultas, dados laboratoriais disponíveis...">BEG, PA 145/90 mmHg, FC 98 bpm, SpO2 96%. ACV: RCR 2T, sem sopros. AR: MV presente bilateralmente.</textarea>
     </div>
 
-    <!-- Results -->
-    <div id="resultsContainer"></div>
+    <textarea id="iMeds" rows="2" placeholder="Medicações em uso (ex: AAS 100mg, Metformina 1000mg, Losartana 50mg)..."
+      style="margin-bottom:14px">AAS 100mg, Metformina 1000mg, Losartana 50mg</textarea>
 
-    <!-- Audit Log -->
-    <div class="glass p-4 mt-4 mb-24">
-        <h3 class="text-xs font-black uppercase mb-3" style="color:rgba(255,255,255,.3)"><i class="fas fa-history mr-2"></i>Log de Auditoria</h3>
-        <div id="auditLog" class="space-y-1 overflow-y-auto font-mono text-xs opacity-60" style="max-height:120px"></div>
+    <div style="display:flex;gap:10px">
+      <button onclick="App.analyze()" id="btnAnalyze" class="btn btn-primary" style="flex:1;padding:14px;font-size:14px;justify-content:center" disabled>
+        <i class="fas fa-stethoscope"></i>&nbsp; Executar Análise Diagnóstica
+      </button>
+      <button onclick="App.quickFill()" class="btn btn-success" style="padding:14px 20px">
+        <i class="fas fa-bolt"></i>&nbsp; Exemplo
+      </button>
     </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="results"></div>
+
+  <!-- AUDIT LOG (resumo inline) -->
+  <div class="glass p-4 mt-4" style="margin-bottom:120px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <h3 style="font-size:11px;font-weight:800;text-transform:uppercase;color:rgba(255,255,255,.3)">
+        <i class="fas fa-history" style="margin-right:6px"></i>Audit Log LGPD (anonimizado)
+      </h3>
+      <button onclick="App.clearAudit()" style="font-size:10px;color:rgba(255,255,255,.3);background:none;border:none;cursor:pointer">limpar</button>
+    </div>
+    <div id="auditEl" style="max-height:100px;overflow-y:auto;font-family:'Courier New',monospace;font-size:11px;opacity:.55"></div>
+  </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════
-     MODAL DE UPLOAD
-════════════════════════════════════════════════ -->
-<div id="uploadModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);backdrop-filter:blur(20px);z-index:10001;align-items:center;justify-content:center" onclick="if(event.target===this)ARPEmed.closeUploadModal()">
-    <div class="glass p-6 w-full mx-4 overflow-y-auto" style="max-width:700px;max-height:90vh">
-        <h3 class="text-xl font-black mb-2">Importar Base de Conhecimento</h3>
-        <p class="text-sm opacity-60 mb-4">Suporte a JSON. (PDF/OCR requer servidor HTTP)</p>
-        <div class="upload-area" id="dropZone" onclick="document.getElementById('fileInput').click()">
-            <i class="fas fa-cloud-upload-alt mb-4" style="font-size:48px;opacity:.4"></i>
-            <p class="text-lg font-semibold mb-2">Arraste ou clique para selecionar</p>
-            <p class="text-xs opacity-50">Formato esperado: JSON com array "evidence"</p>
-            <input type="file" id="fileInput" accept=".json" multiple style="display:none">
-        </div>
-        <div id="uploadPreview" style="display:none" class="mt-4 p-4 rounded-xl" style="background:rgba(255,255,255,.05)"></div>
-        <div id="uploadProgress" style="display:none" class="mt-4">
-            <div class="h-2 rounded-full" style="background:rgba(255,255,255,.1)">
-                <div id="progressBar" class="h-full rounded-full" style="width:0%;background:linear-gradient(90deg,#34C759,#007AFF);transition:width .3s"></div>
-            </div>
-        </div>
-        <div class="flex gap-2 mt-6">
-            <button onclick="ARPEmed.processUpload()" class="btn-primary flex-1" id="uploadBtn">
-                <i class="fas fa-upload mr-2"></i>Processar Arquivos
-            </button>
-            <button onclick="ARPEmed.closeUploadModal()" class="btn-secondary">Cancelar</button>
-        </div>
+<!-- ══════════════════════════════════════════════
+     MONITOR (canto inferior direito)
+══════════════════════════════════════════════ -->
+<div id="monitor">
+  <div id="monHead" onclick="Mon.toggle()">
+    <div style="display:flex;align-items:center;gap:8px">
+      <span class="mdot blink" id="monDot" style="background:#34C759"></span>
+      <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.5)">Monitor do Sistema</span>
     </div>
-</div>
-
-<!-- ═══════════════════════════════════════════════
-     PAINEL DE DIAGNÓSTICO EM TEMPO REAL (canto inferior direito)
-════════════════════════════════════════════════ -->
-<div id="devPanel">
-    <div id="devPanelHeader" onclick="DevPanel.toggle()">
-        <div id="devPanelTitle">
-            <span id="devDot" class="dev-dot" style="background:#34C759"></span>
-            Monitor do Sistema
-        </div>
-        <div style="display:flex;align-items:center;gap:10px">
-            <span id="devPanelCount" style="font-size:10px;color:rgba(255,255,255,.3)">0 eventos</span>
-            <span id="devPanelToggle"><i class="fas fa-chevron-down" style="font-size:10px;color:rgba(255,255,255,.3)"></i></span>
-        </div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <span id="monCnt" style="font-size:10px;color:rgba(255,255,255,.3)">0 eventos</span>
+      <i id="monChev" class="fas fa-chevron-down" style="font-size:10px;color:rgba(255,255,255,.3)"></i>
     </div>
-    <div id="devPanelBody"></div>
-    <div id="devPanelStatus">
-        <span id="devPanelStatusText">Aguardando desbloqueio...</span>
-    </div>
+  </div>
+  <div id="monBody"></div>
+  <div id="monFoot"><span id="monStat">Aguardando desbloqueio...</span></div>
 </div>
 
 <!-- TOASTS -->
-<div id="toastContainer" class="toast-container"></div>
+<div id="toasts" class="toast-wrap"></div>
 
-<!-- ═══════════════════════════════════════════════
-     SCRIPTS
-════════════════════════════════════════════════ -->
+<!-- ══════════════════════════════════════════════
+     MODAL: BAYESIAN FORMULA EDITOR  (Ctrl+B)
+══════════════════════════════════════════════ -->
+<div id="mBayes" class="modal-bg" onclick="if(event.target===this)closeModal('mBayes')">
+  <div class="modal-box" style="max-width:700px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+      <h3 style="font-size:18px;font-weight:900"><i class="fas fa-calculator" style="color:#AF52DE;margin-right:8px"></i>Editor — Fórmula Bayesiana</h3>
+      <button onclick="closeModal('mBayes')" style="background:none;border:none;color:rgba(255,255,255,.4);cursor:pointer;font-size:18px">✕</button>
+    </div>
+    <div style="background:rgba(255,255,255,.04);border-radius:12px;padding:16px;margin-bottom:16px;font-family:'Courier New',monospace;font-size:13px;line-height:2">
+      <div style="color:#60a5fa;margin-bottom:8px">// Fórmula de Bayes atual:</div>
+      <div style="color:#a78bfa">P(H|E) = P(H) × LR / [ P(H) × LR + (1 − P(H)) ]</div>
+      <div style="color:rgba(255,255,255,.3);font-size:11px;margin-top:8px">
+        onde: H = hipótese diagnóstica | E = evidência (sinais/sintomas) | LR = Likelihood Ratio
+      </div>
+    </div>
+    <div style="margin-bottom:14px">
+      <label style="font-size:12px;color:rgba(255,255,255,.5);font-weight:600;display:block;margin-bottom:6px">
+        Fator de Suavização (clamp máximo de probabilidade posterior)
+      </label>
+      <input type="number" id="bMaxPost" value="0.99" min="0.5" max="0.99" step="0.01" style="width:120px">
+      <p style="font-size:11px;color:rgba(255,255,255,.3);margin-top:4px">Padrão: 0.99 (impede posteriors de 100%)</p>
+    </div>
+    <div style="margin-bottom:14px">
+      <label style="font-size:12px;color:rgba(255,255,255,.5);font-weight:600;display:block;margin-bottom:6px">
+        Ajuste de Idade — Multiplicadores de Prior
+      </label>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+        <div>
+          <label style="font-size:11px;opacity:.5">SCA (≥65)</label>
+          <input type="number" id="bAgeSCA" value="1.30" step="0.05" min="1" max="3">
+        </div>
+        <div>
+          <label style="font-size:11px;opacity:.5">IC (≥65)</label>
+          <input type="number" id="bAgeIC" value="1.40" step="0.05" min="1" max="3">
+        </div>
+        <div>
+          <label style="font-size:11px;opacity:.5">AVC (≥65)</label>
+          <input type="number" id="bAgeAVC" value="1.30" step="0.05" min="1" max="3">
+        </div>
+      </div>
+    </div>
+    <div style="margin-bottom:14px">
+      <label style="font-size:12px;color:rgba(255,255,255,.5);font-weight:600;display:block;margin-bottom:6px">
+        Priors Base (probabilidade a priori em emergência geral — soma não precisa ser 1)
+      </label>
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px">
+        <div><label style="font-size:11px;opacity:.5">SCA</label><input type="number" id="pSCA" value="0.15" step="0.01" min="0.01" max="0.99"></div>
+        <div><label style="font-size:11px;opacity:.5">TEP</label><input type="number" id="pTEP" value="0.10" step="0.01" min="0.01" max="0.99"></div>
+        <div><label style="font-size:11px;opacity:.5">Sepse</label><input type="number" id="pSepse" value="0.12" step="0.01" min="0.01" max="0.99"></div>
+        <div><label style="font-size:11px;opacity:.5">IC</label><input type="number" id="pIC" value="0.10" step="0.01" min="0.01" max="0.99"></div>
+        <div><label style="font-size:11px;opacity:.5">AVC</label><input type="number" id="pAVC" value="0.08" step="0.01" min="0.01" max="0.99"></div>
+        <div><label style="font-size:11px;opacity:.5">Pneumonia</label><input type="number" id="pPneumo" value="0.10" step="0.01" min="0.01" max="0.99"></div>
+        <div><label style="font-size:11px;opacity:.5">DPOC</label><input type="number" id="pDPOC" value="0.08" step="0.01" min="0.01" max="0.99"></div>
+        <div><label style="font-size:11px;opacity:.5">IAM (variante)</label><input type="number" id="pIAM" value="0.10" step="0.01" min="0.01" max="0.99"></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button onclick="App.saveBayes()" class="btn btn-primary"><i class="fas fa-save"></i> Salvar Configuração</button>
+      <button onclick="App.resetBayes()" class="btn btn-secondary">Restaurar Padrão</button>
+      <button onclick="closeModal('mBayes')" class="btn btn-secondary">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     MODAL: LR EDITOR  (Ctrl+L)
+══════════════════════════════════════════════ -->
+<div id="mLR" class="modal-bg" onclick="if(event.target===this)closeModal('mLR')">
+  <div class="modal-box" style="max-width:900px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+      <h3 style="font-size:18px;font-weight:900"><i class="fas fa-sliders-h" style="color:#FF9500;margin-right:8px"></i>Editor — Likelihood Ratios (LRs)</h3>
+      <button onclick="closeModal('mLR')" style="background:none;border:none;color:rgba(255,255,255,.4);cursor:pointer;font-size:18px">✕</button>
+    </div>
+    <p style="font-size:12px;color:rgba(255,255,255,.4);margin-bottom:16px;line-height:1.6">
+      Likelihood Ratio (LR+) indica o quanto um achado aumenta a probabilidade do diagnóstico.<br>
+      LR &gt; 10 = forte; LR 5–10 = moderado; LR 2–5 = fraco; LR ≈ 1 = irrelevante.
+    </p>
+    <div id="lrTableWrap" style="overflow-x:auto"></div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px">
+      <button onclick="App.saveLRs()" class="btn btn-primary"><i class="fas fa-save"></i> Salvar LRs</button>
+      <button onclick="App.resetLRs()" class="btn btn-secondary">Restaurar Padrão</button>
+      <button onclick="closeModal('mLR')" class="btn btn-secondary">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     MODAL: DEBUG  (Ctrl+D)
+══════════════════════════════════════════════ -->
+<div id="mDebug" class="modal-bg" onclick="if(event.target===this)closeModal('mDebug')">
+  <div class="modal-box" style="max-width:800px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <h3 style="font-size:18px;font-weight:900"><i class="fas fa-bug" style="color:#34C759;margin-right:8px"></i>Debug — Estado Interno</h3>
+      <button onclick="closeModal('mDebug')" style="background:none;border:none;color:rgba(255,255,255,.4);cursor:pointer;font-size:18px">✕</button>
+    </div>
+    <div id="debugContent" style="font-family:'Courier New',monospace;font-size:12px;
+         background:rgba(0,0,0,.5);border-radius:12px;padding:16px;max-height:500px;
+         overflow-y:auto;line-height:1.8;white-space:pre-wrap;color:#34C759"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     MODAL: AUDIT LOG COMPLETO  (Ctrl+A)
+══════════════════════════════════════════════ -->
+<div id="mAudit" class="modal-bg" onclick="if(event.target===this)closeModal('mAudit')">
+  <div class="modal-box" style="max-width:800px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <h3 style="font-size:18px;font-weight:900"><i class="fas fa-shield-alt" style="color:#60a5fa;margin-right:8px"></i>Audit Log — LGPD</h3>
+      <button onclick="closeModal('mAudit')" style="background:none;border:none;color:rgba(255,255,255,.4);cursor:pointer;font-size:18px">✕</button>
+    </div>
+    <p style="font-size:12px;color:rgba(255,255,255,.4);margin-bottom:12px">Registro anonimizado de todas as consultas. Nenhum dado de paciente é armazenado.</p>
+    <div id="auditFull" style="font-family:'Courier New',monospace;font-size:11px;
+         background:rgba(0,0,0,.4);border-radius:12px;padding:14px;max-height:450px;
+         overflow-y:auto;line-height:1.9;color:rgba(255,255,255,.6)"></div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:12px">
+      <button onclick="App.exportAudit()" class="btn btn-secondary"><i class="fas fa-download"></i> Exportar CSV</button>
+      <button onclick="closeModal('mAudit')" class="btn btn-secondary">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     MODAL: UPLOAD
+══════════════════════════════════════════════ -->
+<div id="mUpload" class="modal-bg" onclick="if(event.target===this)closeModal('mUpload')">
+  <div class="modal-box" style="max-width:680px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <h3 style="font-size:18px;font-weight:900"><i class="fas fa-upload" style="color:#007AFF;margin-right:8px"></i>Motor de Ingestão — Importar Base</h3>
+      <button onclick="closeModal('mUpload')" style="background:none;border:none;color:rgba(255,255,255,.4);cursor:pointer;font-size:18px">✕</button>
+    </div>
+    <p style="font-size:12px;color:rgba(255,255,255,.4);margin-bottom:14px;line-height:1.6">
+      Suporte a <strong>JSON</strong> (estruturado). Arquivos são processados localmente (modo offline).
+      Metadados extraídos serão enviados para a fila de revisão humana.
+    </p>
+    <div class="drop-area" id="dropArea" onclick="document.getElementById('fileIn').click()">
+      <i class="fas fa-cloud-upload-alt" style="font-size:44px;opacity:.4;margin-bottom:12px;display:block"></i>
+      <p style="font-weight:600;font-size:15px;margin-bottom:6px">Arraste ou clique para selecionar</p>
+      <p style="font-size:11px;opacity:.4">JSON com array "evidence" | Tipologia e score calculados automaticamente</p>
+      <input type="file" id="fileIn" accept=".json" multiple style="display:none">
+    </div>
+    <div id="uploadPrev" style="display:none;margin-top:12px;padding:12px;border-radius:12px;background:rgba(255,255,255,.04)"></div>
+    <div id="uploadProg" style="display:none;margin-top:12px">
+      <div class="prog-wrap"><div id="progBar" class="prog-bar" style="width:0%"></div></div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:16px">
+      <button onclick="App.processUpload()" class="btn btn-primary flex-1" id="btnUpload"><i class="fas fa-cogs"></i> Processar</button>
+      <button onclick="closeModal('mUpload')" class="btn btn-secondary">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     MODAL: HUMAN-IN-THE-LOOP
+══════════════════════════════════════════════ -->
+<div id="mHL" class="modal-bg" onclick="if(event.target===this)closeModal('mHL')">
+  <div class="modal-box" style="max-width:800px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <h3 style="font-size:18px;font-weight:900"><i class="fas fa-user-check" style="color:#34C759;margin-right:8px"></i>Human-in-the-Loop — Fila de Revisão</h3>
+      <button onclick="closeModal('mHL')" style="background:none;border:none;color:rgba(255,255,255,.4);cursor:pointer;font-size:18px">✕</button>
+    </div>
+    <p style="font-size:12px;color:rgba(255,255,255,.4);margin-bottom:14px">
+      Documentos aguardando confirmação dos metadados extraídos pelo sistema.
+    </p>
+    <div id="hlQueue"></div>
+  </div>
+</div>
+
 <script>
 'use strict';
 
-// ─────────────────────────────────────────────────────────────────────────────
-// PAINEL DE MONITOR EM TEMPO REAL
-// ─────────────────────────────────────────────────────────────────────────────
-const DevPanel = {
-    count: 0,
-    collapsed: false,
+// ════════════════════════════════════════════════════════════════════════════
+// 0. MONITOR (painel em tempo real)
+// ════════════════════════════════════════════════════════════════════════════
+const Mon = (() => {
+  let count = 0, collapsed = false;
+  const body  = () => document.getElementById('monBody');
+  const foot  = () => document.getElementById('monStat');
+  const cnt   = () => document.getElementById('monCnt');
+  const dot   = () => document.getElementById('monDot');
+  const chev  = () => document.getElementById('monChev');
 
-    log(msg, type = 'info') {
-        this.count++;
-        const body = document.getElementById('devPanelBody');
-        const status = document.getElementById('devPanelStatusText');
-        const counter = document.getElementById('devPanelCount');
-        const dot = document.getElementById('devDot');
-
-        if (!body) return;
-
-        const line = document.createElement('div');
-        line.className = `dev-line ${type}`;
-
-        const ts = new Date().toLocaleTimeString('pt-BR', { hour12: false });
-        const icon = type === 'error' ? '🔴 ERRO' : type === 'success' ? '✅' : type === 'warn' ? '⚠️' : 'ℹ️';
-        line.textContent = `[${ts}] ${icon} ${msg}`;
-
-        // Erros ficam destacados com marca-texto vermelha
-        if (type === 'error') {
-            line.style.cssText = `
-                background: rgba(255,59,48,0.85);
-                color: #fff;
-                border-left: 4px solid #FF3B30;
-                padding: 5px 8px;
-                border-radius: 4px;
-                font-weight: 700;
-                text-shadow: 0 1px 2px rgba(0,0,0,.4);
-                margin: 2px 0;
-            `;
-            dot.style.background = '#FF3B30';
-            dot.classList.add('pulse');
-        } else if (type === 'success') {
-            dot.style.background = '#34C759';
-            dot.classList.remove('pulse');
-        } else if (type === 'warn') {
-            dot.style.background = '#FF9500';
-        } else {
-            dot.style.background = '#007AFF';
-            dot.classList.add('pulse');
-            setTimeout(() => dot.classList.remove('pulse'), 1200);
-        }
-
-        body.insertBefore(line, body.firstChild);
-
-        // Limita a 60 linhas
-        while (body.children.length > 60) body.removeChild(body.lastChild);
-
-        counter.textContent = `${this.count} eventos`;
-        if (status && type !== 'error') status.textContent = msg.slice(0, 60) + (msg.length > 60 ? '…' : '');
-        if (type === 'error' && status) {
-            status.textContent = '⛔ Erro detectado — veja painel acima';
-            status.style.color = '#FF3B30';
-        }
-
-        // Abre o painel automaticamente se vier um erro
-        if (type === 'error' && this.collapsed) this.toggle();
-    },
-
-    toggle() {
-        this.collapsed = !this.collapsed;
-        const panel = document.getElementById('devPanel');
-        const icon = document.querySelector('#devPanelToggle i');
-        if (this.collapsed) {
-            panel.classList.add('collapsed');
-            icon.className = 'fas fa-chevron-up';
-            icon.style.color = 'rgba(255,255,255,.3)';
-        } else {
-            panel.classList.remove('collapsed');
-            icon.className = 'fas fa-chevron-down';
-            icon.style.color = 'rgba(255,255,255,.3)';
-        }
-    },
-
-    clear() {
-        const body = document.getElementById('devPanelBody');
-        if (body) body.innerHTML = '';
-        this.count = 0;
-        document.getElementById('devPanelCount').textContent = '0 eventos';
+  function log(msg, type = 'info') {
+    count++;
+    const b = body(); if (!b) return;
+    const ts   = new Date().toLocaleTimeString('pt-BR',{hour12:false});
+    const icon = {ok:'✅',warn:'⚠️',err:'🔴 ERRO',dbg:'🔵'}[type] || 'ℹ️';
+    const d    = document.createElement('div');
+    d.className = 'mln ' + (type === 'info' ? '' : type);
+    d.textContent = `[${ts}] ${icon} ${msg}`;
+    b.insertBefore(d, b.firstChild);
+    while (b.children.length > 80) b.removeChild(b.lastChild);
+    if (cnt()) cnt().textContent = count + ' eventos';
+    if (foot() && type !== 'err') foot().textContent = msg.slice(0,65)+(msg.length>65?'…':'');
+    if (type === 'err') {
+      if (dot()) { dot().style.background='#FF3B30'; dot().classList.add('blink'); }
+      if (foot()) { foot().textContent = '⛔ Erro — veja painel'; foot().style.color='#FF3B30'; }
+      if (collapsed) toggle();
+    } else if (type === 'ok') {
+      if (dot()) { dot().style.background='#34C759'; dot().classList.remove('blink'); }
     }
-};
+  }
 
-// Captura TODOS os erros JavaScript globais → aparece no painel
-window.addEventListener('error', (ev) => {
-    const msg = `JS: ${ev.message} @ ${(ev.filename || '').split('/').pop()}:${ev.lineno}`;
-    DevPanel.log(msg, 'error');
-    audit(msg);
+  function toggle() {
+    collapsed = !collapsed;
+    const p = document.getElementById('monitor');
+    if (p) p.classList.toggle('collapsed', collapsed);
+    const c = chev(); if (c) c.className = collapsed ? 'fas fa-chevron-up' : 'fas fa-chevron-down';
+  }
+
+  function clear() {
+    const b = body(); if (b) b.innerHTML = '';
+    count = 0;
+    if (cnt()) cnt().textContent = '0 eventos';
+  }
+
+  return { log, toggle, clear };
+})();
+
+// Captura erros globais
+window.addEventListener('error', ev => {
+  Mon.log(`JS: ${ev.message} @ ${(ev.filename||'').split('/').pop()}:${ev.lineno}`, 'err');
+  auditLog('ERRO-JS', ev.message.slice(0,80));
+});
+window.addEventListener('unhandledrejection', ev => {
+  const m = ev.reason?.message || String(ev.reason);
+  Mon.log(`Promise: ${m}`, 'err');
+  auditLog('PROMISE-ERR', m.slice(0,80));
 });
 
-window.addEventListener('unhandledrejection', (ev) => {
-    const msg = `Promise: ${ev.reason?.message || String(ev.reason)}`;
-    DevPanel.log(msg, 'error');
-    audit(msg);
-});
+// ════════════════════════════════════════════════════════════════════════════
+// 1. UTILITÁRIOS
+// ════════════════════════════════════════════════════════════════════════════
 
-// ─────────────────────────────────────────────────────────────────────────────
-// PDF.js — carregado com proteção (não quebra o app se falhar)
-// ─────────────────────────────────────────────────────────────────────────────
-window.addEventListener('load', () => {
-    try {
-        if (window.pdfjsLib && window.pdfjsLib.GlobalWorkerOptions) {
-            window.pdfjsLib.GlobalWorkerOptions.workerSrc =
-                'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
-            DevPanel.log('PDF.js worker configurado.', 'success');
-        } else {
-            DevPanel.log('PDF.js não disponível — upload de PDF desabilitado.', 'warn');
-        }
-    } catch (e) {
-        DevPanel.log('Falha ao configurar PDF.js: ' + e.message, 'warn');
-    }
-});
-
-// ─────────────────────────────────────────────────────────────────────────────
-// UTILITÁRIOS
-// ─────────────────────────────────────────────────────────────────────────────
-
-/**
- * Normaliza texto: minúsculas + remove acentos + espaços extras.
- * Usa [\u0300-\u036f] em vez de \p{Diacritic} para máxima compatibilidade.
- */
+/** Remove acentos e normaliza — compatível com todos os browsers */
 function norm(s = '') {
-    return String(s)
-        .toLowerCase()
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')   // remove combining diacritics
-        .replace(/\s+/g, ' ')
-        .trim();
+  return String(s)
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
-/** Tokeniza texto para busca (remove stopwords e tokens curtos) */
 function tokenize(raw) {
-    const STOP = new Set([
-        'paciente','anos','ano','masculino','feminino','sexo',
-        'com','sem','de','da','do','das','dos','em','no','na',
-        'nos','nas','ha','a','o','e','ou','para','por','um',
-        'uma','ao','aos','se','que','mais','mas','foi','ser'
-    ]);
-    return norm(raw)
-        .split(/\s+/)
-        .filter(t => t.length >= 3 && !STOP.has(t));
+  const STOP = new Set(['paciente','anos','ano','masculino','feminino','com','sem',
+    'de','da','do','das','dos','em','no','na','nos','nas','ha','a','o','e',
+    'ou','para','por','um','uma','ao','aos','se','que','mais','mas','foi',
+    'ser','pelo','pela','sua','seu','num','nao','esta','este']);
+  return norm(raw).split(/\s+/).filter(t => t.length >= 3 && !STOP.has(t));
 }
 
-/** Parse de pressão arterial "120/80" → { sys, dia } */
-function parseBP(bp) {
-    const m = String(bp || '').match(/(\d{2,3})\s*\/\s*(\d{2,3})/);
-    return m ? { sys: +m[1], dia: +m[2] } : null;
+function parseBP(s) {
+  const m = String(s||'').match(/(\d{2,3})\s*[\/x]\s*(\d{2,3})/i);
+  return m ? {sys:+m[1], dia:+m[2]} : null;
 }
+function parseHR(v) { const n=parseInt(v,10); return isFinite(n)?n:null; }
+function parseTemp(v) { const n=parseFloat(v); return isFinite(n)?n:null; }
+function parseSPO2(v) { const n=parseFloat(v); return isFinite(n)?n:null; }
 
-/** Parse de frequência cardíaca */
-function parseHR(hr) {
-    const n = parseInt(hr, 10);
-    return Number.isFinite(n) ? n : null;
-}
+function uid() { return `${Date.now()}-${Math.random().toString(36).slice(2,8)}`; }
 
-/** Log no painel de auditoria (tela) */
-function audit(msg) {
-    const el = document.getElementById('auditLog');
-    if (!el) return;
+// ════════════════════════════════════════════════════════════════════════════
+// 2. AUDIT LOG (LGPD — anonimizado)
+// ════════════════════════════════════════════════════════════════════════════
+const _auditBuf = [];
+function auditLog(action, detail = '') {
+  const entry = { ts: new Date().toISOString(), action, detail };
+  _auditBuf.unshift(entry);
+  if (_auditBuf.length > 200) _auditBuf.pop();
+  const el = document.getElementById('auditEl');
+  if (el) {
     const d = document.createElement('div');
-    d.textContent = `[${new Date().toLocaleTimeString('pt-BR')}] ${msg}`;
+    d.textContent = `[${entry.ts}] ${action}: ${detail}`;
     el.prepend(d);
-    while (el.children.length > 50) el.removeChild(el.lastChild);
+    while (el.children.length > 30) el.removeChild(el.lastChild);
+  }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// BANCO DE DADOS — Dexie / IndexedDB
-// ─────────────────────────────────────────────────────────────────────────────
+// ════════════════════════════════════════════════════════════════════════════
+// 3. BANCO DE DADOS — Dexie v3 (IndexedDB)
+// ════════════════════════════════════════════════════════════════════════════
 let db;
 try {
-    db = new Dexie('ARPEmed_v18_v3');
-    db.version(1).stores({
-        evidence: '++id, pmid, source, title, specialty, evidence_level, year, category, entryType, unifiedScore, updatedAt',
-        cases:    '++id, timestamp',
-        audit:    '++id, timestamp, action'
-    });
-    DevPanel.log('Dexie inicializado (ARPEmed_v18_v3).', 'info');
-} catch (e) {
-    DevPanel.log('FALHA ao criar Dexie: ' + e.message, 'error');
+  db = new Dexie('ARPEmed_v19');
+  db.version(1).stores({
+    evidence:  '++id, pmid, source, title, specialty, evidence_level, year, category, entryType, unifiedScore, updatedAt',
+    cases:     '++id, timestamp',
+    audit_db:  '++id, ts, action',
+    hl_queue:  '++id, pmid, status, createdAt'
+  });
+  Mon.log('Dexie inicializado (ARPEmed_v19).', 'info');
+} catch(e) {
+  Mon.log('FALHA Dexie: '+e.message, 'err');
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// BASE DE DIRETRIZES INTEGRADA
-// ─────────────────────────────────────────────────────────────────────────────
-const INTEGRATED_DATABASE = [
-    // CARDIOLOGIA
-    { pmid:'SBC-2025-HAS',    source:'SBC',       title:'Diretriz Brasileira de Hipertensão Arterial 2025',         specialty:'Cardiologia',        evidence_level:'1A', year:2025, category:'HAS' },
-    { pmid:'SBC-2024-IC',     source:'SBC',       title:'Diretriz de Insuficiência Cardíaca 2024',                  specialty:'Cardiologia',        evidence_level:'1A', year:2024, category:'IC' },
-    { pmid:'SBC-2025-SCA',    source:'SBC',       title:'Diretriz de Síndrome Coronariana Aguda 2025',              specialty:'Cardiologia',        evidence_level:'1A', year:2025, category:'SCA' },
-    { pmid:'SBC-2024-FA',     source:'SBC',       title:'Diretriz de Fibrilação Atrial 2024',                       specialty:'Cardiologia',        evidence_level:'1A', year:2024, category:'Arritmia' },
-    { pmid:'SBC-2025-DLP',    source:'SBC',       title:'Diretriz de Dislipidemias 2025',                           specialty:'Cardiologia',        evidence_level:'1A', year:2025, category:'Dislipidemia' },
-    { pmid:'SBC-2025-TEP',    source:'SBC',       title:'Diretriz de Tromboembolismo Pulmonar 2025',                specialty:'Cardiologia',        evidence_level:'1A', year:2025, category:'TEP' },
-    { pmid:'ESC-2025-SCA',    source:'ESC',       title:'ESC Guidelines for Acute Coronary Syndromes 2025',         specialty:'Cardiologia',        evidence_level:'1A', year:2025, category:'SCA' },
-    { pmid:'ESC-2025-IC',     source:'ESC',       title:'ESC Guidelines for Heart Failure 2025',                    specialty:'Cardiologia',        evidence_level:'1A', year:2025, category:'IC' },
-    { pmid:'ESC-2024-HAS',    source:'ESC',       title:'ESC Guidelines for Hypertension 2024',                     specialty:'Cardiologia',        evidence_level:'1A', year:2024, category:'HAS' },
-    { pmid:'AHA-2025-IC',     source:'AHA',       title:'AHA/ACC Heart Failure Guideline 2025',                     specialty:'Cardiologia',        evidence_level:'1A', year:2025, category:'IC' },
-    { pmid:'AHA-2024-ACLS',   source:'AHA',       title:'AHA ACLS Guidelines 2024',                                 specialty:'Emergência',         evidence_level:'1A', year:2024, category:'RCP' },
-    { pmid:'BRAUNWALD-2025',  source:'Braunwald', title:'Braunwald Tratado de Doenças Cardiovasculares 13ª Ed 2025',specialty:'Cardiologia',        evidence_level:'1A', year:2025, category:'SCA' },
-    // PNEUMOLOGIA
-    { pmid:'SBPT-2025-DPOC',  source:'SBPT',      title:'Diretrizes DPOC 2025',                                     specialty:'Pneumologia',        evidence_level:'1A', year:2025, category:'DPOC' },
-    { pmid:'SBPT-2024-ASMA',  source:'SBPT',      title:'Diretrizes Asma 2024',                                     specialty:'Pneumologia',        evidence_level:'1A', year:2024, category:'Asma' },
-    { pmid:'SBPT-2025-PAC',   source:'SBPT',      title:'Pneumonia Adquirida na Comunidade 2025',                   specialty:'Pneumologia',        evidence_level:'1A', year:2025, category:'Pneumonia' },
-    { pmid:'SBPT-2024-TEP',   source:'SBPT',      title:'Tromboembolismo Pulmonar 2024',                            specialty:'Pneumologia',        evidence_level:'1A', year:2024, category:'TEP' },
-    { pmid:'SBPT-2025-TB',    source:'SBPT',      title:'Tuberculose 2025',                                         specialty:'Pneumologia',        evidence_level:'1A', year:2025, category:'Tuberculose' },
-    { pmid:'GOLD-2025',       source:'GOLD',      title:'GOLD COPD Report 2025',                                    specialty:'Pneumologia',        evidence_level:'1A', year:2025, category:'DPOC' },
-    { pmid:'GINA-2025',       source:'GINA',      title:'GINA Asthma Report 2025',                                  specialty:'Pneumologia',        evidence_level:'1A', year:2025, category:'Asma' },
-    { pmid:'MURRAY-2025',     source:'Murray',    title:'Murray Pneumologia 8ª Ed 2025',                            specialty:'Pneumologia',        evidence_level:'1A', year:2025, category:'DPOC' },
-    // INFECTOLOGIA / UTI
-    { pmid:'SBI-2025-HIV',    source:'SBI',       title:'Protocolo HIV 2025',                                       specialty:'Infectologia',       evidence_level:'1A', year:2025, category:'HIV' },
-    { pmid:'SBI-2024-DENGUE', source:'SBI',       title:'Manejo da Dengue 2024',                                    specialty:'Infectologia',       evidence_level:'1A', year:2024, category:'Dengue' },
-    { pmid:'SBI-2025-COVID',  source:'SBI',       title:'Tratamento COVID-19 2025',                                 specialty:'Infectologia',       evidence_level:'1A', year:2025, category:'COVID' },
-    { pmid:'SBI-2024-SEPSE',  source:'SBI',       title:'Diretrizes de Sepse 2024',                                 specialty:'Infectologia',       evidence_level:'1A', year:2024, category:'Sepse' },
-    { pmid:'SBI-2025-ATB',    source:'SBI',       title:'Uso Racional de Antimicrobianos 2025',                     specialty:'Infectologia',       evidence_level:'1A', year:2025, category:'Antibióticos' },
-    { pmid:'SSC-2025',        source:'SSC',       title:'Surviving Sepsis Campaign 2025',                           specialty:'UTI',                evidence_level:'1A', year:2025, category:'Sepse' },
-    { pmid:'IDSA-2025-PAC',   source:'IDSA',      title:'IDSA Community-Acquired Pneumonia Guidelines 2025',        specialty:'Infectologia',       evidence_level:'1A', year:2025, category:'Pneumonia' },
-    { pmid:'MANDELL-2025',    source:'Mandell',   title:'Mandell Doenças Infecciosas 10ª Ed 2025',                  specialty:'Infectologia',       evidence_level:'1A', year:2025, category:'Sepse' },
-    { pmid:'AMIB-2025-SEPSE', source:'AMIB',      title:'Protocolo de Sepse AMIB 2025',                             specialty:'UTI',                evidence_level:'1A', year:2025, category:'Sepse' },
-    // NEUROLOGIA
-    { pmid:'ABN-2025-AVC',    source:'ABN',       title:'Protocolo AVC Isquêmico 2025',                             specialty:'Neurologia',         evidence_level:'1A', year:2025, category:'AVC' },
-    { pmid:'ABN-2024-AVCH',   source:'ABN',       title:'Protocolo AVC Hemorrágico 2024',                           specialty:'Neurologia',         evidence_level:'1A', year:2024, category:'AVC' },
-    { pmid:'ABN-2025-EPILEPSIA',source:'ABN',     title:'Diretrizes Epilepsia 2025',                                specialty:'Neurologia',         evidence_level:'1A', year:2025, category:'Epilepsia' },
-    { pmid:'ABN-2024-CEFALEIA',source:'ABN',      title:'Diretrizes Cefaleia 2024',                                 specialty:'Neurologia',         evidence_level:'1A', year:2024, category:'Cefaleia' },
-    { pmid:'AAN-2025-AVC',    source:'AAN',       title:'AAN Stroke Guidelines 2025',                               specialty:'Neurologia',         evidence_level:'1A', year:2025, category:'AVC' },
-    { pmid:'ADAMS-2025',      source:'Adams',     title:'Adams Neurologia 12ª Ed 2025',                             specialty:'Neurologia',         evidence_level:'1A', year:2025, category:'AVC' },
-    // NEFROLOGIA
-    { pmid:'SBN-2025-DRC',    source:'SBN',       title:'Doença Renal Crônica 2025',                                specialty:'Nefrologia',         evidence_level:'1A', year:2025, category:'DRC' },
-    { pmid:'SBN-2024-LRA',    source:'SBN',       title:'Lesão Renal Aguda 2024',                                   specialty:'Nefrologia',         evidence_level:'1A', year:2024, category:'LRA' },
-    { pmid:'KDIGO-2025-DRC',  source:'KDIGO',     title:'KDIGO CKD Guidelines 2025',                                specialty:'Nefrologia',         evidence_level:'1A', year:2025, category:'DRC' },
-    // ENDOCRINOLOGIA
-    { pmid:'SBD-2025-DM2',    source:'SBD',       title:'Diretrizes Diabetes Mellitus Tipo 2 2025',                 specialty:'Endocrinologia',     evidence_level:'1A', year:2025, category:'Diabetes' },
-    { pmid:'SBD-2024-DM1',    source:'SBD',       title:'Diretrizes Diabetes Mellitus Tipo 1 2024',                 specialty:'Endocrinologia',     evidence_level:'1A', year:2024, category:'Diabetes' },
-    { pmid:'SBEM-2025-TIREO', source:'SBEM',      title:'Doenças da Tireoide 2025',                                 specialty:'Endocrinologia',     evidence_level:'1A', year:2025, category:'Tireoide' },
-    { pmid:'ADA-2025',        source:'ADA',       title:'ADA Standards of Diabetes Care 2025',                      specialty:'Endocrinologia',     evidence_level:'1A', year:2025, category:'Diabetes' },
-    { pmid:'WILLIAMS-2025',   source:'Williams',  title:'Williams Endocrinologia 15ª Ed 2025',                      specialty:'Endocrinologia',     evidence_level:'1A', year:2025, category:'Diabetes' },
-    // GASTROENTEROLOGIA / HEPATOLOGIA
-    { pmid:'FBG-2025-DRGE',   source:'FBG',       title:'Diretrizes DRGE 2025',                                     specialty:'Gastroenterologia',  evidence_level:'1A', year:2025, category:'DRGE' },
-    { pmid:'FBG-2024-DII',    source:'FBG',       title:'Doença Inflamatória Intestinal 2024',                      specialty:'Gastroenterologia',  evidence_level:'1A', year:2024, category:'DII' },
-    { pmid:'SBH-2025-CIRROSE',source:'SBH',       title:'Cirrose Hepática 2025',                                    specialty:'Hepatologia',        evidence_level:'1A', year:2025, category:'Cirrose' },
-    // CLÍNICA MÉDICA / LIVROS GERAIS
-    { pmid:'HARRISON-2025',   source:'Harrison',  title:'Harrison Medicina Interna 22ª Ed 2025',                    specialty:'Clínica Médica',     evidence_level:'1A', year:2025, category:'SCA' },
-    { pmid:'CECIL-2025',      source:'Cecil',     title:'Cecil Medicina Interna 28ª Ed 2025',                       specialty:'Clínica Médica',     evidence_level:'1A', year:2025, category:'SCA' },
-    { pmid:'MSD-2025',        source:'MSD',       title:'Manual MSD 21ª Ed 2025',                                   specialty:'Clínica Médica',     evidence_level:'1A', year:2025, category:'SCA' },
-    { pmid:'GOODMAN-2025',    source:'Goodman',   title:'Goodman Farmacologia 14ª Ed 2025',                         specialty:'Farmacologia',       evidence_level:'1A', year:2025, category:'SCA' },
-    { pmid:'ROBBINS-2025',    source:'Robbins',   title:'Robbins Patologia 11ª Ed 2025',                            specialty:'Patologia',          evidence_level:'1A', year:2025, category:'SCA' },
-    // TRAUMA / EMERGÊNCIA
-    { pmid:'ATLS-2025',       source:'ACS',       title:'ATLS 11ª Ed 2025',                                         specialty:'Trauma',             evidence_level:'1A', year:2025, category:'ATLS' },
-    { pmid:'TINTINALLI-2025', source:'Tintinalli',title:'Tintinalli Emergência 10ª Ed 2025',                        specialty:'Emergência',         evidence_level:'1A', year:2025, category:'Sepse' },
-    // OUTRAS
-    { pmid:'SBR-2025-AR',       source:'SBR',     title:'Artrite Reumatoide 2025',                                  specialty:'Reumatologia',       evidence_level:'1A', year:2025, category:'AR' },
-    { pmid:'ABP-2025-DEP',      source:'ABP',     title:'Depressão Maior 2025',                                     specialty:'Psiquiatria',        evidence_level:'1A', year:2025, category:'Depressão' },
-    { pmid:'FEBRASGO-2025-PE',  source:'FEBRASGO',title:'Pré-Eclâmpsia 2025',                                       specialty:'Obstetrícia',        evidence_level:'1A', year:2025, category:'HAS' },
-    { pmid:'NELSON-2025',       source:'Nelson',  title:'Nelson Pediatria 22ª Ed 2025',                             specialty:'Pediatria',          evidence_level:'1A', year:2025, category:'Pneumonia' },
-    { pmid:'SBOC-2025-MAMA',    source:'SBOC',    title:'Câncer de Mama 2025',                                      specialty:'Oncologia',          evidence_level:'1A', year:2025, category:'Mama' }
+// ════════════════════════════════════════════════════════════════════════════
+// 4. BASE INTEGRADA DE DIRETRIZES
+// ════════════════════════════════════════════════════════════════════════════
+const GUIDELINES_DB = [
+  // CARDIOLOGIA
+  {pmid:'SBC-2025-SCA',    source:'SBC',       title:'Diretriz de Síndrome Coronariana Aguda 2025',                specialty:'Cardiologia',    ev:'1A',year:2025,cat:'SCA'},
+  {pmid:'SBC-2025-HAS',    source:'SBC',       title:'Diretriz Brasileira de Hipertensão Arterial 2025',          specialty:'Cardiologia',    ev:'1A',year:2025,cat:'HAS'},
+  {pmid:'SBC-2024-IC',     source:'SBC',       title:'Diretriz de Insuficiência Cardíaca 2024',                   specialty:'Cardiologia',    ev:'1A',year:2024,cat:'IC'},
+  {pmid:'SBC-2025-TEP',    source:'SBC',       title:'Diretriz de Tromboembolismo Pulmonar 2025',                 specialty:'Cardiologia',    ev:'1A',year:2025,cat:'TEP'},
+  {pmid:'SBC-2024-FA',     source:'SBC',       title:'Diretriz de Fibrilação Atrial 2024',                        specialty:'Cardiologia',    ev:'1A',year:2024,cat:'Arritmia'},
+  {pmid:'ESC-2025-SCA',    source:'ESC',       title:'ESC Guidelines Acute Coronary Syndromes 2025',              specialty:'Cardiologia',    ev:'1A',year:2025,cat:'SCA'},
+  {pmid:'ESC-2025-IC',     source:'ESC',       title:'ESC Guidelines Heart Failure 2025',                         specialty:'Cardiologia',    ev:'1A',year:2025,cat:'IC'},
+  {pmid:'ESC-2024-HAS',    source:'ESC',       title:'ESC Guidelines Hypertension 2024',                          specialty:'Cardiologia',    ev:'1A',year:2024,cat:'HAS'},
+  {pmid:'AHA-2025-IC',     source:'AHA/ACC',   title:'AHA ACC Heart Failure Guideline 2025',                      specialty:'Cardiologia',    ev:'1A',year:2025,cat:'IC'},
+  {pmid:'AHA-2024-ACLS',   source:'AHA',       title:'AHA ACLS Guidelines 2024',                                  specialty:'Emergência',     ev:'1A',year:2024,cat:'RCP'},
+  {pmid:'BRAUNWALD-2025',  source:'Braunwald', title:'Braunwald Tratado Doenças Cardiovasculares 13ed 2025',      specialty:'Cardiologia',    ev:'1A',year:2025,cat:'SCA'},
+  // PNEUMOLOGIA
+  {pmid:'GOLD-2025',       source:'GOLD',      title:'GOLD COPD Global Strategy Report 2025',                     specialty:'Pneumologia',    ev:'1A',year:2025,cat:'DPOC'},
+  {pmid:'GINA-2025',       source:'GINA',      title:'GINA Asthma Global Strategy 2025',                         specialty:'Pneumologia',    ev:'1A',year:2025,cat:'Asma'},
+  {pmid:'SBPT-2025-DPOC',  source:'SBPT',      title:'Diretrizes DPOC 2025 SBPT',                                specialty:'Pneumologia',    ev:'1A',year:2025,cat:'DPOC'},
+  {pmid:'SBPT-2025-PAC',   source:'SBPT',      title:'Pneumonia Adquirida na Comunidade SBPT 2025',               specialty:'Pneumologia',    ev:'1A',year:2025,cat:'Pneumonia'},
+  {pmid:'SBPT-2024-TEP',   source:'SBPT',      title:'Tromboembolismo Pulmonar SBPT 2024',                        specialty:'Pneumologia',    ev:'1A',year:2024,cat:'TEP'},
+  {pmid:'SBPT-2025-TB',    source:'SBPT',      title:'Tuberculose SBPT 2025',                                     specialty:'Pneumologia',    ev:'1A',year:2025,cat:'Tuberculose'},
+  {pmid:'MURRAY-2025',     source:'Murray',    title:'Murray Textbook Respiratory Medicine 8ed 2025',             specialty:'Pneumologia',    ev:'1A',year:2025,cat:'DPOC'},
+  // INFECTOLOGIA / UTI / SEPSE
+  {pmid:'SSC-2025',        source:'SSC',       title:'Surviving Sepsis Campaign Guidelines 2025',                 specialty:'UTI',            ev:'1A',year:2025,cat:'Sepse'},
+  {pmid:'AMIB-2025-SEPSE', source:'AMIB',      title:'Protocolo de Sepse AMIB 2025',                              specialty:'UTI',            ev:'1A',year:2025,cat:'Sepse'},
+  {pmid:'SBI-2024-SEPSE',  source:'SBI',       title:'Diretrizes de Sepse SBI 2024',                              specialty:'Infectologia',   ev:'1A',year:2024,cat:'Sepse'},
+  {pmid:'SBI-2025-ATB',    source:'SBI',       title:'Uso Racional Antimicrobianos SBI 2025',                     specialty:'Infectologia',   ev:'1A',year:2025,cat:'Antibióticos'},
+  {pmid:'SBI-2025-COVID',  source:'SBI',       title:'Tratamento COVID-19 SBI 2025',                              specialty:'Infectologia',   ev:'1A',year:2025,cat:'COVID'},
+  {pmid:'SBI-2024-DENGUE', source:'SBI',       title:'Manejo da Dengue SBI 2024',                                 specialty:'Infectologia',   ev:'1A',year:2024,cat:'Dengue'},
+  {pmid:'IDSA-2025-PAC',   source:'IDSA',      title:'IDSA Community Acquired Pneumonia Guidelines 2025',         specialty:'Infectologia',   ev:'1A',year:2025,cat:'Pneumonia'},
+  {pmid:'MANDELL-2025',    source:'Mandell',   title:'Mandell Doenças Infecciosas 10ed 2025',                     specialty:'Infectologia',   ev:'1A',year:2025,cat:'Sepse'},
+  {pmid:'TINTINALLI-2025', source:'Tintinalli',title:'Tintinalli Medicina de Emergência 10ed 2025',               specialty:'Emergência',     ev:'1A',year:2025,cat:'Sepse'},
+  // NEUROLOGIA
+  {pmid:'ABN-2025-AVC',    source:'ABN',       title:'Protocolo AVC Isquêmico ABN 2025',                         specialty:'Neurologia',     ev:'1A',year:2025,cat:'AVC'},
+  {pmid:'ABN-2024-AVCH',   source:'ABN',       title:'Protocolo AVC Hemorrágico ABN 2024',                        specialty:'Neurologia',     ev:'1A',year:2024,cat:'AVC'},
+  {pmid:'AAN-2025-AVC',    source:'AAN',       title:'AAN Stroke Guidelines 2025',                                specialty:'Neurologia',     ev:'1A',year:2025,cat:'AVC'},
+  {pmid:'ABN-2025-EPILEP', source:'ABN',       title:'Diretrizes Epilepsia ABN 2025',                             specialty:'Neurologia',     ev:'1A',year:2025,cat:'Epilepsia'},
+  {pmid:'ADAMS-2025',      source:'Adams',     title:'Adams Neurologia 12ed 2025',                                specialty:'Neurologia',     ev:'1A',year:2025,cat:'AVC'},
+  // NEFROLOGIA
+  {pmid:'KDIGO-2025-DRC',  source:'KDIGO',     title:'KDIGO CKD Guidelines 2025',                                 specialty:'Nefrologia',     ev:'1A',year:2025,cat:'DRC'},
+  {pmid:'SBN-2025-DRC',    source:'SBN',       title:'Doença Renal Crônica SBN 2025',                             specialty:'Nefrologia',     ev:'1A',year:2025,cat:'DRC'},
+  {pmid:'SBN-2024-LRA',    source:'SBN',       title:'Lesão Renal Aguda SBN 2024',                                specialty:'Nefrologia',     ev:'1A',year:2024,cat:'LRA'},
+  // ENDOCRINOLOGIA
+  {pmid:'ADA-2025',        source:'ADA',       title:'ADA Standards of Diabetes Care 2025',                       specialty:'Endocrinologia', ev:'1A',year:2025,cat:'Diabetes'},
+  {pmid:'SBD-2025-DM2',    source:'SBD',       title:'Diretrizes Diabetes Mellitus Tipo 2 SBD 2025',              specialty:'Endocrinologia', ev:'1A',year:2025,cat:'Diabetes'},
+  {pmid:'SBEM-2025-TIREO', source:'SBEM',      title:'Doenças da Tireoide SBEM 2025',                             specialty:'Endocrinologia', ev:'1A',year:2025,cat:'Tireoide'},
+  {pmid:'WILLIAMS-2025',   source:'Williams',  title:'Williams Endocrinologia 15ed 2025',                         specialty:'Endocrinologia', ev:'1A',year:2025,cat:'Diabetes'},
+  // GASTRO / HEPA
+  {pmid:'SBH-2025-CIRROSE',source:'SBH',       title:'Cirrose Hepática SBH 2025',                                 specialty:'Hepatologia',    ev:'1A',year:2025,cat:'Cirrose'},
+  {pmid:'FBG-2024-DII',    source:'FBG',       title:'Doença Inflamatória Intestinal FBG 2024',                   specialty:'Gastroenterologia',ev:'1A',year:2024,cat:'DII'},
+  // CLÍNICA MÉDICA / REFERÊNCIAS
+  {pmid:'HARRISON-2025',   source:'Harrison',  title:'Harrison Principles Internal Medicine 22ed 2025',           specialty:'Clínica Médica', ev:'1A',year:2025,cat:'SCA'},
+  {pmid:'CECIL-2025',      source:'Cecil',     title:'Cecil Medicina Interna 28ed 2025',                          specialty:'Clínica Médica', ev:'1A',year:2025,cat:'SCA'},
+  {pmid:'GOODMAN-2025',    source:'Goodman',   title:'Goodman Gilman Farmacologia 14ed 2025',                     specialty:'Farmacologia',   ev:'1A',year:2025,cat:'SCA'},
+  // TRAUMA / EMERGÊNCIA
+  {pmid:'ATLS-2025',       source:'ACS/ATLS',  title:'ATLS Advanced Trauma Life Support 11ed 2025',               specialty:'Trauma',         ev:'1A',year:2025,cat:'Trauma'},
+  // OUTRAS
+  {pmid:'FEBRASGO-2025-PE',source:'FEBRASGO',  title:'Pré-Eclâmpsia FEBRASGO 2025',                               specialty:'Obstetrícia',    ev:'1A',year:2025,cat:'HAS'},
+  {pmid:'NELSON-2025',     source:'Nelson',    title:'Nelson Pediatria 22ed 2025',                                specialty:'Pediatria',      ev:'1A',year:2025,cat:'Pneumonia'},
+  {pmid:'SBR-2025-AR',     source:'SBR',       title:'Artrite Reumatoide SBR 2025',                               specialty:'Reumatologia',   ev:'1A',year:2025,cat:'AR'},
 ];
 
-// ─────────────────────────────────────────────────────────────────────────────
-// CLASSIFICADOR DE TIPOLOGIA
-// ─────────────────────────────────────────────────────────────────────────────
-class EntryTypeClassifier {
-    static classify(source, title) {
-        const t = norm(`${source} ${title}`);
-        if (/diretriz|guideline|consenso|protocolo|standards|campaign/.test(t) ||
-            /^(sbc|esc|aha|acc|sbpt|sbi|abn|gold|gina|kdigo|ssc|amib|ada|sbem|sbd|sbn|fbg|sbh|sbr|abp|febrasgo|sboc|aan|idsa|sbpt|atls|naemt)/.test(norm(source))) {
-            return { type: 'Diretriz', weight: 1.0 };
-        }
-        if (/harrison|cecil|braunwald|murray|mandell|adams|brenner|williams|sleisenger|tintinalli|nelson|goodman|robbins|guyton|bates|msd/.test(t)) {
-            return { type: 'Livro-Texto', weight: 0.95 };
-        }
-        return { type: 'Documento', weight: 0.80 };
+// ════════════════════════════════════════════════════════════════════════════
+// 5. MOTOR DE INGESTÃO
+// ════════════════════════════════════════════════════════════════════════════
+
+/** Módulo de Tipologia */
+const Tipologia = {
+  classify(source='', title='') {
+    const t = norm(`${source} ${title}`);
+    if (/diretriz|guideline|consenso|protocolo|standards|campaign|strategy/.test(t) ||
+        /^(sbc|esc|aha|acc|sbpt|sbi|abn|gold|gina|kdigo|ssc|amib|ada|sbem|sbd|sbn|fbg|sbh|sbr|abp|febrasgo|sboc|aan|idsa|atls|naemt|who|opas)$/.test(norm(source))) {
+      return {type:'Diretriz', weight:1.00, icon:'📋'};
     }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// ANCORAGEM TEMPORAL
-// ─────────────────────────────────────────────────────────────────────────────
-class TemporalAnchor {
-    static get currentYear() { return new Date().getFullYear(); }
-    static evaluate(year) {
-        const y = parseInt(year) || this.currentYear;
-        if (y >= this.currentYear - 1) return { status: 'HOT',    score: 1.00 };
-        if (y >= this.currentYear - 3) return { status: 'RECENT', score: 0.85 };
-        return                                 { status: 'VALID',  score: 0.70 };
+    if (/harrison|cecil|braunwald|murray|mandell|adams|brenner|williams|sleisenger|tintinalli|nelson|goodman|robbins|guyton|bates|msd|adams|goldman/.test(t)) {
+      return {type:'Livro-Texto', weight:0.95, icon:'📚'};
     }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// SCORE UNIFICADO
-// ─────────────────────────────────────────────────────────────────────────────
-class UnifiedScorer {
-    static calculate(doc) {
-        const t = TemporalAnchor.evaluate(doc.year).score;
-        const w = doc.entryTypeWeight || 0.80;
-        const e = { '1A': 1.0, '1B': 0.9, '2A': 0.75, '2B': 0.65 }[doc.evidence_level] || 0.70;
-        return Math.round((t * 0.40 + w * 0.35 + e * 0.25) * 100);
+    if (/lancet|nejm|jama|bmj|nature|pubmed|doi|pmid/.test(t)) {
+      return {type:'Artigo Científico', weight:0.90, icon:'🔬'};
     }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// ONTOLOGIA MÉDICA — extrai especialidades/tags do texto clínico
-// Reconhece "dor torácica", "aperto", "irradiada", etc.
-// ─────────────────────────────────────────────────────────────────────────────
-class MedicalOntology {
-    static RULES = [
-        {
-            tag: 'Cardiologia',
-            re: /(dor torac|dor no peito|precord|opress|aperto|angin|irrad|mandib|sudore|diafore|infart|iam\b|sca\b|coronar|has\b|hipertens|pressao alta|palpitac|arritmia|fibrilac|flutter|bloqueio|bradicard|taquicard)/
-        },
-        {
-            tag: 'Pneumologia',
-            re: /(dispne|falta de ar|taquipne|tep\b|tromboemb|hemopt|pleurit|tosse.*produt|expector|sibilanc|sibil|chiad|asma\b|dpoc\b|broncoespasm|pneumoni|derrame pleural)/
-        },
-        {
-            tag: 'Infectologia',
-            re: /(febre|calafr|sepse|choque septic|infecc|antibi|leucocitose|leucopeni|lactat|bacteriem|hemocultura|itrc|itu\b|celulite|endocardit|meningit)/
-        },
-        {
-            tag: 'Neurologia',
-            re: /(avc\b|acidente vascular|hemipar|hemipleg|monopar|pares|afas|disartr|desvio facial|ptose|diplopia|cefale|cefaleia|convuls|epilep|confus|torpor|coma|sonolenc|vertig)/
-        },
-        {
-            tag: 'Nefrologia',
-            re: /(insuf renal|renal agud|renal cronic|drc\b|lra\b|nefro|hemodial|dialist|hematuria|proteinuria|creatinin elevad)/
-        },
-        {
-            tag: 'Endocrinologia',
-            re: /(diabet|dm2\b|dm1\b|glicemi|insulina|cetoacidose|hipoglicemi|tireo|hipotireo|hipertireo|bocioo|suprarren|cortisol)/
-        },
-        {
-            tag: 'Gastroenterologia',
-            re: /(dor abdom|nausea|vomit|diarreia|hemat|melena|disfagia|hepatit|cirrose|ascite|peritonit|pancreatit|oclus|ileu)/
-        }
-    ];
-
-    static extractTags(textRaw) {
-        const text = norm(textRaw);
-        const tags = new Set();
-        for (const rule of this.RULES) {
-            if (rule.re.test(text)) tags.add(rule.tag);
-        }
-        if (tags.size === 0) tags.add('Clínica Médica');
-        return [...tags];
-    }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// BUSCA POR TOKENS (corrigido — não tenta includes(textão inteiro))
-// ─────────────────────────────────────────────────────────────────────────────
-class TripleFilterSearch {
-    static async search(query, limit = 10) {
-        DevPanel.log(`Busca: "${query.slice(0,40)}..."`, 'info');
-
-        let allDocs;
-        try {
-            allDocs = await db.evidence.toArray();
-        } catch (e) {
-            DevPanel.log('Erro ao acessar evidence: ' + e.message, 'error');
-            return [];
-        }
-
-        if (!allDocs.length) {
-            DevPanel.log('Banco vazio — sem evidências para busca.', 'warn');
-            return [];
-        }
-
-        const qTags   = MedicalOntology.extractTags(query);
-        const qTokens = tokenize(query);
-
-        DevPanel.log(`Tags detectadas: [${qTags.join(', ')}] | Tokens: [${qTokens.slice(0,5).join(', ')}]`, 'info');
-
-        const scored = allDocs.map(doc => {
-            const hay = norm(`${doc.title||''} ${doc.source||''} ${doc.specialty||''} ${doc.category||''}`);
-            const tokenHits = qTokens.reduce((acc, t) => acc + (hay.includes(t) ? 1 : 0), 0);
-            const tagHits   = (doc.tags || []).some(tag => qTags.includes(tag)) ? 3 : 0;
-            const base      = (doc.unifiedScore || 50) / 100;
-            return { doc, score: tokenHits * 3 + tagHits + base };
-        });
-
-        scored.sort((a, b) => b.score - a.score);
-        const result = scored.filter(x => x.score > 0.5).slice(0, limit).map(x => x.doc);
-        DevPanel.log(`Busca retornou ${result.length} evidência(s).`, result.length ? 'success' : 'warn');
-        return result;
-    }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// VERIFICADOR DE CONTRAINDICAÇÕES
-// ─────────────────────────────────────────────────────────────────────────────
-class ContraindicationChecker {
-    static RULES = [
-        {
-            condition: (meds, actions) =>
-                (actions.includes('aas') || actions.includes('antiagregante')) &&
-                (meds.includes('varfarina') || meds.includes('warfarin') || meds.includes('rivaroxaban') || meds.includes('apixaban')),
-            severity: 'ALTA',
-            message: 'AAS + anticoagulante oral: risco elevado de sangramento. Avalie indicação e monitorize.'
-        },
-        {
-            condition: (meds, actions) =>
-                meds.includes('metformina') && actions.includes('contraste'),
-            severity: 'MODERADA',
-            message: 'Metformina + Contraste iodado: considere suspender 48h antes/após, conforme função renal e protocolo local.'
-        },
-        {
-            condition: (meds, actions) =>
-                meds.includes('ieca') || meds.includes('captopril') || meds.includes('enalapril') || meds.includes('lisinopril'),
-            severity: 'INFO',
-            message: 'IECA em uso: monitorar função renal e potássio, especialmente em procedimentos com contraste ou hipovolemia.'
-        }
-    ];
-
-    static check(patientData, actionsText) {
-        const meds    = norm(patientData.medications || '');
-        const actions = norm(actionsText || '');
-        return this.RULES
-            .filter(r => r.condition(meds, actions))
-            .map(r => ({ severity: r.severity, message: r.message }));
-    }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// AGENTE DIAGNÓSTICO — Bayesiano com LRs baseados em sinais/sintomas
-// ─────────────────────────────────────────────────────────────────────────────
-class DiagnosticAgent {
-    constructor() {
-        // Probabilidades a priori (prevalência em emergência geral)
-        this.priors = {
-            SCA:       0.15,
-            TEP:       0.10,
-            Sepse:     0.12,
-            IC:        0.10,
-            AVC:       0.08,
-            Pneumonia: 0.10,
-            DPOC:      0.08
-        };
-    }
-
-    async analyze(data) {
-        DevPanel.log('Iniciando análise diagnóstica...', 'info');
-
-        const text = norm(`${data.subjective || ''} ${data.objective || ''}`);
-        const age  = parseInt(data.age) || 50;
-        const hr   = parseHR(data?.vitals?.hr);
-        const bp   = parseBP(data?.vitals?.bp);
-
-        DevPanel.log(`Paciente: ${age}a | HR: ${hr ?? 'N/A'} | PA: ${bp ? bp.sys+'/'+bp.dia : 'N/A'}`, 'info');
-
-        // Cópia dos priors com ajuste de idade
-        const priors = { ...this.priors };
-        if (age >= 65) {
-            priors.SCA  *= 1.30;
-            priors.IC   *= 1.40;
-            priors.AVC  *= 1.30;
-            DevPanel.log('Ajuste por idade ≥ 65 aplicado (SCA+30%, IC+40%, AVC+30%).', 'info');
-        }
-        if (age >= 75) {
-            priors.SCA  *= 1.20;
-            priors.IC   *= 1.20;
-            priors.Sepse*= 1.20;
-        }
-
-        // ── Likelihood Ratios por hipótese ──────────────────────────────────
-        let lrSCA = 1.0;
-        if (/dor.*(peito|torac|precord)/.test(text))          lrSCA *= 5.0;
-        if (/(irrad|mse|mandibul|braco esq)/.test(text))      lrSCA *= 3.5;
-        if (/(sudore|diafore|frio)/.test(text))                lrSCA *= 2.5;
-        if (/(nausea|enjoo|vomit)/.test(text))                 lrSCA *= 1.8;
-        if (/(opressao|constrict)/.test(text))                 lrSCA *= 2.0;
-        if (/(has|hipertens|dm|diabet|tabag|coronar)/.test(text)) lrSCA *= 1.5; // FRs
-
-        let lrTEP = 1.0;
-        if (/(dispne|falta.*ar|taquipne)/.test(text))          lrTEP *= 4.0;
-        if (/(pleurit|dor.*respir)/.test(text))                lrTEP *= 3.0;
-        if (/(trombose|tvp|imobiliz|cirurg|longa.*distanc|neoplasia)/.test(text)) lrTEP *= 4.0;
-        if (/(hemopt)/.test(text))                             lrTEP *= 3.5;
-        if (hr != null && hr > 100)                            lrTEP *= 1.5;
-
-        let lrSepse = 1.0;
-        if (/(febre|calafr|hipertermia)/.test(text))           lrSepse *= 3.0;
-        if (/(confus|desorient|letarg|torpor)/.test(text))     lrSepse *= 4.0;
-        if (/(infecc|foco infec|pneumoni|itu\b|pielonefrit)/.test(text)) lrSepse *= 3.0;
-        if (hr != null && hr >= 90)                            lrSepse *= 1.8;
-        if (bp  && bp.sys < 100)                               lrSepse *= 2.5;
-        if (bp  && bp.sys < 90)                                lrSepse *= 3.0;
-
-        let lrIC = 1.0;
-        if (/(ortopne|dispne.*parox|dpn\b)/.test(text))        lrIC *= 6.0;
-        if (/(edema.*mmii|inchaç|edema.*perna)/.test(text))    lrIC *= 3.5;
-        if (/(crepitac|estertores)/.test(text))                lrIC *= 3.0;
-        if (/(ic\b|insuf.*cardiaca|icc)/.test(text))           lrIC *= 2.0;
-        if (/(bebe deitar|almofada)/.test(text))               lrIC *= 2.5;
-
-        let lrAVC = 1.0;
-        if (/(hemipar|hemipleg|monopar)/.test(text))           lrAVC *= 9.0;
-        if (/(afas|disartr|fala.*arrast|nao.*fala)/.test(text)) lrAVC *= 7.0;
-        if (/(desvio.*rima|face.*assimetr|facial)/.test(text)) lrAVC *= 5.0;
-        if (/(subit|repentin|abrupt)/.test(text))              lrAVC *= 3.0;
-        if (/(cefaleia.*subita|pior.*cefale)/.test(text))      lrAVC *= 4.0;
-
-        let lrPneumonia = 1.0;
-        if (/(tosse.*produt|expector|escarro)/.test(text))     lrPneumonia *= 4.0;
-        if (/(febre|calafr)/.test(text))                       lrPneumonia *= 2.5;
-        if (/(crepitac|macicez|broncofonia)/.test(text))       lrPneumonia *= 4.0;
-        if (/(hipoxemia|spo2.*baixa|oxigenio)/.test(text))     lrPneumonia *= 2.0;
-
-        let lrDPOC = 1.0;
-        if (/(tabag|fumante|fumo|dpoc|enfisema|bronquite cronica)/.test(text)) lrDPOC *= 6.0;
-        if (/(sibil|chiad|broncoespasm)/.test(text))           lrDPOC *= 3.5;
-        if (/(dispne.*esforco|limitacao.*esforco)/.test(text)) lrDPOC *= 2.0;
-
-        DevPanel.log(`LRs brutos — SCA:${lrSCA.toFixed(1)} TEP:${lrTEP.toFixed(1)} Sepse:${lrSepse.toFixed(1)} IC:${lrIC.toFixed(1)} AVC:${lrAVC.toFixed(1)} PAC:${lrPneumonia.toFixed(1)} DPOC:${lrDPOC.toFixed(1)}`, 'info');
-
-        // ── Busca de evidências e boost ─────────────────────────────────────
-        let relevantEvidence = [];
-        try {
-            relevantEvidence = await TripleFilterSearch.search(
-                `${data.subjective} ${data.objective}`, 10
-            );
-
-            for (const ev of relevantEvidence) {
-                const boost = (ev.unifiedScore || 50) / 100;
-                const tags  = ev.tags || [];
-                if (tags.includes('Cardiologia'))       { lrSCA  *= (1 + boost * 0.25); lrIC *= (1 + boost * 0.15); }
-                if (tags.includes('Pneumologia'))        { lrTEP  *= (1 + boost * 0.20); lrPneumonia *= (1 + boost * 0.20); lrDPOC *= (1 + boost * 0.20); }
-                if (tags.includes('Infectologia'))       { lrSepse *= (1 + boost * 0.25); }
-                if (tags.includes('Neurologia'))         { lrAVC  *= (1 + boost * 0.25); }
-            }
-        } catch (e) {
-            DevPanel.log('Erro na busca de evidências: ' + e.message, 'error');
-        }
-
-        // ── Cálculo de probabilidade posterior (Bayes) ──────────────────────
-        const posterior = (prior, lr) => {
-            const p = Math.min(0.99, (prior * lr) / ((prior * lr) + (1 - prior)));
-            return Math.round(p * 1000) / 1000;
-        };
-
-        const hypotheses = [
-            {
-                code: 'SCA', name: 'Síndrome Coronariana Aguda (SCA)',
-                posterior: posterior(priors.SCA, lrSCA),
-                urgency: 'CRÍTICO',
-                tests: ['ECG em <10 min', 'Troponina hs (0h/1h)', 'AAS 200mg + Ticagrelor 180mg', 'Monitor cardíaco contínuo'],
-                guidelines: 'SBC 2025 • ESC 2025 • Harrison 2025'
-            },
-            {
-                code: 'TEP', name: 'Tromboembolismo Pulmonar (TEP)',
-                posterior: posterior(priors.TEP, lrTEP),
-                urgency: 'CRÍTICO',
-                tests: ['Wells Score', 'D-dímero', 'AngioTC de tórax (contraste)', 'Gasometria arterial'],
-                guidelines: 'SBPT 2025 • SBC 2025'
-            },
-            {
-                code: 'Sepse', name: 'Sepse / Choque Séptico',
-                posterior: posterior(priors.Sepse, lrSepse),
-                urgency: 'CRÍTICO',
-                tests: ['Lactato sérico', 'Hemoculturas ×2 antes do ATB', 'ATB empírico <1h', 'Reposição volêmica 30ml/kg'],
-                guidelines: 'SSC 2025 • AMIB 2025 • SBI 2024'
-            },
-            {
-                code: 'IC', name: 'Insuficiência Cardíaca Aguda',
-                posterior: posterior(priors.IC, lrIC),
-                urgency: 'URGENTE',
-                tests: ['BNP ou NT-proBNP', 'Ecocardiograma urgente', 'Raio-X de tórax', 'Diuréticos IV'],
-                guidelines: 'SBC 2024 • ESC 2025 • AHA 2025'
-            },
-            {
-                code: 'AVC', name: 'AVC Isquêmico Agudo',
-                posterior: posterior(priors.AVC, lrAVC),
-                urgency: 'CRÍTICO',
-                tests: ['TC de crânio sem contraste', 'Escala NIHSS', 'Avaliação para trombólise (rtPA se <4,5h)', 'Acesso venoso + glicemia'],
-                guidelines: 'ABN 2025 • AAN 2025'
-            },
-            {
-                code: 'Pneumonia', name: 'Pneumonia Adquirida na Comunidade (PAC)',
-                posterior: posterior(priors.Pneumonia, lrPneumonia),
-                urgency: 'URGENTE',
-                tests: ['Raio-X de tórax (PA + perfil)', 'CURB-65', 'Hemograma + PCR', 'Antibioticoterapia guiada'],
-                guidelines: 'SBPT 2025 • IDSA 2025'
-            },
-            {
-                code: 'DPOC', name: 'DPOC Exacerbada',
-                posterior: posterior(priors.DPOC, lrDPOC),
-                urgency: 'URGENTE',
-                tests: ['Gasometria arterial', 'Broncodilatador inalatório (SABA + SAMA)', 'Raio-X de tórax', 'SpO2 alvo 88-92%'],
-                guidelines: 'GOLD 2025 • SBPT 2025'
-            }
-        ];
-
-        const sorted = hypotheses.sort((a, b) => b.posterior - a.posterior);
-
-        DevPanel.log(`Top diagnóstico: ${sorted[0].name} → ${(sorted[0].posterior*100).toFixed(1)}%`, 'success');
-
-        // Fallback: busca evidência pela categoria do diagnóstico líder
-        if (!relevantEvidence.length) {
-            try {
-                const all  = await db.evidence.toArray();
-                const code = norm(sorted[0].code);
-                relevantEvidence = all
-                    .filter(e => norm(e.category || '') === code ||
-                                 (e.tags || []).some(t => norm(t) === norm(sorted[0].code)))
-                    .sort((a, b) => (b.unifiedScore || 0) - (a.unifiedScore || 0))
-                    .slice(0, 5);
-                DevPanel.log(`Fallback: ${relevantEvidence.length} evidência(s) por categoria.`, 'info');
-            } catch (e) {
-                DevPanel.log('Erro no fallback de evidências: ' + e.message, 'error');
-            }
-        }
-
-        const contraindications = ContraindicationChecker.check(data, sorted[0].tests.join(' '));
-        if (contraindications.length) {
-            DevPanel.log(`${contraindications.length} contraindicação(ões) detectada(s)!`, 'warn');
-        }
-
-        return { diagnoses: sorted, evidence: relevantEvidence.slice(0, 5), contraindications };
-    }
-
-    generatePTS(diagnoses) {
-        const p = diagnoses[0];
-        const isCritical = p.urgency === 'CRÍTICO';
-        return {
-            immediate: [
-                isCritical ? '🚨 Acesso venoso + monitorização contínua + O₂ suplementar' : '📊 Monitorização e estabilização',
-                `🔬 ${p.tests[0]}`,
-                `💊 ${p.tests[2] || p.tests[1]}`
-            ],
-            medium: [
-                '📊 Reavaliação clínica após intervenção inicial',
-                '🔄 Ajuste de terapia conforme resposta',
-                '👨‍⚕️ Interconsulta especialidade pertinente'
-            ],
-            long: [
-                '🏥 Planejar alta com critérios definidos',
-                '📅 Consulta de retorno em 7–14 dias',
-                '💊 Reconciliação medicamentosa na alta'
-            ]
-        };
-    }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// APLICAÇÃO PRINCIPAL — ARPEmed
-// ─────────────────────────────────────────────────────────────────────────────
-const ARPEmed = {
-    diagAgent:   new DiagnosticAgent(),
-    uploadFiles: [],
-    dbReady:     false,
-
-    // ── DESBLOQUEIO ─────────────────────────────────────────────────────────
-    async unlock() {
-        const pw  = document.getElementById('masterPassword').value;
-        const msg = document.getElementById('lockMsg');
-
-        if (pw.length < 8) {
-            msg.textContent = 'Senha mínima: 8 caracteres.';
-            DevPanel.log('Tentativa de desbloqueio com senha curta.', 'warn');
-            return;
-        }
-
-        msg.textContent = '';
-        DevPanel.log('Desbloqueando sistema...', 'info');
-
-        document.getElementById('lockScreen').style.display = 'none';
-        document.getElementById('mainApp').style.display    = 'block';
-
-        const btn = document.getElementById('analyzeBtn');
-        btn.disabled  = true;
-        btn.innerHTML = '<span class="spinner mr-2"></span>Carregando base...';
-
-        // Aviso: file://
-        if (location.protocol === 'file:') {
-            DevPanel.log('⚠️ Executando via file:// — IndexedDB pode falhar. Recomendado: servidor HTTP local.', 'warn');
-            this.toast('Use um servidor local (http://localhost) para IndexedDB confiável.', 'warning');
-        }
-
-        try {
-            DevPanel.log('Abrindo IndexedDB...', 'info');
-            await db.open();
-            DevPanel.log('IndexedDB aberto com sucesso.', 'success');
-
-            await this.loadGuidelines(false);
-            await this.repairEvidence();
-
-            this.dbReady  = true;
-            btn.disabled  = false;
-            btn.innerHTML = '<i class="fas fa-stethoscope mr-2"></i>Executar Análise Diagnóstica';
-
-            this.toast('Sistema pronto! Base carregada.', 'success');
-            DevPanel.log('Sistema desbloqueado e pronto.', 'success');
-            await this.updateStats();
-
-        } catch (e) {
-            DevPanel.log('FALHA no desbloqueio: ' + e.message, 'error');
-            this.toast('Erro ao abrir base: ' + e.message, 'error');
-            btn.innerHTML = '<i class="fas fa-exclamation-triangle mr-2"></i>Erro — veja Monitor';
-        }
-    },
-
-    // ── CARREGAR DIRETRIZES ──────────────────────────────────────────────────
-    async loadGuidelines(verbose = true) {
-        DevPanel.log('Carregando diretrizes integradas...', 'info');
-        let added = 0;
-
-        try {
-            for (const g of INTEGRATED_DATABASE) {
-                const exists = await db.evidence.where('pmid').equals(g.pmid).first();
-                if (!exists) {
-                    const et    = EntryTypeClassifier.classify(g.source, g.title);
-                    const tags  = MedicalOntology.extractTags(`${g.title} ${g.source} ${g.specialty}`);
-                    const score = UnifiedScorer.calculate({ ...g, entryTypeWeight: et.weight });
-
-                    await db.evidence.add({
-                        ...g,
-                        entryType:       et.type,
-                        entryTypeWeight: et.weight,
-                        priorityScore:   score,
-                        unifiedScore:    score,
-                        tags,
-                        updatedAt: new Date().toISOString()
-                    });
-                    added++;
-                }
-            }
-        } catch (e) {
-            DevPanel.log('Erro ao carregar diretrizes: ' + e.message, 'error');
-            throw e;
-        }
-
-        await this.updateStats();
-        if (added > 0) {
-            DevPanel.log(`${added} diretriz(es) adicionada(s) ao banco.`, 'success');
-            if (verbose) this.toast(`${added} diretrizes carregadas.`, 'success');
-        } else {
-            DevPanel.log('Banco já estava atualizado (0 novas diretrizes).', 'info');
-            if (verbose) this.toast('Banco já estava completo.', 'info');
-        }
-    },
-
-    // ── REPARAR ENTRADAS ANTIGAS (sem tags/score) ────────────────────────────
-    async repairEvidence() {
-        DevPanel.log('Verificando integridade do banco...', 'info');
-        let fixed = 0;
-        try {
-            const all = await db.evidence.toArray();
-            for (const doc of all) {
-                const needs = !doc.tags || !Array.isArray(doc.tags) || !doc.tags.length || !doc.unifiedScore;
-                if (!needs) continue;
-
-                const et    = EntryTypeClassifier.classify(doc.source || '', doc.title || '');
-                const tags  = MedicalOntology.extractTags(`${doc.title||''} ${doc.source||''} ${doc.specialty||''}`);
-                const score = UnifiedScorer.calculate({ ...doc, entryTypeWeight: et.weight });
-
-                await db.evidence.put({
-                    ...doc,
-                    entryType:       doc.entryType || et.type,
-                    entryTypeWeight: doc.entryTypeWeight || et.weight,
-                    tags, unifiedScore: score, priorityScore: score,
-                    updatedAt: new Date().toISOString()
-                });
-                fixed++;
-            }
-        } catch (e) {
-            DevPanel.log('Erro ao reparar banco: ' + e.message, 'error');
-        }
-        if (fixed) {
-            DevPanel.log(`Banco reparado: ${fixed} registro(s) corrigido(s).`, 'success');
-            await this.updateStats();
-        } else {
-            DevPanel.log('Banco íntegro — nenhum reparo necessário.', 'success');
-        }
-    },
-
-    // ── ATUALIZAR ESTATÍSTICAS ───────────────────────────────────────────────
-    async updateStats() {
-        try {
-            const all = await db.evidence.toArray();
-            const currentYear = new Date().getFullYear();
-            document.getElementById('dbTotal').textContent      = all.length;
-            document.getElementById('dbHotData').textContent    = all.filter(e => Number(e.year) >= currentYear - 1).length;
-            document.getElementById('dbDirectrizes').textContent= all.filter(e => e.entryType === 'Diretriz').length;
-            document.getElementById('dbCases').textContent      = await db.cases.count();
-            document.getElementById('serverTime').textContent   = String(currentYear);
-        } catch (e) {
-            DevPanel.log('Erro ao atualizar stats: ' + e.message, 'error');
-        }
-    },
-
-    // ── ANÁLISE DIAGNÓSTICA ──────────────────────────────────────────────────
-    async analyze() {
-        if (!this.dbReady) {
-            this.toast('Aguarde carregar a base de dados.', 'warning');
-            DevPanel.log('Análise bloqueada: banco não pronto.', 'warn');
-            return;
-        }
-
-        const btn = document.getElementById('analyzeBtn');
-        btn.disabled  = true;
-        btn.innerHTML = '<span class="spinner mr-2"></span>Analisando...';
-        DevPanel.clear();
-        DevPanel.log('=== Nova análise iniciada ===', 'info');
-
-        try {
-            const data = {
-                age:        document.getElementById('patientAge').value,
-                gender:     document.getElementById('patientGender').value,
-                subjective: document.getElementById('soapS').value.trim(),
-                objective:  document.getElementById('soapO').value.trim(),
-                vitals: {
-                    bp: document.getElementById('vitalBP').value,
-                    hr: document.getElementById('vitalHR').value
-                },
-                medications: document.getElementById('patientMeds').value.trim()
-            };
-
-            if (!data.subjective) throw new Error('Campo "Subjetivo" está vazio.');
-            if (!data.objective)  throw new Error('Campo "Objetivo" está vazio.');
-
-            const result = await this.diagAgent.analyze(data);
-            const pts    = this.diagAgent.generatePTS(result.diagnoses);
-
-            this.renderResults(data, result.diagnoses, pts, result.evidence, result.contraindications);
-
-            await db.cases.add({ timestamp: new Date().toISOString(), data: { dx: result.diagnoses[0].name } });
-            await this.updateStats();
-
-            const top = result.diagnoses[0];
-            this.toast(`Diagnóstico principal: ${top.name} (${(top.posterior*100).toFixed(1)}%)`, 'success');
-            DevPanel.log(`=== Análise concluída: ${top.name} ${(top.posterior*100).toFixed(1)}% ===`, 'success');
-            audit(`Análise: ${top.name} → ${(top.posterior*100).toFixed(1)}%`);
-
-        } catch (e) {
-            DevPanel.log('ERRO na análise: ' + e.message, 'error');
-            this.toast('Erro: ' + e.message, 'error');
-        } finally {
-            btn.disabled  = false;
-            btn.innerHTML = '<i class="fas fa-stethoscope mr-2"></i>Executar Análise Diagnóstica';
-        }
-    },
-
-    // ── RENDERIZAR RESULTADOS ────────────────────────────────────────────────
-    renderResults(data, diagnoses, pts, evidence, contraindications) {
-        const container = document.getElementById('resultsContainer');
-        const primary   = diagnoses[0];
-        const isCrit    = primary.urgency === 'CRÍTICO';
-
-        const diagCards = diagnoses.slice(0, 5).map((d, i) => {
-            const pct  = (d.posterior * 100).toFixed(1);
-            const high = d.posterior > 0.50;
-            const med  = d.posterior > 0.25 && !high;
-            const barColor = high ? '#FF3B30' : med ? '#FF9500' : '#007AFF';
-            return `
-            <div style="padding:16px;border-radius:14px;background:${i===0?'rgba(255,59,48,.12)':'rgba(255,255,255,.05)'};
-                        ${i===0?'border:1px solid rgba(255,59,48,.3)':''};margin-bottom:10px">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-                    <span style="font-weight:700;font-size:${i===0?'15px':'14px'}">${i+1}. ${d.name}</span>
-                    <span style="background:${barColor}30;color:${barColor};padding:4px 12px;border-radius:20px;font-weight:700;font-size:13px">${pct}%</span>
-                </div>
-                <div style="height:4px;background:rgba(255,255,255,.1);border-radius:4px;margin-bottom:8px">
-                    <div style="height:100%;width:${Math.min(100,pct)}%;background:${barColor};border-radius:4px"></div>
-                </div>
-                <p style="font-size:11px;opacity:.7;margin-bottom:4px">${d.tests.join(' • ')}</p>
-                <p style="font-size:10px;opacity:.45">📚 ${d.guidelines}</p>
-            </div>`;
-        }).join('');
-
-        const contraBadge = contraindications.length ? `
-        <div style="margin-bottom:20px">
-            ${contraindications.map(c => `
-            <div class="contraindication-alert">
-                <i class="fas fa-exclamation-triangle" style="color:#FF3B30;margin-right:8px"></i>
-                <strong>[${c.severity}]</strong> ${c.message}
-            </div>`).join('')}
-        </div>` : '';
-
-        const evidenceHtml = evidence.length ? `
-        <div style="margin-bottom:20px">
-            <h3 style="font-weight:700;color:#60a5fa;margin-bottom:10px;font-size:14px">
-                <i class="fas fa-book-open mr-2"></i>Evidências Recuperadas (${evidence.length})
-            </h3>
-            ${evidence.map(e => `
-            <div style="padding:10px 14px;background:rgba(255,255,255,.05);border-radius:10px;margin-bottom:6px;border-left:3px solid #AF52DE">
-                <span style="font-weight:600;font-size:13px">${e.title}</span>
-                <span style="opacity:.5;font-size:11px;margin-left:8px">— ${e.source} • ${e.year} • ${e.entryType||'Doc'}</span>
-            </div>`).join('')}
-        </div>` : '<p style="opacity:.4;font-size:12px;margin-bottom:16px">Nenhuma evidência específica recuperada para este caso.</p>';
-
-        container.innerHTML = `
-        <div class="glass p-4 md:p-6 mb-4">
-            <!-- Cabeçalho do resultado -->
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
-                <h2 style="font-size:20px;font-weight:900">
-                    <i class="fas fa-clipboard-check mr-2" style="color:#AF52DE"></i>Resultado da Análise
-                </h2>
-                <span style="background:${isCrit?'rgba(255,59,48,.2)':'rgba(255,149,0,.2)'};
-                             color:${isCrit?'#FF3B30':'#FF9500'};
-                             padding:6px 16px;border-radius:20px;font-weight:700;font-size:13px">
-                    ${isCrit?'🚨 CRÍTICO':'⚡ URGENTE'}
-                </span>
-            </div>
-
-            ${contraBadge}
-
-            <!-- SOAP -->
-            <div class="soap-box soap-s-box">
-                <div class="soap-header"><div class="soap-letter soap-s-letter">S</div>
-                    <h3 style="font-weight:900;color:#60a5fa;text-transform:uppercase">Subjetivo</h3></div>
-                <p style="line-height:1.6">${data.subjective}</p>
-            </div>
-
-            <div class="soap-box soap-o-box">
-                <div class="soap-header"><div class="soap-letter soap-o-letter">O</div>
-                    <h3 style="font-weight:900;color:#34C759;text-transform:uppercase">Objetivo</h3></div>
-                <p style="line-height:1.6">${data.objective}</p>
-            </div>
-
-            <div class="soap-box soap-a-box">
-                <div class="soap-header"><div class="soap-letter soap-a-letter">A</div>
-                    <h3 style="font-weight:900;color:#AF52DE;text-transform:uppercase">Avaliação — Probabilidades Bayesianas</h3></div>
-                ${diagCards}
-            </div>
-
-            <div class="soap-box soap-p-box">
-                <div class="soap-header"><div class="soap-letter soap-p-letter">P</div>
-                    <h3 style="font-weight:900;color:#FF9500;text-transform:uppercase">Plano Terapêutico</h3></div>
-                <ul style="list-style:disc;margin-left:20px;line-height:2">
-                    ${primary.tests.map(t => `<li style="font-size:14px">${t}</li>`).join('')}
-                </ul>
-            </div>
-
-            ${evidenceHtml}
-
-            <!-- PTS -->
-            <h3 style="font-size:16px;font-weight:900;color:#34C759;margin-bottom:14px">
-                <i class="fas fa-calendar-check mr-2"></i>PTS — Plano Terapêutico Singularizado
-            </h3>
-            <div class="pts-grid">
-                <div class="pts-card" style="border-top-color:#FF3B30">
-                    <div style="font-weight:700;color:#FF3B30;margin-bottom:10px">⚡ Imediato</div>
-                    <ul style="list-style:disc;margin-left:18px;line-height:2">
-                        ${pts.immediate.map(i=>`<li style="font-size:13px">${i}</li>`).join('')}
-                    </ul>
-                </div>
-                <div class="pts-card" style="border-top-color:#FF9500">
-                    <div style="font-weight:700;color:#FF9500;margin-bottom:10px">📋 Médio Prazo</div>
-                    <ul style="list-style:disc;margin-left:18px;line-height:2">
-                        ${pts.medium.map(i=>`<li style="font-size:13px">${i}</li>`).join('')}
-                    </ul>
-                </div>
-                <div class="pts-card" style="border-top-color:#34C759">
-                    <div style="font-weight:700;color:#34C759;margin-bottom:10px">🏥 Longo Prazo</div>
-                    <ul style="list-style:disc;margin-left:18px;line-height:2">
-                        ${pts.long.map(i=>`<li style="font-size:13px">${i}</li>`).join('')}
-                    </ul>
-                </div>
-            </div>
-        </div>`;
-
-        container.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    },
-
-    // ── UPLOAD ───────────────────────────────────────────────────────────────
-    openUploadModal() {
-        document.getElementById('uploadModal').style.display = 'flex';
-        this.uploadFiles = [];
-        document.getElementById('uploadPreview').style.display  = 'none';
-        document.getElementById('uploadProgress').style.display = 'none';
-        const dz = document.getElementById('dropZone');
-        const fi = document.getElementById('fileInput');
-        dz.ondragover  = (e) => { e.preventDefault(); dz.style.borderColor='#007AFF'; };
-        dz.ondragleave = ()  => { dz.style.borderColor='rgba(255,255,255,.2)'; };
-        dz.ondrop      = (e) => { e.preventDefault(); dz.style.borderColor='rgba(255,255,255,.2)'; this.handleFiles([...e.dataTransfer.files]); };
-        fi.onchange    = (e) => this.handleFiles([...e.target.files]);
-    },
-
-    handleFiles(files) {
-        this.uploadFiles = files;
-        const pre = document.getElementById('uploadPreview');
-        pre.innerHTML = `<p style="font-weight:700;margin-bottom:6px">${files.length} arquivo(s) selecionado(s):</p>` +
-            files.map(f => `<div style="font-size:12px;opacity:.7">📄 ${f.name} (${(f.size/1024).toFixed(1)} KB)</div>`).join('');
-        pre.style.display = 'block';
-        DevPanel.log(`${files.length} arquivo(s) selecionado(s).`, 'info');
-    },
-
-    async processUpload() {
-        if (!this.uploadFiles.length) { this.toast('Selecione ao menos um arquivo.', 'warning'); return; }
-        const btn = document.getElementById('uploadBtn');
-        btn.disabled = true;
-        document.getElementById('uploadProgress').style.display = 'block';
-        let added = 0;
-
-        for (let i = 0; i < this.uploadFiles.length; i++) {
-            const file = this.uploadFiles[i];
-            document.getElementById('progressBar').style.width = ((i+1)/this.uploadFiles.length*100)+'%';
-            DevPanel.log(`Processando: ${file.name}`, 'info');
-
-            if (file.name.endsWith('.json')) {
-                try {
-                    const raw   = await file.text();
-                    const data  = JSON.parse(raw);
-                    const items = data.evidence || (Array.isArray(data) ? data : [data]);
-
-                    for (const item of items) {
-                        if (!item.pmid) item.pmid = `IMPORT-${Date.now()}-${added}`;
-                        const exists = await db.evidence.where('pmid').equals(item.pmid).first();
-                        if (!exists) {
-                            const et    = EntryTypeClassifier.classify(item.source||'', item.title||'');
-                            const score = UnifiedScorer.calculate({ ...item, entryTypeWeight: et.weight });
-                            await db.evidence.add({
-                                ...item,
-                                entryType: et.type, entryTypeWeight: et.weight,
-                                priorityScore: score, unifiedScore: score,
-                                tags: MedicalOntology.extractTags(`${item.title||''} ${item.specialty||''}`),
-                                updatedAt: new Date().toISOString()
-                            });
-                            added++;
-                        }
-                    }
-                    DevPanel.log(`${file.name}: OK.`, 'success');
-                } catch (e) {
-                    DevPanel.log(`Erro em ${file.name}: ${e.message}`, 'error');
-                    this.toast(`Erro em ${file.name}: ${e.message}`, 'error');
-                }
-            } else {
-                DevPanel.log(`${file.name}: formato não suportado (use JSON).`, 'warn');
-            }
-        }
-
-        document.getElementById('uploadProgress').style.display = 'none';
-        await this.updateStats();
-        this.toast(`${added} diretriz(es) importada(s).`, 'success');
-        DevPanel.log(`Upload concluído: ${added} item(s) adicionado(s).`, 'success');
-        this.closeUploadModal();
-        btn.disabled = false;
-    },
-
-    closeUploadModal() {
-        document.getElementById('uploadModal').style.display = 'none';
-    },
-
-    // ── EXPORTAR ─────────────────────────────────────────────────────────────
-    async exportDatabase() {
-        try {
-            DevPanel.log('Exportando banco...', 'info');
-            const all  = await db.evidence.toArray();
-            const data = { version:'ARPEmed v18.0', exportedAt: new Date().toISOString(), total: all.length, evidence: all };
-            const blob = new Blob([JSON.stringify(data, null, 2)], { type:'application/json' });
-            const a    = document.createElement('a');
-            a.href     = URL.createObjectURL(blob);
-            a.download = `arpemed_export_${new Date().toISOString().slice(0,10)}.json`;
-            a.click();
-            this.toast(`${all.length} documentos exportados.`, 'success');
-            DevPanel.log(`Exportados ${all.length} documento(s).`, 'success');
-        } catch (e) {
-            DevPanel.log('Erro ao exportar: ' + e.message, 'error');
-            this.toast('Erro ao exportar: ' + e.message, 'error');
-        }
-    },
-
-    // ── QUICK FILL ───────────────────────────────────────────────────────────
-    quickFill() {
-        document.getElementById('patientAge').value   = '65';
-        document.getElementById('patientGender').value= 'male';
-        document.getElementById('vitalBP').value      = '145/90';
-        document.getElementById('vitalHR').value      = '98';
-        document.getElementById('soapS').value        = 'Paciente 65 anos, masculino, dor torácica em aperto há 2h, irradiada para MSE, sudorese fria, náusea. HAS, DM2.';
-        document.getElementById('soapO').value        = 'BEG, PA 145/90 mmHg, FC 98 bpm, SpO2 96%. ACV: RCR 2T, sem sopros. AR: MV presente bilateralmente.';
-        document.getElementById('patientMeds').value  = 'AAS 100mg, Metformina 1000mg, Losartana 50mg';
-        this.toast('Caso exemplo carregado.', 'info');
-        DevPanel.log('Caso exemplo preenchido (SCA esperado como #1).', 'info');
-    },
-
-    // ── LIMPAR ───────────────────────────────────────────────────────────────
-    clearForm() {
-        ['patientAge','soapS','soapO','patientMeds'].forEach(id => {
-            document.getElementById(id).value = '';
-        });
-        document.getElementById('resultsContainer').innerHTML = '';
-        DevPanel.clear();
-        DevPanel.log('Formulário limpo.', 'info');
-        this.toast('Formulário limpo.', 'info');
-    },
-
-    // ── TOAST ────────────────────────────────────────────────────────────────
-    toast(msg, type = 'info') {
-        const c     = document.getElementById('toastContainer');
-        const el    = document.createElement('div');
-        el.className = 'toast';
-        const icon  = { success:'✅', error:'❌', warning:'⚠️', info:'ℹ️' }[type] || 'ℹ️';
-        el.innerHTML = `${icon} ${msg}`;
-        if (type === 'error')   el.style.borderColor = '#FF3B30';
-        if (type === 'warning') el.style.borderColor = '#FF9500';
-        if (type === 'success') el.style.borderColor = '#34C759';
-        c.appendChild(el);
-        setTimeout(() => el.remove(), 5000);
-    }
+    return {type:'Documento', weight:0.80, icon:'📄'};
+  }
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
-// AUDIT LOG (tela)
-// ─────────────────────────────────────────────────────────────────────────────
-function audit(msg) {
-    const el = document.getElementById('auditLog');
-    if (!el) return;
-    const d = document.createElement('div');
-    d.textContent = `[${new Date().toLocaleTimeString('pt-BR')}] ${msg}`;
-    el.prepend(d);
-    while (el.children.length > 50) el.removeChild(el.lastChild);
+/** Módulo de Ancoragem Temporal */
+const AncoraTemporal = {
+  get ano() { return new Date().getFullYear(); },
+  evaluate(year) {
+    const y = parseInt(year) || this.ano;
+    const d = this.ano - y;
+    if (d <= 1) return {status:'HOT',     score:1.00, color:'#34C759'};
+    if (d <= 3) return {status:'VÁLIDO',  score:0.85, color:'#FF9500'};
+    if (d <= 7) return {status:'ANTIGO',  score:0.65, color:'#FF9500'};
+    return           {status:'OBSOLETO', score:0.40, color:'#FF3B30'};
+  }
+};
+
+/** Gerador de Citação ABNT NBR 6023:2018 */
+const CitacaoABNT = {
+  generate(doc) {
+    const au = doc.source || 'Autor Desconhecido';
+    const ti = doc.title  || 'Sem título';
+    const yr = doc.year   || new Date().getFullYear();
+    return `${au.toUpperCase()}. ${ti}. ${yr}.`;
+  }
+};
+
+/** Módulo de Score Unificado */
+const ScoreUnificado = {
+  calculate(doc) {
+    const t = AncoraTemporal.evaluate(doc.year).score;
+    const w = doc.entryTypeWeight || 0.80;
+    const e = {'1A':1.0,'1B':0.9,'2A':0.75,'2B':0.65,'2C':0.55}[doc.evidence_level||doc.ev] || 0.70;
+    return Math.round((t*0.40 + w*0.35 + e*0.25)*100);
+  }
+};
+
+/** Ontologia Médica (MeSH/DeCS simulado — client-side) */
+const Ontologia = {
+  REGRAS: [
+    {tag:'Cardiologia',
+     re:/(dor torac|dor no peito|precord|opress|aperto|angin|irrad|mse|braco esq|mandib|sudore|diafore|infart|iam\b|sca\b|coronar|has\b|hipertens|arritmia|fibrilac|flutter|palpitac|cardiaco|miocardio|angina|isquemia)/},
+    {tag:'Pneumologia',
+     re:/(dispne|dispneia|falta de ar|taquipne|tep\b|tromboemb|hemopt|pleurit|tosse.*produt|expector|sibilanc|sibil|chiad|asma\b|dpoc\b|broncoespasm|pneumoni|derrame pleural|efusao|enfisema|bronquite)/},
+    {tag:'Infectologia',
+     re:/(febre|calafr|sepse|choque septic|infecc|antibi|leucocitose|leucopeni|lactat|bacteriem|hemocultura|itu\b|pielonefrit|celulite|endocardit|meningit|covid|dengue|hiv)/},
+    {tag:'Neurologia',
+     re:/(avc\b|acidente vascular|hemipar|hemipleg|monopar|pares|afas|disartr|desvio facial|ptose|diplopia|cefale|cefaleia|enxaqueca|convuls|epilep|confus|torpor|coma|amnesia|tontura|vertigo)/},
+    {tag:'Nefrologia',
+     re:/(insuf renal|renal agud|renal cronic|drc\b|lra\b|nefro|hemodial|dialist|hematuria|proteinuria|creatinin|oliguria|anuria)/},
+    {tag:'Endocrinologia',
+     re:/(diabet|dm2\b|dm1\b|glicemi|insulina|cetoacidose|hipoglicemi|tireo|hipotireo|hipertireo|bocio|cortisol|suprarren|tiroxina)/},
+    {tag:'Gastroenterologia',
+     re:/(dor abdom|nausea|vomit|diarreia|hemat|melena|disfagia|hepatit|cirrose|ascite|peritonit|pancreatit|oclus|ileu|fgado|bilirrubina)/},
+    {tag:'Trauma',
+     re:/(trauma|acidente|queda|fratura|hemorragia|politraumat|lesao|ferimento)/},
+  ],
+
+  extractTags(textRaw) {
+    const text = norm(textRaw);
+    const tags = new Set();
+    for (const r of this.REGRAS) if (r.re.test(text)) tags.add(r.tag);
+    if (!tags.size) tags.add('Clínica Médica');
+    return [...tags];
+  },
+
+  /** Segmentação semântica simples (Dose / Diagnóstico / Fisiopatologia) */
+  segment(text) {
+    const t = norm(text);
+    const segs = [];
+    if (/(mg|ml|dose|mcg|ui|posologia|administr)/.test(t))     segs.push('Dose/Posologia');
+    if (/(diagnostico|diagnosticar|criterio|score|escore)/.test(t)) segs.push('Diagnóstico');
+    if (/(fisiopato|mecanismo|patofisio|etiolog|causa)/.test(t)) segs.push('Fisiopatologia');
+    if (!segs.length) segs.push('Geral');
+    return segs;
+  }
+};
+
+/** Triplo Filtro de Busca: Assunto → Recência → Autoridade */
+const Busca = {
+  async search(query, limit=10) {
+    Mon.log(`Busca: "${norm(query).slice(0,40)}..."`, 'info');
+    let all;
+    try { all = await db.evidence.toArray(); }
+    catch(e) { Mon.log('Erro ao ler evidence: '+e.message,'err'); return []; }
+    if (!all.length) { Mon.log('Banco vazio.','warn'); return []; }
+
+    const qTags   = Ontologia.extractTags(query);
+    const qTokens = tokenize(query);
+
+    Mon.log(`Tags: [${qTags.join(', ')}] | Tokens: [${qTokens.slice(0,6).join(', ')}]`,'info');
+
+    const scored = all.map(doc => {
+      const hay      = norm(`${doc.title||''} ${doc.source||''} ${doc.specialty||''} ${doc.category||doc.cat||''}`);
+      const tokHits  = qTokens.reduce((a,t) => a+(hay.includes(t)?1:0), 0);
+      const tagHits  = (doc.tags||[]).some(t => qTags.includes(t)) ? 3 : 0;
+      // Recência
+      const recency  = AncoraTemporal.evaluate(doc.year).score;
+      // Autoridade (unifiedScore)
+      const auth     = (doc.unifiedScore||50)/100;
+      const score    = tokHits*3 + tagHits + recency + auth;
+      return {doc, score};
+    });
+
+    scored.sort((a,b)=>b.score-a.score);
+    const res = scored.filter(x=>x.score>0.8).slice(0,limit).map(x=>x.doc);
+    Mon.log(`Busca: ${res.length} resultado(s).`, res.length?'ok':'warn');
+    return res;
+  }
+};
+
+// ════════════════════════════════════════════════════════════════════════════
+// 6. LIKELIHOOD RATIOS — editáveis (estado central)
+// ════════════════════════════════════════════════════════════════════════════
+const LR_DEFAULT = [
+  // SCA
+  {id:'sca_dor_torac',   dx:'SCA',      achado:'Dor torácica em aperto/pressão',      lr:5.0},
+  {id:'sca_irrad',       dx:'SCA',      achado:'Irradiação MSE / mandíbula',           lr:3.5},
+  {id:'sca_sudorese',    dx:'SCA',      achado:'Sudorese / diaforese',                 lr:2.5},
+  {id:'sca_nausea',      dx:'SCA',      achado:'Náusea / vômito',                      lr:1.8},
+  {id:'sca_opressao',    dx:'SCA',      achado:'Opressão / constrição torácica',       lr:2.0},
+  {id:'sca_fr',          dx:'SCA',      achado:'FRs: HAS / DM / tabagismo / coronar', lr:1.5},
+  {id:'sca_sexom',       dx:'SCA',      achado:'Sexo masculino > 55a',                 lr:1.4},
+  // TEP
+  {id:'tep_dispneia',    dx:'TEP',      achado:'Dispneia / taquipneia de início agudo',lr:4.0},
+  {id:'tep_pleurit',     dx:'TEP',      achado:'Dor pleurítica (piora com resp)',       lr:3.0},
+  {id:'tep_tvp',         dx:'TEP',      achado:'TVP / cirurgia / imobilização',        lr:4.5},
+  {id:'tep_hemopt',      dx:'TEP',      achado:'Hemoptise',                            lr:3.5},
+  {id:'tep_taqui',       dx:'TEP',      achado:'FC > 100 bpm',                         lr:1.8},
+  // SEPSE
+  {id:'sep_febre',       dx:'Sepse',    achado:'Febre / calafrio / hipertermia',       lr:3.0},
+  {id:'sep_confus',      dx:'Sepse',    achado:'Confusão / desorientação / letargia',  lr:4.5},
+  {id:'sep_foco',        dx:'Sepse',    achado:'Foco infeccioso identificável',         lr:3.5},
+  {id:'sep_taqui',       dx:'Sepse',    achado:'FC ≥ 90 bpm',                          lr:1.8},
+  {id:'sep_hipotens',    dx:'Sepse',    achado:'PA sistólica < 100 mmHg',              lr:3.0},
+  {id:'sep_hipot2',      dx:'Sepse',    achado:'PA sistólica < 90 mmHg (choque)',      lr:4.0},
+  // IC
+  {id:'ic_ortopneia',    dx:'IC',       achado:'Ortopneia / DPN',                      lr:6.0},
+  {id:'ic_edema',        dx:'IC',       achado:'Edema MMII / bilateral',               lr:3.5},
+  {id:'ic_crepitac',     dx:'IC',       achado:'Crepitações pulmonares',               lr:3.0},
+  {id:'ic_hist',         dx:'IC',       achado:'Histórico de IC / FE reduzida',        lr:2.5},
+  // AVC
+  {id:'avc_hemipar',     dx:'AVC',      achado:'Hemiparesia / hemiplegia',             lr:9.0},
+  {id:'avc_afasia',      dx:'AVC',      achado:'Afasia / disartria',                   lr:7.0},
+  {id:'avc_facial',      dx:'AVC',      achado:'Desvio de rima / assimetria facial',   lr:5.0},
+  {id:'avc_subit',       dx:'AVC',      achado:'Início súbito / abrupto',              lr:3.0},
+  {id:'avc_cef',         dx:'AVC',      achado:'Cefaleia súbita intensa (HSA)',         lr:4.5},
+  // PNEUMONIA
+  {id:'pac_tosse',       dx:'Pneumonia',achado:'Tosse produtiva / expectoração',        lr:4.0},
+  {id:'pac_febre',       dx:'Pneumonia',achado:'Febre / calafrio',                      lr:2.5},
+  {id:'pac_crepitac',    dx:'Pneumonia',achado:'Crepitações / macicez focal',           lr:4.5},
+  {id:'pac_hipox',       dx:'Pneumonia',achado:'Hipoxemia / SpO2 baixa',               lr:2.5},
+  // DPOC
+  {id:'dpoc_tabag',      dx:'DPOC',     achado:'Tabagismo / ex-tabagista / DPOC prévio',lr:6.0},
+  {id:'dpoc_sibil',      dx:'DPOC',     achado:'Sibilâncias / broncoespasmo',           lr:3.5},
+  {id:'dpoc_disp_esf',   dx:'DPOC',     achado:'Dispneia progressiva ao esforço',       lr:2.0},
+];
+
+let LR_STATE = LR_DEFAULT.map(x=>({...x}));
+
+// Função para pegar LR atual por id
+function getLR(id) {
+  const found = LR_STATE.find(x=>x.id===id);
+  return found ? found.lr : 1.0;
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// INICIALIZAÇÃO
-// ─────────────────────────────────────────────────────────────────────────────
-window.ARPEmed = ARPEmed;
+// ════════════════════════════════════════════════════════════════════════════
+// 7. CONFIGURAÇÃO BAYESIANA — editável
+// ════════════════════════════════════════════════════════════════════════════
+let BAYES_CFG = {
+  maxPost:  0.99,
+  ageSCA:   1.30,
+  ageIC:    1.40,
+  ageAVC:   1.30,
+  priors: {SCA:0.15, TEP:0.10, Sepse:0.12, IC:0.10, AVC:0.08, Pneumonia:0.10, DPOC:0.08}
+};
 
-DevPanel.log('ARPEmed v18.0 inicializado. Aguardando desbloqueio.', 'info');
-DevPanel.log(`Ambiente: ${location.protocol}//${location.host || 'file'}`, location.protocol === 'file:' ? 'warn' : 'info');
-DevPanel.log(`Base com ${INTEGRATED_DATABASE.length} diretrizes prontas para carregar.`, 'info');
-document.getElementById('serverTime').textContent = String(new Date().getFullYear());
+// ════════════════════════════════════════════════════════════════════════════
+// 8. VERIFICADOR DE CONTRAINDICAÇÕES
+// ════════════════════════════════════════════════════════════════════════════
+const Contraindic = {
+  RULES:[
+    {
+      fn:(meds,acts)=>((acts.includes('aas')||acts.includes('antiagregante'))&&
+         (meds.includes('varfarina')||meds.includes('warfarin')||
+          meds.includes('rivaroxaban')||meds.includes('apixaban'))),
+      sev:'ALTA', msg:'AAS + anticoagulante oral: risco elevado de sangramento. Avalie indicação.'
+    },
+    {
+      fn:(meds,acts)=>(meds.includes('metformina')&&acts.includes('contraste')),
+      sev:'MODERADA', msg:'Metformina + contraste iodado: considere suspensão 48h antes/após (checar função renal).'
+    },
+    {
+      fn:(meds,acts)=>(meds.includes('ieca')||meds.includes('captopril')||meds.includes('enalapril')),
+      sev:'INFO', msg:'IECA em uso: monitorar função renal e K+ em procedimentos com contraste ou hipovolemia.'
+    },
+    {
+      fn:(meds,acts)=>(meds.includes('amiodarona')&&acts.includes('betabloqueador')),
+      sev:'MODERADA', msg:'Amiodarona + betabloqueador: risco de bradicardia severa. Monitorar ECG.'
+    },
+  ],
+  check(patData, actsText) {
+    const meds = norm(patData.medications||'');
+    const acts = norm(actsText||'');
+    return this.RULES.filter(r=>r.fn(meds,acts)).map(r=>({sev:r.sev,msg:r.msg}));
+  }
+};
 
-// Permitir Enter na tela de senha
-document.getElementById('masterPassword').addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') ARPEmed.unlock();
+// ════════════════════════════════════════════════════════════════════════════
+// 9. MOTOR DE INFERÊNCIA — Agente Diagnóstico
+// ════════════════════════════════════════════════════════════════════════════
+const Agente = {
+  async analyze(data) {
+    Mon.log('=== Iniciando análise diagnóstica ===','info');
+
+    const text = norm(`${data.s||''} ${data.o||''}`);
+    const age  = parseInt(data.age)||50;
+    const hr   = parseHR(data.hr);
+    const bp   = parseBP(data.bp);
+    const temp = parseTemp(data.temp);
+    const spo2 = parseSPO2(data.spo2);
+
+    Mon.log(`Paciente: ${age}a | FC:${hr??'N/A'} | PA:${bp?bp.sys+'/'+bp.dia:'N/A'} | T:${temp??'N/A'}°C | SpO2:${spo2??'N/A'}%`,'info');
+
+    // Priors com ajuste de idade
+    const pr = {...BAYES_CFG.priors};
+    if (age >= 65) {
+      pr.SCA  *= BAYES_CFG.ageSCA;
+      pr.IC   *= BAYES_CFG.ageIC;
+      pr.AVC  *= BAYES_CFG.ageAVC;
+      Mon.log(`Priors ajustados (≥65a): SCA×${BAYES_CFG.ageSCA} IC×${BAYES_CFG.ageIC} AVC×${BAYES_CFG.ageAVC}`,'info');
+    }
+    if (age >= 75) { pr.SCA*=1.2; pr.IC*=1.2; pr.Sepse*=1.15; }
+    if (data.gender==='F') { pr.TEP*=1.3; pr.AVC*=0.9; }
+
+    // ── LRs SCA ─────────────────────────────────────────────────────────────
+    let lrSCA=1;
+    if (/dor.*(peito|torac|precord)/.test(text))          lrSCA*=getLR('sca_dor_torac');
+    if (/(irrad|mse|braco esq|mandibul)/.test(text))      lrSCA*=getLR('sca_irrad');
+    if (/(sudore|diafore|frio.*suor)/.test(text))          lrSCA*=getLR('sca_sudorese');
+    if (/(nausea|enjoo|vomit)/.test(text))                 lrSCA*=getLR('sca_nausea');
+    if (/(opressao|constrict|apert)/.test(text))           lrSCA*=getLR('sca_opressao');
+    if (/(has|hipertens|dm|diabet|tabag|coronar|isquemia)/.test(text)) lrSCA*=getLR('sca_fr');
+    if (age>=55&&data.gender==='M')                        lrSCA*=getLR('sca_sexom');
+
+    // ── LRs TEP ─────────────────────────────────────────────────────────────
+    let lrTEP=1;
+    if (/(dispneia|dispne|falta.*ar|taquipne)/.test(text)) lrTEP*=getLR('tep_dispneia');
+    if (/(pleurit|dor.*respir|piora.*respir)/.test(text))  lrTEP*=getLR('tep_pleurit');
+    if (/(trombose|tvp|imobiliz|cirurg|aviao|longa.*distanc|neoplasia)/.test(text)) lrTEP*=getLR('tep_tvp');
+    if (/(hemopt)/.test(text))                             lrTEP*=getLR('tep_hemopt');
+    if (hr!=null&&hr>100)                                  lrTEP*=getLR('tep_taqui');
+
+    // ── LRs SEPSE ────────────────────────────────────────────────────────────
+    let lrSepse=1;
+    if (/(febre|calafr|hipertermi)/.test(text))            lrSepse*=getLR('sep_febre');
+    if (temp!=null&&temp>=38.0)                             lrSepse*=1.8;
+    if (temp!=null&&temp>=39.5)                             lrSepse*=1.5;
+    if (/(confus|desorient|letarg|torpor)/.test(text))      lrSepse*=getLR('sep_confus');
+    if (/(infecc|foco|pneumoni|itu\b|pielonefrit|celulite)/.test(text)) lrSepse*=getLR('sep_foco');
+    if (hr!=null&&hr>=90)                                   lrSepse*=getLR('sep_taqui');
+    if (bp&&bp.sys<100)                                     lrSepse*=getLR('sep_hipotens');
+    if (bp&&bp.sys<90)                                      lrSepse*=getLR('sep_hipot2');
+    if (spo2!=null&&spo2<94)                                lrSepse*=1.5;
+
+    // ── LRs IC ──────────────────────────────────────────────────────────────
+    let lrIC=1;
+    if (/(ortopne|dispne.*parox|dpn\b|acorda.*falta)/.test(text)) lrIC*=getLR('ic_ortopneia');
+    if (/(edema.*mmii|inchac.*perna|edema.*bil)/.test(text)) lrIC*=getLR('ic_edema');
+    if (/(crepitac|estertores.*pulm)/.test(text))           lrIC*=getLR('ic_crepitac');
+    if (/(icc|ic\b|insuf.*cardiaca|fe.*reduz)/.test(text))  lrIC*=getLR('ic_hist');
+
+    // ── LRs AVC ─────────────────────────────────────────────────────────────
+    let lrAVC=1;
+    if (/(hemipar|hemipleg|monopar|forca.*assi)/.test(text)) lrAVC*=getLR('avc_hemipar');
+    if (/(afas|disartr|fala.*arrast|nao.*fala|linguag)/.test(text)) lrAVC*=getLR('avc_afasia');
+    if (/(desvio.*rima|face.*assi|boca.*torta|facial)/.test(text)) lrAVC*=getLR('avc_facial');
+    if (/(subit|repentin|abrupto)/.test(text))               lrAVC*=getLR('avc_subit');
+    if (/(cefale.*subita|pior.*cefale|trovao)/.test(text))   lrAVC*=getLR('avc_cef');
+
+    // ── LRs PNEUMONIA ────────────────────────────────────────────────────────
+    let lrPneumo=1;
+    if (/(tosse.*produt|expector|escarro.*purulento)/.test(text)) lrPneumo*=getLR('pac_tosse');
+    if (/(febre|calafr)/.test(text))                        lrPneumo*=getLR('pac_febre');
+    if (/(crepitac|macicez|broncofonia)/.test(text))         lrPneumo*=getLR('pac_crepitac');
+    if ((spo2!=null&&spo2<94)||/(hipoxemia|oxigenio)/.test(text)) lrPneumo*=getLR('pac_hipox');
+
+    // ── LRs DPOC ─────────────────────────────────────────────────────────────
+    let lrDPOC=1;
+    if (/(tabag|fumante|ex.fumante|dpoc|enfisema|bronquite cronica)/.test(text)) lrDPOC*=getLR('dpoc_tabag');
+    if (/(sibil|chiad|broncoespasm)/.test(text))             lrDPOC*=getLR('dpoc_sibil');
+    if (/(dispne.*esforco|limitac.*esforco)/.test(text))     lrDPOC*=getLR('dpoc_disp_esf');
+
+    Mon.log(`LRs: SCA=${lrSCA.toFixed(2)} TEP=${lrTEP.toFixed(2)} Sepse=${lrSepse.toFixed(2)} IC=${lrIC.toFixed(2)} AVC=${lrAVC.toFixed(2)} PAC=${lrPneumo.toFixed(2)} DPOC=${lrDPOC.toFixed(2)}`,'dbg');
+
+    // ── Buscar evidências e boost ────────────────────────────────────────────
+    let evid=[];
+    try {
+      evid = await Busca.search(`${data.s} ${data.o}`,10);
+      for (const ev of evid) {
+        const b    = (ev.unifiedScore||50)/100;
+        const tags = ev.tags||[];
+        if (tags.includes('Cardiologia'))  { lrSCA*=(1+b*0.20); lrIC*=(1+b*0.12); }
+        if (tags.includes('Pneumologia'))  { lrTEP*=(1+b*0.15); lrPneumo*=(1+b*0.18); lrDPOC*=(1+b*0.15); }
+        if (tags.includes('Infectologia')) { lrSepse*=(1+b*0.18); }
+        if (tags.includes('Neurologia'))   { lrAVC*=(1+b*0.18); }
+      }
+    } catch(e) { Mon.log('Erro no boost de evidências: '+e.message,'err'); }
+
+    // ── Temperatura Zero: fórmula determinística ──────────────────────────────
+    const post=(prior,lr)=>Math.min(BAYES_CFG.maxPost,(prior*lr)/((prior*lr)+(1-prior)));
+
+    const hipoteses = [
+      {
+        code:'SCA', name:'Síndrome Coronariana Aguda (SCA/IAM)',
+        post:post(pr.SCA,lrSCA), urgency:'CRÍTICO',
+        tests:['ECG em < 10 min','Troponina hs (0h/1h/2h)','AAS 300mg VO + Ticagrelor 180mg','Acesso venoso + monitor contínuo'],
+        guidelines:'SBC 2025 • ESC 2025 • Harrison 2025',
+        cat:'SCA', specialty:'Cardiologia'
+      },
+      {
+        code:'TEP', name:'Tromboembolismo Pulmonar (TEP)',
+        post:post(pr.TEP,lrTEP), urgency:'CRÍTICO',
+        tests:['Wells Score','D-dímero','AngioTC tórax (contraste)','Gasometria arterial'],
+        guidelines:'SBC 2025 • SBPT 2024',
+        cat:'TEP', specialty:'Cardiologia'
+      },
+      {
+        code:'Sepse', name:'Sepse / Choque Séptico',
+        post:post(pr.Sepse,lrSepse), urgency:'CRÍTICO',
+        tests:['Lactato sérico urgente','Hemoculturas × 2','ATB empírico em < 1h','Reposição volêmica 30 ml/kg'],
+        guidelines:'SSC 2025 • AMIB 2025 • SBI 2024',
+        cat:'Sepse', specialty:'Infectologia'
+      },
+      {
+        code:'IC', name:'Insuficiência Cardíaca Aguda',
+        post:post(pr.IC,lrIC), urgency:'URGENTE',
+        tests:['BNP / NT-proBNP','Ecocardiograma urgente','Raio-X tórax','Diuréticos IV (furosemida)'],
+        guidelines:'SBC 2024 • ESC 2025 • AHA 2025',
+        cat:'IC', specialty:'Cardiologia'
+      },
+      {
+        code:'AVC', name:'AVC Isquêmico Agudo',
+        post:post(pr.AVC,lrAVC), urgency:'CRÍTICO',
+        tests:['TC crânio sem contraste','Escala NIHSS','Janela para rtPA (< 4,5h)','Glicemia + ECG'],
+        guidelines:'ABN 2025 • AAN 2025',
+        cat:'AVC', specialty:'Neurologia'
+      },
+      {
+        code:'Pneumonia', name:'Pneumonia Adquirida na Comunidade (PAC)',
+        post:post(pr.Pneumonia,lrPneumo), urgency:'URGENTE',
+        tests:['Raio-X tórax PA + Perfil','CURB-65','Hemograma + PCR + procalcitonina','ATB guiado por diretriz'],
+        guidelines:'SBPT 2025 • IDSA 2025',
+        cat:'Pneumonia', specialty:'Pneumologia'
+      },
+      {
+        code:'DPOC', name:'DPOC Exacerbada',
+        post:post(pr.DPOC,lrDPOC), urgency:'URGENTE',
+        tests:['Gasometria arterial','SABA + SAMA inalatório','SpO2 alvo 88–92%','Raio-X tórax'],
+        guidelines:'GOLD 2025 • SBPT 2025',
+        cat:'DPOC', specialty:'Pneumologia'
+      },
+    ];
+
+    hipoteses.sort((a,b)=>b.post-a.post);
+    const top = hipoteses[0];
+    Mon.log(`TOP: ${top.name} → ${(top.post*100).toFixed(1)}%`,'ok');
+
+    // Fallback de evidências por categoria do diagnóstico líder
+    if (!evid.length) {
+      try {
+        const all=await db.evidence.toArray();
+        evid=all
+          .filter(e=>norm(e.category||e.cat||'')===norm(top.code)||
+                     (e.tags||[]).map(t=>norm(t)).includes(norm(top.specialty)))
+          .sort((a,b)=>(b.unifiedScore||0)-(a.unifiedScore||0))
+          .slice(0,5);
+        Mon.log(`Fallback: ${evid.length} evidência(s) por categoria.`,'info');
+      } catch(e){ Mon.log('Err fallback evidências: '+e.message,'err'); }
+    }
+
+    // Citar a fonte mais atual
+    const fonteMaisAtual = evid.length
+      ? evid.reduce((a,b)=>((b.year||0)>(a.year||0)?b:a))
+      : null;
+
+    const ci = Contraindic.check(data, top.tests.join(' '));
+    return { hipoteses, evid:evid.slice(0,6), ci, fonteMaisAtual, lrs:{lrSCA,lrTEP,lrSepse,lrIC,lrAVC,lrPneumo,lrDPOC} };
+  },
+
+  genPTS(h) {
+    const p=h[0], crit=p.urgency==='CRÍTICO';
+    return {
+      imediato:[
+        crit?'🚨 Acesso venoso calibroso + monitorização contínua':'📊 Monitorização e estabilização',
+        `🔬 ${p.tests[0]}`,
+        `💊 ${p.tests[2]||p.tests[1]||'Avaliar conduta específica'}`
+      ],
+      medio:['📊 Reavaliação clínica após 1–2h','🔄 Ajuste terapêutico por resposta','👨‍⚕️ Interconsulta especialidade'],
+      longo:['🏥 Critérios de alta definidos','📅 Retorno 7–14 dias','💊 Reconciliação medicamentosa']
+    };
+  }
+};
+
+// ════════════════════════════════════════════════════════════════════════════
+// 10. APLICAÇÃO PRINCIPAL
+// ════════════════════════════════════════════════════════════════════════════
+const App = {
+  ready: false,
+  uploadFiles: [],
+
+  // ── UNLOCK ────────────────────────────────────────────────────────────────
+  async unlock() {
+    const pw  = document.getElementById('masterPwd').value;
+    const err = document.getElementById('lockErr');
+    if (pw.length<8){ err.textContent='Senha mínima: 8 caracteres.'; return; }
+    err.textContent='';
+
+    if (location.protocol==='file:')
+      Mon.log('Executando via file:// — IndexedDB pode ser instável. Prefira http://localhost','warn');
+
+    document.getElementById('lockScreen').style.display='none';
+    document.getElementById('mainApp').style.display='block';
+
+    const btn=document.getElementById('btnAnalyze');
+    btn.disabled=true;
+    btn.innerHTML='<span class="spin"></span>&nbsp; Carregando base...';
+
+    try {
+      Mon.log('Abrindo IndexedDB...','info');
+      await db.open();
+      Mon.log('IndexedDB aberto.','ok');
+      await this.loadGuidelines(false);
+      await this.repairDB();
+      this.ready=true;
+      btn.disabled=false;
+      btn.innerHTML='<i class="fas fa-stethoscope"></i>&nbsp; Executar Análise Diagnóstica';
+      this.toast('Sistema pronto! Base carregada.','success');
+      Mon.log('Sistema desbloqueado e pronto.','ok');
+      auditLog('UNLOCK','Sistema desbloqueado com sucesso');
+      await this.updateStats();
+    } catch(e) {
+      Mon.log('FALHA no desbloqueio: '+e.message,'err');
+      this.toast('Erro ao abrir base: '+e.message,'error');
+      btn.innerHTML='<i class="fas fa-exclamation-triangle"></i>&nbsp; Erro — veja Monitor';
+      auditLog('UNLOCK-FAIL',e.message.slice(0,80));
+    }
+  },
+
+  // ── LOAD GUIDELINES ───────────────────────────────────────────────────────
+  async loadGuidelines(verbose=true) {
+    Mon.log('Carregando diretrizes...','info');
+    let added=0;
+    try {
+      for (const g of GUIDELINES_DB) {
+        const ex=await db.evidence.where('pmid').equals(g.pmid).first();
+        if (!ex) {
+          const et    = Tipologia.classify(g.source,g.title);
+          const tags  = Ontologia.extractTags(`${g.title} ${g.source} ${g.specialty}`);
+          const segs  = Ontologia.segment(g.title);
+          const score = ScoreUnificado.calculate({...g,evidence_level:g.ev,entryTypeWeight:et.weight});
+          const abnt  = CitacaoABNT.generate({...g});
+          const temp  = AncoraTemporal.evaluate(g.year);
+          await db.evidence.add({
+            ...g, evidence_level:g.ev,
+            entryType:et.type, entryTypeWeight:et.weight, entryIcon:et.icon,
+            unifiedScore:score, priorityScore:score,
+            tags, segments:segs, citationABNT:abnt,
+            temporalStatus:temp.status, temporalScore:temp.score,
+            updatedAt:new Date().toISOString()
+          });
+          added++;
+        }
+      }
+    } catch(e) { Mon.log('Erro ao carregar diretrizes: '+e.message,'err'); throw e; }
+    await this.updateStats();
+    if (added>0) { Mon.log(`${added} diretriz(es) adicionada(s).`,'ok'); if(verbose) this.toast(`${added} diretrizes carregadas.`,'success'); }
+    else { Mon.log('Banco atualizado (0 novas diretrizes).','info'); if(verbose) this.toast('Banco já completo.','info'); }
+  },
+
+  // ── REPAIR DB ─────────────────────────────────────────────────────────────
+  async repairDB() {
+    Mon.log('Verificando integridade do banco...','info');
+    let fixed=0;
+    try {
+      const all=await db.evidence.toArray();
+      for (const doc of all) {
+        if (doc.tags&&Array.isArray(doc.tags)&&doc.tags.length&&doc.unifiedScore) continue;
+        const et    = Tipologia.classify(doc.source||'',doc.title||'');
+        const tags  = Ontologia.extractTags(`${doc.title||''} ${doc.source||''} ${doc.specialty||''}`);
+        const score = ScoreUnificado.calculate({...doc,entryTypeWeight:et.weight});
+        await db.evidence.put({...doc,tags,unifiedScore:score,priorityScore:score,
+          entryType:doc.entryType||et.type,entryTypeWeight:doc.entryTypeWeight||et.weight,
+          updatedAt:new Date().toISOString()});
+        fixed++;
+      }
+    } catch(e){ Mon.log('Erro ao reparar banco: '+e.message,'err'); }
+    if (fixed) { Mon.log(`Banco reparado: ${fixed} registro(s).`,'ok'); await this.updateStats(); }
+    else Mon.log('Banco íntegro.','ok');
+  },
+
+  // ── UPDATE STATS ──────────────────────────────────────────────────────────
+  async updateStats() {
+    try {
+      const all=await db.evidence.toArray();
+      const yr=new Date().getFullYear();
+      document.getElementById('sTot').textContent=all.length;
+      document.getElementById('sHot').textContent=all.filter(e=>Number(e.year)>=yr-1).length;
+      document.getElementById('sDir').textContent=all.filter(e=>e.entryType==='Diretriz').length;
+      document.getElementById('sCas').textContent=await db.cases.count();
+      document.getElementById('sHL').textContent=await db.hl_queue.where('status').equals('pending').count();
+      document.getElementById('sYear').textContent=String(yr);
+    } catch(e){ Mon.log('Err stats: '+e.message,'err'); }
+  },
+
+  // ── ANALYZE ───────────────────────────────────────────────────────────────
+  async analyze() {
+    if (!this.ready){ this.toast('Aguarde carregar a base.','warning'); return; }
+    const btn=document.getElementById('btnAnalyze');
+    btn.disabled=true;
+    btn.innerHTML='<span class="spin"></span>&nbsp; Analisando...';
+    Mon.clear();
+    Mon.log('=== Nova análise ===','info');
+
+    try {
+      const data={
+        age:  document.getElementById('iAge').value,
+        gender: document.getElementById('iGender').value,
+        bp:   document.getElementById('iBP').value,
+        hr:   document.getElementById('iHR').value,
+        temp: document.getElementById('iTemp').value,
+        spo2: document.getElementById('iSPO2').value,
+        s:    document.getElementById('iS').value.trim(),
+        o:    document.getElementById('iO').value.trim(),
+        medications: document.getElementById('iMeds').value.trim()
+      };
+
+      if (!data.s) throw new Error('Campo "Subjetivo" vazio. Descreva a queixa.');
+      if (!data.o) throw new Error('Campo "Objetivo" vazio. Informe exame físico.');
+
+      const res = await Agente.analyze(data);
+      const pts = Agente.genPTS(res.hipoteses);
+      this.renderResults(data, res, pts);
+
+      await db.cases.add({timestamp:new Date().toISOString(), data:{dx:res.hipoteses[0].name}});
+      await db.audit_db.add({ts:new Date().toISOString(), action:'ANALISE', detail:`Dx: ${res.hipoteses[0].name}`});
+      await this.updateStats();
+
+      const top=res.hipoteses[0];
+      this.toast(`${top.name} — ${(top.post*100).toFixed(1)}%`,'success');
+      auditLog('ANALISE', `Dx:${top.name} p=${(top.post*100).toFixed(1)}%`);
+      Mon.log(`=== Concluído: ${top.name} (${(top.post*100).toFixed(1)}%) ===`,'ok');
+
+    } catch(e) {
+      Mon.log('ERRO na análise: '+e.message,'err');
+      this.toast('Erro: '+e.message,'error');
+      auditLog('ANALISE-FAIL',e.message.slice(0,80));
+    } finally {
+      btn.disabled=false;
+      btn.innerHTML='<i class="fas fa-stethoscope"></i>&nbsp; Executar Análise Diagnóstica';
+    }
+  },
+
+  // ── RENDER RESULTS ────────────────────────────────────────────────────────
+  renderResults(data, res, pts) {
+    const c   = document.getElementById('results');
+    const top = res.hipoteses[0];
+    const isCrit = top.urgency==='CRÍTICO';
+
+    const diagCards = res.hipoteses.slice(0,5).map((h,i)=>{
+      const pct  = (h.post*100).toFixed(1);
+      const clr  = h.post>0.5?'#FF3B30':h.post>0.25?'#FF9500':'#007AFF';
+      return `
+      <div style="padding:14px;border-radius:13px;margin-bottom:8px;
+           background:${i===0?'rgba(255,59,48,.12)':'rgba(255,255,255,.04)'};
+           ${i===0?'border:1px solid rgba(255,59,48,.3)':''}">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+          <span style="font-weight:700;font-size:${i===0?'15px':'13px'}">${i+1}. ${h.name}</span>
+          <span style="background:${clr}30;color:${clr};padding:3px 12px;border-radius:20px;
+               font-weight:700;font-size:13px">${pct}%</span>
+        </div>
+        <div style="height:4px;background:rgba(255,255,255,.08);border-radius:4px;margin-bottom:7px">
+          <div style="height:100%;width:${Math.min(100,parseFloat(pct))}%;background:${clr};border-radius:4px"></div>
+        </div>
+        <p style="font-size:11px;opacity:.65;margin-bottom:3px">${h.tests.join(' • ')}</p>
+        <p style="font-size:10px;opacity:.4">📚 ${h.guidelines}</p>
+      </div>`;
+    }).join('');
+
+    const ciHtml = res.ci.length?`
+    <div style="margin-bottom:18px">
+      ${res.ci.map(c=>`<div class="ci-alert">
+        <i class="fas fa-exclamation-triangle" style="color:#FF3B30;margin-right:8px"></i>
+        <strong>[${c.sev}]</strong> ${c.msg}
+      </div>`).join('')}
+    </div>`:'';
+
+    const evidHtml = res.evid.length?`
+    <div style="margin-bottom:20px">
+      <h3 style="font-weight:700;color:#60a5fa;margin-bottom:10px;font-size:13px">
+        <i class="fas fa-book-open" style="margin-right:6px"></i>Evidências Recuperadas (${res.evid.length})
+        ${res.fonteMaisAtual?`<span style="font-size:10px;color:#34C759;margin-left:8px">
+          — Mais atual: ${res.fonteMaisAtual.source} ${res.fonteMaisAtual.year}
+        </span>`:''}
+      </h3>
+      ${res.evid.map(e=>`
+      <div style="padding:10px 13px;background:rgba(255,255,255,.04);border-radius:10px;margin-bottom:5px;
+           border-left:3px solid ${e.temporalStatus==='HOT'?'#34C759':e.temporalStatus==='VÁLIDO'?'#FF9500':'#FF3B30'}">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <span style="font-size:10px;background:rgba(255,255,255,.08);padding:1px 7px;border-radius:10px">
+            ${e.entryIcon||'📄'} ${e.entryType||'Doc'}
+          </span>
+          <span style="font-size:9px;background:${e.temporalStatus==='HOT'?'rgba(52,199,89,.2)':'rgba(255,149,0,.2)'};
+               color:${e.temporalStatus==='HOT'?'#34C759':'#FF9500'};padding:1px 7px;border-radius:10px">
+            ${e.temporalStatus||'VÁLIDO'} ${e.year}
+          </span>
+          <span style="font-size:9px;opacity:.4">Score: ${e.unifiedScore||'—'}</span>
+        </div>
+        <p style="font-weight:600;font-size:13px;margin-top:5px">${e.title}</p>
+        <p style="font-size:11px;opacity:.5;margin-top:2px">${e.source} • ${e.citationABNT||CitacaoABNT.generate(e)}</p>
+      </div>`).join('')}
+    </div>`:'<p style="opacity:.35;font-size:12px;margin-bottom:14px">Nenhuma evidência específica encontrada — verifique o banco de dados.</p>';
+
+    const lrDbg=res.lrs?`
+    <div style="margin-bottom:18px;padding:12px 15px;background:rgba(0,0,0,.4);border-radius:12px">
+      <p style="font-size:10px;font-weight:700;color:rgba(255,255,255,.3);margin-bottom:6px;text-transform:uppercase">
+        Debug — LRs Calculados
+      </p>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;font-family:'Courier New',monospace;font-size:11px">
+        ${Object.entries(res.lrs).map(([k,v])=>`<span style="background:rgba(255,255,255,.06);padding:2px 8px;border-radius:6px">
+          ${k}=${v.toFixed(2)}
+        </span>`).join('')}
+      </div>
+    </div>`:'';
+
+    c.innerHTML=`
+    <div class="glass p-4 md:p-6 mb-4">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+        <h2 style="font-size:20px;font-weight:900">
+          <i class="fas fa-clipboard-check" style="color:#AF52DE;margin-right:8px"></i>Resultado — Pipeline Diagnóstico
+        </h2>
+        <span style="background:${isCrit?'rgba(255,59,48,.2)':'rgba(255,149,0,.2)'};
+             color:${isCrit?'#FF3B30':'#FF9500'};padding:5px 16px;border-radius:20px;font-weight:700">
+          ${isCrit?'🚨 CRÍTICO':'⚡ URGENTE'}
+        </span>
+      </div>
+
+      ${ciHtml}
+
+      <div class="soap-box soap-s">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <div class="soap-ltr soap-ls">S</div>
+          <h3 style="font-weight:800;color:#60a5fa;text-transform:uppercase;font-size:12px">Subjetivo</h3>
+        </div>
+        <p style="line-height:1.65">${data.s}</p>
+      </div>
+
+      <div class="soap-box soap-o">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <div class="soap-ltr soap-lo">O</div>
+          <h3 style="font-weight:800;color:#34C759;text-transform:uppercase;font-size:12px">Objetivo</h3>
+        </div>
+        <p style="line-height:1.65">${data.o}</p>
+      </div>
+
+      <div class="soap-box soap-a">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+          <div class="soap-ltr soap-la">A</div>
+          <h3 style="font-weight:800;color:#AF52DE;text-transform:uppercase;font-size:12px">Avaliação — Probabilidades Bayesianas (Temperatura Zero)</h3>
+        </div>
+        ${diagCards}
+        ${lrDbg}
+      </div>
+
+      <div class="soap-box soap-p">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+          <div class="soap-ltr soap-lp">P</div>
+          <h3 style="font-weight:800;color:#FF9500;text-transform:uppercase;font-size:12px">Plano — Fonte mais atual: ${top.guidelines.split('•')[0].trim()}</h3>
+        </div>
+        <ul style="list-style:disc;margin-left:20px;line-height:2.2">
+          ${top.tests.map(t=>`<li style="font-size:14px">${t}</li>`).join('')}
+        </ul>
+      </div>
+
+      ${evidHtml}
+
+      <h3 style="font-size:15px;font-weight:900;color:#34C759;margin-bottom:12px">
+        <i class="fas fa-calendar-check" style="margin-right:6px"></i>PTS — Plano Terapêutico Singularizado
+      </h3>
+      <div class="pts-grid">
+        <div class="pts-card" style="border-top-color:#FF3B30">
+          <div style="font-weight:700;color:#FF3B30;margin-bottom:10px">⚡ Imediato</div>
+          <ul style="list-style:disc;margin-left:16px;line-height:2">
+            ${pts.imediato.map(i=>`<li style="font-size:13px">${i}</li>`).join('')}
+          </ul>
+        </div>
+        <div class="pts-card" style="border-top-color:#FF9500">
+          <div style="font-weight:700;color:#FF9500;margin-bottom:10px">📋 Médio Prazo</div>
+          <ul style="list-style:disc;margin-left:16px;line-height:2">
+            ${pts.medio.map(i=>`<li style="font-size:13px">${i}</li>`).join('')}
+          </ul>
+        </div>
+        <div class="pts-card" style="border-top-color:#34C759">
+          <div style="font-weight:700;color:#34C759;margin-bottom:10px">🏥 Longo Prazo</div>
+          <ul style="list-style:disc;margin-left:16px;line-height:2">
+            ${pts.longo.map(i=>`<li style="font-size:13px">${i}</li>`).join('')}
+          </ul>
+        </div>
+      </div>
+    </div>`;
+
+    c.scrollIntoView({behavior:'smooth',block:'start'});
+  },
+
+  // ── EDITORS — Bayesian ────────────────────────────────────────────────────
+  openBayesEditor() {
+    document.getElementById('bMaxPost').value=BAYES_CFG.maxPost;
+    document.getElementById('bAgeSCA').value=BAYES_CFG.ageSCA;
+    document.getElementById('bAgeIC').value=BAYES_CFG.ageIC;
+    document.getElementById('bAgeAVC').value=BAYES_CFG.ageAVC;
+    document.getElementById('pSCA').value=BAYES_CFG.priors.SCA;
+    document.getElementById('pTEP').value=BAYES_CFG.priors.TEP;
+    document.getElementById('pSepse').value=BAYES_CFG.priors.Sepse;
+    document.getElementById('pIC').value=BAYES_CFG.priors.IC;
+    document.getElementById('pAVC').value=BAYES_CFG.priors.AVC;
+    document.getElementById('pPneumo').value=BAYES_CFG.priors.Pneumonia;
+    document.getElementById('pDPOC').value=BAYES_CFG.priors.DPOC;
+    openModal('mBayes');
+    Mon.log('Editor Bayesiano aberto.','info');
+  },
+
+  saveBayes() {
+    BAYES_CFG.maxPost=+document.getElementById('bMaxPost').value||0.99;
+    BAYES_CFG.ageSCA=+document.getElementById('bAgeSCA').value||1.30;
+    BAYES_CFG.ageIC=+document.getElementById('bAgeIC').value||1.40;
+    BAYES_CFG.ageAVC=+document.getElementById('bAgeAVC').value||1.30;
+    BAYES_CFG.priors.SCA=+document.getElementById('pSCA').value||0.15;
+    BAYES_CFG.priors.TEP=+document.getElementById('pTEP').value||0.10;
+    BAYES_CFG.priors.Sepse=+document.getElementById('pSepse').value||0.12;
+    BAYES_CFG.priors.IC=+document.getElementById('pIC').value||0.10;
+    BAYES_CFG.priors.AVC=+document.getElementById('pAVC').value||0.08;
+    BAYES_CFG.priors.Pneumonia=+document.getElementById('pPneumo').value||0.10;
+    BAYES_CFG.priors.DPOC=+document.getElementById('pDPOC').value||0.08;
+    closeModal('mBayes');
+    this.toast('Configuração Bayesiana salva.','success');
+    Mon.log('Fórmula Bayesiana atualizada.','ok');
+    auditLog('BAYES-UPDATE','Priors e ajustes atualizados');
+  },
+
+  resetBayes() {
+    BAYES_CFG={maxPost:0.99,ageSCA:1.30,ageIC:1.40,ageAVC:1.30,
+      priors:{SCA:0.15,TEP:0.10,Sepse:0.12,IC:0.10,AVC:0.08,Pneumonia:0.10,DPOC:0.08}};
+    this.openBayesEditor();
+    this.toast('Priors restaurados ao padrão.','info');
+  },
+
+  // ── EDITORS — LR ─────────────────────────────────────────────────────────
+  openLREditor() {
+    const wrap=document.getElementById('lrTableWrap');
+    const dxs=[...new Set(LR_STATE.map(x=>x.dx))];
+    let html=`<table class="lr-table"><thead><tr>
+      <th>Diagnóstico</th><th style="min-width:220px">Achado Clínico</th>
+      <th>LR+ Atual</th><th>LR+ Padrão</th>
+    </tr></thead><tbody>`;
+    for (const r of LR_STATE) {
+      const def=LR_DEFAULT.find(x=>x.id===r.id);
+      html+=`<tr>
+        <td><span style="font-size:10px;background:rgba(255,255,255,.08);padding:2px 8px;border-radius:8px">${r.dx}</span></td>
+        <td style="font-size:12px">${r.achado}</td>
+        <td><input type="number" value="${r.lr}" step="0.1" min="0.1" max="50" data-lrid="${r.id}" class="lr-inp"></td>
+        <td style="opacity:.4;font-size:12px">${def?def.lr:'—'}</td>
+      </tr>`;
+    }
+    html+='</tbody></table>';
+    wrap.innerHTML=html;
+    openModal('mLR');
+    Mon.log('Editor de LRs aberto.','info');
+  },
+
+  saveLRs() {
+    document.querySelectorAll('.lr-inp').forEach(inp=>{
+      const id=inp.dataset.lrid;
+      const idx=LR_STATE.findIndex(x=>x.id===id);
+      if (idx>=0) LR_STATE[idx].lr=+inp.value||LR_DEFAULT.find(x=>x.id===id)?.lr||1.0;
+    });
+    closeModal('mLR');
+    this.toast('Likelihood Ratios atualizados.','success');
+    Mon.log(`${LR_STATE.length} LRs salvos.`,'ok');
+    auditLog('LR-UPDATE',`${LR_STATE.length} LRs atualizados`);
+  },
+
+  resetLRs() {
+    LR_STATE=LR_DEFAULT.map(x=>({...x}));
+    this.openLREditor();
+    this.toast('LRs restaurados ao padrão.','info');
+  },
+
+  // ── DEBUG ─────────────────────────────────────────────────────────────────
+  async openDebug() {
+    let all=[]; try { all=await db.evidence.toArray(); } catch(e){}
+    const cfg={bayesCfg:BAYES_CFG, lrCount:LR_STATE.length,
+      dbReady:this.ready, evidenceCount:all.length,
+      protocol:location.protocol, dexieVersion:'3.2.4',
+      browserUA:navigator.userAgent.slice(0,80)};
+    const sample=all.slice(0,3).map(e=>({pmid:e.pmid,tags:e.tags,score:e.unifiedScore,year:e.year}));
+    document.getElementById('debugContent').textContent=
+      '=== ARPEmed v19.0 — Estado Interno ===\n\n'+
+      JSON.stringify(cfg,null,2)+'\n\n'+
+      '=== Amostra (3 docs) ===\n'+JSON.stringify(sample,null,2)+'\n\n'+
+      '=== LR_STATE (primeiros 5) ===\n'+JSON.stringify(LR_STATE.slice(0,5),null,2);
+    openModal('mDebug');
+    Mon.log('Debug aberto.','info');
+  },
+
+  // ── AUDIT MODAL ───────────────────────────────────────────────────────────
+  async openAuditLog() {
+    let rows=[]; try { rows=await db.audit_db.orderBy('ts').reverse().limit(100).toArray(); } catch(e){}
+    const el=document.getElementById('auditFull');
+    el.innerHTML=(_auditBuf.map(e=>`[${e.ts}] ${e.action}: ${e.detail}`).join('\n')||'Nenhum registro ainda.');
+    if (rows.length) el.innerHTML+='\n\n--- Banco de dados ---\n'+rows.map(r=>`[${r.ts}] ${r.action}: ${r.detail||''}`).join('\n');
+    openModal('mAudit');
+  },
+
+  exportAudit() {
+    const lines=_auditBuf.map(e=>`"${e.ts}","${e.action}","${e.detail}"`);
+    const csv='ts,action,detail\n'+lines.join('\n');
+    const b=new Blob([csv],{type:'text/csv'});
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(b);
+    a.download=`arpemed_audit_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    this.toast('Audit Log exportado.','success');
+  },
+
+  clearAudit() {
+    _auditBuf.length=0;
+    const el=document.getElementById('auditEl');
+    if(el) el.innerHTML='';
+    this.toast('Log limpo.','info');
+  },
+
+  // ── UPLOAD ────────────────────────────────────────────────────────────────
+  openUpload() {
+    this.uploadFiles=[];
+    document.getElementById('uploadPrev').style.display='none';
+    document.getElementById('uploadProg').style.display='none';
+    document.getElementById('progBar').style.width='0%';
+    const dz=document.getElementById('dropArea');
+    const fi=document.getElementById('fileIn');
+    dz.ondragover=e=>{e.preventDefault();dz.classList.add('dragover')};
+    dz.ondragleave=()=>dz.classList.remove('dragover');
+    dz.ondrop=e=>{e.preventDefault();dz.classList.remove('dragover');this.handleFiles([...e.dataTransfer.files])};
+    fi.onchange=e=>this.handleFiles([...e.target.files]);
+    openModal('mUpload');
+  },
+
+  handleFiles(files) {
+    this.uploadFiles=files;
+    const p=document.getElementById('uploadPrev');
+    p.innerHTML=`<p style="font-weight:700;margin-bottom:6px">${files.length} arquivo(s):</p>`+
+      files.map(f=>`<div style="font-size:12px;opacity:.6">📄 ${f.name} (${(f.size/1024).toFixed(1)} KB)</div>`).join('');
+    p.style.display='block';
+  },
+
+  async processUpload() {
+    if (!this.uploadFiles.length){this.toast('Selecione arquivos.','warning');return;}
+    const btn=document.getElementById('btnUpload');
+    btn.disabled=true;
+    document.getElementById('uploadProg').style.display='block';
+    let added=0;
+
+    for (let i=0;i<this.uploadFiles.length;i++) {
+      const f=this.uploadFiles[i];
+      document.getElementById('progBar').style.width=((i+1)/this.uploadFiles.length*100)+'%';
+      Mon.log(`Processando: ${f.name}`,'info');
+
+      if (f.name.endsWith('.json')) {
+        try {
+          const raw=await f.text();
+          const parsed=JSON.parse(raw);
+          const items=parsed.evidence||(Array.isArray(parsed)?parsed:[parsed]);
+          for (const item of items) {
+            if (!item.pmid) item.pmid=`IMPORT-${uid()}`;
+            const ex=await db.evidence.where('pmid').equals(item.pmid).first();
+            if (!ex) {
+              const et    = Tipologia.classify(item.source||'',item.title||'');
+              const tags  = Ontologia.extractTags(`${item.title||''} ${item.specialty||''}`);
+              const score = ScoreUnificado.calculate({...item,entryTypeWeight:et.weight});
+              const abnt  = CitacaoABNT.generate(item);
+              await db.evidence.add({
+                ...item, entryType:et.type, entryTypeWeight:et.weight,
+                unifiedScore:score, priorityScore:score, tags,
+                citationABNT:abnt, updatedAt:new Date().toISOString()
+              });
+              // Fila human-loop
+              await db.hl_queue.add({pmid:item.pmid,status:'pending',
+                title:item.title,source:item.source,year:item.year,
+                extractedTags:tags, score, createdAt:new Date().toISOString()});
+              added++;
+            }
+          }
+          Mon.log(`${f.name}: ${items.length} item(s) processado(s).`,'ok');
+        } catch(e) { Mon.log(`Erro em ${f.name}: ${e.message}`,'err'); this.toast(`Erro: ${f.name}→${e.message}`,'error'); }
+      } else {
+        Mon.log(`${f.name}: formato não suportado (use JSON).`,'warn');
+      }
+    }
+
+    document.getElementById('uploadProg').style.display='none';
+    await this.updateStats();
+    this.toast(`${added} documento(s) importado(s) → fila de revisão.`,'success');
+    Mon.log(`Upload: ${added} item(s) adicionado(s).`,'ok');
+    auditLog('UPLOAD',`${added} docs importados`);
+    closeModal('mUpload');
+    btn.disabled=false;
+  },
+
+  // ── HUMAN-IN-THE-LOOP ─────────────────────────────────────────────────────
+  async openHumanLoop() {
+    const q=document.getElementById('hlQueue');
+    let rows=[];
+    try { rows=await db.hl_queue.where('status').equals('pending').toArray(); } catch(e){}
+    if (!rows.length) {
+      q.innerHTML='<p style="opacity:.4;font-size:13px;text-align:center;padding:20px">✅ Fila vazia — nenhum documento pendente de revisão.</p>';
+    } else {
+      q.innerHTML=rows.map(r=>`
+      <div class="hl-card">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+          <div>
+            <p style="font-weight:700;font-size:13px">${r.title||r.pmid}</p>
+            <p style="font-size:11px;opacity:.5">${r.source||'—'} • ${r.year||'—'} • Score: ${r.score||'—'}</p>
+          </div>
+          <span style="background:rgba(255,149,0,.2);color:#FF9500;font-size:10px;padding:2px 9px;border-radius:10px">Pendente</span>
+        </div>
+        <p style="font-size:11px;opacity:.5;margin-bottom:10px">Tags extraídas: ${(r.extractedTags||[]).join(', ')||'nenhuma'}</p>
+        <div style="display:flex;gap:8px">
+          <button onclick="App.approveHL(${r.id})" class="btn btn-success" style="font-size:11px;padding:6px 14px;min-height:0">
+            <i class="fas fa-check"></i> Aprovar
+          </button>
+          <button onclick="App.rejectHL(${r.id})" class="btn btn-danger" style="font-size:11px;padding:6px 14px;min-height:0">
+            <i class="fas fa-times"></i> Rejeitar
+          </button>
+        </div>
+      </div>`).join('');
+    }
+    openModal('mHL');
+  },
+
+  async approveHL(id) {
+    try {
+      await db.hl_queue.update(id,{status:'approved',reviewedAt:new Date().toISOString()});
+      this.toast('Documento aprovado.','success');
+      auditLog('HL-APPROVE',`ID:${id}`);
+      await this.updateStats();
+      this.openHumanLoop();
+    } catch(e){ this.toast('Erro: '+e.message,'error'); }
+  },
+
+  async rejectHL(id) {
+    try {
+      const item=await db.hl_queue.get(id);
+      if (item?.pmid) await db.evidence.where('pmid').equals(item.pmid).delete();
+      await db.hl_queue.update(id,{status:'rejected',reviewedAt:new Date().toISOString()});
+      this.toast('Documento rejeitado e removido.','info');
+      auditLog('HL-REJECT',`ID:${id}`);
+      await this.updateStats();
+      this.openHumanLoop();
+    } catch(e){ this.toast('Erro: '+e.message,'error'); }
+  },
+
+  // ── EXPORT DB ─────────────────────────────────────────────────────────────
+  async exportDB() {
+    try {
+      const all=await db.evidence.toArray();
+      const out={version:'ARPEmed v19.0',exportedAt:new Date().toISOString(),total:all.length,evidence:all};
+      const b=new Blob([JSON.stringify(out,null,2)],{type:'application/json'});
+      const a=document.createElement('a');
+      a.href=URL.createObjectURL(b);
+      a.download=`arpemed_v19_${new Date().toISOString().slice(0,10)}.json`;
+      a.click();
+      this.toast(`${all.length} documentos exportados.`,'success');
+      auditLog('EXPORT',`${all.length} docs`);
+    } catch(e){ this.toast('Erro ao exportar: '+e.message,'error'); }
+  },
+
+  // ── QUICK FILL ────────────────────────────────────────────────────────────
+  quickFill() {
+    document.getElementById('iAge').value='65';
+    document.getElementById('iGender').value='M';
+    document.getElementById('iBP').value='145/90';
+    document.getElementById('iHR').value='98';
+    document.getElementById('iTemp').value='37.2';
+    document.getElementById('iSPO2').value='96';
+    document.getElementById('iS').value='Paciente 65 anos, masculino, dor torácica em aperto há 2h, irradiada para MSE, sudorese fria, náusea. HAS, DM2.';
+    document.getElementById('iO').value='BEG, PA 145/90 mmHg, FC 98 bpm, SpO2 96%. ACV: RCR 2T, sem sopros. AR: MV presente bilateralmente.';
+    document.getElementById('iMeds').value='AAS 100mg, Metformina 1000mg, Losartana 50mg';
+    this.toast('Caso exemplo carregado (SCA esperado como #1).','info');
+    Mon.log('Exemplo: caso SCA clássico preenchido.','info');
+  },
+
+  // ── CLEAR FORM ────────────────────────────────────────────────────────────
+  clearForm() {
+    ['iAge','iS','iO','iMeds','iTemp'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('results').innerHTML='';
+    Mon.clear();
+    Mon.log('Formulário limpo.','info');
+    this.toast('Formulário limpo.','info');
+  },
+
+  // ── TOAST ─────────────────────────────────────────────────────────────────
+  toast(msg,type='info') {
+    const c=document.getElementById('toasts');
+    const el=document.createElement('div');
+    el.className='toast';
+    const icons={success:'✅',error:'❌',warning:'⚠️',info:'ℹ️'};
+    el.innerHTML=`${icons[type]||'ℹ️'} ${msg}`;
+    const colors={error:'#FF3B30',warning:'#FF9500',success:'#34C759'};
+    if(colors[type]) el.style.borderColor=colors[type];
+    c.appendChild(el);
+    setTimeout(()=>el.remove(),5000);
+  }
+};
+
+// ════════════════════════════════════════════════════════════════════════════
+// 11. MODAL HELPERS
+// ════════════════════════════════════════════════════════════════════════════
+function openModal(id)  { const el=document.getElementById(id); if(el){el.style.display='flex';el.classList.add('open');} }
+function closeModal(id) { const el=document.getElementById(id); if(el){el.style.display='none';el.classList.remove('open');} }
+
+// ════════════════════════════════════════════════════════════════════════════
+// 12. KEYBOARD SHORTCUTS
+// ════════════════════════════════════════════════════════════════════════════
+document.addEventListener('keydown', e => {
+  // Não ativa se está digitando num input/textarea
+  const tag = (e.target||{}).tagName||'';
+  const inInput = ['INPUT','TEXTAREA','SELECT'].includes(tag);
+  if (e.key==='Escape') { ['mBayes','mLR','mDebug','mAudit','mUpload','mHL'].forEach(closeModal); return; }
+  if (inInput && e.key!=='Escape') return;
+  if ((e.ctrlKey||e.metaKey) && e.key==='b') { e.preventDefault(); App.openBayesEditor(); }
+  if ((e.ctrlKey||e.metaKey) && e.key==='l') { e.preventDefault(); App.openLREditor(); }
+  if ((e.ctrlKey||e.metaKey) && e.key==='d') { e.preventDefault(); App.openDebug(); }
+  if ((e.ctrlKey||e.metaKey) && e.key==='a') { e.preventDefault(); App.openAuditLog(); }
+  if (e.key==='Enter' && document.getElementById('lockScreen').style.display!=='none') {
+    App.unlock();
+  }
 });
+
+// Enter na senha
+document.getElementById('masterPwd').addEventListener('keydown',e=>{if(e.key==='Enter')App.unlock();});
+
+// ════════════════════════════════════════════════════════════════════════════
+// 13. INICIALIZAÇÃO
+// ════════════════════════════════════════════════════════════════════════════
+window.App=App;
+window.Mon=Mon;
+Mon.log('ARPEmed v19.0 — inicializado.','info');
+Mon.log(`Ambiente: ${location.protocol}//${location.host||'local'}`,
+        location.protocol==='file:'?'warn':'ok');
+Mon.log(`Base: ${GUIDELINES_DB.length} diretrizes prontas. LRs: ${LR_DEFAULT.length} regras.`,'info');
+Mon.log('Atalhos: Ctrl+B (Bayes) | Ctrl+L (LRs) | Ctrl+D (Debug) | Ctrl+A (Audit)','info');
+document.getElementById('sYear').textContent=String(new Date().getFullYear());
 </script>
 </body>
 </html>
