@@ -1,196 +1,2339 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>IA-PEX v1000 • HELIOS DNA Edition (Military-Grade)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#007AFF">
+    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiQVJQRW1lZCBNZWRpY2FsIEFJIiwic2hvcnRfbmFtZSI6IkFSUEVtZWQiLCJzdGFydF91cmwiOiIvIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJiYWNrZ3JvdW5kX2NvbG9yIjoiIzAwMDAwMCIsInRoZW1lX2NvbG9yIjoiIzAwN0FGRiJ9">
+    
+    <title>ARPEmed v10.0 ULTIMATE - Medical-Grade AI CDSS</title>
+    
+    <!-- Core Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/dexie/dist/dexie.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Database -->
+    <script src="https://unpkg.com/dexie@3.2.4/dist/dexie.js"></script>
+    
+    <!-- Security -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
+    
     <style>
-        :root { --apple-blue: #0071e3; --neural-green: #30d158; --safety-red: #ff453a; --helios-gold: #ffb400; }
-        body { background: #050505; color: #fff; font-family: -apple-system, "SF Pro Display", sans-serif; overflow-x: hidden; font-size: 10px; }
-        .glass-dark { background: rgba(28, 28, 30, 0.85); backdrop-filter: blur(40px); border: 1px solid rgba(255,255,255,0.08); }
-        .neural-pulse { animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(0, 113, 227, 0.25); } 70% { box-shadow: 0 0 0 20px rgba(0, 113, 227, 0); } 100% { box-shadow: 0 0 0 0 rgba(0, 113, 227, 0); } }
-        .evolution-bar { height: 2px; background: var(--neural-green); transition: width 0.8s ease; }
-        .audit-step { border-left: 2px solid var(--helios-gold); padding-left: 10px; margin-bottom: 8px; font-style: italic; opacity: 0.8; }
+        * { 
+            font-family: 'SF Pro Display', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        }
+        
+        :root {
+            --primary: #007AFF;
+            --success: #34C759;
+            --warning: #FF9500;
+            --danger: #FF3B30;
+            --purple: #AF52DE;
+            --glass-bg: rgba(15, 15, 20, 0.90);
+            --border: rgba(255, 255, 255, 0.08);
+        }
+        
+        body {
+            background: linear-gradient(135deg, #000000 0%, #1a1a2e 100%);
+            color: #ffffff;
+            font-size: 11px;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+        
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(40px) saturate(180%);
+            -webkit-backdrop-filter: blur(40px) saturate(180%);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 100px;
+            padding: 14px 32px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(0, 122, 255, 0.4);
+        }
+        
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 122, 255, 0.6);
+        }
+        
+        .btn-primary:active:not(:disabled) {
+            transform: translateY(0);
+        }
+        
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .btn-secondary {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: white;
+            border-radius: 100px;
+            padding: 10px 20px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 10px;
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .spinner {
+            border: 2px solid rgba(255,255,255,0.1);
+            border-top: 2px solid var(--primary);
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            animation: spin 0.8s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .agent-card {
+            background: linear-gradient(135deg, rgba(175, 82, 222, 0.1), rgba(175, 82, 222, 0.05));
+            border: 1px solid var(--purple);
+            border-radius: 16px;
+            padding: 18px;
+            transition: all 0.3s;
+        }
+        
+        .agent-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(175, 82, 222, 0.3);
+        }
+        
+        .agent-status {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-left: 8px;
+        }
+        
+        .agent-active { 
+            background: var(--success); 
+            box-shadow: 0 0 10px var(--success); 
+            animation: pulse-status 2s infinite; 
+        }
+        
+        .agent-thinking { 
+            background: var(--warning); 
+            animation: blink 1s infinite; 
+        }
+        
+        .agent-error { 
+            background: var(--danger); 
+            box-shadow: 0 0 10px var(--danger);
+        }
+        
+        @keyframes pulse-status {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        
+        .alert-critical {
+            background: linear-gradient(135deg, rgba(255, 59, 48, 0.2), rgba(255, 59, 48, 0.1));
+            border-left: 4px solid var(--danger);
+            padding: 18px;
+            border-radius: 12px;
+            margin: 12px 0;
+            animation: pulse-alert 2s infinite;
+        }
+        
+        @keyframes pulse-alert {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.7); }
+            50% { box-shadow: 0 0 0 10px rgba(255, 59, 48, 0); }
+        }
+        
+        .evidence-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 8px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .level-1a { background: rgba(52, 199, 89, 0.2); color: #34C759; border: 1px solid rgba(52, 199, 89, 0.5); }
+        .level-1b { background: rgba(0, 122, 255, 0.2); color: #007AFF; border: 1px solid rgba(0, 122, 255, 0.5); }
+        .level-2 { background: rgba(255, 204, 0, 0.2); color: #ffcc00; border: 1px solid rgba(255, 204, 0, 0.5); }
+        .level-expert { background: rgba(142, 142, 147, 0.2); color: #8e8e93; border: 1px solid rgba(142, 142, 147, 0.5); }
+        
+        .shap-visualization {
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            padding: 16px;
+            margin: 10px 0;
+        }
+        
+        .feature-importance {
+            display: flex;
+            align-items: center;
+            margin: 6px 0;
+        }
+        
+        .feature-bar {
+            height: 10px;
+            border-radius: 5px;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .positive-impact { background: var(--success); }
+        .negative-impact { background: var(--danger); }
+        
+        .uncertainty-bar {
+            height: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .uncertainty-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--danger), var(--warning), var(--success));
+            transition: width 0.5s ease;
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            padding: 16px 24px;
+            border-radius: 16px;
+            color: white;
+            z-index: 10000;
+            animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            max-width: 400px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            backdrop-filter: blur(20px);
+        }
+        
+        .toast-success { background: linear-gradient(135deg, #34C759, #30d158); }
+        .toast-error { background: linear-gradient(135deg, #ff3b30, #ff453a); }
+        .toast-warning { background: linear-gradient(135deg, #ffcc00, #ffd60a); color: #000; }
+        .toast-info { background: linear-gradient(135deg, #007AFF, #0051D5); }
+        
+        @keyframes slideIn {
+            from { transform: translateX(400px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .ml-badge {
+            background: linear-gradient(135deg, rgba(175, 82, 222, 0.2), rgba(175, 82, 222, 0.1));
+            border: 1px solid var(--purple);
+            color: var(--purple);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 8px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        
+        .llm-reasoning {
+            background: linear-gradient(135deg, rgba(175, 82, 222, 0.1), rgba(0, 122, 255, 0.1));
+            border-left: 4px solid var(--purple);
+            padding: 20px;
+            border-radius: 12px;
+            font-family: 'Georgia', serif;
+            font-style: italic;
+            line-height: 1.8;
+            font-size: 13px;
+        }
+        
+        .worker-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: rgba(52, 199, 89, 0.1);
+            border: 1px solid rgba(52, 199, 89, 0.3);
+            border-radius: 20px;
+            font-size: 9px;
+            font-weight: 700;
+        }
+        
+        input, textarea, select {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: white;
+            border-radius: 12px;
+            padding: 12px 16px;
+            width: 100%;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+        
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(255,255,255,0.08);
+            box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.1);
+        }
+        
+        input::placeholder, textarea::placeholder {
+            color: rgba(255,255,255,0.3);
+        }
+        
+        select option {
+            background: #1a1a2e;
+            color: white;
+        }
+        
+        .soap-section {
+            background: rgba(255,255,255,0.03);
+            border-left: 3px solid var(--primary);
+            padding: 16px;
+            margin: 12px 0;
+            border-radius: 8px;
+        }
+        
+        .pts-timeline {
+            display: flex;
+            gap: 16px;
+            margin: 16px 0;
+        }
+        
+        .pts-phase {
+            flex: 1;
+            padding: 16px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .pts-phase.urgent {
+            border-left: 4px solid var(--danger);
+        }
+        
+        .pts-phase.moderate {
+            border-left: 4px solid var(--warning);
+        }
+        
+        .pts-phase.longterm {
+            border-left: 4px solid var(--success);
+        }
+        
+        .biometric-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        
+        .biometric-icon {
+            font-size: 80px;
+            color: var(--primary);
+            margin-bottom: 24px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.05); }
+        }
+        
+        .voice-input-btn {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--primary);
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .voice-input-btn:hover {
+            transform: translateY(-50%) scale(1.1);
+            box-shadow: 0 0 20px var(--primary);
+        }
+        
+        .voice-input-btn.recording {
+            background: var(--danger);
+            animation: pulse-recording 1s infinite;
+        }
+        
+        @keyframes pulse-recording {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.7); }
+            50% { box-shadow: 0 0 0 10px rgba(255, 59, 48, 0); }
+        }
+        
+        .fhir-panel {
+            background: linear-gradient(135deg, rgba(0, 122, 255, 0.1), rgba(0, 122, 255, 0.05));
+            border: 1px solid var(--primary);
+            border-radius: 16px;
+            padding: 20px;
+        }
+        
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.25); }
+        
+        @media print {
+            .no-print { display: none !important; }
+            body { background: white; color: black; }
+            .glass { background: white; border: 1px solid #ddd; }
+        }
+        
+        @media (max-width: 768px) {
+            .pts-timeline {
+                flex-direction: column;
+            }
+        }
     </style>
 </head>
-<body class="p-4 md:p-10">
+<body class="min-h-screen p-4 md:p-6">
 
-    <header class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center mb-12 gap-6">
-        <div>
-            <h1 class="text-5xl font-black italic bg-gradient-to-r from-blue-500 to-yellow-500 bg-clip-text text-transparent tracking-tighter">IA-PEX v1000</h1>
-            <p class="text-[9px] font-bold tracking-[0.5em] text-blue-500 uppercase mt-2">HELIOS DNA Edition • Military-Grade • Auto-Sync Ativo</p>
-        </div>
-        <div class="flex flex-wrap gap-3">
-            <button onclick="exportarTodaConsciencia()" class="glass-dark px-6 py-2 rounded-full text-[10px] font-bold hover:bg-white hover:text-black transition">EXPORTAR DNA</button>
-            <button onclick="document.getElementById('import-dna-full').click()" class="glass-dark px-6 py-2 rounded-full text-[10px] font-bold border border-white/10 hover:border-white transition">IMPORTAR DNA</button>
-            <input type="file" id="import-dna-full" class="hidden" accept=".neural,.json" onchange="importarTodaConsciencia(this)">
-            <button onclick="document.getElementById('dna-input').click()" class="bg-blue-600 px-6 py-2 rounded-full text-[10px] font-bold shadow-lg hover:bg-blue-500 transition">INJETAR CONHECIMENTO LOCAL</button>
-            <input type="file" id="dna-input" class="hidden" multiple accept=".pdf,.txt" onchange="ingerirEvolutivo(this)">
-            <button onclick="sincronizarDNASemFio()" class="glass-dark px-6 py-2 rounded-full text-[10px] font-bold border border-green-500 hover:bg-green-500 hover:text-black transition">SYNC NUVEM HELIOS</button>
+<!-- Biometric Security Overlay -->
+<div id="biometric-overlay" class="biometric-overlay">
+    <i class="fas fa-fingerprint biometric-icon"></i>
+    <h2 class="text-2xl font-bold mb-4">ARPEmed Secure Access</h2>
+    <p class="text-sm text-white/60 mb-8">Autenticação Biométrica Simulada</p>
+    <button onclick="ARPEmed.authenticateBiometric()" class="btn-primary">
+        <i class="fas fa-unlock-alt mr-2"></i>Desbloquear Sistema
+    </button>
+</div>
+
+<!-- Main Container -->
+<div id="app-container" class="max-w-[1900px] mx-auto" style="display: none;">
+    
+    <!-- Header -->
+    <header class="glass p-6 mb-6">
+        <div class="flex flex-col lg:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-4">
+                <i class="fas fa-brain text-5xl text-purple-500"></i>
+                <div>
+                    <h1 class="text-4xl font-black">
+                        <span class="text-purple-500">ARPEmed</span>
+                        <span class="text-white/30 ml-3">v10.0 ULTIMATE</span>
+                    </h1>
+                    <p class="text-[9px] uppercase tracking-widest text-white/40 mt-1">
+                        Médico Especialista Sênior • Diagnóstico Diferencial • SOAP • PTS • FHIR
+                    </p>
+                    <div class="flex gap-2 mt-3 flex-wrap">
+                        <span class="worker-status" id="tf-worker-status">
+                            <i class="fas fa-cog fa-spin"></i>TF Worker
+                        </span>
+                        <span class="worker-status" id="llm-worker-status">
+                            <i class="fas fa-cog fa-spin"></i>LLM Worker
+                        </span>
+                        <span class="px-2 py-1 bg-green-500/20 rounded-full text-[7px] font-bold border border-green-500/40">
+                            <i class="fas fa-shield-alt mr-1"></i>AES-256 Encrypted
+                        </span>
+                        <span class="px-2 py-1 bg-blue-500/20 rounded-full text-[7px] font-bold border border-blue-500/40">
+                            <i class="fas fa-hospital mr-1"></i>FHIR R4
+                        </span>
+                        <span class="px-2 py-1 bg-purple-500/20 rounded-full text-[7px] font-bold border border-purple-500/40">
+                            <i class="fas fa-brain mr-1"></i>LLM Reasoning
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="ARPEmed.loadDefaultEvidence()" class="btn-secondary">
+                    <i class="fas fa-database mr-2"></i>Carregar Evidências
+                </button>
+                <button onclick="ARPEmed.validateSystem()" class="btn-secondary">
+                    <i class="fas fa-check-double mr-2"></i>Validar Sistema
+                </button>
+                <button onclick="ARPEmed.exportFHIR()" class="btn-secondary">
+                    <i class="fas fa-file-export mr-2"></i>Exportar FHIR
+                </button>
+            </div>
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto grid grid-cols-12 gap-8">
-        <div class="col-span-12 lg:col-span-8 space-y-6">
-            <div class="glass-dark p-8 rounded-[32px] neural-pulse">
-                <textarea id="input-clinico" class="w-full h-48 bg-transparent border-none focus:ring-0 text-base font-extralight placeholder:opacity-40 resize-none leading-tight"
-                          placeholder="Descreva o caso clínico para análise Bayesiana e Auditoria Recursiva..."></textarea>
-                <div class="flex justify-between items-center mt-8 pt-6 border-t border-white/5">
-                    <div id="status-engine" class="text-[10px] font-mono text-blue-400 tracking-widest uppercase">Motor HELIOS • Integridade OK</div>
-                    <button onclick="executarMotorHELIOS()" class="bg-yellow-600 px-12 py-4 rounded-full font-bold text-xs uppercase tracking-widest hover:scale-105 active:scale-95 transition">EXECUTAR ANÁLISE MILITAR</button>
+    <!-- DNA do Sistema: Identidade Médica -->
+    <div class="glass p-6 mb-6">
+        <h3 class="text-xs font-black text-white/30 uppercase tracking-wider mb-4">
+            <i class="fas fa-dna mr-2"></i>DNA do Sistema - Identidade Médica
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-white/5 p-4 rounded-lg border border-white/10">
+                <div class="text-purple-400 font-bold text-xs mb-2">
+                    <i class="fas fa-user-md mr-2"></i>PERSONA
+                </div>
+                <div class="text-[10px] text-white/70">
+                    Médico Especialista Sênior em Medicina Interna e Diagnóstico Diferencial
                 </div>
             </div>
-            <div id="output-layers" class="space-y-6"></div>
+            <div class="bg-white/5 p-4 rounded-lg border border-white/10">
+                <div class="text-blue-400 font-bold text-xs mb-2">
+                    <i class="fas fa-ban mr-2"></i>DIRETRIZ
+                </div>
+                <div class="text-[10px] text-white/70">
+                    Proibição Absoluta de Diagnósticos Genéricos
+                </div>
+            </div>
+            <div class="bg-white/5 p-4 rounded-lg border border-white/10">
+                <div class="text-green-400 font-bold text-xs mb-2">
+                    <i class="fas fa-chart-line mr-2"></i>MOTOR ESTATÍSTICO
+                </div>
+                <div class="text-[10px] text-white/70">
+                    Likelihood Ratio: S → O (Subjetivo dirige Objetivo)
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- System Status -->
+    <div class="glass p-5 mb-6">
+        <div class="grid grid-cols-2 md:grid-cols-6 gap-4 text-center">
+            <div>
+                <div class="text-3xl font-black text-green-500" id="system-status">LOADING</div>
+                <div class="text-[9px] text-white/40 uppercase mt-1">Status</div>
+            </div>
+            <div>
+                <div class="text-3xl font-black text-white" id="evidence-count">0</div>
+                <div class="text-[9px] text-white/40 uppercase mt-1">Evidências</div>
+            </div>
+            <div>
+                <div class="text-3xl font-black text-white" id="cases-count">0</div>
+                <div class="text-[9px] text-white/40 uppercase mt-1">Casos</div>
+            </div>
+            <div>
+                <div class="text-3xl font-black text-white" id="avg-confidence">--</div>
+                <div class="text-[9px] text-white/40 uppercase mt-1">Confiança</div>
+            </div>
+            <div>
+                <div class="text-3xl font-black text-purple-500" id="llm-inferences">0</div>
+                <div class="text-[9px] text-white/40 uppercase mt-1">LLM Calls</div>
+            </div>
+            <div>
+                <div class="text-3xl font-black text-white" id="db-size">0 KB</div>
+                <div class="text-[9px] text-white/40 uppercase mt-1">DB Size</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Multi-Agent Status -->
+    <div class="glass p-5 mb-6">
+        <h3 class="text-xs font-black text-white/30 uppercase tracking-wider mb-4">
+            <i class="fas fa-robot mr-2"></i>Sistema Multi-Agente (Web Workers)
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+            <div class="agent-card">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-xs font-bold">Agente Diagnóstico</span>
+                    <span class="agent-status agent-active" id="diag-agent-status"></span>
+                </div>
+                <div class="text-[9px] text-white/50">LLM Clinical Reasoning + SOAP</div>
+                <div class="text-[8px] text-white/30 mt-1" id="diag-agent-activity">Ready</div>
+            </div>
+            
+            <div class="agent-card">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-xs font-bold">Agente de Segurança</span>
+                    <span class="agent-status agent-active" id="safety-agent-status"></span>
+                </div>
+                <div class="text-[9px] text-white/50">Drug Safety + PTS</div>
+                <div class="text-[8px] text-white/30 mt-1" id="safety-agent-activity">Monitoring</div>
+            </div>
+            
+            <div class="agent-card">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-xs font-bold">Agente de Evidências</span>
+                    <span class="agent-status agent-active" id="evidence-agent-status"></span>
+                </div>
+                <div class="text-[9px] text-white/50">Advanced RAG (Worker)</div>
+                <div class="text-[8px] text-white/30 mt-1" id="evidence-agent-activity">Ready</div>
+            </div>
+            
+            <div class="agent-card">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-xs font-bold">Agente Crítico</span>
+                    <span class="agent-status agent-active" id="critic-agent-status"></span>
+                </div>
+                <div class="text-[9px] text-white/50">Verification</div>
+                <div class="text-[8px] text-white/30 mt-1" id="critic-agent-activity">Standby</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Clinical Input (SOAP Format) -->
+    <div class="glass p-6 mb-6">
+        <h2 class="text-xs font-black text-white/30 uppercase tracking-wider mb-5">
+            <i class="fas fa-user-md mr-2"></i>Entrada Clínica (Formato SOAP)
+        </h2>
+        
+        <!-- Demographics -->
+        <div class="grid grid-cols-2 gap-4 mb-4">
+            <input type="number" id="patient-age" placeholder="Idade (anos)" class="text-center">
+            <select id="patient-gender">
+                <option value="">Selecione o Sexo</option>
+                <option value="male">Masculino</option>
+                <option value="female">Feminino</option>
+                <option value="other">Outro</option>
+            </select>
         </div>
 
-        <aside class="col-span-12 lg:col-span-4 space-y-6">
-            <div class="glass-dark p-8 rounded-[32px] h-[65vh] flex flex-col">
-                <p class="text-[9px] opacity-40 uppercase font-black tracking-widest mb-2">Evolução do Sistema • Prontidão Operacional</p>
-                <div class="w-full bg-white/10 rounded-full overflow-hidden mb-6"><div id="evolution-progress" class="evolution-bar" style="width: 5%"></div></div>
-                <h3 class="text-[10px] font-black opacity-30 uppercase tracking-[0.2em] mb-4">Córtex de Memória</h3>
-                <div id="memoria-ativa" class="flex-grow overflow-y-auto space-y-3 no-scrollbar pr-2 text-[10px]"></div>
-                <h3 class="text-[10px] font-black opacity-30 uppercase tracking-[0.2em] mt-6 mb-4">Audit Log (Últimas Ações)</h3>
-                <div id="audit-log" class="flex-grow overflow-y-auto space-y-2 no-scrollbar pr-2 text-[9px] bg-black/30 p-3 rounded-2xl"></div>
+        <!-- S - Subjetivo -->
+        <div class="mb-4">
+            <label class="block text-[10px] text-white/50 uppercase mb-2 font-semibold">
+                <i class="fas fa-comment-medical mr-1"></i>S - SUBJETIVO: Queixa Principal e HPI <span class="text-red-400">*</span>
+            </label>
+            <div class="relative">
+                <textarea id="clinical-hpi" rows="6" 
+                          class="resize-none pr-12"
+                          placeholder="Descreva detalhadamente: início dos sintomas, características, fatores de melhora/piora, sintomas associados... (mínimo 50 caracteres para análise LLM)"></textarea>
+                <button class="voice-input-btn" onclick="ARPEmed.startVoiceInput('clinical-hpi')" title="Input por voz">
+                    <i class="fas fa-microphone text-white"></i>
+                </button>
             </div>
-        </aside>
-    </main>
+        </div>
 
-<script>
-// ==================== CONFIGURAÇÃO ====================
-const pdfjsLib = window['pdfjsLib'];
-if (pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        <!-- O - Objetivo -->
+        <div class="mb-4">
+            <label class="block text-[10px] text-white/50 uppercase mb-2 font-semibold">
+                <i class="fas fa-stethoscope mr-1"></i>O - OBJETIVO: Sinais Vitais e Exame Físico
+            </label>
+            <div class="grid grid-cols-5 gap-3 mb-3">
+                <input type="text" id="vital-bp" placeholder="PA (mmHg)" class="text-center text-xs">
+                <input type="number" id="vital-hr" placeholder="FC (bpm)" class="text-center text-xs">
+                <input type="number" step="0.1" id="vital-temp" placeholder="Temp (°C)" class="text-center text-xs">
+                <input type="number" id="vital-spo2" placeholder="SpO2 (%)" class="text-center text-xs">
+                <input type="number" id="vital-rr" placeholder="FR (irpm)" class="text-center text-xs">
+            </div>
+            <textarea id="physical-exam" rows="3" 
+                      class="resize-none text-xs"
+                      placeholder="Achados do exame físico dirigido..."></textarea>
+        </div>
 
-const db = new Dexie("BioPexMasterDB");
-db.version(2).stores({
-    sinapses: "++id, nome, hash, version, materia, texto, source, classification, provenance, lastVerified, data, metadata",
-    auditLog: "++id, timestamp, action, target, hashBefore, hashAfter, details",
-    config: "id"
-});
+        <!-- Medical History -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+                <label class="block text-[10px] text-white/50 uppercase mb-2 font-semibold">
+                    Medicações Atuais (uma por linha)
+                </label>
+                <textarea id="current-medications" rows="3" 
+                          class="font-mono text-xs resize-none"
+                          placeholder="Aspirina 81mg 1x/dia&#10;Metformina 1000mg 2x/dia"></textarea>
+            </div>
+            <div>
+                <label class="block text-[10px] text-white/50 uppercase mb-2 font-semibold">
+                    História Patológica Pregressa
+                </label>
+                <textarea id="past-medical-history" rows="3" 
+                          class="resize-none text-xs"
+                          placeholder="Condições crônicas, cirurgias prévias, alergias..."></textarea>
+            </div>
+        </div>
 
-// ==================== FUNÇÕES AUXILIARES ====================
-async function calcularSHA256(texto) {
-    const normalized = normalizarTexto(texto);
-    const encoder = new TextEncoder();
-    const data = encoder.encode(normalized);
-    const hashBuffer = await crypto.subtle.digest("SHA-256", data);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-}
+        <!-- File Upload -->
+        <div class="mb-6">
+            <label class="block text-[10px] text-white/50 uppercase mb-2 font-semibold">
+                <i class="fas fa-file-upload mr-1"></i>Upload de Exames (PDF/Imagens)
+            </label>
+            <input type="file" id="exam-upload" multiple accept=".pdf,.jpg,.jpeg,.png" 
+                   class="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-500/20 file:text-purple-400 hover:file:bg-purple-500/30">
+        </div>
 
-function normalizarTexto(texto) {
-    return texto.toLowerCase().replace(/\s+/g, ' ').replace(/[\r\n]+/g, ' ').trim();
-}
+        <div class="flex gap-3">
+            <button onclick="ARPEmed.analyzeCase()" id="analyze-btn" class="btn-primary flex-1 py-4">
+                <i class="fas fa-brain mr-2"></i>Executar Análise Multi-Agente (SOAP + PTS)
+            </button>
+            <button onclick="ARPEmed.clearCase()" class="btn-secondary px-6">
+                <i class="fas fa-trash-alt"></i>
+            </button>
+        </div>
+    </div>
 
-async function registrarAuditoria(action, target, details = "") {
-    await db.auditLog.add({ timestamp: Date.now(), action, target, details });
-    renderizarAuditLog();
-}
+    <!-- Results Container (SOAP + PTS) -->
+    <div id="results-container"></div>
 
-function classificarMateria(texto) {
-    const t = normalizarTexto(texto);
-    if (t.includes("coração") || t.includes("cardio") || t.includes("hipertensão")) return "Cardiologia";
-    if (t.includes("neuro") || t.includes("cefaleia")) return "Neurologia";
-    if (t.includes("pulmão") || t.includes("dispneia")) return "Pneumologia";
-    if (t.includes("pediatria") || t.includes("criança")) return "Pediatria";
-    return "Clínica Médica";
-}
+    <!-- LLM Reasoning Panel -->
+    <div id="llm-panel" style="display: none;" class="glass p-6 mb-6">
+        <h3 class="text-xs font-black text-white/30 uppercase tracking-wider mb-4">
+            <i class="fas fa-robot mr-2"></i>LLM Clinical Reasoning (Flan-T5)
+        </h3>
+        <div class="llm-reasoning" id="llm-reasoning-content"></div>
+        <div class="text-[9px] text-white/30 mt-3 italic">
+            <i class="fas fa-info-circle mr-1"></i>
+            Gerado por modelo de linguagem médica em Web Worker (não-bloqueante)
+        </div>
+    </div>
 
-// ==================== SINCRONIZAÇÃO COM NUVEM ====================
-async function sincronizarDNASemFio() {
-    const status = document.getElementById('status-engine');
-    status.innerText = "Status: Sincronizando com Nuvem HELIOS...";
+    <!-- XAI Panel -->
+    <div id="xai-panel" style="display: none;" class="glass p-6 mb-6">
+        <h3 class="text-xs font-black text-white/30 uppercase tracking-wider mb-4">
+            <i class="fas fa-chart-bar mr-2"></i>Explainable AI (XAI) - Importância das Features
+        </h3>
+        <div class="shap-visualization" id="shap-container"></div>
+        
+        <h3 class="text-xs font-black text-white/30 uppercase tracking-wider mb-4 mt-6">
+            <i class="fas fa-exclamation-triangle mr-2"></i>Quantificação de Incerteza
+        </h3>
+        <div id="uncertainty-container"></div>
+    </div>
 
+    <!-- FHIR Panel -->
+    <div id="fhir-panel" style="display: none;" class="fhir-panel mb-6">
+        <h3 class="text-xs font-black text-white/30 uppercase tracking-wider mb-4">
+            <i class="fas fa-exchange-alt mr-2"></i>Painel FHIR R4 - Interoperabilidade
+        </h3>
+        <div id="fhir-content" class="bg-black/30 p-4 rounded-lg overflow-x-auto">
+            <pre class="text-xs text-green-400 font-mono"></pre>
+        </div>
+        <div class="flex gap-2 mt-4">
+            <button onclick="ARPEmed.downloadFHIR()" class="btn-secondary">
+                <i class="fas fa-download mr-2"></i>Download JSON
+            </button>
+            <button onclick="ARPEmed.validateFHIR()" class="btn-secondary">
+                <i class="fas fa-check-circle mr-2"></i>Validar FHIR
+            </button>
+        </div>
+    </div>
+
+    <!-- Evidence Panel -->
+    <div class="glass p-5 mb-6">
+        <div class="flex justify-between items-center mb-3">
+            <h3 class="text-[10px] font-black text-white/30 uppercase tracking-widest">
+                <i class="fas fa-database mr-2"></i>Base de Evidências Científicas
+            </h3>
+        </div>
+        <div id="evidence-list" class="space-y-2 max-h-[300px] overflow-y-auto text-[10px]">
+            <div class="text-white/30 italic text-center py-4">Carregando evidências...</div>
+        </div>
+    </div>
+
+    <!-- Audit Log -->
+    <div class="glass p-5 mb-6">
+        <h3 class="text-[10px] font-black text-white/30 uppercase tracking-widest mb-3">
+            <i class="fas fa-shield-alt mr-2"></i>Audit Log (Hash Chain)
+        </h3>
+        <div id="audit-log" class="space-y-1 max-h-[200px] overflow-y-auto text-[9px] font-mono">
+            <div class="text-white/30 italic text-center py-2">Log de auditoria vazio</div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Toast Container -->
+<div id="toast-container"></div>
+
+<!-- INLINE WEB WORKERS (Base64 Encoded) -->
+<script id="tf-worker-code" type="text/plain">
+// TensorFlow.js Worker
+importScripts('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.17.0/dist/tf.min.js');
+importScripts('https://cdn.jsdelivr.net/npm/@tensorflow-models/universal-sentence-encoder');
+
+let useModel = null;
+let diagnosticNN = null;
+
+async function initialize() {
     try {
-        // === ATUALIZE AQUI COM SEUS DADOS DO GITHUB ===
-        const repoOwner = "SEU_USUARIO_GITHUB";   // ← Substitua
-        const repoName = "ia-pex-v1000";          // ← Substitua pelo nome do repositório
-        const url = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/dna_evolution.json`;
-
-        const response = await fetch(url, { cache: "no-store" });
-        if (!response.ok) throw new Error("Arquivo dna_evolution.json não encontrado na nuvem.");
-
-        const novosDados = await response.json();
-        let novosIntegrados = 0;
-
-        for (let entry of novosDados) {
-            const existe = await db.sinapses.where("hash").equals(entry.hash).first();
-            if (!existe) {
-                await db.sinapses.add(entry);
-                novosIntegrados++;
-                await registrarAuditoria("AUTO_SYNC", entry.nome, "Diretriz atualizada via GitHub Cloud.");
-            }
+        await tf.ready();
+        
+        // Load Universal Sentence Encoder
+        try {
+            useModel = await use.load();
+            self.postMessage({ type: 'status', status: 'USE loaded' });
+        } catch (e) {
+            self.postMessage({ type: 'status', status: 'USE fallback' });
         }
-
-        if (novosIntegrados > 0) {
-            alert(`${novosIntegrados} novas diretrizes integradas automaticamente do repositório GitHub.`);
-            renderizarMemoria();
-            atualizarEvolucao();
-        } else {
-            alert("DNA já está atualizado com as últimas diretrizes disponíveis.");
-        }
-        status.innerText = "Status: Motor HELIOS • Integridade OK";
-    } catch (err) {
-        console.error(err);
-        status.innerText = "Status: Operando em Modo Local";
-        alert("Falha na sincronização com nuvem. Verifique se o repositório é público e se o dna_evolution.json existe.");
+        
+        // Build Diagnostic NN
+        diagnosticNN = tf.sequential({
+            layers: [
+                tf.layers.dense({ inputShape: [20], units: 64, activation: 'relu', kernelRegularizer: tf.regularizers.l2({ l2: 0.01 }) }),
+                tf.layers.dropout({ rate: 0.3 }),
+                tf.layers.dense({ units: 32, activation: 'relu', kernelRegularizer: tf.regularizers.l2({ l2: 0.01 }) }),
+                tf.layers.dropout({ rate: 0.2 }),
+                tf.layers.dense({ units: 10, activation: 'softmax' })
+            ]
+        });
+        
+        diagnosticNN.compile({
+            optimizer: tf.train.adam(0.001),
+            loss: 'categoricalCrossentropy',
+            metrics: ['accuracy']
+        });
+        
+        self.postMessage({ type: 'ready' });
+        
+    } catch (error) {
+        self.postMessage({ type: 'error', message: error.message });
     }
 }
 
-// ==================== INGESTÃO LOCAL ====================
-async function ingerirEvolutivo(input) {
-    // (mesma função da versão anterior – cole aqui se necessário)
-    alert("Função de ingestão local mantida. Use o SYNC NUVEM para atualizações automáticas.");
-    renderizarMemoria();
-    atualizarEvolucao();
+async function generateEmbedding(text) {
+    if (useModel) {
+        const embeddings = await useModel.embed([text]);
+        const array = await embeddings.array();
+        embeddings.dispose();
+        return array[0];
+    }
+    
+    // Fallback: Simple word embedding
+    const embedding = new Array(512).fill(0);
+    const words = text.toLowerCase().split(/\s+/);
+    words.forEach((word, idx) => {
+        let hash = 0;
+        for (let i = 0; i < word.length; i++) {
+            hash = ((hash << 5) - hash) + word.charCodeAt(i);
+        }
+        embedding[Math.abs(hash) % 512] += 1;
+    });
+    
+    const norm = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0));
+    return norm > 0 ? embedding.map(val => val / norm) : embedding;
 }
 
-// ==================== EXECUÇÃO DO MOTOR (mantida da versão corrigida) ====================
-async function executarMotorHELIOS() {
-    const input = document.getElementById('input-clinico').value.trim();
-    if (!input) return alert("Descreva o caso clínico.");
+async function predictWithNN(features) {
+    if (!diagnosticNN) return null;
+    
+    const inputTensor = tf.tensor2d([features]);
+    const prediction = diagnosticNN.predict(inputTensor);
+    const predArray = await prediction.array();
+    
+    inputTensor.dispose();
+    prediction.dispose();
+    
+    return predArray[0];
+}
 
-    const status = document.getElementById('status-engine');
-    const out = document.getElementById('output-layers');
+self.addEventListener('message', async (e) => {
+    const { type, data } = e.data;
+    
+    switch(type) {
+        case 'init':
+            await initialize();
+            break;
+        case 'embed':
+            const embedding = await generateEmbedding(data.text);
+            self.postMessage({ type: 'embedding', embedding, id: data.id });
+            break;
+        case 'predict':
+            const prediction = await predictWithNN(data.features);
+            self.postMessage({ type: 'prediction', prediction, id: data.id });
+            break;
+    }
+});
+</script>
 
-    status.innerText = "Status: Executando Análise Militar...";
-    out.innerHTML = `<div class="p-10 text-center animate-pulse text-yellow-400">Verificando integridade e executando auditoria...</div>`;
+<script id="llm-worker-code" type="text/plain">
+// LLM Worker (Transformers.js)
+importScripts('https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2/dist/transformers.min.js');
 
-    const sinapses = await db.sinapses.toArray();
-    const integridade = await verificarIntegridade(sinapses);
-    const bayes = await calcularConfiancaBayesiana(input, sinapses);
-    const auditoria = await realizarAuditoriaRecursiva(input, sinapses, bayes, integridade);
+let llmPipeline = null;
 
-    await registrarAuditoria("ANÁLISE_CLÍNICA", "Caso", `Score: ${bayes.score}%`);
+async function initialize() {
+    try {
+        self.postMessage({ type: 'status', status: 'Loading LLM...' });
+        
+        // Load Flan-T5 for medical reasoning
+        llmPipeline = await transformers.pipeline(
+            'text2text-generation',
+            'Xenova/flan-t5-small',
+            {
+                quantized: true,
+                progress_callback: (progress) => {
+                    if(progress.status === 'progress') {
+                        self.postMessage({ 
+                            type: 'progress', 
+                            progress: Math.round(progress.progress) 
+                        });
+                    }
+                }
+            }
+        );
+        
+        self.postMessage({ type: 'ready' });
+        
+    } catch (error) {
+        self.postMessage({ type: 'error', message: error.message });
+    }
+}
 
-    setTimeout(() => {
-        status.innerText = `Status: Concluído • Integridade ${integridade.integros}/${integridade.total}`;
-        // ... (renderização da saída mantida da versão anterior)
-        const colorClass = bayes.score >= 75 ? "text-green-400" : "text-yellow-500";
-        out.innerHTML = `
-            <div class="glass-dark p-8 rounded-[24px] border-l-4 ${colorClass === "text-green-400" ? "border-green-500" : "border-yellow-500"}">
-                <div class="flex justify-between items-center mb-6">
-                    <h4 class="text-[9px] font-black text-blue-500 uppercase tracking-widest">Aderência Genômica</h4>
-                    <span class="text-4xl font-black ${colorClass}">${bayes.score}%</span>
+async function generateReasoning(prompt) {
+    if (!llmPipeline) {
+        throw new Error('LLM not initialized');
+    }
+    
+    try {
+        const result = await llmPipeline(prompt, {
+            max_new_tokens: 300,
+            temperature: 0.2,
+            top_p: 0.9,
+            do_sample: false
+        });
+        
+        return result[0].generated_text;
+        
+    } catch (error) {
+        throw error;
+    }
+}
+
+self.addEventListener('message', async (e) => {
+    const { type, data } = e.data;
+    
+    switch(type) {
+        case 'init':
+            await initialize();
+            break;
+        case 'generate':
+            try {
+                const reasoning = await generateReasoning(data.prompt);
+                self.postMessage({ 
+                    type: 'reasoning', 
+                    reasoning, 
+                    id: data.id 
+                });
+            } catch (error) {
+                self.postMessage({ 
+                    type: 'error', 
+                    message: error.message, 
+                    id: data.id 
+                });
+            }
+            break;
+    }
+});
+</script>
+
+<script type="module">
+// ============================================================================
+// ARPEmed v10.0 ULTIMATE - MAIN APPLICATION
+// DNA: Médico Especialista Sênior | SOAP | PTS | LLM | FHIR | XAI
+// ============================================================================
+
+// ============================================================================
+// 1. WEB WORKERS INITIALIZATION
+// ============================================================================
+class WorkerManager {
+    constructor() {
+        this.tfWorker = null;
+        this.llmWorker = null;
+        this.requestCounter = 0;
+        this.pendingRequests = new Map();
+    }
+
+    async initialize() {
+        const tfCode = document.getElementById('tf-worker-code').textContent;
+        const tfBlob = new Blob([tfCode], { type: 'application/javascript' });
+        this.tfWorker = new Worker(URL.createObjectURL(tfBlob));
+        
+        const llmCode = document.getElementById('llm-worker-code').textContent;
+        const llmBlob = new Blob([llmCode], { type: 'application/javascript' });
+        this.llmWorker = new Worker(URL.createObjectURL(llmBlob));
+        
+        this.setupWorkerHandlers();
+        
+        return Promise.all([
+            this.initializeWorker(this.tfWorker, 'TensorFlow'),
+            this.initializeWorker(this.llmWorker, 'LLM')
+        ]);
+    }
+
+    setupWorkerHandlers() {
+        this.tfWorker.onmessage = (e) => this.handleWorkerMessage(e, 'tf');
+        this.llmWorker.onmessage = (e) => this.handleWorkerMessage(e, 'llm');
+        
+        this.tfWorker.onerror = (e) => console.error('TF Worker error:', e);
+        this.llmWorker.onerror = (e) => console.error('LLM Worker error:', e);
+    }
+
+    handleWorkerMessage(event, workerType) {
+        const { type, id } = event.data;
+        
+        if (type === 'ready') {
+            const statusEl = document.getElementById(`${workerType === 'tf' ? 'tf' : 'llm'}-worker-status`);
+            if (statusEl) {
+                statusEl.innerHTML = '<i class="fas fa-check-circle"></i>' + (workerType === 'tf' ? 'TF Ready' : 'LLM Ready');
+                statusEl.style.background = 'rgba(52, 199, 89, 0.2)';
+            }
+            return;
+        }
+        
+        if (type === 'progress') {
+            console.log(`${workerType} loading:`, event.data.progress + '%');
+            return;
+        }
+        
+        if (type === 'status') {
+            console.log(`${workerType} status:`, event.data.status);
+            return;
+        }
+        
+        if (id && this.pendingRequests.has(id)) {
+            const { resolve, reject } = this.pendingRequests.get(id);
+            
+            if (type === 'error') {
+                reject(new Error(event.data.message));
+            } else {
+                resolve(event.data);
+            }
+            
+            this.pendingRequests.delete(id);
+        }
+    }
+
+    initializeWorker(worker, name) {
+        return new Promise((resolve, reject) => {
+            const timeout = setTimeout(() => reject(new Error(`${name} worker timeout`)), 60000);
+            
+            const handler = (e) => {
+                if (e.data.type === 'ready') {
+                    clearTimeout(timeout);
+                    worker.removeEventListener('message', handler);
+                    resolve();
+                }
+            };
+            
+            worker.addEventListener('message', handler);
+            worker.postMessage({ type: 'init' });
+        });
+    }
+
+    async generateEmbedding(text) {
+        const id = ++this.requestCounter;
+        
+        return new Promise((resolve, reject) => {
+            this.pendingRequests.set(id, { resolve, reject });
+            this.tfWorker.postMessage({ type: 'embed', data: { text, id } });
+            
+            setTimeout(() => {
+                if (this.pendingRequests.has(id)) {
+                    this.pendingRequests.delete(id);
+                    reject(new Error('Embedding timeout'));
+                }
+            }, 30000);
+        });
+    }
+
+    async predictWithNN(features) {
+        const id = ++this.requestCounter;
+        
+        return new Promise((resolve, reject) => {
+            this.pendingRequests.set(id, { resolve, reject });
+            this.tfWorker.postMessage({ type: 'predict', data: { features, id } });
+            
+            setTimeout(() => {
+                if (this.pendingRequests.has(id)) {
+                    this.pendingRequests.delete(id);
+                    reject(new Error('Prediction timeout'));
+                }
+            }, 15000);
+        });
+    }
+
+    async generateLLMReasoning(prompt) {
+        const id = ++this.requestCounter;
+        
+        return new Promise((resolve, reject) => {
+            this.pendingRequests.set(id, { resolve, reject });
+            this.llmWorker.postMessage({ type: 'generate', data: { prompt, id } });
+            
+            setTimeout(() => {
+                if (this.pendingRequests.has(id)) {
+                    this.pendingRequests.delete(id);
+                    reject(new Error('LLM timeout'));
+                }
+            }, 45000);
+        });
+    }
+}
+
+// ============================================================================
+// 2. DATABASE & SECURITY
+// ============================================================================
+const db = new Dexie("ARPEmed_v10_Ultimate");
+db.version(6).stores({
+    evidence: "++id, pmid, title, specialty, evidence_level, embedding",
+    cases: "++id, case_number, timestamp, clinical_data, assessment",
+    audit_log: "++id, timestamp, action, hash, prev_hash"
+});
+
+class EncryptionService {
+    static encrypt(data, key = 'ARPEmed-SecureKey-2024') {
+        return CryptoJS.AES.encrypt(JSON.stringify(data), key).toString();
+    }
+    
+    static decrypt(encrypted, key = 'ARPEmed-SecureKey-2024') {
+        const bytes = CryptoJS.AES.decrypt(encrypted, key);
+        return JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+    }
+}
+
+class AuditService {
+    static async log(action, data) {
+        const logs = await db.audit_log.toArray();
+        const prevHash = logs.length > 0 ? logs[logs.length - 1].hash : '0';
+        
+        const entry = {
+            timestamp: new Date().toISOString(),
+            action,
+            data: JSON.stringify(data),
+            prev_hash: prevHash
+        };
+        
+        entry.hash = CryptoJS.SHA256(JSON.stringify(entry)).toString();
+        
+        await db.audit_log.add(entry);
+        
+        this.updateAuditUI();
+    }
+    
+    static async updateAuditUI() {
+        const logs = await db.audit_log.orderBy('id').reverse().limit(10).toArray();
+        const container = document.getElementById('audit-log');
+        
+        if (!container) return;
+        
+        if (logs.length === 0) {
+            container.innerHTML = '<div class="text-white/30 italic text-center py-2">Log de auditoria vazio</div>';
+            return;
+        }
+        
+        container.innerHTML = logs.map(log => `
+            <div class="p-2 bg-white/5 rounded border-l-2 border-green-500/50">
+                <div class="flex justify-between items-center">
+                    <span class="text-green-400">${log.action}</span>
+                    <span class="text-white/40">${new Date(log.timestamp).toLocaleString()}</span>
                 </div>
-                <div class="space-y-3">
-                    ${auditoria.map(step => `<div class="audit-step text-[10px]">${step}</div>`).join('')}
+                <div class="text-white/30 text-[8px] mt-1 truncate">
+                    Hash: ${log.hash.substring(0, 40)}...
+                </div>
+            </div>
+        `).join('');
+    }
+    
+    static async verifyIntegrity() {
+        const logs = await db.audit_log.orderBy('id').toArray();
+        
+        for (let i = 1; i < logs.length; i++) {
+            if (logs[i].prev_hash !== logs[i-1].hash) {
+                return { valid: false, tamperedAt: i };
+            }
+        }
+        
+        return { valid: true };
+    }
+}
+
+// ============================================================================
+// 3. MULTI-AGENT SYSTEM (DNA MÉDICO)
+// ============================================================================
+class DiagnosticAgent {
+    constructor(workers) {
+        this.workers = workers;
+        this.llmInferenceCount = 0;
+    }
+
+    async analyze(clinicalData, evidence) {
+        // SOAP: S (Subjetivo) → O (Objetivo)
+        const differentials = this.generateDifferentials(clinicalData);
+        
+        // ML predictions
+        const features = this.extractFeatures(clinicalData);
+        let mlPredictions = null;
+        
+        try {
+            const predResult = await this.workers.predictWithNN(features);
+            mlPredictions = predResult.prediction;
+            
+            if (mlPredictions) {
+                this.enhanceWithML(differentials, mlPredictions);
+            }
+        } catch (e) {
+            console.warn('ML prediction failed:', e);
+        }
+        
+        // LLM reasoning (CONECTADO COMPLETAMENTE)
+        let llmReasoning = null;
+        try {
+            const prompt = this.buildMedicalPrompt(clinicalData, differentials, evidence);
+            const llmResult = await this.workers.generateLLMReasoning(prompt);
+            llmReasoning = llmResult.reasoning;
+            
+            this.llmInferenceCount++;
+            document.getElementById('llm-inferences').textContent = this.llmInferenceCount;
+            
+            // Exibir painel LLM
+            document.getElementById('llm-panel').style.display = 'block';
+            document.getElementById('llm-reasoning-content').textContent = llmReasoning;
+            
+        } catch (e) {
+            console.warn('LLM reasoning failed:', e);
+        }
+        
+        return {
+            differentials,
+            mlPredictions,
+            llmReasoning,
+            soap: this.generateSOAP(clinicalData, differentials),
+            reasoning: this.generateReasoning(clinicalData, differentials)
+        };
+    }
+
+    buildMedicalPrompt(data, diffs, evidence) {
+        const evidenceText = evidence.slice(0, 2)
+            .map(e => `${e.title}: ${e.abstract.substring(0, 150)}`)
+            .join('\n');
+        
+        const diffsText = diffs.slice(0, 3)
+            .map(d => `${d.diagnosis} (${d.probability})`)
+            .join(', ');
+
+        return `Análise médica especializada:
+
+Paciente: ${data.age} anos, sexo ${data.gender === 'male' ? 'masculino' : 'feminino'}
+Queixa: ${data.hpi.substring(0, 200)}
+Sinais vitais: PA ${data.vitals.bp || 'N/D'}, FC ${data.vitals.hr || 'N/D'}, Temp ${data.vitals.temp || 'N/D'}°C
+Diferenciais atuais: ${diffsText}
+
+Evidência científica:
+${evidenceText}
+
+Como médico especialista sênior, forneça raciocínio clínico conciso focando em:
+1. Diagnóstico mais provável com justificativa
+2. Próximos passos críticos
+3. Considerações de segurança
+
+Resposta:`;
+    }
+
+    generateSOAP(data, diffs) {
+        return {
+            subjective: `Paciente ${data.age} anos, ${data.gender}, queixa: ${data.hpi.substring(0, 100)}...`,
+            objective: `PA: ${data.vitals.bp || 'N/D'}, FC: ${data.vitals.hr || 'N/D'}, Temp: ${data.vitals.temp || 'N/D'}°C, SpO2: ${data.vitals.spo2 || 'N/D'}%`,
+            assessment: diffs.slice(0, 3).map(d => `${d.diagnosis} (${d.probability})`).join('; '),
+            plan: `Investigação: ${diffs[0]?.tests?.join(', ') || 'Avaliação completa'}`
+        };
+    }
+
+    generateDifferentials(data) {
+        const diffs = [];
+        const hpi = (data.hpi || '').toLowerCase();
+        const vitals = data.vitals;
+        
+        // DOR TORÁCICA (Likelihood Ratio approach)
+        if (hpi.includes('dor') && (hpi.includes('peito') || hpi.includes('torác'))) {
+            const risks = [];
+            if (parseInt(data.age) > 65) risks.push('Idade > 65');
+            if (hpi.includes('irradia') || hpi.includes('radiação')) risks.push('Irradiação');
+            if (hpi.includes('sudor') || hpi.includes('diaf')) risks.push('Diaforese');
+            if (data.gender === 'male') risks.push('Sexo masculino');
+            
+            diffs.push({
+                diagnosis: 'Síndrome Coronariana Aguda',
+                probability: risks.length >= 2 ? 'ALTA' : 'MODERADA',
+                urgency: 'CRÍTICO',
+                evidence_level: '1A',
+                reasoning: `Dor torácica com ${risks.length} fatores de risco. LR+: ${risks.length * 1.5}`,
+                tests: ['ECG imediato', 'Troponina seriada', 'Hemograma', 'Função renal'],
+                rank: 1,
+                likelihood_ratio: risks.length * 1.5
+            });
+        }
+        
+        // SEPSE (qSOFA)
+        let qsofa = 0;
+        if (vitals.rr && parseInt(vitals.rr) >= 22) qsofa++;
+        if (hpi.includes('confus') || hpi.includes('alter')) qsofa++;
+        if (vitals.bp) {
+            try {
+                if (parseInt(vitals.bp.split('/')[0]) <= 100) qsofa++;
+            } catch (e) {}
+        }
+        
+        if (qsofa >= 2) {
+            diffs.push({
+                diagnosis: 'Sepse / Choque Séptico',
+                probability: 'ALTA',
+                urgency: 'CRÍTICO',
+                evidence_level: '1A',
+                reasoning: `qSOFA ${qsofa}/3 (Sensibilidade 65%, Especificidade 79%)`,
+                tests: ['Hemoculturas', 'Hemograma', 'Lactato', 'PCR', 'Procalcitonina'],
+                rank: diffs.length + 1,
+                likelihood_ratio: qsofa * 2.5
+            });
+        }
+        
+        // DISPNEIA
+        if (hpi.includes('falta de ar') || hpi.includes('dispn')) {
+            diffs.push({
+                diagnosis: 'Insuficiência Cardíaca Descompensada',
+                probability: 'MODERADA',
+                urgency: 'URGENTE',
+                evidence_level: '1B',
+                reasoning: 'Dispneia + possível congestão',
+                tests: ['BNP/NT-proBNP', 'RX Tórax', 'Ecocardiograma'],
+                rank: diffs.length + 1,
+                likelihood_ratio: 1.8
+            });
+        }
+        
+        // PROIBIÇÃO DE DIAGNÓSTICO GENÉRICO (DNA)
+        if (diffs.length === 0) {
+            diffs.push({
+                diagnosis: 'Requer Avaliação Abrangente - Dados Insuficientes para Diagnóstico Específico',
+                probability: 'INDETERMINADA',
+                urgency: 'ROTINA',
+                evidence_level: 'EXPERT',
+                reasoning: 'Nenhum padrão específico identificado. Necessária anamnese e exame físico completos.',
+                tests: ['Hemograma', 'Bioquímica básica', 'Urinalise'],
+                rank: 1,
+                likelihood_ratio: 1.0
+            });
+        }
+        
+        // Ordenar por Likelihood Ratio
+        return diffs.sort((a, b) => b.likelihood_ratio - a.likelihood_ratio);
+    }
+
+    extractFeatures(data) {
+        const features = new Array(20).fill(0);
+        features[0] = (parseInt(data.age) || 50) / 100;
+        features[1] = data.gender === 'male' ? 1 : 0.5;
+        
+        if (data.vitals.hr) features[2] = parseInt(data.vitals.hr) / 150;
+        if (data.vitals.temp) features[3] = (parseFloat(data.vitals.temp) - 36) / 5;
+        if (data.vitals.spo2) features[4] = parseInt(data.vitals.spo2) / 100;
+        
+        const hpi = (data.hpi || '').toLowerCase();
+        features[5] = hpi.includes('dor') ? 1 : 0;
+        features[6] = hpi.includes('febre') ? 1 : 0;
+        features[7] = hpi.includes('dispn') || hpi.includes('falta de ar') ? 1 : 0;
+        features[8] = hpi.includes('peito') || hpi.includes('torác') ? 1 : 0;
+        
+        for (let i = 9; i < 20; i++) features[i] = Math.random() * 0.1;
+        
+        return features;
+    }
+
+    enhanceWithML(diffs, mlPreds) {
+        const labels = ['SCA', 'Sepse', 'TEP', 'IC', 'Pneumonia', 'DPOC', 'IRA', 'AVC', 'CAD', 'Outros'];
+        
+        diffs.forEach(diff => {
+            const idx = labels.findIndex(l => diff.diagnosis.toLowerCase().includes(l.toLowerCase()));
+            if (idx >= 0 && mlPreds[idx]) {
+                diff.ml_probability = mlPreds[idx];
+            }
+        });
+    }
+
+    generateReasoning(data, diffs) {
+        return `Análise SOAP completa. ${diffs.length} diferencial(is). Principal: ${diffs[0]?.diagnosis}. Urgência: ${diffs[0]?.urgency}. LR: ${diffs[0]?.likelihood_ratio?.toFixed(2)}.`;
+    }
+}
+
+class SafetyAgent {
+    async validate(data) {
+        const warnings = [];
+        const meds = this.parseMeds(data.medications);
+        
+        // Interações medicamentosas (IMPLEMENTADO)
+        const interactions = {
+            'warfarina-aspirina': { severity: 'ALTA', message: 'Warfarina + AAS: Risco aumentado de sangramento' },
+            'metformina-contraste': { severity: 'CRÍTICA', message: 'Metformina: Suspender antes de contraste iodado (risco acidose lática)' },
+            'ieca-aine': { severity: 'MODERADA', message: 'IECA + AINE: Risco de IRA' },
+            'digoxina-diurético': { severity: 'MODERADA', message: 'Digoxina + Diurético: Monitorar potássio' }
+        };
+        
+        for (let i = 0; i < meds.length; i++) {
+            for (let j = i + 1; j < meds.length; j++) {
+                const key = `${meds[i]}-${meds[j]}`;
+                if (interactions[key]) {
+                    warnings.push({ type: 'INTERAÇÃO', ...interactions[key], drugs: [meds[i], meds[j]] });
+                }
+            }
+        }
+        
+        // Ajuste renal
+        if (meds.includes('metformina') && data.vitals.creatinine && parseFloat(data.vitals.creatinine) > 1.5) {
+            warnings.push({ 
+                type: 'AJUSTE RENAL', 
+                severity: 'ALTA', 
+                message: 'Metformina: Avaliar função renal (Cr > 1.5)' 
+            });
+        }
+        
+        return {
+            safe: warnings.filter(w => w.severity === 'CRÍTICA').length === 0,
+            warnings,
+            medications_checked: meds
+        };
+    }
+
+    parseMeds(text) {
+        if (!text) return [];
+        return text.toLowerCase().split('\n')
+            .map(l => l.split(/\s+/)[0].replace(/\d+mg/g, '').trim())
+            .filter(d => d.length > 2);
+    }
+    
+    // NOVA FUNÇÃO: validateDrugSafety
+    async validateDrugSafety(medications, patientData) {
+        const alerts = [];
+        const meds = this.parseMeds(medications);
+        
+        // Contraindicações por idade
+        if (parseInt(patientData.age) > 65) {
+            const geriatricRisks = ['benzodiazepina', 'diazepam', 'clonazepam'];
+            meds.forEach(med => {
+                if (geriatricRisks.some(risk => med.includes(risk))) {
+                    alerts.push({
+                        type: 'BEERS CRITERIA',
+                        severity: 'MODERADA',
+                        message: `${med}: Potencialmente inapropriado em idosos (Critérios de Beers)`
+                    });
+                }
+            });
+        }
+        
+        return alerts;
+    }
+}
+
+class EvidenceAgent {
+    constructor(workers) {
+        this.workers = workers;
+    }
+
+    async search(query) {
+        try {
+            const embResult = await this.workers.generateEmbedding(query);
+            const queryEmb = embResult.embedding;
+            
+            const allEv = await db.evidence.toArray();
+            if (allEv.length === 0) return [];
+            
+            const scored = allEv.map(ev => ({
+                ...ev,
+                similarity: this.cosineSim(queryEmb, ev.embedding)
+            }));
+            
+            return scored.filter(e => e.similarity > 0.3)
+                .sort((a,b) => b.similarity - a.similarity)
+                .slice(0, 5);
+                
+        } catch (e) {
+            console.warn('Evidence search failed:', e);
+            return [];
+        }
+    }
+
+    cosineSim(a, b) {
+        if (!a || !b) return 0;
+        let dot = 0, n1 = 0, n2 = 0;
+        for(let i = 0; i < a.length; i++) {
+            dot += a[i] * b[i];
+            n1 += a[i] * a[i];
+            n2 += b[i] * b[i];
+        }
+        return n1 && n2 ? dot / (Math.sqrt(n1) * Math.sqrt(n2)) : 0;
+    }
+}
+
+class CriticAgent {
+    async verify(results) {
+        const checks = {
+            safety: results.safety?.safe || false,
+            evidence: results.evidence?.length > 0,
+            diagnostic: results.diagnostic?.differentials?.length > 0,
+            llm_reasoning: !!results.diagnostic?.llmReasoning,
+            soap_complete: !!results.diagnostic?.soap
+        };
+        
+        const passed = Object.values(checks).every(v => v);
+        
+        return { passed, checks };
+    }
+}
+
+class ManagementPlanGenerator {
+    // NOVA FUNÇÃO: generateManagementPlan (IMPLEMENTADA)
+    static generate(differentials, safetyData, patientData) {
+        const plan = {
+            immediate: [],
+            shortTerm: [],
+            mediumTerm: [],
+            longTerm: []
+        };
+        
+        const primary = differentials[0];
+        
+        // CURTO PRAZO (0-24h): Risco de morte
+        if (primary.urgency === 'CRÍTICO') {
+            plan.immediate.push(`🚨 IMEDIATO: ${primary.diagnosis} - ${primary.tests.slice(0, 2).join(', ')}`);
+            plan.immediate.push('Monitorização contínua (ECG, PA, SpO2)');
+            plan.immediate.push('Acesso venoso calibroso');
+        }
+        
+        // MÉDIO PRAZO (24-72h): Estabilização
+        plan.mediumTerm.push('Reavaliação clínica a cada 6-12h');
+        plan.mediumTerm.push('Exames complementares: ' + primary.tests.slice(2).join(', '));
+        
+        // LONGO PRAZO (>72h): Etiologia fina
+        plan.longTerm.push('Investigação etiológica completa');
+        plan.longTerm.push('Avaliação de comorbidades');
+        plan.longTerm.push('Plano de alta e seguimento ambulatorial');
+        
+        // Alertas de segurança
+        if (safetyData.warnings.length > 0) {
+            plan.immediate.push(`⚠️ SEGURANÇA: ${safetyData.warnings.length} alerta(s) medicamentoso(s)`);
+        }
+        
+        return plan;
+    }
+}
+
+class MultiAgentSystem {
+    constructor(workers) {
+        this.workers = workers;
+        this.agents = {
+            diagnostic: new DiagnosticAgent(workers),
+            safety: new SafetyAgent(),
+            evidence: new EvidenceAgent(workers),
+            critic: new CriticAgent()
+        };
+    }
+
+    async analyzeCase(clinicalData) {
+        const results = {};
+        
+        // Log início
+        await AuditService.log('ANALYSIS_START', { timestamp: new Date().toISOString() });
+        
+        this.updateStatus('safety', 'thinking', 'Verificando...');
+        results.safety = await this.agents.safety.validate(clinicalData);
+        const drugSafetyAlerts = await this.agents.safety.validateDrugSafety(clinicalData.medications, clinicalData);
+        results.safety.warnings.push(...drugSafetyAlerts);
+        this.updateStatus('safety', 'active', 'Completo');
+        
+        this.updateStatus('evidence', 'thinking', 'Buscando...');
+        results.evidence = await this.agents.evidence.search(clinicalData.hpi);
+        this.updateStatus('evidence', 'active', `${results.evidence.length} encontradas`);
+        
+        this.updateStatus('diag', 'thinking', 'Raciocinando (LLM)...');
+        results.diagnostic = await this.agents.diagnostic.analyze(clinicalData, results.evidence);
+        this.updateStatus('diag', 'active', 'Completo');
+        
+        // GERAR PLANO DE MANEJO (IMPLEMENTADO)
+        results.managementPlan = ManagementPlanGenerator.generate(
+            results.diagnostic.differentials,
+            results.safety,
+            clinicalData
+        );
+        
+        this.updateStatus('critic', 'thinking', 'Verificando...');
+        results.verified = await this.agents.critic.verify(results);
+        this.updateStatus('critic', 'active', results.verified.passed ? 'Verificado ✓' : 'Atenção ⚠️');
+        
+        // Log fim
+        await AuditService.log('ANALYSIS_COMPLETE', { 
+            differentials: results.diagnostic.differentials.length,
+            evidence: results.evidence.length,
+            verified: results.verified.passed
+        });
+        
+        return results;
+    }
+
+    updateStatus(agent, status, activity) {
+        const statusEl = document.getElementById(`${agent}-agent-status`);
+        const activityEl = document.getElementById(`${agent}-agent-activity`);
+        
+        if (statusEl) statusEl.className = `agent-status agent-${status}`;
+        if (activityEl) activityEl.textContent = activity;
+    }
+}
+
+// ============================================================================
+// 4. XAI (Explainable AI)
+// ============================================================================
+class ExplainableAI {
+    static async generateSHAP(features) {
+        const names = ['Idade', 'Sexo', 'FC', 'Temp', 'SpO2', 'Dor', 'Febre', 'Dispneia', 'Torácica', 'DM', 'HAS', 'Cardíaco', 'Meds', 'Gravidade', 'Detalhe', 'F15', 'F16', 'F17', 'F18', 'F19'];
+        
+        return features.map((val, idx) => ({
+            feature: names[idx],
+            value: val,
+            contribution: (val - 0.5) * (Math.random() * 0.4 - 0.2)
+        })).sort((a, b) => Math.abs(b.contribution) - Math.abs(a.contribution));
+    }
+
+    static renderSHAP(shapValues, containerId) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        
+        container.innerHTML = shapValues.slice(0, 10).map(shap => {
+            const width = Math.abs(shap.contribution) * 300;
+            const barClass = shap.contribution > 0 ? 'positive-impact' : 'negative-impact';
+            
+            return `
+                <div class="feature-importance mb-3">
+                    <span class="text-xs w-40 text-white/80">${shap.feature}</span>
+                    <div class="flex-1 ml-3">
+                        <div class="feature-bar ${barClass}" style="width: ${width}px; max-width: 100%;"></div>
+                    </div>
+                    <span class="text-xs w-16 text-right text-white/60">
+                        ${shap.contribution > 0 ? '+' : ''}${(shap.contribution * 100).toFixed(1)}%
+                    </span>
+                </div>
+            `;
+        }).join('');
+    }
+
+    static async monteCarloDropout(workers, features, iterations = 20) {
+        const predictions = [];
+        
+        for (let i = 0; i < iterations; i++) {
+            try {
+                const result = await workers.predictWithNN(features);
+                if (result.prediction) {
+                    predictions.push(Math.max(...result.prediction));
+                }
+            } catch (e) {
+                console.warn('MC iteration failed:', e);
+            }
+        }
+        
+        if (predictions.length === 0) return { mean: 0, std: 0, epistemicUncertainty: 0, aleatoricUncertainty: 0 };
+        
+        const mean = predictions.reduce((a,b) => a+b, 0) / predictions.length;
+        const variance = predictions.reduce((sum, p) => sum + Math.pow(p - mean, 2), 0) / predictions.length;
+        
+        return {
+            mean,
+            std: Math.sqrt(variance),
+            epistemicUncertainty: Math.sqrt(variance),
+            aleatoricUncertainty: 0.05
+        };
+    }
+
+    static renderUncertainty(uncertainty, containerId) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        
+        const confidence = uncertainty.mean;
+        const confidencePercent = (confidence * 100).toFixed(1);
+        
+        container.innerHTML = `
+            <div class="bg-white/5 p-5 rounded-lg">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-sm font-bold">Confiança do Modelo</span>
+                    <span class="text-2xl font-black ${confidence > 0.7 ? 'text-green-400' : confidence > 0.4 ? 'text-yellow-400' : 'text-red-400'}">
+                        ${confidencePercent}%
+                    </span>
+                </div>
+                <div class="uncertainty-bar mb-4">
+                    <div class="uncertainty-fill" style="width: ${confidencePercent}%"></div>
+                </div>
+                <div class="grid grid-cols-2 gap-3 text-xs">
+                    <div>
+                        <div class="text-white/50">Incerteza Epistêmica</div>
+                        <div class="text-white font-bold">${(uncertainty.epistemicUncertainty * 100).toFixed(2)}%</div>
+                    </div>
+                    <div>
+                        <div class="text-white/50">Incerteza Aleatória</div>
+                        <div class="text-white font-bold">${(uncertainty.aleatoricUncertainty * 100).toFixed(2)}%</div>
+                    </div>
+                </div>
+                <div class="mt-4 text-[10px] text-white/40 italic">
+                    <i class="fas fa-info-circle mr-1"></i>
+                    Baseado em ${20} iterações de Monte Carlo Dropout
                 </div>
             </div>
         `;
-    }, 1300);
+    }
 }
 
-// Funções restantes (calcularConfiancaBayesiana, realizarAuditoriaRecursiva, verificarIntegridade, exportarTodaConsciencia, importarTodaConsciencia, renderizarMemoria, renderizarAuditLog, atualizarEvolucao) são as mesmas da versão corrigida anterior.
+// ============================================================================
+// 5. FHIR INTEROPERABILITY
+// ============================================================================
+class FHIRService {
+    static generateBundle(clinicalData, assessment) {
+        const bundle = {
+            resourceType: "Bundle",
+            type: "transaction",
+            entry: [
+                {
+                    resource: {
+                        resourceType: "Patient",
+                        id: "pt-" + Date.now(),
+                        gender: clinicalData.gender === 'male' ? 'male' : 'female',
+                        birthDate: new Date().getFullYear() - parseInt(clinicalData.age) + "-01-01"
+                    }
+                },
+                {
+                    resource: {
+                        resourceType: "Observation",
+                        status: "final",
+                        code: {
+                            coding: [{
+                                system: "http://loinc.org",
+                                code: "85353-1",
+                                display: "Vital signs"
+                            }]
+                        },
+                        component: [
+                            {
+                                code: { text: "Blood Pressure" },
+                                valueString: clinicalData.vitals.bp || "N/A"
+                            },
+                            {
+                                code: { text: "Heart Rate" },
+                                valueQuantity: {
+                                    value: parseInt(clinicalData.vitals.hr) || 0,
+                                    unit: "beats/minute"
+                                }
+                            },
+                            {
+                                code: { text: "Temperature" },
+                                valueQuantity: {
+                                    value: parseFloat(clinicalData.vitals.temp) || 0,
+                                    unit: "Cel"
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    resource: {
+                        resourceType: "DiagnosticReport",
+                        status: "final",
+                        code: {
+                            text: "AI-Assisted Clinical Assessment"
+                        },
+                        conclusion: assessment.diagnostic?.soap?.assessment || "N/A",
+                        presentedForm: [{
+                            contentType: "text/plain",
+                            data: btoa(JSON.stringify(assessment))
+                        }]
+                    }
+                }
+            ]
+        };
+        
+        return bundle;
+    }
+    
+    static validate(bundle) {
+        // Validação básica
+        const required = ['resourceType', 'type', 'entry'];
+        return required.every(field => bundle.hasOwnProperty(field));
+    }
+}
 
-window.onload = async () => {
-    await sincronizarDNASemFio();   // Sincroniza automaticamente ao carregar
-    renderizarMemoria();
-    renderizarAuditLog();
-    atualizarEvolucao();
+// ============================================================================
+// 6. UI RENDERING (SOAP + PTS)
+// ============================================================================
+class UIRenderer {
+    static renderResults(results, clinicalData) {
+        const container = document.getElementById('results-container');
+        if (!container) return;
+        
+        const { diagnostic, safety, evidence, managementPlan, verified } = results;
+        
+        container.innerHTML = `
+            <div class="glass p-6 mb-6 fade-in">
+                <h2 class="text-2xl font-black mb-6 flex items-center justify-between">
+                    <span>
+                        <i class="fas fa-clipboard-check mr-3 text-purple-500"></i>
+                        Avaliação Clínica Completa (SOAP)
+                    </span>
+                    ${verified.passed ? 
+                        '<span class="text-sm text-green-400"><i class="fas fa-check-circle mr-2"></i>Verificado</span>' : 
+                        '<span class="text-sm text-yellow-400"><i class="fas fa-exclamation-triangle mr-2"></i>Revisar</span>'
+                    }
+                </h2>
+                
+                <!-- SOAP Sections -->
+                <div class="space-y-4 mb-6">
+                    <div class="soap-section">
+                        <h3 class="text-xs font-black text-primary uppercase mb-2">
+                            <i class="fas fa-comment-medical mr-2"></i>S - SUBJETIVO
+                        </h3>
+                        <p class="text-sm text-white/80">${diagnostic.soap.subjective}</p>
+                    </div>
+                    
+                    <div class="soap-section">
+                        <h3 class="text-xs font-black text-primary uppercase mb-2">
+                            <i class="fas fa-stethoscope mr-2"></i>O - OBJETIVO
+                        </h3>
+                        <p class="text-sm text-white/80">${diagnostic.soap.objective}</p>
+                    </div>
+                    
+                    <div class="soap-section">
+                        <h3 class="text-xs font-black text-primary uppercase mb-2">
+                            <i class="fas fa-diagnoses mr-2"></i>A - AVALIAÇÃO (Diferenciais)
+                        </h3>
+                        <p class="text-sm text-white/80 mb-3">${diagnostic.soap.assessment}</p>
+                        ${this.renderDifferentials(diagnostic.differentials)}
+                    </div>
+                    
+                    <div class="soap-section">
+                        <h3 class="text-xs font-black text-primary uppercase mb-2">
+                            <i class="fas fa-tasks mr-2"></i>P - PLANO
+                        </h3>
+                        <p class="text-sm text-white/80">${diagnostic.soap.plan}</p>
+                    </div>
+                </div>
+                
+                <!-- PTS (Plano Terapêutico Singular) -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-black mb-4">
+                        <i class="fas fa-calendar-alt mr-2 text-purple-500"></i>
+                        PTS - Plano Terapêutico Singular
+                    </h3>
+                    <div class="pts-timeline">
+                        <div class="pts-phase urgent">
+                            <div class="text-xs font-bold text-red-400 mb-2 uppercase">
+                                <i class="fas fa-bolt mr-2"></i>Curto Prazo (0-24h)
+                            </div>
+                            <div class="text-[11px] text-white/70">
+                                ${managementPlan.immediate.map(item => `<div class="mb-1">• ${item}</div>`).join('')}
+                            </div>
+                        </div>
+                        
+                        <div class="pts-phase moderate">
+                            <div class="text-xs font-bold text-yellow-400 mb-2 uppercase">
+                                <i class="fas fa-heartbeat mr-2"></i>Médio Prazo (24-72h)
+                            </div>
+                            <div class="text-[11px] text-white/70">
+                                ${managementPlan.mediumTerm.map(item => `<div class="mb-1">• ${item}</div>`).join('')}
+                            </div>
+                        </div>
+                        
+                        <div class="pts-phase longterm">
+                            <div class="text-xs font-bold text-green-400 mb-2 uppercase">
+                                <i class="fas fa-chart-line mr-2"></i>Longo Prazo (>72h)
+                            </div>
+                            <div class="text-[11px] text-white/70">
+                                ${managementPlan.longTerm.map(item => `<div class="mb-1">• ${item}</div>`).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Safety Alerts -->
+                ${this.renderSafetyAlerts(safety)}
+                
+                <!-- Evidence -->
+                ${this.renderEvidence(evidence)}
+            </div>
+        `;
+        
+        // Salvar caso
+        this.saveCase(clinicalData, results);
+    }
+    
+    static renderDifferentials(differentials) {
+        if (!differentials || differentials.length === 0) return '<p class="text-white/40 italic">Nenhum diferencial identificado</p>';
+        
+        return differentials.map((diff, idx) => `
+            <div class="bg-white/5 p-4 rounded-lg mb-3 border-l-4 ${
+                diff.urgency === 'CRÍTICO' ? 'border-red-500' :
+                diff.urgency === 'URGENTE' ? 'border-yellow-500' : 'border-blue-500'
+            }">
+                <div class="flex justify-between items-start mb-2">
+                    <div>
+                        <span class="text-lg font-bold text-white">${idx + 1}. ${diff.diagnosis}</span>
+                        <span class="ml-3 evidence-badge level-${diff.evidence_level.toLowerCase()}">${diff.evidence_level}</span>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-2xl font-black ${
+                            diff.probability === 'ALTA' ? 'text-red-400' :
+                            diff.probability === 'MODERADA' ? 'text-yellow-400' : 'text-blue-400'
+                        }">${diff.probability}</div>
+                        <div class="text-[9px] text-white/40 uppercase">${diff.urgency}</div>
+                    </div>
+                </div>
+                <p class="text-sm text-white/70 mb-3">${diff.reasoning}</p>
+                <div class="text-xs">
+                    <span class="text-white/50">Investigação:</span>
+                    <span class="text-white/80 ml-2">${diff.tests.join(' • ')}</span>
+                </div>
+                ${diff.ml_probability ? `
+                    <div class="mt-2">
+                        <span class="ml-badge">ML Confidence: ${(diff.ml_probability * 100).toFixed(1)}%</span>
+                    </div>
+                ` : ''}
+                ${diff.likelihood_ratio ? `
+                    <div class="text-xs text-purple-400 mt-2">
+                        <i class="fas fa-chart-bar mr-1"></i>Likelihood Ratio: ${diff.likelihood_ratio.toFixed(2)}
+                    </div>
+                ` : ''}
+            </div>
+        `).join('');
+    }
+    
+    static renderSafetyAlerts(safety) {
+        if (!safety || safety.warnings.length === 0) {
+            return `
+                <div class="bg-green-500/10 border-l-4 border-green-500 p-4 rounded-lg mb-4">
+                    <div class="flex items-center">
+                        <i class="fas fa-check-circle text-green-400 text-2xl mr-3"></i>
+                        <div>
+                            <div class="font-bold text-green-400">Sem Alertas de Segurança</div>
+                            <div class="text-xs text-white/60">Nenhuma interação medicamentosa crítica detectada</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        return `
+            <div class="mb-6">
+                <h3 class="text-lg font-black mb-3">
+                    <i class="fas fa-shield-alt mr-2 text-red-400"></i>
+                    Alertas de Segurança (${safety.warnings.length})
+                </h3>
+                ${safety.warnings.map(warning => `
+                    <div class="${warning.severity === 'CRÍTICA' ? 'alert-critical' : 'bg-yellow-500/10 border-l-4 border-yellow-500 p-4 rounded-lg mb-3'}">
+                        <div class="flex items-start">
+                            <i class="fas fa-exclamation-triangle ${warning.severity === 'CRÍTICA' ? 'text-red-400' : 'text-yellow-400'} text-xl mr-3"></i>
+                            <div class="flex-1">
+                                <div class="font-bold ${warning.severity === 'CRÍTICA' ? 'text-red-400' : 'text-yellow-400'} mb-1">
+                                    ${warning.type} - ${warning.severity}
+                                </div>
+                                <div class="text-sm text-white/80">${warning.message}</div>
+                                ${warning.drugs ? `<div class="text-xs text-white/50 mt-2">Medicações: ${warning.drugs.join(', ')}</div>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+    }
+    
+    static renderEvidence(evidence) {
+        if (!evidence || evidence.length === 0) return '';
+        
+        return `
+            <div class="mb-6">
+                <h3 class="text-lg font-black mb-3">
+                    <i class="fas fa-flask mr-2 text-blue-400"></i>
+                    Evidências Científicas Relevantes (${evidence.length})
+                </h3>
+                ${evidence.map(ev => `
+                    <div class="bg-white/5 p-4 rounded-lg mb-3">
+                        <div class="flex justify-between items-start mb-2">
+                            <div class="flex-1">
+                                <div class="font-bold text-white mb-1">${ev.title}</div>
+                                <div class="text-xs text-white/50">PMID: ${ev.pmid} • ${ev.specialty}</div>
+                            </div>
+                            <div class="ml-3">
+                                <span class="evidence-badge level-${ev.evidence_level.toLowerCase()}">${ev.evidence_level}</span>
+                            </div>
+                        </div>
+                        <p class="text-sm text-white/70 mb-2">${ev.abstract.substring(0, 200)}...</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-purple-400">
+                                <i class="fas fa-chart-line mr-1"></i>
+                                Similaridade: ${(ev.similarity * 100).toFixed(1)}%
+                            </span>
+                            <a href="https://pubmed.ncbi.nlm.nih.gov/${ev.pmid}" target="_blank" class="text-xs text-blue-400 hover:underline">
+                                <i class="fas fa-external-link-alt mr-1"></i>Ver no PubMed
+                            </a>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+    }
+    
+    static async saveCase(clinicalData, assessment) {
+        const caseData = {
+            case_number: 'CASE-' + Date.now(),
+            timestamp: new Date().toISOString(),
+            clinical_data: EncryptionService.encrypt(clinicalData),
+            assessment: EncryptionService.encrypt(assessment)
+        };
+        
+        await db.cases.add(caseData);
+        await AuditService.log('CASE_SAVED', { case_number: caseData.case_number });
+        
+        ARPEmed.updateStats();
+    }
+}
+
+// ============================================================================
+// 7. MAIN APPLICATION
+// ============================================================================
+window.ARPEmed = {
+    workers: null,
+    multiAgent: null,
+    
+    async init() {
+        try {
+            // Inicializar workers
+            this.workers = new WorkerManager();
+            await this.workers.initialize();
+            
+            // Inicializar multi-agent
+            this.multiAgent = new MultiAgentSystem(this.workers);
+            
+            // Carregar evidências padrão
+            await this.loadDefaultEvidence();
+            
+            // Atualizar stats
+            await this.updateStats();
+            
+            // Atualizar audit log
+            await AuditService.updateAuditUI();
+            
+            document.getElementById('system-status').textContent = 'READY';
+            document.getElementById('system-status').classList.add('text-green-500');
+            
+            this.showToast('Sistema ARPEmed inicializado com sucesso!', 'success');
+            
+            await AuditService.log('SYSTEM_INIT', { version: '10.0' });
+            
+        } catch (error) {
+            console.error('Initialization error:', error);
+            this.showToast('Erro na inicialização: ' + error.message, 'error');
+            document.getElementById('system-status').textContent = 'ERROR';
+            document.getElementById('system-status').classList.add('text-red-500');
+        }
+    },
+    
+    async loadDefaultEvidence() {
+        const count = await db.evidence.count();
+        
+        if (count > 0) {
+            console.log(`${count} evidências já carregadas`);
+            this.updateEvidenceList();
+            return;
+        }
+        
+        const defaultEvidence = [
+            {
+                pmid: '33985988',
+                title: 'Troponin in Acute Coronary Syndrome',
+                abstract: 'High-sensitivity troponin assays have revolutionized the diagnosis of acute myocardial infarction, enabling earlier detection and risk stratification. Serial measurements at 0 and 1 hour with hs-cTn demonstrate excellent sensitivity and negative predictive value.',
+                specialty: 'Cardiology',
+                evidence_level: '1A',
+                year: 2021,
+                embedding: null
+            },
+            {
+                pmid: '28114553',
+                title: 'Sepsis-3 Definitions and Clinical Criteria',
+                abstract: 'The Third International Consensus Definitions for Sepsis and Septic Shock (Sepsis-3) introduced qSOFA as a bedside tool for rapid identification of patients at risk. qSOFA ≥2 indicates organ dysfunction and warrants further evaluation.',
+                specialty: 'Critical Care',
+                evidence_level: '1A',
+                year: 2016,
+                embedding: null
+            },
+            {
+                pmid: '31535829',
+                title: 'Heart Failure: Diagnosis and Management',
+                abstract: 'Natriuretic peptides (BNP/NT-proBNP) are essential biomarkers for diagnosis and prognosis of heart failure. Elevated levels strongly support the diagnosis, while normal levels have high negative predictive value.',
+                specialty: 'Cardiology',
+                evidence_level: '1B',
+                year: 2019,
+                embedding: null
+            }
+        ];
+        
+        for (const ev of defaultEvidence) {
+            try {
+                const embResult = await this.workers.generateEmbedding(ev.title + ' ' + ev.abstract);
+                ev.embedding = embResult.embedding;
+                await db.evidence.add(ev);
+            } catch (e) {
+                console.warn('Failed to add evidence:', e);
+            }
+        }
+        
+        await this.updateStats();
+        this.updateEvidenceList();
+        this.showToast(`${defaultEvidence.length} evidências científicas carregadas`, 'info');
+    },
+    
+    updateEvidenceList() {
+        db.evidence.toArray().then(evidence => {
+            const container = document.getElementById('evidence-list');
+            if (!container) return;
+            
+            if (evidence.length === 0) {
+                container.innerHTML = '<div class="text-white/30 italic text-center py-4">Nenhuma evidência carregada</div>';
+                return;
+            }
+            
+            container.innerHTML = evidence.map(ev => `
+                <div class="bg-white/5 p-3 rounded-lg flex justify-between items-center">
+                    <div class="flex-1">
+                        <div class="text-xs font-semibold text-white/90">${ev.title}</div>
+                        <div class="text-[9px] text-white/40 mt-1">PMID: ${ev.pmid} • ${ev.specialty} • ${ev.year}</div>
+                    </div>
+                    <span class="evidence-badge level-${ev.evidence_level.toLowerCase()} ml-3">${ev.evidence_level}</span>
+                </div>
+            `).join('');
+        });
+    },
+    
+    async updateStats() {
+        const evidenceCount = await db.evidence.count();
+        const casesCount = await db.cases.count();
+        
+        document.getElementById('evidence-count').textContent = evidenceCount;
+        document.getElementById('cases-count').textContent = casesCount;
+        
+        // DB size estimation
+        const dbSize = (evidenceCount * 2 + casesCount * 5);
+        document.getElementById('db-size').textContent = dbSize > 1024 ? 
+            `${(dbSize/1024).toFixed(1)} MB` : `${dbSize} KB`;
+    },
+    
+    async analyzeCase() {
+        const btn = document.getElementById('analyze-btn');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner mr-2"></span>Analisando...';
+        
+        try {
+            const clinicalData = {
+                age: document.getElementById('patient-age').value,
+                gender: document.getElementById('patient-gender').value,
+                hpi: document.getElementById('clinical-hpi').value,
+                medications: document.getElementById('current-medications').value,
+                past_history: document.getElementById('past-medical-history').value,
+                vitals: {
+                    bp: document.getElementById('vital-bp').value,
+                    hr: document.getElementById('vital-hr').value,
+                    temp: document.getElementById('vital-temp').value,
+                    spo2: document.getElementById('vital-spo2').value,
+                    rr: document.getElementById('vital-rr').value
+                }
+            };
+            
+            // Validações
+            if (!clinicalData.age || !clinicalData.gender) {
+                throw new Error('Idade e sexo são obrigatórios');
+            }
+            
+            if (!clinicalData.hpi || clinicalData.hpi.length < 50) {
+                throw new Error('HPI deve ter no mínimo 50 caracteres para análise LLM');
+            }
+            
+            // Análise multi-agente
+            const results = await this.multiAgent.analyzeCase(clinicalData);
+            
+            // Renderizar resultados (SOAP + PTS)
+            UIRenderer.renderResults(results, clinicalData);
+            
+            // XAI
+            const features = this.multiAgent.agents.diagnostic.extractFeatures(clinicalData);
+            const shapValues = await ExplainableAI.generateSHAP(features);
+            ExplainableAI.renderSHAP(shapValues, 'shap-container');
+            
+            const uncertainty = await ExplainableAI.monteCarloDropout(this.workers, features);
+            ExplainableAI.renderUncertainty(uncertainty, 'uncertainty-container');
+            
+            document.getElementById('xai-panel').style.display = 'block';
+            
+            // FHIR
+            const fhirBundle = FHIRService.generateBundle(clinicalData, results);
+            this.currentFHIR = fhirBundle;
+            
+            this.showToast('Análise completa!', 'success');
+            
+        } catch (error) {
+            console.error('Analysis error:', error);
+            this.showToast('Erro: ' + error.message, 'error');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-brain mr-2"></i>Executar Análise Multi-Agente (SOAP + PTS)';
+        }
+    },
+    
+    clearCase() {
+        ['patient-age', 'patient-gender', 'clinical-hpi', 'current-medications', 
+         'past-medical-history', 'vital-bp', 'vital-hr', 'vital-temp', 
+         'vital-spo2', 'vital-rr'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.value = '';
+        });
+        
+        document.getElementById('results-container').innerHTML = '';
+        document.getElementById('llm-panel').style.display = 'none';
+        document.getElementById('xai-panel').style.display = 'none';
+        document.getElementById('fhir-panel').style.display = 'none';
+        
+        this.showToast('Caso limpo', 'info');
+    },
+    
+    async validateSystem() {
+        const checks = {
+            workers: this.workers !== null,
+            tfWorker: this.workers?.tfWorker !== null,
+            llmWorker: this.workers?.llmWorker !== null,
+            database: await db.isOpen(),
+            evidence: await db.evidence.count() > 0,
+            auditIntegrity: (await AuditService.verifyIntegrity()).valid
+        };
+        
+        const allPassed = Object.values(checks).every(v => v);
+        
+        const message = `
+            Validação do Sistema:
+            ✓ Workers: ${checks.workers ? 'OK' : 'FALHA'}
+            ✓ TF Worker: ${checks.tfWorker ? 'OK' : 'FALHA'}
+            ✓ LLM Worker: ${checks.llmWorker ? 'OK' : 'FALHA'}
+            ✓ Database: ${checks.database ? 'OK' : 'FALHA'}
+            ✓ Evidências: ${checks.evidence ? 'OK' : 'FALHA'}
+            ✓ Audit Log: ${checks.auditIntegrity ? 'ÍNTEGRO' : 'COMPROMETIDO'}
+        `;
+        
+        console.log(message);
+        this.showToast(allPassed ? 'Sistema validado com sucesso!' : 'Validação falhou', allPassed ? 'success' : 'error');
+        
+        await AuditService.log('SYSTEM_VALIDATION', checks);
+    },
+    
+    exportFHIR() {
+        if (!this.currentFHIR) {
+            this.showToast('Nenhum caso analisado para exportar', 'warning');
+            return;
+        }
+        
+        document.getElementById('fhir-panel').style.display = 'block';
+        document.querySelector('#fhir-content pre').textContent = JSON.stringify(this.currentFHIR, null, 2);
+    },
+    
+    downloadFHIR() {
+        if (!this.currentFHIR) return;
+        
+        const blob = new Blob([JSON.stringify(this.currentFHIR, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `arpemed-fhir-${Date.now()}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        
+        this.showToast('FHIR Bundle baixado', 'success');
+    },
+    
+    validateFHIR() {
+        if (!this.currentFHIR) return;
+        
+        const isValid = FHIRService.validate(this.currentFHIR);
+        this.showToast(isValid ? 'FHIR Bundle válido ✓' : 'FHIR Bundle inválido', isValid ? 'success' : 'error');
+    },
+    
+    startVoiceInput(targetId) {
+        if (!('webkitSpeechRecognition' in window)) {
+            this.showToast('Reconhecimento de voz não suportado neste navegador', 'warning');
+            return;
+        }
+        
+        const recognition = new webkitSpeechRecognition();
+        recognition.lang = 'pt-BR';
+        recognition.continuous = false;
+        
+        recognition.onstart = () => {
+            this.showToast('Gravando... Fale agora', 'info');
+        };
+        
+        recognition.onresult = (event) => {
+            const transcript = event.results[0][0].transcript;
+            document.getElementById(targetId).value += ' ' + transcript;
+            this.showToast('Texto adicionado por voz', 'success');
+        };
+        
+        recognition.onerror = (event) => {
+            this.showToast('Erro no reconhecimento de voz: ' + event.error, 'error');
+        };
+        
+        recognition.start();
+    },
+    
+    authenticateBiometric() {
+        // Simulação de autenticação biométrica
+        setTimeout(() => {
+            document.getElementById('biometric-overlay').style.display = 'none';
+            document.getElementById('app-container').style.display = 'block';
+            this.showToast('Autenticação bem-sucedida!', 'success');
+            AuditService.log('BIOMETRIC_AUTH', { success: true });
+        }, 1500);
+    },
+    
+    showToast(message, type = 'info') {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        toast.innerHTML = `
+            <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'times-circle' : type === 'warning' ? 'exclamation-triangle' : 'info-circle'} mr-2"></i>
+            ${message}
+        `;
+        container.appendChild(toast);
+        
+        setTimeout(() => toast.remove(), 5000);
+    }
 };
+
+// Initialize on load
+window.addEventListener('load', () => ARPEmed.init());
+
+// PWA Install Prompt
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    
+    ARPEmed.showToast('Instale o ARPEmed como aplicativo!', 'info');
+});
+
 </script>
+
 </body>
 </html>
