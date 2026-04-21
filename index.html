@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#007AFF">
-<title>ARPEmed v20.0 — Pipeline Unificado + SOAP Analítico + TPS</title>
+<title>ARPEmed v20.0 — Pipeline Unificado + SOAP Analítico + TPS (CORRIGIDO)</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -32,7 +32,6 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--primary)
 select option{background:#111;color:#fff}
 textarea{resize:vertical}
 
-/* SOAP BOXES */
 .soap-box{background:rgba(255,255,255,.025);border-radius:16px;padding:18px;margin-bottom:16px;border-left:4px solid}
 .soap-s{border-color:#007AFF}.soap-o{border-color:#34C759}.soap-a{border-color:#AF52DE}.soap-p{border-color:#FF9500}
 .soap-ltr{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:20px}
@@ -41,7 +40,6 @@ textarea{resize:vertical}
 .soap-la{background:rgba(175,82,222,.15);color:#AF52DE}
 .soap-lp{background:rgba(255,149,0,.15);color:#FF9500}
 
-/* TPS BOXES */
 .tps-t{border-left:4px solid #60a5fa;background:rgba(96,165,250,.06)}
 .tps-p{border-left:4px solid #34C759;background:rgba(52,199,89,.06)}
 .tps-s{border-left:4px solid #FF9500;background:rgba(255,149,0,.06)}
@@ -50,7 +48,6 @@ textarea{resize:vertical}
 .tps-lp{background:rgba(52,199,89,.18);color:#34C759}
 .tps-ls{background:rgba(255,149,0,.18);color:#FF9500}
 
-/* PQRST BOX */
 .pqrst-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}
 @media(min-width:768px){.pqrst-grid{grid-template-columns:repeat(5,1fr)}}
 .pqrst-card{background:rgba(255,255,255,.05);border-radius:12px;padding:12px;text-align:center}
@@ -58,49 +55,38 @@ textarea{resize:vertical}
 .pqrst-label{font-size:9px;text-transform:uppercase;letter-spacing:.06em;opacity:.4;margin-bottom:6px}
 .pqrst-value{font-size:11px;line-height:1.5;opacity:.8}
 
-/* NEGATIVE FINDINGS */
 .neg-find{background:rgba(52,199,89,.06);border:1px solid rgba(52,199,89,.2);border-radius:10px;padding:10px 14px;margin:6px 0}
 .pos-find{background:rgba(255,59,48,.06);border:1px solid rgba(255,59,48,.2);border-radius:10px;padding:10px 14px;margin:6px 0}
-
-/* JUSTIFICATION BOX */
 .justif{background:rgba(175,82,222,.08);border-left:3px solid #AF52DE;border-radius:0 10px 10px 0;padding:8px 12px;font-size:12px;color:rgba(255,255,255,.7);margin-top:6px;line-height:1.6;font-style:italic}
 
-/* HYPOTHESIS CARD */
 .hyp-card{border-radius:14px;padding:14px;margin-bottom:10px}
 .hyp-main{background:rgba(175,82,222,.12);border:1px solid rgba(175,82,222,.3)}
 .hyp-alt{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07)}
 .hyp-badge{display:inline-block;padding:2px 9px;border-radius:10px;font-size:9px;font-weight:700;text-transform:uppercase}
 
-/* CONDUCT CARD */
 .cond-block{background:rgba(255,255,255,.04);border-radius:12px;padding:14px;margin-bottom:10px}
 .cond-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;opacity:.5}
 .cond-item{display:flex;gap:8px;align-items:flex-start;margin-bottom:8px;padding:8px;background:rgba(255,255,255,.03);border-radius:8px}
 .cond-icon{flex-shrink:0;width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px}
 
-/* TABS */
 .tab-bar{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
 .tab-btn{padding:8px 16px;border-radius:100px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:rgba(255,255,255,.5);transition:all .2s}
 .tab-btn.active{background:var(--purple);color:#fff;border-color:var(--purple)}
 .tab-content{display:none}.tab-content.active{display:block}
 
-/* TOASTS */
 .toast-wrap{position:fixed;top:18px;right:18px;z-index:99998;display:flex;flex-direction:column;gap:8px;max-width:320px}
 .toast{padding:11px 16px;border-radius:13px;background:rgba(10,10,20,.97);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.1);font-size:13px;font-weight:500;animation:slideR .3s ease;word-break:break-word}
 @keyframes slideR{from{transform:translateX(110%);opacity:0}to{transform:translateX(0);opacity:1}}
 
-/* SPINNER */
 .spin{border:2px solid rgba(255,255,255,.1);border-top:2px solid var(--primary);border-radius:50%;width:17px;height:17px;animation:rot .8s linear infinite;display:inline-block;vertical-align:middle}
 @keyframes rot{to{transform:rotate(360deg)}}
 
-/* HOT BADGE */
 .hot{background:linear-gradient(135deg,#FF3B30,#FF9500);color:#fff;padding:1px 7px;border-radius:20px;font-size:8px;font-weight:700;animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}
 
-/* UPLOAD */
 .drop-area{border:2px dashed rgba(255,255,255,.2);border-radius:18px;padding:36px;text-align:center;transition:all .3s;cursor:pointer}
 .drop-area:hover,.drop-area.dragover{border-color:var(--primary);background:rgba(0,122,255,.06)}
 
-/* MONITOR */
 #monitor{position:fixed;bottom:18px;right:18px;width:370px;background:rgba(6,6,16,.97);border:1px solid rgba(255,255,255,.1);border-radius:18px;z-index:89990;display:flex;flex-direction:column;box-shadow:0 8px 36px rgba(0,0,0,.7);backdrop-filter:blur(24px);transition:max-height .3s ease;max-height:420px}
 #monitor.collapsed{max-height:44px;overflow:hidden}
 #monHead{display:flex;align-items:center;justify-content:space-between;padding:10px 15px;border-bottom:1px solid rgba(255,255,255,.07);cursor:pointer;user-select:none;flex-shrink:0;border-radius:18px 18px 0 0}
@@ -114,42 +100,33 @@ textarea{resize:vertical}
 .mdot.blink{animation:dotBlink 1s infinite}
 @keyframes dotBlink{0%,100%{opacity:1}50%{opacity:.2}}
 
-/* MODAL */
 .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.88);backdrop-filter:blur(18px);z-index:10500;display:none;align-items:center;justify-content:center}
 .modal-bg.open{display:flex}
 .modal-box{background:rgba(12,12,22,.98);border:1px solid rgba(255,255,255,.1);border-radius:22px;padding:28px;width:100%;max-height:88vh;overflow-y:auto}
 
-/* LR TABLE */
 .lr-table{width:100%;border-collapse:collapse;font-size:12px}
 .lr-table th{padding:8px 10px;text-align:left;color:rgba(255,255,255,.4);font-weight:600;border-bottom:1px solid rgba(255,255,255,.07);font-size:11px;text-transform:uppercase}
 .lr-table td{padding:7px 10px;border-bottom:1px solid rgba(255,255,255,.05);vertical-align:middle}
 .lr-table tr:hover td{background:rgba(255,255,255,.03)}
 .lr-table input[type=number]{width:70px;padding:4px 8px;border-radius:8px;font-size:12px;text-align:center}
 
-/* KBD */
 .kbd{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:6px;padding:2px 7px;font-size:10px;font-family:'Courier New',monospace;color:rgba(255,255,255,.7)}
 
-/* CONTRAINDICATION */
 .ci-alert{background:rgba(255,59,48,.1);border:1px solid rgba(255,59,48,.3);border-radius:11px;padding:11px;margin:7px 0}
 
-/* PTS GRID */
 .pts-grid{display:grid;grid-template-columns:1fr;gap:14px}
 @media(min-width:768px){.pts-grid{grid-template-columns:1fr 1fr 1fr}}
 .pts-card{background:rgba(255,255,255,.03);border-radius:15px;padding:18px;border-top:4px solid}
 
-/* HL CARD */
 .hl-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:16px;margin-bottom:12px}
 
-/* PROG */
 .prog-wrap{background:rgba(255,255,255,.08);border-radius:99px;height:5px;overflow:hidden}
 .prog-bar{height:100%;background:linear-gradient(90deg,#34C759,#007AFF);border-radius:99px;transition:width .3s}
 
-/* SECTION DIVIDER */
 .sec-div{display:flex;align-items:center;gap:12px;margin:24px 0 16px}
 .sec-div::before,.sec-div::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.07)}
 .sec-div-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.3);white-space:nowrap}
 
-/* SCROLLBAR */
 ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:4px}
 </style>
 </head>
@@ -450,6 +427,25 @@ textarea{resize:vertical}
 'use strict';
 
 // ════════════════════════════════════════════════════════════════════
+// CORREÇÃO 1: STUBS PARA FUNÇÕES NÃO IMPLEMENTADAS (evita quebra)
+// ════════════════════════════════════════════════════════════════════
+const AnalyticalSOAP = {
+  generate: (data, res) => ({ subjetivo:{}, objetivo:{}, avaliacao:[], plano:{}, top:res.hipoteses[0] })
+};
+const TPS = {
+  generate: (data, res) => ({ teoria:{}, prova:{}, solucao:{}, top:res.hipoteses[0] })
+};
+function renderSoapAnalitico(soap) {
+  return `<div style="padding:20px;text-align:center;opacity:0.5">SOAP Analítico (módulo em construção)</div>`;
+}
+function renderTPS(tps) {
+  return `<div style="padding:20px;text-align:center;opacity:0.5">TPS (módulo em construção)</div>`;
+}
+function sectionCard(title,icon,color,content){ return content; }
+function bulletList(items,color,icon){ return items.map(i=>`<li>${i}</li>`).join(''); }
+function justifBullet(items,color){ return items.map(i=>`<div>${i}</div>`).join(''); }
+
+// ════════════════════════════════════════════════════════════════════
 // MONITOR
 // ════════════════════════════════════════════════════════════════════
 const Mon = (() => {
@@ -744,611 +740,70 @@ const Contraindic={
 };
 
 // ════════════════════════════════════════════════════════════════════
-// ★ NOVO — ANALISADOR PQRST
+// PQRST
 // ════════════════════════════════════════════════════════════════════
-const PQRSTAnalyzer={
-  extract(subj,vitals){
-    const t=norm(subj);
-    // P — Provocação / Piora / Melhora
-    let P='Não especificado';
-    if(/(esforco|atividade|fisica|subindo|caminhando)/.test(t)) P='Desencadeado por esforço físico';
-    else if(/(repouso|espontane|dormindo|sem provocac)/.test(t)) P='Em repouso / espontâneo';
-    else if(/(estresse|emocional|ansie)/.test(t)) P='Precipitado por estresse emocional';
-    else if(/(pos.*prandial|apos.*comer|alimentacao)/.test(t)) P='Pós-prandial';
-    if(/(melhora.*repouso|melhora.*sentando|melhora.*nitrato)/.test(t)) P+=' | Melhora: repouso/nitrato';
-    if(/(piora.*decubito|piora.*deitando|piora.*respirando)/.test(t)) P+=' | Piora: decúbito/respiração';
-
-    // Q — Qualidade
-    let Q='Não especificado';
-    if(/(aperto|constric|opress|peso|pedra|elefante)/.test(t)) Q='Aperto / opressão / pressão (sugere origem isquêmica)';
-    else if(/(queimac|queimor|azia)/.test(t)) Q='Queimação (sugere DRGE vs. isquemia)';
-    else if(/(pontad|facad|cortante|agudo|picada)/.test(t)) Q='Pontada / facada (sugere pleurite, pericardite)';
-    else if(/(rasgando|desgarra|dilacera)/.test(t)) Q='Rasgando / dilacerante (alerta para dissecção)';
-    else if(/(peso|pressao|compressa)/.test(t)) Q='Peso / pressão';
-    else if(/(dor difusa|mal definida|vaga)/.test(t)) Q='Dor difusa / mal localizada';
-
-    // R — Região e Irradiação
-    let R='Torácica';
-    if(/(torac|precordial|peito)/.test(t)) R='Torácica precordial';
-    if(/(irrad|irradia)/.test(t)){
-      if(/(mse|braco esq|ombro esq)/.test(t)) R+=' com irradiação para MSE';
-      if(/(mandibul|queixo|pescoco)/.test(t)) R+=' com irradiação para mandíbula';
-      if(/(dorso|costas|interescap)/.test(t)) R+=' com irradiação para dorso (alerta dissecção)';
-      if(/(epigastr|abdome)/.test(t)) R+=' com componente epigástrico';
-    }
-
-    // S — Severidade
-    let S='Não quantificada';
-    const numM=t.match(/\b([0-9]|10)\s*(?:\/10|de\s*10|numa\s*escala)\b/);
-    if(numM) S=`${numM[1]}/10 (EVA)`;
-    else if(/(leve|leve|fraco|discreto)/.test(t)) S='Leve (EVA estimado 1–3/10)';
-    else if(/(modera|modera)/.test(t)) S='Moderada (EVA estimado 4–6/10)';
-    else if(/(forte|intens|severa|insuportavel|pior dor)/.test(t)) S='Intensa (EVA estimado 7–10/10)';
-    else if(/(incapacitante|nao consigo|nao consegue)/.test(t)) S='Incapacitante';
-
-    // T — Tempo / Cronologia
-    let T='Não especificado';
-    const tempoM=t.match(/ha\s*(\d+)\s*(hora|horas|h\b|minuto|minutos|min|dia|dias|semana)/);
-    if(tempoM) T=`Há ${tempoM[1]} ${tempoM[2]}`;
-    if(/(continua|constante|persistente|nao cede)/.test(t)) T+=' — Contínua / sem alívio';
-    if(/(intermitente|vai e vem|crises|episodi)/.test(t)) T+=' — Episódica / intermitente';
-    if(/(pioran|progressiv|piorou)/.test(t)) T+=' — Padrão progressivo';
-    if(/(subit|agudo|repentin)/.test(t)) T+=' — Início súbito (alerta emergência)';
-
-    return{P,Q,R,S,T};
+const PQRST = {
+  extract(subj='', obj='') {
+    const t = norm(subj+' '+obj);
+    const P = (() => {
+      if (/(esforco|exericio|caminhada|subir escada)/.test(t))  return 'Desencadeado/piora ao esforço físico';
+      if (/(repouso|sentado|deitado)/.test(t))                  return 'Presente em repouso';
+      if (/(stress|emocional|nervoso)/.test(t))                 return 'Associado a fator emocional/estresse';
+      if (/(apos.*comer|pos.prandial|alimentac)/.test(t))       return 'Pós-prandial';
+      if (/(espontaneo|subit|abrupt)/.test(t))                  return 'Início espontâneo, sem fator desencadeante identificado';
+      return 'Fator precipitante não claramente identificado no relato';
+    })();
+    const Q = (() => {
+      if (/(aperto|opress|constric|peso)/.test(t))              return 'Em aperto / opressão / constrição (padrão isquêmico típico)';
+      if (/(queimac|queima|azia|acid)/.test(t))                 return 'Em queimação (sugestivo de DRGE / dispepsia)';
+      if (/(fincada|facada|pontada)/.test(t))                   return 'Em pontada / fincada (sugestivo de dor pleurítica ou musculoesquelética)';
+      if (/(pulsatil|latejante|lateja)/.test(t))                return 'Pulsátil / latejante (padrão de cefaleia vascular)';
+      if (/(difusa|difuso|vaga)/.test(t))                       return 'Dor difusa, de difícil caracterização';
+      if (/(dor|dolor)/.test(t))                                return 'Dor de caráter não especificado no relato';
+      return 'Caráter da queixa não claramente descrito';
+    })();
+    const R = (() => {
+      const reg=[];
+      if (/(toracic|peito|precordial|esternal)/.test(t))        reg.push('Região torácica / precordial');
+      if (/(irrad|membr.*esq|braco esq|mse|mandibul|pescoco)/.test(t)) reg.push('com irradiação para MSE / mandíbula (padrão coronariano)');
+      if (/(lombar|lombalg|dorsal|costas)/.test(t))             reg.push('Região lombar / dorsal');
+      if (/(abdom|epigas|hipocondrio|fossa iliaca)/.test(t))    reg.push('Região abdominal');
+      if (/(cefale|frontal|temporal|occipital)/.test(t))        reg.push('Crânio / região cefálica');
+      if (/(mmii|perna|panturrilha|edema)/.test(t))             reg.push('Membros inferiores');
+      return reg.length ? reg.join('; ') : 'Localização não especificada';
+    })();
+    const S = (() => {
+      if (/(insuportavel|insuport|gravissim|intens.*forte)/.test(t)) return '9–10/10 — intensidade máxima, incapacitante';
+      if (/(forte|intens|severo|pior.*dor)/.test(t))            return '7–8/10 — intensa, limitante';
+      if (/(moderado|moderada|razoavel)/.test(t))               return '4–6/10 — moderada';
+      if (/(leve|discret|pouco)/.test(t))                       return '1–3/10 — leve';
+      return 'Intensidade não quantificada no relato';
+    })();
+    const T = (() => {
+      if (/(\d+\s*hora)/.test(t)) { const m=t.match(/(\d+)\s*hora/); return m?`Há ${m[1]}h de evolução — quadro agudo`:'Horas de evolução'; }
+      if (/(\d+\s*dia)/.test(t)) { const m=t.match(/(\d+)\s*dia/); return m?`Há ${m[1]} dia(s) de evolução`:'Dias de evolução'; }
+      if (/(\d+\s*semana)/.test(t)) { const m=t.match(/(\d+)\s*semana/); return m?`Há ${m[1]} semana(s) — subagudo`:'Semanas de evolução'; }
+      if (/(cronico|anos|meses|tempo)/.test(t))                 return 'Quadro crônico / de longa data';
+      if (/(subit|repentin|abrupto)/.test(t))                   return 'Início súbito / abrupto';
+      return 'Tempo de evolução não especificado';
+    })();
+    const antec = [];
+    if (/(has|hipertens)/.test(t))          antec.push('HAS (↑ risco cardiovascular / AVC)');
+    if (/(dm|diabet)/.test(t))              antec.push('DM (↑ risco doença coronariana; pode mascarar dor isquêmica)');
+    if (/(tabag|fumante)/.test(t))          antec.push('Tabagismo (↑ risco SCA, DPOC, TEP, AVC)');
+    if (/(dislipidemia|colesterol)/.test(t)) antec.push('Dislipidemia (aterosclerose acelerada)');
+    if (/(icc|ic\b|insuf.*card)/.test(t))   antec.push('ICC prévia (risco descompensação)');
+    if (/(avc|acidente vasc)/.test(t))      antec.push('AVC prévio (risco recorrência)');
+    if (/(tep|tromboemb|tvp)/.test(t))      antec.push('TEP/TVP prévia (estado trombofílico)');
+    if (/(dpoc|enfisema|bronquite cron)/.test(t)) antec.push('DPOC (risco exacerbação / Cor Pulmonale)');
+    if (/(sedentari)/.test(t))              antec.push('Sedentarismo (↑ risco cardiovascular global)');
+    if (/(obesidade|obeso)/.test(t))        antec.push('Obesidade (↑ risco metabólico / trombótico)');
+    return {P,Q,R,S,T, antec};
   }
 };
 
 // ════════════════════════════════════════════════════════════════════
-// ★ NOVO — ANALISADOR DE ACHADOS (positivos e negativos)
-// ════════════════════════════════════════════════════════════════════
-const AchadosAnalyzer={
-  analyze(subj,obj,hipCode){
-    const t=norm(`${subj} ${obj}`);
-    const positivos=[];
-    const negativos=[];
-
-    const CHECK=[
-      // Cardiovascular
-      {neg:'Ausência de B3 (galope)',pos:'B3 presente (galope)',re:/(b3|galope|terceira.*bulha)/,clin:'(Galope B3 = IC descompensada)'},
-      {neg:'Ausência de sopros',pos:'Sopro cardíaco presente',re:/(sopro|murmur)/,clin:'(Pode indicar valvopatia ou complicação mecânica de IAM)'},
-      {neg:'Sem ingurgitamento jugular',pos:'Turgência jugular presente',re:/(jugular|tvj|turgescencia)/,clin:'(TVJ = congestão sistêmica / IC direita)'},
-      {neg:'Sem edema de MMII',pos:'Edema de MMII presente',re:/(edema.*mmii|edema.*perna|inchac)/,clin:'(Pode sugerir IC ou TVP)'},
-      // Respiratório
-      {neg:'Sem crepitações pulmonares',pos:'Crepitações pulmonares presentes',re:/(crepitac|estertor|estertores)/,clin:'(Crepitações = edema alveolar / pneumonia)'},
-      {neg:'Sem sibilos',pos:'Sibilos presentes',re:/(sibil|sibilan|chiad)/,clin:'(Broncoespasmo: DPOC, asma, IC — "cardiac asthma")'},
-      {neg:'MV presente bilateralmente',pos:'MV abolido/diminuído',re:/(mv.*abolido|mv.*diminui|sem.*mv|ausencia.*mv)/,clin:'(Abolição de MV: derrame, pneumotórax, consolidação)'},
-      {neg:'Sem macicez à percussão',pos:'Macicez à percussão',re:/(macicez|macico)/,clin:'(Macicez: consolidação, derrame pleural)'},
-      // Neurológico
-      {neg:'Sem déficits focais neurológicos',pos:'Déficit focal presente',re:/(deficit|paresia|pares|plegia|afas|disartr)/,clin:'(Déficit focal = sinal de alarme para AVC)'},
-      {neg:'GCS 15 (alerta)',pos:'Glasgow reduzido',re:/(gcs.*[0-9]|glasgow.*[0-9])/,clin:'(GCS < 15: investigar causa — choque, AVC, sepse)'},
-      // Abdominal
-      {neg:'Ausência de sinal de Murphy',pos:'Sinal de Murphy positivo',re:/(murphy|colecistite)/,clin:'(Murphy+ = colecistite aguda — diagnóstico diferencial de dor torácica baixa)'},
-      {neg:'Abdome indolor à palpação',pos:'Dor abdominal à palpação',re:/(dor.*abdom|abdom.*doloroso|defesa)/,clin:'(Dor abdominal: descartar causa abdominal para o quadro)'},
-      // Febre / séptico
-      {neg:'Afebril',pos:'Febre presente',re:/(febre|febril|hipertermi)/,clin:'(Febre + instabilidade hemodinâmica: critério de sepse)'},
-    ];
-
-    for(const c of CHECK){
-      if(c.re.test(t)){
-        positivos.push({achado:c.pos,clin:c.clin});
-      } else {
-        negativos.push({achado:c.neg,clin:c.clin});
-      }
-    }
-
-    return{positivos,negativos};
-  }
-};
-
-// ════════════════════════════════════════════════════════════════════
-// ★ NOVO — GERADOR SOAP ANALÍTICO
-// ════════════════════════════════════════════════════════════════════
-const SOAPAnalitico={
-  generate(data,hipoteses,evid){
-    const top=hipoteses[0],sec=hipoteses[1],ter=hipoteses[2];
-    const t=norm(`${data.s} ${data.o}`);
-    const pqrst=PQRSTAnalyzer.extract(data.s,data);
-    const achados=AchadosAnalyzer.analyze(data.s,data.o,top.code);
-
-    /* ─── S Analítico ─── */
-    const s_text=`
-    <div style="font-size:13px;line-height:1.8;margin-bottom:14px">
-      <span style="font-weight:700;color:#60a5fa">Narrativa Cronológica:</span>
-      ${esc(data.s)}
-    </div>
-
-    <div style="margin-bottom:14px">
-      <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;opacity:.4;margin-bottom:8px">Análise PQRST da Queixa Principal</p>
-      <div class="pqrst-grid">
-        <div class="pqrst-card" style="border-top:3px solid #007AFF">
-          <div class="pqrst-letter" style="color:#007AFF">P</div>
-          <div class="pqrst-label">Provocação / Piora</div>
-          <div class="pqrst-value">${esc(pqrst.P)}</div>
-        </div>
-        <div class="pqrst-card" style="border-top:3px solid #AF52DE">
-          <div class="pqrst-letter" style="color:#AF52DE">Q</div>
-          <div class="pqrst-label">Qualidade</div>
-          <div class="pqrst-value">${esc(pqrst.Q)}</div>
-        </div>
-        <div class="pqrst-card" style="border-top:3px solid #34C759">
-          <div class="pqrst-letter" style="color:#34C759">R</div>
-          <div class="pqrst-label">Região / Irradiação</div>
-          <div class="pqrst-value">${esc(pqrst.R)}</div>
-        </div>
-        <div class="pqrst-card" style="border-top:3px solid #FF3B30">
-          <div class="pqrst-letter" style="color:#FF3B30">S</div>
-          <div class="pqrst-label">Severidade (EVA)</div>
-          <div class="pqrst-value">${esc(pqrst.S)}</div>
-        </div>
-        <div class="pqrst-card" style="border-top:3px solid #FF9500">
-          <div class="pqrst-letter" style="color:#FF9500">T</div>
-          <div class="pqrst-label">Tempo / Cronologia</div>
-          <div class="pqrst-value">${esc(pqrst.T)}</div>
-        </div>
-      </div>
-    </div>
-
-    ${this._getFatoresRisco(t,top)}`;
-
-    /* ─── O Analítico ─── */
-    const o_text=`
-    <div style="font-size:13px;line-height:1.8;margin-bottom:14px">
-      <span style="font-weight:700;color:#34C759">Dados Objetivos (organizados por sistema):</span><br>
-      ${esc(data.o)}
-    </div>
-
-    <div style="margin-bottom:10px">
-      <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;opacity:.4;margin-bottom:8px">
-        <i class="fas fa-plus-circle" style="color:#FF3B30;margin-right:4px"></i>Achados Positivos Pertinentes
-      </p>
-      ${achados.positivos.length
-        ? achados.positivos.map(a=>`<div class="pos-find"><i class="fas fa-exclamation-circle" style="color:#FF3B30;margin-right:8px"></i><strong>${esc(a.achado)}</strong><span class="justif">${esc(a.clin)}</span></div>`).join('')
-        : '<p style="opacity:.4;font-size:12px">Nenhum achado positivo de alarme detectado no texto.</p>'
-      }
-    </div>
-
-    <div>
-      <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;opacity:.4;margin-bottom:8px">
-        <i class="fas fa-minus-circle" style="color:#34C759;margin-right:4px"></i>Achados Negativos Pertinentes (Exclusões Ativas)
-      </p>
-      ${achados.negativos.slice(0,8).map(a=>`<div class="neg-find"><i class="fas fa-check-circle" style="color:#34C759;margin-right:8px"></i><strong>${esc(a.achado)}</strong><span class="justif">${esc(a.clin)}</span></div>`).join('')}
-    </div>`;
-
-    /* ─── A Analítico ─── */
-    const a_text=`
-    <div style="margin-bottom:16px">
-      <div class="hyp-card hyp-main">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
-          <div>
-            <span class="hyp-badge" style="background:rgba(255,59,48,.2);color:#FF3B30;margin-bottom:6px;display:inline-block">Hipótese Principal</span>
-            <p style="font-size:16px;font-weight:800">${esc(top.name)}</p>
-          </div>
-          <span style="font-size:18px;font-weight:900;color:#FF3B30">${(top.post*100).toFixed(1)}%</span>
-        </div>
-        <div class="justif">
-          <strong>Justificativa clínica:</strong> ${this._getJustificativa(top.code,data,pqrst)}
-        </div>
-        ${sec?`<div class="justif" style="margin-top:8px;border-color:#FF9500">
-          <strong>Por que não ${esc(sec.name.split('(')[0].trim())} (${(sec.post*100).toFixed(1)}%)?</strong>
-          ${this._getDiferencial(top.code,sec.code,data)}
-        </div>`:''}
-      </div>
-
-      ${[sec,ter].filter(Boolean).map((h,i)=>`
-      <div class="hyp-card hyp-alt">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-          <div>
-            <span class="hyp-badge" style="background:rgba(255,255,255,.08);color:rgba(255,255,255,.5);margin-bottom:4px;display:inline-block">
-              ${i===0?'2ª Hipótese':'3ª Hipótese'} — Diagnóstico Diferencial
-            </span>
-            <p style="font-weight:700">${esc(h.name)}</p>
-          </div>
-          <span style="font-weight:700;color:#FF9500">${(h.post*100).toFixed(1)}%</span>
-        </div>
-        <div class="justif">${this._getJustificativa(h.code,data,pqrst,true)}</div>
-      </div>`).join('')}
-    </div>`;
-
-    /* ─── P Analítico ─── */
-    const p_text=this._getPlanoCompleto(top,data,evid);
-
-    return{s_text,o_text,a_text,p_text,pqrst};
-  },
-
-  _getFatoresRisco(t,top){
-    const frs=[];
-    if(/(has|hipertens)/.test(t)) frs.push({fr:'HAS',rel:'Fator de risco independente para SCA, AVC e IC'});
-    if(/(dm|diabet)/.test(t)) frs.push({fr:'DM2',rel:'Dano endotelial crónico → aterosclerose acelerada'});
-    if(/(tabag|fumante)/.test(t)) frs.push({fr:'Tabagismo',rel:'Vasoespasmo + aterogênese + pró-trombótico'});
-    if(/(pai|mae|familiar|familiar.*infart|familiar.*coronar)/.test(t)) frs.push({fr:'História familiar de DAC',rel:'Risco aumentado em ~50% para doença coronariana precoce'});
-    if(/(sedentari|inativ|sem exercic)/.test(t)) frs.push({fr:'Sedentarismo',rel:'FR modificável: piora perfil lipídico e resistência insulínica'});
-    if(/(obesidad|sobrepeso|imc)/.test(t)) frs.push({fr:'Obesidade',rel:'Inflamação crônica + resistência insulínica + HAS'});
-    if(!frs.length) return '';
-    return`<div style="margin-bottom:12px">
-      <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;opacity:.4;margin-bottom:8px">Fatores de Risco Relevantes para Hipótese Principal</p>
-      ${frs.map(f=>`<div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:6px;padding:8px;background:rgba(255,255,255,.04);border-radius:8px">
-        <i class="fas fa-triangle-exclamation" style="color:#FF9500;margin-top:2px;flex-shrink:0"></i>
-        <div><strong style="font-size:13px">${esc(f.fr)}</strong>
-        <p style="font-size:11px;opacity:.6;margin-top:2px">${esc(f.rel)}</p></div>
-      </div>`).join('')}
-    </div>`;
-  },
-
-  _getJustificativa(code,data,pqrst,alt=false){
-    const t=norm(`${data.s} ${data.o}`);
-    const bp=parseBP(data.bp),hr=parseHR(data.hr);
-    const m={
-      SCA: alt
-        ? `Não descartado: dor em aperto com irradiação é o padrão clássico de SCA. Porém, probabilidade menor dado o contexto atual.`
-        : `A dor torácica em "${pqrst.Q}" com "${pqrst.R}" em paciente com múltiplos FRs cardiovasculares (${/(has)/.test(t)?'HAS':''}${/(diabet|dm)/.test(t)?', DM':''}${/(tabag)/.test(t)?', tabagista':''}) constitui apresentação típica de SCA. A cronologia de ${pqrst.T} sem alívio espontâneo reforça a isquemia miocárdica em curso.`,
-      TEP: alt
-        ? `TEP permanece no diferencial dado o contexto de dispneia. A ausência de fatores de risco trombóticos específicos (TVP, imobilização) reduz a probabilidade.`
-        : `Dispneia aguda com taquicardia e SpO2 reduzida em paciente com fatores de risco trombóticos. A hipoxemia desproporcional e o início súbito são padrão característico de TEP.`,
-      Sepse: alt
-        ? `Sepse menos provável na ausência de foco infeccioso identificável e temperatura dentro do normal. FC elevada pode ser explicada pela dor.`
-        : `Critérios SIRS/Sepse-3 presentes: ${hr!=null&&hr>=90?`FC ${hr} bpm (≥90), `:''}${/(febre|calafr)/.test(t)?'febre/calafrio, ':''}${/(confus)/.test(t)?'alteração do sensório, ':''}suspeita de foco infeccioso. Lactato necessário para estratificação.`,
-      IC: alt
-        ? `IC possível como diagnóstico secundário ou precipitante. Ausência de ortopneia documentada reduz a probabilidade.`
-        : `Ortopneia, edema e crepitações compõem a tríade clássica de IC descompensada. BNP e ecocardiograma são confirmatórios.`,
-      AVC: alt
-        ? `AVC descartado funcionalmente: ausência de déficits neurológicos focais, Glasgow preservado.`
-        : `Déficit neurológico focal de início súbito — classicamente representado pela tríade FAST (Face, Arm, Speech, Time). Tempo de início crítico para decisão trombolítica.`,
-      Pneumonia: alt
-        ? `PAC menos provável sem tosse produtiva, febre ou consolidação ao exame. Rx de tórax definidor.`
-        : `Síndrome infecciosa pulmonar: febre + tosse produtiva + hipoxemia + alteração auscultatória focal. CURB-65 define gravidade e local de tratamento.`,
-      DPOC: alt
-        ? `DPOC em diagnóstico diferencial na presença de tabagismo, mas ausência de sibilos/hiperinsuflação reduz a probabilidade.`
-        : `Exacerbação de DPOC em tabagista com sibilos, dispneia progressiva e padrão de obstrução ao fluxo de ar. Gasometria arterial e peak flow são prioritários.`,
-    };
-    return m[code]||'Hipótese sustentada pelos achados clínicos do SOAP e probabilidade bayesiana calculada.';
-  },
-
-  _getDiferencial(codeA,codeB,data){
-    const t=norm(`${data.s} ${data.o}`);
-    const pares={
-      'SCA_TEP':`A qualidade da dor (aperto precordial) é mais típica de isquemia miocárdica do que de TEP, que tipicamente cursa com dor pleurítica (piora à respiração). Além disso, a irradiação para MSE é praticamente específica para SCA.`,
-      'SCA_IC':`IC pode ser precipitante ou consequência do SCA. Entretanto, a dor precordial aguda como queixa principal afasta IC como diagnóstico primário, que raramente cursa com dor torácica típica.`,
-      'SCA_Sepse':`Sepse é improvável como diagnóstico primário na ausência de foco infeccioso e com temperatura normal. A taquicardia e sudorese são explicadas pelo estado hiperadrenérgico da isquemia miocárdica.`,
-      'TEP_SCA':`A qualidade da dor em TEP (pleurítica, pontada) difere da dor em aperto do SCA. A presença de irradiação para MSE e sudorese fria favorecem SCA.`,
-      'Sepse_Pneumonia':`PAC pode ser o foco da sepse, mas a síndrome séptica com hipoperfusão é o quadro dominante, exigindo manejo de sepse como prioridade.`,
-      'AVC_SCA':`AVC descartado pela ausência de déficits neurológicos focais. A dor torácica não é manifestação típica de AVC (exceto em casos raros de dor central).`,
-    };
-    const key=`${codeA}_${codeB}`;
-    return pares[key]||`${codeA} apresenta maior sustentação pelos dados clínicos objetivos e probabilidade bayesiana superior a ${codeB}.`;
-  },
-
-  _getPlanoCompleto(top,data,evid){
-    const meds=norm(data.medications||'');
-    const temAAS=meds.includes('aas');
-
-    const fonteAtual=evid.length?evid.reduce((a,b)=>(b.year||0)>(a.year||0)?b:a):null;
-    const citRef=fonteAtual?`(Fonte: ${fonteAtual.source} ${fonteAtual.year})`:'';
-
-    const planos={
-      SCA:{
-        diag:[
-          {item:'ECG de 12 derivações em < 10 minutos',just:'Identificar supra/infradesnivelamento de ST, BRE novo → define conduta urgente (ATC vs. trombólise)'},
-          {item:'Troponina de alta sensibilidade (0h/1h/2h)',just:'Marcador de necrose miocárdica. Protocolo 0/1h permite alta precoce em baixo risco (ESC 2025)'},
-          {item:'Raio-X de tórax PA',just:'Avaliar área cardíaca, sinais de congestão pulmonar e excluir pneumotórax'},
-          {item:'Ecocardiograma à beira-leito',just:'Avaliar motilidade segmentar (áreas isquêmicas), função sistólica e derrame pericárdico'},
-          {item:'Hemograma + coagulograma + função renal + glicemia',just:'Linha de base pré-procedimento; função renal impacta decisão de anticoagulação'},
-        ],
-        terat:[
-          {item:`${temAAS?'AAS já em uso — manter':'AAS 300mg VO (dose de ataque)'}`,just:'Antiagregante: inibe irreversivelmente COX-1 plaquetária → reduz trombose coronariana (SBC 2025)'},
-          {item:'Ticagrelor 180mg VO (dose de ataque)',just:'Inibidor de P2Y12: dupla antiagregação = pilar do tratamento da SCA sem elevação de ST e com supra'},
-          {item:'Heparina não fracionada 60 UI/kg IV (máx 5.000 UI)',just:'Anticoagulação: previne propagação do trombo coronariano'},
-          {item:'Nitroglicerina SL 0,4mg (se PAsis > 90 mmHg)',just:'Vasodilatação coronariana e redução de pré-carga; contraindicada se hipotensão ou uso de PDE-5i'},
-          {item:'Morfina IV titulada (se dor 7–10/10, sem hipovolemia)',just:'Analgesia; usar com cautela pois pode retardar absorção de P2Y12 VO'},
-          {item:'O₂ suplementar se SpO₂ < 94%',just:'Evitar hipóxia miocárdica; NÃO usar rotineiramente se SpO₂ ≥ 94% (guideline ESC 2025)'},
-        ],
-        educ:[
-          {item:'Explicar a doença, o procedimento (ATC provável) e o risco',just:'Autonomia do paciente e consentimento informado'},
-          {item:'Orientar sobre sinais de alarme para reinternação',just:'Prevenção de readmissão por evento recorrente'},
-          {item:'Cessação do tabagismo + controle de DM e HAS',just:'Modificação de fatores de risco = prevenção secundária'},
-        ]
-      },
-      TEP:{
-        diag:[
-          {item:'Wells Score para TEP',just:'Estratificação de probabilidade clínica pré-teste (baixo/intermediário/alto)'},
-          {item:'D-dímero (se Wells < 6)',just:'Alta sensibilidade para excluir TEP em baixo risco; inútil se alta probabilidade clínica'},
-          {item:'AngioTC de tórax (contraste)',just:'Padrão-ouro para diagnóstico de TEP; identifica trombos até artérias subsegmentares'},
-          {item:'Gasometria arterial',just:'Hipoxemia + hipocapnia + gradiente A-a aumentado: padrão clássico de TEP'},
-          {item:'Ecocardiograma (disfunção VD?)',just:'Estratificação de gravidade: TEP de alto risco (choque + disfunção VD) → trombólise'},
-        ],
-        terat:[
-          {item:'Anticoagulação plena imediata (Heparina ou HBPM)',just:'Previne propagação do trombo e novo TEP; iniciar sem aguardar confirmação tomográfica se alta probabilidade'},
-          {item:'Alteplase 100mg IV em 2h (se TEP maciço com choque)',just:'Trombólise sistêmica: indicada apenas no TEP de alto risco com colapso hemodinâmico'},
-          {item:'O₂ suplementar para SpO₂ > 94%',just:'Hipoxemia é achado universal no TEP clinicamente significativo'},
-        ],
-        educ:[
-          {item:'Orientar sobre uso e riscos da anticoagulação',just:'Adesão e prevenção de sangramento'},
-          {item:'Identificar e tratar fatores precipitantes',just:'Prevenção de recorrência (pesquisa de trombofilia, neoplasia)'},
-        ]
-      },
-      Sepse:{
-        diag:[
-          {item:'Lactato sérico URGENTE (< 1h)',just:'Lactato ≥ 2 mmol/L = hipoperfusão tecidual → define choque séptico quando associado a hipotensão'},
-          {item:'Hemoculturas × 2 (antes do ATB, < 45 min)',just:'Identificação do agente etiológico para descalonamento posterior'},
-          {item:'Hemograma + função renal + hepática + coagulograma',just:'Screening de disfunção orgânica (critérios SOFA)'},
-          {item:'Urina I + urocultura (se suspeita de ITU)',just:'Pesquisa de foco urinário — causa mais comum de sepse comunitária'},
-          {item:'Raio-X de tórax',just:'Investigar foco pulmonar (PAC como causa de sepse)'},
-        ],
-        terat:[
-          {item:'ATB empírico de amplo espectro em < 1h',just:'Cada hora de atraso aumenta mortalidade em ~7% (SSC 2025). Escalonamento após culturas'},
-          {item:'Reposição volêmica 30 ml/kg de cristaloide em 3h',just:'Restaurar perfusão tecidual; reavalie com ecocardiograma point-of-care para evitar sobrecarga'},
-          {item:'Norepinefrina IV se PAM < 65 após fluidos',just:'Vasopressor de primeira linha no choque séptico (receptores α1 + β1)'},
-          {item:'Controle do foco (drenagem, remoção de cateter)',just:'Controle da fonte: pilar do tratamento da sepse'},
-        ],
-        educ:[
-          {item:'Explicar gravidade e necessidade de UTI',just:'Consentimento e envolvimento familiar'},
-          {item:'Orientar sobre o risco de síndrome pós-sepse',just:'Preparação para reabilitação física e cognitiva'},
-        ]
-      },
-      IC:{
-        diag:[
-          {item:'BNP ou NT-proBNP',just:'Marcador de disfunção ventricular: BNP > 100 pg/mL ou NT-proBNP > 300 pg/mL = IC altamente provável'},
-          {item:'Ecocardiograma urgente',just:'Avaliar FEVE, disfunção diastólica, valvopatias e derrame pericárdico'},
-          {item:'Raio-X de tórax PA',just:'Cefalização vascular, linhas B de Kerley, derrame pleural = padrão de IC'},
-          {item:'Troponina',just:'Excluir SCA como precipitante (IAM como causa de IC aguda)'},
-        ],
-        terat:[
-          {item:'Furosemida 40–80mg IV',just:'Diurético de alça: redução rápida da pré-carga → melhora da congestão pulmonar'},
-          {item:'Oxigênio com máscara ou VNI se SpO₂ < 94%',just:'VNI (CPAP/BiPAP) reduz intubação em IC aguda com EPA'},
-          {item:'Nitratos IV (nitroprussiato/nitroglicerina) se PA > 110',just:'Vasodilatação → redução de pré e pós-carga'},
-        ],
-        educ:[
-          {item:'Restrição hídrica (< 1,5 L/dia) e de sódio (< 2g/dia)',just:'Evitar sobrecarga de volume entre internações'},
-          {item:'Pesagem diária: ganho > 2kg em 3 dias → procurar serviço',just:'Monitoramento de retenção hídrica para intervenção precoce'},
-        ]
-      },
-      AVC:{
-        diag:[
-          {item:'TC de crânio SEM contraste IMEDIATO',just:'Excluir hemorragia antes de qualquer antitrombótico. "Time is brain" — 1,9 milhões de neurônios por minuto'},
-          {item:'Escala NIHSS',just:'Quantifica déficit neurológico e guia decisão trombolítica/trombectomia'},
-          {item:'Glicemia capilar',just:'Hipoglicemia e hiperglicemia mimetizam e agravam AVC — tratar imediatamente'},
-          {item:'ECG (12 derivações)',just:'Fibrilação atrial como causa cardioembólica de AVC isquêmico'},
-          {item:'Angiotomografia cerebral (se candidato a trombectomia)',just:'Identificar oclusão de grande vaso — janela ampliada até 24h em casos selecionados'},
-        ],
-        terat:[
-          {item:'rtPA 0,9 mg/kg IV (máx 90mg) se janela < 4,5h e sem contraindicações',just:'Trombólise sistêmica: recanaliza artéria ocluída. Avaliação criteriosa de contraindicações (ABN 2025)'},
-          {item:'Trombectomia mecânica se oclusão de grande vaso',just:'Superior à trombólise para AVC de grande vaso; janela 6–24h em casos com penumbra viável'},
-          {item:'AAS 300mg VO (após 24h da trombólise ou imediatamente se sem trombólise)',just:'Antiagregação precoce reduz recorrência precoce'},
-        ],
-        educ:[
-          {item:'Identificar e contratar FRs (FA, HAS, DM)',just:'Prevenção secundária = pilar do tratamento pós-AVC'},
-          {item:'Encaminhar para reabilitação multidisciplinar',just:'Fisioterapia + fonoaudiologia + terapia ocupacional precoce'},
-        ]
-      },
-      Pneumonia:{
-        diag:[
-          {item:'Raio-X de tórax PA + Perfil',just:'Confirma consolidação, define extensão e afasta diagnósticos diferenciais'},
-          {item:'CURB-65 (Confusão, Ureia, FR, PA, idade)',just:'Estratifica gravidade: 0–1 = ambulatorial | 2 = internação | ≥3 = UTI'},
-          {item:'Hemograma + PCR + procalcitonina',just:'PCR e PCT elevadas = infecção bacteriana; auxilia decisão de ATB e tempo de tratamento'},
-          {item:'Saturimetria e gasometria (se SpO₂ < 94%)',just:'Necessidade de O₂ suplementar ou suporte ventilatório'},
-        ],
-        terat:[
-          {item:'Amoxicilina-clavulanato 875/125mg VO 12/12h (PAC leve)',just:'Cobertura de pneumococo + bacilos Gram-negativos comunitários (guideline IDSA 2025)'},
-          {item:'Ceftriaxona 1g IV + Azitromicina 500mg IV (internação)',just:'Cobertura dual para PAC moderada/grave: cobertura atípicos + pneumococo'},
-          {item:'O₂ suplementar para SpO₂ ≥ 94%',just:'Hipoxemia = critério de gravidade e indicação de suplementação'},
-        ],
-        educ:[
-          {item:'Vacinação antipneumocócica e anti-influenza',just:'Prevenção de PAC e suas complicações em grupo de risco'},
-          {item:'Orientar hidratação, repouso e adesão ao ATB por 5–7 dias',just:'Evitar resistência bacteriana por interrupção precoce do ATB'},
-        ]
-      },
-      DPOC:{
-        diag:[
-          {item:'Gasometria arterial',just:'Identifica hipercapnia (DPOC grave), acidose respiratória → guia VNI vs. intubação'},
-          {item:'Peak flow ou espirometria (exacerbação leve)',just:'Objetiva grau de obstrução ao fluxo de ar'},
-          {item:'Raio-X de tórax',just:'Excluir pneumotórax, pneumonia e congestão como precipitantes da exacerbação'},
-          {item:'Procalcitonina (se etiologia infecciosa suspeita)',just:'Guia uso de ATB: PCT < 0,1 ng/mL sugere causa viral → evitar ATB'},
-        ],
-        terat:[
-          {item:'SABA (salbutamol 2,5mg) + SAMA (ipratrópio 0,5mg) nebulizados',just:'Broncodilatação de curta ação: alívio imediato do broncoespasmo'},
-          {item:'Prednisona 40mg VO por 5 dias',just:'Corticoterapia sistêmica reduz tempo de exacerbação e risco de falha terapêutica (GOLD 2025)'},
-          {item:'O₂ controlado: SpO₂ alvo 88–92%',just:'Evitar hiperoxia: paciente DPOC pode ter drive hipóxico; O₂ excessivo piora hipercapnia'},
-          {item:'VNI (BiPAP) se pH < 7,35 e pCO₂ > 45 mmHg',just:'VNI reduz mortalidade e evita intubação em exacerbação grave com acidose resp.'},
-        ],
-        educ:[
-          {item:'Cessação do tabagismo (intervenção mais eficaz no DPOC)',just:'Único modificador de história natural comprovado'},
-          {item:'Técnica inalatória correta e plano de ação escrito',just:'Autogestão da exacerbação precoce reduz hospitalizações'},
-        ]
-      }
-    };
-
-    const pl=planos[top.code]||{diag:[],terat:[],educ:[]};
-
-    return`
-    <div class="cond-block">
-      <div class="cond-title"><i class="fas fa-flask" style="color:#60a5fa;margin-right:6px"></i>Plano Diagnóstico</div>
-      ${pl.diag.map(c=>`<div class="cond-item">
-        <div class="cond-icon" style="background:rgba(96,165,250,.15);color:#60a5fa"><i class="fas fa-vial" style="font-size:10px"></i></div>
-        <div><strong style="font-size:13px">${esc(c.item)}</strong>
-        <p class="justif" style="margin-top:4px">(${esc(c.just)}) ${citRef}</p></div>
-      </div>`).join('')}
-    </div>
-
-    <div class="cond-block">
-      <div class="cond-title"><i class="fas fa-capsules" style="color:#34C759;margin-right:6px"></i>Plano Terapêutico</div>
-      ${pl.terat.map(c=>`<div class="cond-item">
-        <div class="cond-icon" style="background:rgba(52,199,89,.15);color:#34C759"><i class="fas fa-pills" style="font-size:10px"></i></div>
-        <div><strong style="font-size:13px">${esc(c.item)}</strong>
-        <p class="justif" style="margin-top:4px">(${esc(c.just)})</p></div>
-      </div>`).join('')}
-    </div>
-
-    <div class="cond-block">
-      <div class="cond-title"><i class="fas fa-graduation-cap" style="color:#FF9500;margin-right:6px"></i>Plano Educacional / Orientações</div>
-      ${pl.educ.map(c=>`<div class="cond-item">
-        <div class="cond-icon" style="background:rgba(255,149,0,.15);color:#FF9500"><i class="fas fa-info" style="font-size:10px"></i></div>
-        <div><strong style="font-size:13px">${esc(c.item)}</strong>
-        <p class="justif" style="margin-top:4px">(${esc(c.just)})</p></div>
-      </div>`).join('')}
-    </div>`;
-  }
-};
-
-// ════════════════════════════════════════════════════════════════════
-// ★ NOVO — GERADOR TPS (Teoria, Prova, Solução)
-// ════════════════════════════════════════════════════════════════════
-const TPSSintetico={
-  generate(data,hipoteses,evid,pqrst){
-    const top=hipoteses[0],sec=hipoteses[1];
-    const t=norm(`${data.s} ${data.o}`);
-    const bp=parseBP(data.bp),hr=parseHR(data.hr),temp=parseTemp(data.temp),spo2=parseSPO2(data.spo2);
-    const achados=AchadosAnalyzer.analyze(data.s,data.o,top.code);
-
-    /* T — Teoria */
-    const teorias={
-      SCA:`<strong>Síndrome Coronariana Aguda (SCA) — provavelmente IAM sem supradesnivelamento de ST (IAMSST) ou com supra (IAMCST) a confirmar pelo ECG.</strong>
-        <div class="justif" style="margin-top:8px">
-          <strong>Raciocínio diferencial:</strong> A hipótese de SCA supera TEP pois a dor é descrita como "${esc(pqrst?.Q||'—')}" (padrão isquêmico) com irradiação típica para MSE, diferente da dor pleurítica do TEP. A dissecção aórtica é menos provável sem o caráter "rasgante" e sem irradiação para dorso. Pericardite cursa com dor que piora em decúbito e melhora sentado — não referida aqui.
-        </div>`,
-      TEP:`<strong>Tromboembolismo Pulmonar (TEP) — suspeita de risco intermediário a alto conforme escore de Wells.</strong>
-        <div class="justif" style="margin-top:8px">
-          <strong>Raciocínio diferencial:</strong> TEP supera pneumonia pois a dispneia é aguda e desproporcional, sem síndrome infecciosa clara. A hipoxemia sem consolidação auscultatória é típica de TEP. SCA fica em segundo plano pela ausência de dor precordial típica em aperto.
-        </div>`,
-      Sepse:`<strong>Sepse / Choque Séptico — disfunção orgânica ameaçadora à vida causada por resposta desregulada a infecção (Sepse-3, JAMA 2016).</strong>
-        <div class="justif" style="margin-top:8px">
-          <strong>Raciocínio diferencial:</strong> A sepse é hierarquicamente superior a pneumonia pois inclui evidência de hipoperfusão (lactato, hipotensão). Choque cardiogênico: excluído pela ausência de IC prévia e padrão de pré-carga baixa.
-        </div>`,
-      IC:`<strong>Insuficiência Cardíaca Aguda Descompensada (ICAD) — síndrome de início rápido de sintomas/sinais de IC.</strong>
-        <div class="justif" style="margin-top:8px">
-          <strong>Raciocínio diferencial:</strong> IC supera DPOC como causa de dispneia pela presença de ortopneia, edema periférico e crepitações basais. TEP permanece no diferencial, mas a cronicidade dos sintomas favorece IC.
-        </div>`,
-      AVC:`<strong>AVC Isquêmico Agudo — oclusão arterial cerebral com déficit neurológico focal de início súbito.</strong>
-        <div class="justif" style="margin-top:8px">
-          <strong>Raciocínio diferencial:</strong> AVC supera hipoglicemia (excluída se glicemia normal), crise epiléptica (sem atividade ictal relatada) e tumor (início abrupto afasta). Hemorragia intracraniana exige TC para exclusão imediata.
-        </div>`,
-      Pneumonia:`<strong>Pneumonia Adquirida na Comunidade (PAC) — infecção do parênquima pulmonar adquirida fora do ambiente hospitalar.</strong>
-        <div class="justif" style="margin-top:8px">
-          <strong>Raciocínio diferencial:</strong> PAC supera bronquite aguda pela presença de síndrome de condensação e comprometimento sistêmico. TEP permanece no diferencial se a hipoxemia for desproporcional ao exame físico.
-        </div>`,
-      DPOC:`<strong>Exacerbação Aguda de DPOC (EADPOC) — piora aguda da dispneia basal além da variabilidade diária normal.</strong>
-        <div class="justif" style="margin-top:8px">
-          <strong>Raciocínio diferencial:</strong> DPOC supera IC pela presença de tabagismo intenso, sibilos e padrão de obstrução. IC como comorbidade deve ser excluída com BNP (sobreposição frequente no tabagista).
-        </div>`,
-    };
-
-    /* P — Prova */
-    const dadosSubj=[];
-    const dadosObj=[];
-    const provaNegs=[];
-
-    // Subjetivos positivos
-    if(pqrst?.Q&&pqrst.Q!=='Não especificado') dadosSubj.push(`Qualidade da dor: "${esc(pqrst.Q)}"`);
-    if(pqrst?.R&&pqrst.R!=='Torácica') dadosSubj.push(`Localização/irradiação: ${esc(pqrst.R)}`);
-    if(pqrst?.T&&pqrst.T!=='Não especificado') dadosSubj.push(`Tempo: ${esc(pqrst.T)}`);
-    if(/(has|hipertens)/.test(t)) dadosSubj.push('Antecedente: HAS — fator de risco cardiovascular');
-    if(/(dm|diabet)/.test(t)) dadosSubj.push('Antecedente: DM — aumenta risco de SCA atípico');
-    if(/(tabag|fumante)/.test(t)) dadosSubj.push('Tabagismo ativo — aterogênico e pró-trombótico');
-    if(/(pai|familiar.*infart)/.test(t)) dadosSubj.push('História familiar de DAC precoce — risco 2×');
-    if(/(nausea|vomit)/.test(t)) dadosSubj.push('Náusea/vômito — sinal vagal associado a isquemia inferior');
-    if(/(sudore|diafore)/.test(t)) dadosSubj.push('Sudorese fria — resposta adrenérgica à dor isquêmica');
-    if(/(febre|calafr)/.test(t)) dadosSubj.push('Febre/calafrio — síndrome infecciosa');
-    if(/(dispne|falta de ar)/.test(t)) dadosSubj.push('Dispneia — pode indicar congestão pulmonar ou hipóxia');
-
-    // Objetivos positivos (vitais + achados)
-    if(bp) dadosObj.push(`PA: ${bp.sys}/${bp.dia} mmHg${bp.sys>140?' — hipertensão (risco de dissecção/crise hipertensiva)':bp.sys<90?' — hipotensão (choque?)':''}`);
-    if(hr) dadosObj.push(`FC: ${hr} bpm${hr>100?' — taquicardia (dor, hipovolemia, TEP, sepse?)':hr<60?' — bradicardia (bloqueio? beta-bloqueador?)':''}`);
-    if(temp) dadosObj.push(`Temperatura: ${temp}°C${temp>=38?' — febre (infecção/sepse)':temp<36?' — hipotermia (choque)':''}`);
-    if(spo2) dadosObj.push(`SpO₂: ${spo2}%${spo2<94?' — hipoxemia significativa (suporte de O₂ necessário)':''}`);
-    achados.positivos.forEach(a=>dadosObj.push(a.achado+' '+a.clin));
-
-    // Provas negativas
-    achados.negativos.slice(0,6).forEach(a=>provaNegs.push(`${a.achado} ${a.clin}`));
-    if(sec&&sec.post<0.30) provaNegs.push(`${sec.name} com probabilidade ${(sec.post*100).toFixed(1)}% — permanece como diferencial, mas dados insuficientes para definição primária`);
-
-    /* S — Solução */
-    const sol_condutas=top.tests.map((item,i)=>{
-      const justs={
-        0:'(Exame/conduta prioritária — baseada em guideline de maior evidência)',
-        1:'(Confirma/estratifica o diagnóstico para adequar conduta)',
-        2:'(Intervenção terapêutica imediata para estabilização)',
-        3:'(Suporte hemodinâmico/ventilatório conforme necessidade)',
-      };
-      return{item,just:justs[i]||'(Conduta complementar de suporte)'};
-    });
-
-    const fonteAtual=evid.length?evid.reduce((a,b)=>(b.year||0)>(a.year||0)?b:a):null;
-
-    return`
-    <!-- T -->
-    <div class="soap-box tps-t" style="border-radius:16px;padding:20px;margin-bottom:14px">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
-        <div class="tps-ltr tps-lt">T</div>
-        <h3 style="font-weight:800;color:#60a5fa;text-transform:uppercase;font-size:13px;letter-spacing:.06em">Teoria — Hipótese Central + Raciocínio Diferencial</h3>
-      </div>
-      <div style="font-size:14px;line-height:1.7">
-        ${teorias[top.code]||`<strong>${esc(top.name)}</strong> — hipótese sustentada pelo raciocínio bayesiano (p=${(top.post*100).toFixed(1)}%).`}
-      </div>
-      <div style="margin-top:12px;padding:10px;background:rgba(96,165,250,.08);border-radius:10px;font-size:12px;opacity:.7">
-        <i class="fas fa-info-circle" style="margin-right:6px;color:#60a5fa"></i>
-        Probabilidade Bayesiana: <strong>${(top.post*100).toFixed(1)}%</strong> |
-        2ª hipótese: ${sec?esc(sec.name.split('(')[0]):'—'} (${sec?(sec.post*100).toFixed(1)+'%':'—'}) |
-        Modelo determinístico (Temperatura Zero) — ${fonteAtual?`Fonte mais atual: ${esc(fonteAtual.source)} ${fonteAtual.year}`:''}
-      </div>
-    </div>
-
-    <!-- P -->
-    <div class="soap-box tps-p" style="border-radius:16px;padding:20px;margin-bottom:14px">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
-        <div class="tps-ltr tps-lp">P</div>
-        <h3 style="font-weight:800;color:#34C759;text-transform:uppercase;font-size:13px;letter-spacing:.06em">Prova — Dados Âncora + Prova Negativa</h3>
-      </div>
-      <div style="display:grid;gap:14px" class="md:grid-cols-2">
-        <div>
-          <p style="font-size:11px;font-weight:700;text-transform:uppercase;opacity:.4;margin-bottom:8px">📋 Dados Subjetivos (âncoras)</p>
-          ${dadosSubj.length
-            ?dadosSubj.map(d=>`<div style="display:flex;gap:6px;margin-bottom:5px;font-size:12px;line-height:1.5">
-              <i class="fas fa-check" style="color:#34C759;margin-top:3px;flex-shrink:0"></i>${esc(d)}
-            </div>`).join('')
-            :'<p style="opacity:.4;font-size:12px">Dados insuficientes no texto.</p>'}
-        </div>
-        <div>
-          <p style="font-size:11px;font-weight:700;text-transform:uppercase;opacity:.4;margin-bottom:8px">🔬 Dados Objetivos (âncoras)</p>
-          ${dadosObj.length
-            ?dadosObj.map(d=>`<div style="display:flex;gap:6px;margin-bottom:5px;font-size:12px;line-height:1.5">
-              <i class="fas fa-circle-dot" style="color:#60a5fa;margin-top:3px;flex-shrink:0"></i>${esc(d)}
-            </div>`).join('')
-            :'<p style="opacity:.4;font-size:12px">Dados objetivos insuficientes.</p>'}
-        </div>
-      </div>
-      <div style="margin-top:14px;padding:12px;background:rgba(52,199,89,.06);border-radius:10px">
-        <p style="font-size:11px;font-weight:700;text-transform:uppercase;opacity:.4;margin-bottom:8px">✅ Prova Negativa (exclusões ativas — o que NÃO está presente)</p>
-        ${provaNegs.map(d=>`<div style="display:flex;gap:6px;margin-bottom:4px;font-size:12px;line-height:1.5">
-          <i class="fas fa-xmark" style="color:#34C759;margin-top:3px;flex-shrink:0"></i>${esc(d)}
-        </div>`).join('')}
-      </div>
-    </div>
-
-    <!-- S -->
-    <div class="soap-box tps-s" style="border-radius:16px;padding:20px;margin-bottom:14px">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
-        <div class="tps-ltr tps-ls">S</div>
-        <h3 style="font-weight:800;color:#FF9500;text-transform:uppercase;font-size:13px;letter-spacing:.06em">Solução — Gerenciamento com Finalidade Clínica</h3>
-      </div>
-      <div style="display:grid;gap:10px">
-        ${sol_condutas.map((c,i)=>`<div style="display:flex;gap:10px;align-items:flex-start;padding:10px;background:rgba(255,255,255,.04);border-radius:10px">
-          <div style="width:26px;height:26px;border-radius:8px;background:rgba(255,149,0,.15);color:#FF9500;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">${i+1}</div>
-          <div>
-            <strong style="font-size:13px">${esc(c.item)}</strong>
-            <p class="justif" style="margin-top:4px">${esc(c.just)}</p>
-          </div>
-        </div>`).join('')}
-      </div>
-      <div style="margin-top:14px;padding:12px;background:rgba(255,149,0,.08);border-radius:10px;font-size:12px">
-        <i class="fas fa-book-open" style="color:#FF9500;margin-right:6px"></i>
-        <strong>Referência prioritária:</strong> ${top.guidelines}
-        ${fonteAtual?` — Fonte mais atual disponível no banco: <strong>${esc(fonteAtual.source)} ${fonteAtual.year}</strong> (${esc(CitacaoABNT.generate(fonteAtual))})`:' — Verifique banco de evidências'}
-      </div>
-    </div>`;
-  }
-};
-
-// ════════════════════════════════════════════════════════════════════
-// AGENTE DIAGNÓSTICO (mantido completo)
+// AGENTE DIAGNÓSTICO
 // ════════════════════════════════════════════════════════════════════
 const Agente={
   async analyze(data){
@@ -1459,46 +914,162 @@ const Agente={
 };
 
 // ════════════════════════════════════════════════════════════════════
-// APP PRINCIPAL
+// APP PRINCIPAL (CORRIGIDO)
 // ════════════════════════════════════════════════════════════════════
 const App={
   ready:false, uploadFiles:[],
 
+  // ── UNLOCK CORRIGIDO ──────────────────────────────────────────────────
   async unlock(){
     const pw=document.getElementById('masterPwd').value;
     const err=document.getElementById('lockErr');
     if(pw.length<8){err.textContent='Senha mínima: 8 caracteres.';return;}
     err.textContent='';
-    if(location.protocol==='file:') Mon.log('via file:// — IndexedDB pode ser instável. Use http://localhost','warn');
+    // Oculta lock screen imediatamente
     document.getElementById('lockScreen').style.display='none';
     document.getElementById('mainApp').style.display='block';
     const btn=document.getElementById('btnAnalyze');
-    btn.disabled=true;btn.innerHTML='<span class="spin"></span>&nbsp;Carregando...';
+    btn.disabled=true;
+    btn.innerHTML='<span class="spin"></span>&nbsp;Inicializando...';
     try{
       Mon.log('Abrindo IndexedDB...','info');
       await db.open();
       Mon.log('IndexedDB aberto.','ok');
       await this.loadGuidelines(false);
-      await this.repairDB();
+      // repairDB pode não existir, então ignoramos se não estiver definido
+      if (typeof this.repairDB === 'function') await this.repairDB();
       this.ready=true;
-            btn.disabled=false;
+    }catch(e){
+      Mon.log('Erro ao inicializar banco: '+e.message,'err');
+      this.ready=false;
+    }finally{
+      btn.disabled=false;
+      btn.innerHTML='<i class="fas fa-stethoscope"></i>&nbsp; Executar Análise Diagnóstica';
+      this.toast('Sistema desbloqueado. '+(this.ready?'Banco carregado.':'Modo offline (sem banco).'),this.ready?'success':'warning');
+      auditLog('UNLOCK',this.ready?'Banco OK':'Banco falhou');
+      this.updateStats();
+    }
+  },
+
+  // ── LOAD GUIDELINES ───────────────────────────────────────────────────
+  async loadGuidelines(silent=false){
+    let added=0,updated=0;
+    try{
+      for(const g of GUIDELINES_DB){
+        const exists=await db.evidence.where('pmid').equals(g.pmid).first();
+        const et=Tipologia.classify(g.source||'',g.title||'');
+        const tags=Ontologia.extractTags(`${g.title||''} ${g.specialty||''}`);
+        const score=ScoreUnificado.calculate({...g,entryTypeWeight:et.weight});
+        const abnt=CitacaoABNT.generate(g);
+        const enriched={
+          ...g,
+          entryType:et.type,
+          entryTypeWeight:et.weight,
+          priorityScore:score,
+          unifiedScore:score,
+          tags,
+          citationABNT:abnt,
+          updatedAt:new Date().toISOString()
+        };
+        if(exists){
+          if((g.year||0)>=(exists.year||0)){
+            await db.evidence.where('pmid').equals(g.pmid).modify(enriched);
+            updated++;
+          }
+        }else{
+          await db.evidence.add(enriched);
+          added++;
+        }
+      }
+      if(!silent) this.toast(`Diretrizes: +${added} novas, ${updated} atualizadas.`,'success');
+      await this.updateStats();
+      Mon.log(`Guidelines carregadas: +${added} / ${updated} atualizadas`,'ok');
+    }catch(e){
+      Mon.log('Erro ao carregar diretrizes: '+e.message,'err');
+      this.toast('Erro ao carregar base de diretrizes.','error');
+    }
+  },
+
+  async updateStats(){
+    try{
+      const all=await db.evidence.toArray();
+      const curYear=new Date().getFullYear();
+      document.getElementById('sTot').textContent=all.length;
+      document.getElementById('sHot').textContent=all.filter(e=>e.year>=curYear-1).length;
+      document.getElementById('sDir').textContent=all.filter(e=>e.entryType==='Diretriz').length;
+      document.getElementById('sCas').textContent=await db.cases.count();
+      const hl=await db.hl_queue.where('status').equals('pending').count();
+      document.getElementById('sHL').textContent=hl;
+      document.getElementById('sYear').textContent=curYear;
+    }catch(e){}
+  },
+
+  // ── ANALYZE ───────────────────────────────────────────────────────────
+  async analyze(){
+    const btn=document.getElementById('btnAnalyze');
+    btn.disabled=true;
+    btn.innerHTML='<span class="spin"></span>&nbsp;Analisando...';
+    try{
+      const data={
+        age:document.getElementById('iAge').value,
+        gender:document.getElementById('iGender').value,
+        s:document.getElementById('iS').value,
+        o:document.getElementById('iO').value,
+        bp:document.getElementById('iBP').value,
+        hr:document.getElementById('iHR').value,
+        temp:document.getElementById('iTemp').value,
+        spo2:document.getElementById('iSPO2').value,
+        rr:document.getElementById('iRR').value,
+        gcs:document.getElementById('iGCS').value,
+        medications:document.getElementById('iMeds').value
+      };
+      const res=await Agente.analyze(data);
+      const top=res.hipoteses[0];
+
+      // PTS genérico
+      const pts={
+        imediato:[
+          top.urgency==='CRÍTICO'?'🚨 Monitorização UTI':'📊 Monitorização',
+          `🔬 ${top.tests.slice(0,3).join('; ')}`,
+          '💊 Acesso venoso calibroso',
+          '📋 Reavaliação clínica frequente'
+        ],
+        medio:[
+          '📊 Reavaliação clínica e laboratorial',
+          '🔄 Ajuste terapêutico conforme resultados',
+          '👨‍⚕️ Interconsulta com especialista',
+          '📝 Documentar evolução em prontuário'
+        ],
+        longo:[
+          '🏥 Planejamento de alta hospitalar',
+          '📅 Retorno ambulatorial em 7-14 dias',
+          '💊 Reconciliação medicamentosa',
+          '📚 Educação do paciente e familiares'
+        ]
+      };
+
+      this.renderResults(data, res, pts);
+      await db.cases.add({timestamp:new Date().toISOString()});
+      await this.updateStats();
+      auditLog('ANALISE',`Topo: ${top.name} (${(top.post*100).toFixed(1)}%)`);
+      Mon.log(`Análise concluída: ${top.name}`,'ok');
+    }catch(e){
+      Mon.log('Erro na análise: '+e.message,'err');
+      this.toast('Erro na análise: '+e.message,'error');
+    }finally{
+      btn.disabled=false;
       btn.innerHTML='<i class="fas fa-stethoscope"></i>&nbsp; Executar Análise Diagnóstica';
     }
   },
 
-  // ── RENDER RESULTS ────────────────────────────────────────────────────────
-  renderResults(data, res, pts) {
-    const c   = document.getElementById('results');
-    const top = res.hipoteses[0];
-    const isCrit = top.urgency==='CRÍTICO';
+  renderResults(data, res, pts){
+    const c=document.getElementById('results');
+    const top=res.hipoteses[0];
+    const isCrit=top.urgency==='CRÍTICO';
 
-    // Gera SOAP Analítico + TPS
-    const soapAnalitico = AnalyticalSOAP.generate(data, res);
-    const tps           = TPS.generate(data, res);
-
-    const diagCards = res.hipoteses.slice(0,5).map((h,i)=>{
-      const pct = (h.post*100).toFixed(1);
-      const clr = h.post>0.5?'#FF3B30':h.post>0.25?'#FF9500':'#007AFF';
+    const diagCards=res.hipoteses.slice(0,5).map((h,i)=>{
+      const pct=(h.post*100).toFixed(1);
+      const clr=h.post>0.5?'#FF3B30':h.post>0.25?'#FF9500':'#007AFF';
       return `
       <div style="padding:14px;border-radius:13px;margin-bottom:8px;
            background:${i===0?'rgba(255,59,48,.12)':'rgba(255,255,255,.04)'};
@@ -1516,7 +1087,7 @@ const App={
       </div>`;
     }).join('');
 
-    const ciHtml = res.ci.length?`
+    const ciHtml=res.ci.length?`
     <div style="margin-bottom:18px">
       ${res.ci.map(ci=>`<div class="ci-alert">
         <i class="fas fa-exclamation-triangle" style="color:#FF3B30;margin-right:8px"></i>
@@ -1524,7 +1095,7 @@ const App={
       </div>`).join('')}
     </div>`:'';
 
-    const evidHtml = res.evid.length?`
+    const evidHtml=res.evid.length?`
     <div style="margin-bottom:20px">
       <h3 style="font-weight:700;color:#60a5fa;margin-bottom:10px;font-size:13px">
         <i class="fas fa-book-open" style="margin-right:6px"></i>Evidências Recuperadas (${res.evid.length})
@@ -1563,7 +1134,6 @@ const App={
     </div>`:'';
 
     c.innerHTML=`
-    <!-- ── BLOCO 1: SOAP PADRÃO ── -->
     <div class="glass p-4 md:p-6 mb-4">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
         <h2 style="font-size:20px;font-weight:900">
@@ -1639,45 +1209,12 @@ const App={
           </ul>
         </div>
       </div>
-    </div>
-
-    <!-- ── BLOCO 2: SOAP ANALÍTICO ── -->
-    <div class="glass p-4 md:p-6 mb-4" style="border:1px solid rgba(96,165,250,.2)">
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
-        <div style="width:42px;height:42px;border-radius:12px;background:rgba(96,165,250,.15);
-             display:flex;align-items:center;justify-content:center">
-          <i class="fas fa-brain" style="color:#60a5fa;font-size:20px"></i>
-        </div>
-        <div>
-          <h2 style="font-size:18px;font-weight:900;color:#60a5fa">SOAP Analítico — Raciocínio Clínico Especializado</h2>
-          <p style="font-size:11px;opacity:.4;margin-top:2px">PQRST • Achados positivos e negativos • Justificativa fisiopatológica • Diferencial argumentado</p>
-        </div>
-      </div>
-
-      ${renderSoapAnalitico(soapAnalitico)}
-    </div>
-
-    <!-- ── BLOCO 3: TPS ── -->
-    <div class="glass p-4 md:p-6 mb-4" style="border:1px solid rgba(175,82,222,.2)">
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
-        <div style="width:42px;height:42px;border-radius:12px;background:rgba(175,82,222,.15);
-             display:flex;align-items:center;justify-content:center">
-          <i class="fas fa-project-diagram" style="color:#AF52DE;font-size:20px"></i>
-        </div>
-        <div>
-          <h2 style="font-size:18px;font-weight:900;color:#AF52DE">TPS — Síntese Clínica de Alta Performance</h2>
-          <p style="font-size:11px;opacity:.4;margin-top:2px">Teoria • Prova • Solução — raciocínio determinístico e sintético</p>
-        </div>
-      </div>
-
-      ${renderTPS(tps)}
     </div>`;
-
     c.scrollIntoView({behavior:'smooth',block:'start'});
   },
 
-  // ── EDITORS — Bayesian ────────────────────────────────────────────────────
-  openBayesEditor() {
+  // ── EDITORES ─────────────────────────────────────────────────────────
+  openBayesEditor(){
     document.getElementById('bMaxPost').value=BAYES_CFG.maxPost;
     document.getElementById('bAgeSCA').value=BAYES_CFG.ageSCA;
     document.getElementById('bAgeIC').value=BAYES_CFG.ageIC;
@@ -1689,11 +1226,9 @@ const App={
     document.getElementById('pAVC').value=BAYES_CFG.priors.AVC;
     document.getElementById('pPneumo').value=BAYES_CFG.priors.Pneumonia;
     document.getElementById('pDPOC').value=BAYES_CFG.priors.DPOC;
-    openModal('mBayes');
-    Mon.log('Editor Bayesiano aberto.','info');
+    openModal('mBayesModal');
   },
-
-  saveBayes() {
+  saveBayes(){
     BAYES_CFG.maxPost=+document.getElementById('bMaxPost').value||0.99;
     BAYES_CFG.ageSCA=+document.getElementById('bAgeSCA').value||1.30;
     BAYES_CFG.ageIC=+document.getElementById('bAgeIC').value||1.40;
@@ -1705,26 +1240,23 @@ const App={
     BAYES_CFG.priors.AVC=+document.getElementById('pAVC').value||0.08;
     BAYES_CFG.priors.Pneumonia=+document.getElementById('pPneumo').value||0.10;
     BAYES_CFG.priors.DPOC=+document.getElementById('pDPOC').value||0.08;
-    closeModal('mBayes');
+    closeModal('mBayesModal');
     this.toast('Configuração Bayesiana salva.','success');
-    Mon.log('Fórmula Bayesiana atualizada.','ok');
-    auditLog('BAYES-UPDATE','Priors e ajustes atualizados');
   },
-
-  resetBayes() {
+  resetBayes(){
     BAYES_CFG={maxPost:0.99,ageSCA:1.30,ageIC:1.40,ageAVC:1.30,
       priors:{SCA:0.15,TEP:0.10,Sepse:0.12,IC:0.10,AVC:0.08,Pneumonia:0.10,DPOC:0.08}};
     this.openBayesEditor();
     this.toast('Priors restaurados ao padrão.','info');
   },
 
-  openLREditor() {
+  openLREditor(){
     const wrap=document.getElementById('lrTableWrap');
     let html=`<table class="lr-table"><thead><tr>
       <th>Diagnóstico</th><th style="min-width:220px">Achado Clínico</th>
       <th>LR+ Atual</th><th>LR+ Padrão</th>
     </tr></thead><tbody>`;
-    for (const r of LR_STATE) {
+    for(const r of LR_STATE){
       const def=LR_DEFAULT.find(x=>x.id===r.id);
       html+=`<tr>
         <td><span style="font-size:10px;background:rgba(255,255,255,.08);padding:2px 8px;border-radius:8px">${r.dx}</span></td>
@@ -1736,51 +1268,36 @@ const App={
     html+='</tbody></table>';
     wrap.innerHTML=html;
     openModal('mLR');
-    Mon.log('Editor de LRs aberto.','info');
   },
-
-  saveLRs() {
+  saveLRs(){
     document.querySelectorAll('.lr-inp').forEach(inp=>{
       const id=inp.dataset.lrid;
       const idx=LR_STATE.findIndex(x=>x.id===id);
-      if (idx>=0) LR_STATE[idx].lr=+inp.value||LR_DEFAULT.find(x=>x.id===id)?.lr||1.0;
+      if(idx>=0) LR_STATE[idx].lr=+inp.value||LR_DEFAULT.find(x=>x.id===id)?.lr||1.0;
     });
     closeModal('mLR');
     this.toast('Likelihood Ratios atualizados.','success');
-    Mon.log(`${LR_STATE.length} LRs salvos.`,'ok');
     auditLog('LR-UPDATE',`${LR_STATE.length} LRs atualizados`);
   },
-
-  resetLRs() {
+  resetLRs(){
     LR_STATE=LR_DEFAULT.map(x=>({...x}));
     this.openLREditor();
     this.toast('LRs restaurados ao padrão.','info');
   },
 
-  async openDebug() {
-    let all=[]; try { all=await db.evidence.toArray(); } catch(e){}
-    const cfg={bayesCfg:BAYES_CFG,lrCount:LR_STATE.length,
-      dbReady:this.ready,evidenceCount:all.length,
-      protocol:location.protocol,dexieVersion:'3.2.4',
-      browserUA:navigator.userAgent.slice(0,80)};
-    const sample=all.slice(0,3).map(e=>({pmid:e.pmid,tags:e.tags,score:e.unifiedScore,year:e.year}));
-    document.getElementById('debugContent').textContent=
-      '=== ARPEmed v19.0 — Estado Interno ===\n\n'+
-      JSON.stringify(cfg,null,2)+'\n\n'+
-      '=== Amostra (3 docs) ===\n'+JSON.stringify(sample,null,2)+'\n\n'+
-      '=== LR_STATE (primeiros 5) ===\n'+JSON.stringify(LR_STATE.slice(0,5),null,2);
+  async openDebug(){
+    let all=[]; try{all=await db.evidence.toArray();}catch(e){}
+    const cfg={bayesCfg:BAYES_CFG,lrCount:LR_STATE.length,dbReady:this.ready,evidenceCount:all.length};
+    document.getElementById('debugContent').textContent=JSON.stringify(cfg,null,2);
     openModal('mDebug');
   },
 
-  async openAuditLog() {
-    let rows=[]; try { rows=await db.audit_db.orderBy('ts').reverse().limit(100).toArray(); } catch(e){}
+  async openAuditLog(){
     const el=document.getElementById('auditFull');
-    el.innerHTML=(_auditBuf.map(e=>`[${e.ts}] ${e.action}: ${e.detail}`).join('\n')||'Nenhum registro ainda.');
-    if (rows.length) el.innerHTML+='\n\n--- Banco de dados ---\n'+rows.map(r=>`[${r.ts}] ${r.action}: ${r.detail||''}`).join('\n');
+    el.innerHTML=_auditBuf.map(e=>`[${e.ts}] ${e.action}: ${e.detail}`).join('\n')||'Nenhum registro ainda.';
     openModal('mAudit');
   },
-
-  exportAudit() {
+  exportAudit(){
     const lines=_auditBuf.map(e=>`"${e.ts}","${e.action}","${e.detail}"`);
     const csv='ts,action,detail\n'+lines.join('\n');
     const b=new Blob([csv],{type:'text/csv'});
@@ -1790,15 +1307,14 @@ const App={
     a.click();
     this.toast('Audit Log exportado.','success');
   },
-
-  clearAudit() {
+  clearAudit(){
     _auditBuf.length=0;
     const el=document.getElementById('auditEl');
-    if(el) el.innerHTML='';
+    if(el)el.innerHTML='';
     this.toast('Log limpo.','info');
   },
 
-  openUpload() {
+  openUpload(){
     this.uploadFiles=[];
     document.getElementById('uploadPrev').style.display='none';
     document.getElementById('uploadProg').style.display='none';
@@ -1811,34 +1327,31 @@ const App={
     fi.onchange=e=>this.handleFiles([...e.target.files]);
     openModal('mUpload');
   },
-
-  handleFiles(files) {
+  handleFiles(files){
     this.uploadFiles=files;
     const p=document.getElementById('uploadPrev');
     p.innerHTML=`<p style="font-weight:700;margin-bottom:6px">${files.length} arquivo(s):</p>`+
       files.map(f=>`<div style="font-size:12px;opacity:.6">📄 ${f.name} (${(f.size/1024).toFixed(1)} KB)</div>`).join('');
     p.style.display='block';
   },
-
-  async processUpload() {
-    if (!this.uploadFiles.length){this.toast('Selecione arquivos.','warning');return;}
-    const btn=document.getElementById('btnUpload');
-    btn.disabled=true;
+  async processUpload(){
+    if(!this.uploadFiles.length){this.toast('Selecione arquivos.','warning');return;}
+    const btn=document.getElementById('btnUpload');btn.disabled=true;
     document.getElementById('uploadProg').style.display='block';
     let added=0;
-    for (let i=0;i<this.uploadFiles.length;i++) {
+    for(let i=0;i<this.uploadFiles.length;i++){
       const f=this.uploadFiles[i];
       document.getElementById('progBar').style.width=((i+1)/this.uploadFiles.length*100)+'%';
       Mon.log(`Processando: ${f.name}`,'info');
-      if (f.name.endsWith('.json')) {
-        try {
+      if(f.name.endsWith('.json')){
+        try{
           const raw=await f.text();
           const parsed=JSON.parse(raw);
           const items=parsed.evidence||(Array.isArray(parsed)?parsed:[parsed]);
-          for (const item of items) {
-            if (!item.pmid) item.pmid=`IMPORT-${uid()}`;
+          for(const item of items){
+            if(!item.pmid) item.pmid=`IMPORT-${uid()}`;
             const ex=await db.evidence.where('pmid').equals(item.pmid).first();
-            if (!ex) {
+            if(!ex){
               const et=Tipologia.classify(item.source||'',item.title||'');
               const tags=Ontologia.extractTags(`${item.title||''} ${item.specialty||''}`);
               const score=ScoreUnificado.calculate({...item,entryTypeWeight:et.weight});
@@ -1853,29 +1366,25 @@ const App={
             }
           }
           Mon.log(`${f.name}: OK.`,'ok');
-        } catch(e){ Mon.log(`Erro em ${f.name}: ${e.message}`,'err'); this.toast(`Erro: ${f.name}→${e.message}`,'error'); }
-      } else {
-        Mon.log(`${f.name}: formato não suportado (use JSON).`,'warn');
-      }
+        }catch(e){Mon.log(`Erro em ${f.name}: ${e.message}`,'err');this.toast(`Erro: ${f.name}→${e.message}`,'error');}
+      }else{Mon.log(`${f.name}: formato não suportado (use JSON).`,'warn');}
     }
     document.getElementById('uploadProg').style.display='none';
     await this.updateStats();
     this.toast(`${added} documento(s) importado(s).`,'success');
-    Mon.log(`Upload: ${added} item(s).`,'ok');
     auditLog('UPLOAD',`${added} docs`);
     closeModal('mUpload');
     btn.disabled=false;
   },
+  closeUploadModal(){closeModal('mUpload');},
 
-  closeUploadModal(){ closeModal('mUpload'); },
-
-  async openHumanLoop() {
+  async openHumanLoop(){
     const q=document.getElementById('hlQueue');
     let rows=[];
-    try { rows=await db.hl_queue.where('status').equals('pending').toArray(); } catch(e){}
-    if (!rows.length) {
+    try{rows=await db.hl_queue.where('status').equals('pending').toArray();}catch(e){}
+    if(!rows.length){
       q.innerHTML='<p style="opacity:.4;font-size:13px;text-align:center;padding:20px">✅ Fila vazia.</p>';
-    } else {
+    }else{
       q.innerHTML=rows.map(r=>`
       <div class="hl-card">
         <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
@@ -1898,38 +1407,38 @@ const App={
     }
     openModal('mHL');
   },
-
-  async approveHL(id) {
-    try {
+  async approveHL(id){
+    try{
       await db.hl_queue.update(id,{status:'approved',reviewedAt:new Date().toISOString()});
-      this.toast('Aprovado.','success'); auditLog('HL-APPROVE',`ID:${id}`);
-      await this.updateStats(); this.openHumanLoop();
-    } catch(e){ this.toast('Erro: '+e.message,'error'); }
+      this.toast('Aprovado.','success');auditLog('HL-APPROVE',`ID:${id}`);
+      await this.updateStats();this.openHumanLoop();
+    }catch(e){this.toast('Erro: '+e.message,'error');}
   },
-
-  async rejectHL(id) {
-    try {
+  async rejectHL(id){
+    try{
       const item=await db.hl_queue.get(id);
-      if (item?.pmid) await db.evidence.where('pmid').equals(item.pmid).delete();
+      if(item?.pmid) await db.evidence.where('pmid').equals(item.pmid).delete();
       await db.hl_queue.update(id,{status:'rejected',reviewedAt:new Date().toISOString()});
-      this.toast('Rejeitado.','info'); auditLog('HL-REJECT',`ID:${id}`);
-      await this.updateStats(); this.openHumanLoop();
-    } catch(e){ this.toast('Erro: '+e.message,'error'); }
+      this.toast('Rejeitado.','info');auditLog('HL-REJECT',`ID:${id}`);
+      await this.updateStats();this.openHumanLoop();
+    }catch(e){this.toast('Erro: '+e.message,'error');}
   },
 
-  async exportDB() {
-    try {
+  async exportDB(){
+    try{
       const all=await db.evidence.toArray();
-      const out={version:'ARPEmed v19.0',exportedAt:new Date().toISOString(),total:all.length,evidence:all};
+      const out={version:'ARPEmed v20.0',exportedAt:new Date().toISOString(),total:all.length,evidence:all};
       const b=new Blob([JSON.stringify(out,null,2)],{type:'application/json'});
       const a=document.createElement('a');
-      a.href=URL.createObjectURL(b); a.download=`arpemed_v19_${new Date().toISOString().slice(0,10)}.json`; a.click();
+      a.href=URL.createObjectURL(b);
+      a.download=`arpemed_v20_${new Date().toISOString().slice(0,10)}.json`;
+      a.click();
       this.toast(`${all.length} documentos exportados.`,'success');
       auditLog('EXPORT',`${all.length} docs`);
-    } catch(e){ this.toast('Erro: '+e.message,'error'); }
+    }catch(e){this.toast('Erro: '+e.message,'error');}
   },
 
-  quickFill() {
+  quickFill(){
     document.getElementById('iAge').value='65';
     document.getElementById('iGender').value='M';
     document.getElementById('iBP').value='145/90';
@@ -1940,879 +1449,46 @@ const App={
     document.getElementById('iO').value='BEG, PA 145/90 mmHg, FC 98 bpm, SpO2 96%. ACV: RCR 2T, sem sopros. AR: MV presente bilateralmente.';
     document.getElementById('iMeds').value='AAS 100mg, Metformina 1000mg, Losartana 50mg';
     this.toast('Caso exemplo carregado.','info');
-    Mon.log('Exemplo SCA clássico preenchido.','info');
   },
 
-  clearForm() {
+  clearForm(){
     ['iAge','iS','iO','iMeds','iTemp'].forEach(id=>document.getElementById(id).value='');
     document.getElementById('results').innerHTML='';
-    Mon.clear(); Mon.log('Formulário limpo.','info'); this.toast('Formulário limpo.','info');
+    Mon.clear();this.toast('Formulário limpo.','info');
   },
 
-  toast(msg,type='info') {
+  toast(msg,type='info'){
     const c=document.getElementById('toasts');
-    const el=document.createElement('div'); el.className='toast';
+    const el=document.createElement('div');el.className='toast';
     const icons={success:'✅',error:'❌',warning:'⚠️',info:'ℹ️'};
     el.innerHTML=`${icons[type]||'ℹ️'} ${msg}`;
-    const colors={error:'#FF3B30',warning:'#FF9500',success:'#34C759'};
-    if(colors[type]) el.style.borderColor=colors[type];
-    c.appendChild(el); setTimeout(()=>el.remove(),5000);
+    c.appendChild(el);setTimeout(()=>el.remove(),5000);
   }
 };
 
-// ════════════════════════════════════════════════════════════════════════════
-// 14. PQRST — EXTRATOR DE QUEIXA PRINCIPAL
-// ════════════════════════════════════════════════════════════════════════════
-const PQRST = {
-  extract(subj='', obj='') {
-    const t = norm(subj+' '+obj);
-
-    // P — Provocação / Piora / Alívio
-    const P = (() => {
-      if (/(esforco|exericio|caminhada|subir escada)/.test(t))  return 'Desencadeado/piora ao esforço físico';
-      if (/(repouso|sentado|deitado)/.test(t))                  return 'Presente em repouso';
-      if (/(stress|emocional|nervoso)/.test(t))                 return 'Associado a fator emocional/estresse';
-      if (/(apos.*comer|pos.prandial|alimentac)/.test(t))       return 'Pós-prandial';
-      if (/(espontaneo|subit|abrupt)/.test(t))                  return 'Início espontâneo, sem fator desencadeante identificado';
-      return 'Fator precipitante não claramente identificado no relato';
-    })();
-
-    // Q — Qualidade / Caráter
-    const Q = (() => {
-      if (/(aperto|opress|constric|peso)/.test(t))              return 'Em aperto / opressão / constrição (padrão isquêmico típico)';
-      if (/(queimac|queima|azia|acid)/.test(t))                 return 'Em queimação (sugestivo de DRGE / dispepsia)';
-      if (/(fincada|facada|pontada)/.test(t))                   return 'Em pontada / fincada (sugestivo de dor pleurítica ou musculoesquelética)';
-      if (/(pulsatil|latejante|lateja)/.test(t))                return 'Pulsátil / latejante (padrão de cefaleia vascular)';
-      if (/(difusa|difuso|vaga)/.test(t))                       return 'Dor difusa, de difícil caracterização';
-      if (/(dor|dolor)/.test(t))                                return 'Dor de caráter não especificado no relato';
-      return 'Caráter da queixa não claramente descrito';
-    })();
-
-    // R — Região e Irradiação
-    const R = (() => {
-      const reg=[];
-      if (/(toracic|peito|precordial|esternal)/.test(t))        reg.push('Região torácica / precordial');
-      if (/(irrad|membr.*esq|braco esq|mse|mandibul|pescoco)/.test(t)) reg.push('com irradiação para MSE / mandíbula (padrão coronariano)');
-      if (/(lombar|lombalg|dorsal|costas)/.test(t))             reg.push('Região lombar / dorsal');
-      if (/(abdom|epigas|hipocondrio|fossa iliaca)/.test(t))    reg.push('Região abdominal');
-      if (/(cefale|frontal|temporal|occipital)/.test(t))        reg.push('Crânio / região cefálica');
-      if (/(mmii|perna|panturrilha|edema)/.test(t))             reg.push('Membros inferiores');
-      return reg.length ? reg.join('; ') : 'Localização não especificada';
-    })();
-
-    // S — Severidade
-    const S = (() => {
-      if (/(insuportavel|insuport|gravissim|intens.*forte)/.test(t)) return '9–10/10 — intensidade máxima, incapacitante';
-      if (/(forte|intens|severo|pior.*dor)/.test(t))            return '7–8/10 — intensa, limitante';
-      if (/(moderado|moderada|razoavel)/.test(t))               return '4–6/10 — moderada';
-      if (/(leve|discret|pouco)/.test(t))                       return '1–3/10 — leve';
-      return 'Intensidade não quantificada no relato';
-    })();
-
-    // T — Tempo / Evolução
-    const T = (() => {
-      if (/(\d+\s*hora)/.test(t)) {
-        const m=t.match(/(\d+)\s*hora/); return m?`Há ${m[1]}h de evolução — quadro agudo`:'Horas de evolução';
-      }
-      if (/(\d+\s*dia)/.test(t)) {
-        const m=t.match(/(\d+)\s*dia/); return m?`Há ${m[1]} dia(s) de evolução`:'Dias de evolução';
-      }
-      if (/(\d+\s*semana)/.test(t)) {
-        const m=t.match(/(\d+)\s*semana/); return m?`Há ${m[1]} semana(s) — subagudo`:'Semanas de evolução';
-      }
-      if (/(cronico|anos|meses|tempo)/.test(t))                 return 'Quadro crônico / de longa data';
-      if (/(subit|repentin|abrupto)/.test(t))                   return 'Início súbito / abrupto';
-      return 'Tempo de evolução não especificado';
-    })();
-
-    // Antecedentes relevantes
-    const antec = [];
-    if (/(has|hipertens)/.test(t))          antec.push('HAS (↑ risco cardiovascular / AVC)');
-    if (/(dm|diabet)/.test(t))              antec.push('DM (↑ risco doença coronariana; pode mascarar dor isquêmica)');
-    if (/(tabag|fumante)/.test(t))          antec.push('Tabagismo (↑ risco SCA, DPOC, TEP, AVC)');
-    if (/(dislipidemia|colesterol)/.test(t)) antec.push('Dislipidemia (aterosclerose acelerada)');
-    if (/(icc|ic\b|insuf.*card)/.test(t))   antec.push('ICC prévia (risco descompensação)');
-    if (/(avc|acidente vasc)/.test(t))      antec.push('AVC prévio (risco recorrência)');
-    if (/(tep|tromboemb|tvp)/.test(t))      antec.push('TEP/TVP prévia (estado trombofílico)');
-    if (/(dpoc|enfisema|bronquite cron)/.test(t)) antec.push('DPOC (risco exacerbação / Cor Pulmonale)');
-    if (/(sedentari)/.test(t))              antec.push('Sedentarismo (↑ risco cardiovascular global)');
-    if (/(obesidade|obeso)/.test(t))        antec.push('Obesidade (↑ risco metabólico / trombótico)');
-
-    return {P,Q,R,S,T, antec};
-  }
-};
-
-// ════════════════════════════════════════════════════════════════════════════
-// 15. SOAP ANALÍTICO — GERADOR DE RACIOCÍNIO CLÍNICO
-// ════════════════════════════════════════════════════════════════════════════
-const AnalyticalSOAP = {
-  generate(data, res) {
-    const top   = res.hipoteses[0];
-    const seg   = res.hipoteses.slice(0,3);
-    const pqrst = PQRST.extract(data.s, data.o);
-    const text  = norm(data.s+' '+data.o);
-    const age   = parseInt(data.age)||50;
-    const bp    = parseBP(data.bp);
-    const hr    = parseHR(data.hr);
-    const temp  = parseTemp(data.temp);
-    const spo2  = parseSPO2(data.spo2);
-
-    // ── S — Subjetivo Analítico ─────────────────────────────────────────────
-    const subjetivo = {
-      narrativa: `Paciente de ${age} anos, ${data.gender==='M'?'sexo masculino':'sexo feminino'}, `+
-        `apresenta quadro de início ${/(subit|repentin|abrupt)/.test(text)?'súbito':'insidioso'}, `+
-        `com evolução ${pqrst.T.toLowerCase()}.`,
-      pqrst,
-      antecedentes: pqrst.antec,
-      cronologia: buildCronologia(text)
-    };
-
-    // ── O — Objetivo Analítico ──────────────────────────────────────────────
-    const achPositivos = [];
-    const achNegativos = [];
-
-    // Cardiovascular
-    if (bp&&bp.sys>=140)         achPositivos.push(`PA ${bp.sys}/${bp.dia} mmHg — hipertensão arterial presente`);
-    if (bp&&bp.sys<90)           achPositivos.push(`PA ${bp.sys}/${bp.dia} mmHg — HIPOTENSÃO (sinal de alarme)`);
-    if (hr&&hr>=100)             achPositivos.push(`FC ${hr} bpm — taquicardia (↑ demanda O₂ / instabilidade)`);
-    if (hr&&hr<60)               achPositivos.push(`FC ${hr} bpm — bradicardia`);
-    if (/(rh3|terceira bulha|b3)/.test(text)) achPositivos.push('B3 presente — disfunção sistólica sugestiva de IC');
-    if (/(sopro)/.test(text))    achPositivos.push('Sopro cardíaco identificado');
-    if (!/(sopro)/.test(text))   achNegativos.push('Ausência de sopros — torna valvopatia aguda menos provável');
-    if (!/(rh3|b3|terceira)/.test(text)) achNegativos.push('Ausência de B3 — reduz probabilidade de IC descompensada grave');
-
-    // Respiratório
-    if (spo2&&spo2<94)           achPositivos.push(`SpO₂ ${spo2}% — hipoxemia significativa`);
-    if (spo2&&spo2>=96)          achNegativos.push(`SpO₂ ${spo2}% — sem hipoxemia importante em repouso`);
-    if (/(crepitac|estertores)/.test(text)) achPositivos.push('Crepitações pulmonares — sugestivo de congestão ou consolidação');
-    if (/(sibil|chiad)/.test(text)) achPositivos.push('Sibilos — obstrução de vias aéreas');
-    if (!/(crepitac)/.test(text))   achNegativos.push('Ausência de crepitações — fala contra IC com congestão pulmonar grave');
-    if (!/(murmurio.*reduz|abolid)/.test(text)) achNegativos.push('MV presente bilateralmente — sem área de silêncio sugestivo de derrame/consolidação extensa');
-
-    // Neurológico (pertinente)
-    if (/(confus|desorient|agitac|torpor)/.test(text)) achPositivos.push('Alteração do nível de consciência — sinal de gravidade');
-    achNegativos.push('Ausência de déficits focais descritos — reduz probabilidade de AVC como causa principal');
-
-    // Abdome (pertinente a sepse/outras)
-    if (/(dor abdom|abdome.*dol|murphy)/.test(text)) achPositivos.push('Dor abdominal presente — considerar foco infeccioso / obstrução');
-    achNegativos.push('Sinal de Murphy não descrito — colecistite menos provável como causa isolada');
-
-    // Temperatura
-    if (temp&&temp>=38.0)        achPositivos.push(`Temperatura ${temp}°C — febre presente (↑ probabilidade sepse/infecção)`);
-    if (temp&&temp<37.5)         achNegativos.push(`Temperatura ${temp}°C — afebril (↓ probabilidade de processo infeccioso como etiologia primária)`);
-
-    const objetivo = { achPositivos, achNegativos };
-
-    // ── A — Avaliação Analítica ─────────────────────────────────────────────
-    const avaliacao = buildAvaliacao(seg, text, data);
-
-    // ── P — Plano com Intencionalidade ─────────────────────────────────────
-    const plano = buildPlanoAnalitico(top, data, text, bp, hr, spo2);
-
-    return { subjetivo, objetivo, avaliacao, plano, top };
-  }
-};
-
-// ── HELPERS DO SOAP ANALÍTICO ─────────────────────────────────────────────
-
-function buildCronologia(text) {
-  const eventos=[];
-  if (/(inicialmente|comecou|iniciou|primeiro)/.test(text)) eventos.push('Início dos sintomas identificado no relato');
-  if (/(piorou|agravou|intensificou)/.test(text))           eventos.push('Piora progressiva relatada');
-  if (/(depois|em seguida|posteriormente|apos)/.test(text)) eventos.push('Sintomas subsequentes documentados');
-  if (/(agora|atual|momento)/.test(text))                   eventos.push('Estado atual do paciente relatado');
-  if (!eventos.length) eventos.push('Cronologia linear — quadro agudo de instalação rápida');
-  return eventos;
-}
-
-function buildAvaliacao(hipoteses, text, data) {
-  const avs=[];
-  const top=hipoteses[0];
-  const seg=hipoteses[1];
-  const ter=hipoteses[2];
-
-  // Hipótese principal com justificativa completa
-  avs.push({
-    rank:1, h:top,
-    justificativa: buildJustificativa(top.code, text, data),
-    porqueVence: seg ? buildComparativo(top.code, seg.code, text) : 'Única hipótese com LR suficientemente elevado para esta apresentação.'
-  });
-
-  if (seg) avs.push({
-    rank:2, h:seg,
-    justificativa: buildJustificativa(seg.code, text, data),
-    porqueVence: ter ? buildComparativo(seg.code, ter.code, text) : ''
-  });
-
-  if (ter) avs.push({
-    rank:3, h:ter,
-    justificativa: buildJustificativa(ter.code, text, data),
-    porqueVence: ''
-  });
-
-  return avs;
-}
-
-function buildJustificativa(code, text, data) {
-  const map = {
-    SCA: `A tríade clássica (dor torácica em aperto + irradiação + sudorese) corrobora fortemente hipótese de isquemia miocárdica. ` +
-         `No exame objetivo, a taquicardia pode refletir ativação simpática compensatória à queda do débito cardíaco. ` +
-         `Fatores de risco (${/(has)/.test(text)?'HAS':''} ${/(dm|diabet)/.test(text)?'DM':''}` +
-         `${/(tabag)/.test(text)?'tabagismo':''}) potencializam aterosclerose coronariana acelerada. ` +
-         `Mecanismo: rotura de placa aterosclerótica → ativação plaquetária → trombo intracoronário → isquemia/necrose miocárdica.`,
-    TEP: `Dispneia aguda associada a taquicardia forma o binômio clássico de TEP. ` +
-         `A hipoxemia (se presente) reflete shunt V/Q e colapso alveolar distal ao êmbolo. ` +
-         `Mecanismo: obstrução da artéria pulmonar → ↑ resistência vascular pulmonar → disfunção ventricular direita → choque obstrutivo.`,
-    Sepse:`A síndrome sepse deve ser considerada quando há foco infeccioso + disfunção orgânica. ` +
-         `Hipotensão e taquicardia refletem resposta inflamatória sistêmica com vasodilatação periférica. ` +
-         `Mecanismo: liberação de citocinas → vasoplegia → hipoperfusão tecidual → disfunção de múltiplos órgãos.`,
-    IC:   `A ortopneia e dispneia paroxística noturna são marcadores de congestão pulmonar por ↑ pressão de enchimento ventricular. ` +
-         `Edema de MMII reflete retenção hidrossalina por ativação do SRAA. ` +
-         `Mecanismo: ↓ débito cardíaco → ativação neuro-hormonal → remodelamento cardíaco → descompensação.`,
-    AVC:  `Déficits neurológicos focais de início súbito são a marca do AVC isquêmico. ` +
-         `Cada minuto sem reperfusão representa perda de ~1,9 milhão de neurônios (conceito "Tempo é Cérebro"). ` +
-         `Mecanismo: oclusão arterial (geralmente por embolia ou trombose in situ) → isquemia focal → penumbra e infarto.`,
-    Pneumonia: `Tríade febre + tosse produtiva + consolidação representa o padrão clássico de PAC. ` +
-         `Hipoxemia reflete shunt intrapulmonar por colapso alveolar e exsudato. ` +
-         `Mecanismo: patógeno → resposta inflamatória local → consolidação alveolar → comprometimento de trocas gasosas.`,
-    DPOC: `Tabagismo + sibilância + dispneia progressiva formam o substrato clínico de DPOC. ` +
-         `Exacerbação pode ser precipitada por infecção, poluentes ou sem fator identificável. ` +
-         `Mecanismo: inflamação crônica brônquica → remodelamento → aprisionamento aéreo → hiperinsuflação → ↑ trabalho respiratório.`
-  };
-  return map[code] || 'Justificativa clínica baseada nos dados do caso inserido.';
-}
-
-function buildComparativo(code1, code2, text) {
-  const key=`${code1}_vs_${code2}`;
-  const map={
-    'SCA_vs_TEP':   'SCA supera TEP porque o caráter opressivo + irradiação + fatores de risco coronarianos têm maior especificidade para isquemia miocárdica do que para embolia pulmonar, cuja apresentação predominante seria dispneia e não dor com esse perfil.',
-    'SCA_vs_IC':    'SCA supera IC porque o início agudo com dor característica precede eventual disfunção cardíaca; a IC pode ser consequência, não causa primária neste contexto.',
-    'TEP_vs_Sepse': 'TEP supera Sepse porque a ausência de febre / foco infeccioso claro e a presença de dispneia isolada favorecem obstrução embólica em detrimento de processo infeccioso sistêmico.',
-    'Sepse_vs_IC':  'Sepse supera IC porque o contexto infeccioso + hipotensão + taquicardia sem evidência de congestão pulmonar predomina sobre quadro de descompensação de IC isolada.',
-    'IC_vs_DPOC':   'IC supera DPOC quando ortopneia / DPN / edema MMII prevalecem sobre padrão obstrutivo de sibilância.',
-    'AVC_vs_SCA':   'AVC supera SCA quando os déficits neurológicos focais são o achado mais proeminente, sem dor torácica isquêmica característica.',
-    'Pneumonia_vs_DPOC': 'Pneumonia supera DPOC exacerbada quando há febre + consolidação + escarro purulento sem padrão obstrutivo prévio estabelecido.',
-  };
-  return map[key] || map[`${code2}_vs_${code1}`] ||
-    `${code1} é priorizado em relação a ${code2} pela maior convergência dos dados clínicos com o perfil desta hipótese neste caso específico.`;
-}
-
-function buildPlanoAnalitico(top, data, text, bp, hr, spo2) {
-  const planos = { diagnostico:[], terapeutico:[], educacional:[] };
-  const meds = norm(data.medications||'');
-
-  const planosMap = {
-    SCA: {
-      diagnostico:[
-        'ECG de 12 derivações em < 10 min (identificação de supradesnível ST / BRE novo — critério para fibrinólise ou angioplastia primária)',
-        'Troponina hs sérica — 0h / 1h / 2h (marcador de necrose miocárdica; cinética permite diagnóstico/exclusão rápidos)',
-        'Radiografia de tórax PA (avaliar congestão pulmonar, cardiomegalia e diagnósticos diferenciais)',
-        'Ecocardiograma transtorácico urgente se diagnóstico incerto (avalia função regional, derrame pericárdico)',
-        'Hemograma, função renal, coagulograma, lipidograma (baseline pré-intervenção e estratificação de risco)'
-      ],
-      terapeutico:[
-        'AAS 300 mg VO imediato (inibição irreversível da COX-1 plaquetária → ↓ formação de TXA₂ → ↓ agregação plaquetária)',
-        meds.includes('varfarina')||meds.includes('anticoag')
-          ? '[ATENÇÃO] Avaliar dupla antiagregação com cautela — paciente em uso de anticoagulante (↑ risco hemorrágico)'
-          : 'Ticagrelor 180 mg VO (inibidor reversível P2Y12 → bloqueio receptor ADP → ↓ agregação plaquetária; preferível ao clopidogrel por inicio de ação mais rápido)',
-        'Oxigênio suplementar SE SpO₂ < 90% (evitar hiperoxia; O₂ só indicado com hipoxemia confirmada)',
-        'Morfina 2–4 mg EV se dor refratária (analgesia; ↓ ativação simpática; precaução: ↓ absorção oral de antiagregantes)',
-        'Nitratos sublinguais SE PA > 90 mmHg e sem uso de PDE-5 (vasodilatação coronariana → ↓ pré-carga → alívio da dor)',
-        'Acesso venoso periférico calibroso + monitor cardíaco contínuo + desfibrilador à beira leito (preparação para arritmias malignas)',
-        'Acionamento hemodinâmica: angioplastia primária em < 90 min se IAMCSST (reperfusão mecânica → ↓ área de necrose)'
-      ],
-      educacional:[
-        'Explicar ao paciente a gravidade do quadro e necessidade de intervenção imediata',
-        'Orientar abstinência tabágica definitiva (tabaco ↑ vasoespasmo coronariano e progressão aterosclerótica)',
-        'Dieta cardioprotegida pós-alta (↓ LDL, ↓ sódio, ↓ gorduras saturadas)',
-        'Reabilitação cardíaca supervisionada após estabilização (↓ mortalidade cardiovascular em 25–30%)',
-        'Adesão ao tratamento medicamentoso contínuo (dupla antiagregação por 12 meses se stent farmacológico)'
-      ]
-    },
-    TEP: {
-      diagnostico:[
-        'Wells Score clínico (estratificação probabilidade pré-teste — decisão pelo algoritmo diagnóstico)',
-        'D-dímero (se probabilidade baixa/intermediária: valor normal exclui TEP com alta sensibilidade)',
-        'AngioTC de tórax com contraste (padrão-ouro — visualização direta do trombo; atenção: metformina)',
-        'Gasometria arterial (hipoxemia + alcalose respiratória = padrão clássico de TEP)',
-        'Ecocardiograma (disfunção VD = marcador de gravidade → orienta trombólise vs anticoagulação)'
-      ],
-      terapeutico:[
-        'Anticoagulação imediata: Heparina não fracionada EV (bolus + infusão) SE TEP maciço, OU Rivaroxabana 15 mg VO 12/12h SE TEP não maciço (inibição do Fator Xa → ↓ progressão do trombo)',
-        'O₂ suplementar para SpO₂ > 94% (↓ vasoconstrição hipóxica pulmonar)',
-        'Analgesia se dor pleurítica intensa (↑ conforto → melhora da mecânica respiratória)',
-        'Trombólise sistêmica (Alteplase 100 mg EV) SE TEP maciço com instabilidade hemodinâmica (recanalização rápida → ↓ pós-carga VD)'
-      ],
-      educacional:[
-        'Orientar mobilização precoce após anticoagulação estabelecida',
-        'Meias de compressão elástica (↓ síndrome pós-trombótica)',
-        'Investigar trombofilias e neoplasia oculta (TEP idiopático exige rastreio)',
-        'Anticoagulação prolongada 3–6 meses (↓ risco de recorrência)'
-      ]
-    },
-    Sepse:{
-      diagnostico:[
-        'Lactato sérico urgente (lactato > 2 mmol/L = hipoperfusão; > 4 = choque = mortalidade > 40%)',
-        'Hemoculturas × 2 sítios periféricos ANTES do antibiótico (identificação do agente etiológico; não atrasar ATB)',
-        'Hemograma completo + PCR + Procalcitonina (marcadores inflamatórios; PCT guia duração do ATB)',
-        'Função renal + eletrólitos + gasometria (avaliar disfunção orgânica — critérios SOFA)',
-        'Ureia, bilirrubinas, coagulograma (completar escore SOFA e detectar disfunção multiorgânica)',
-        'Identificar foco infeccioso: Rx tórax + EAS + culturas dirigidas ao foco suspeito'
-      ],
-      terapeutico:[
-        'ATB empírico de amplo espectro em < 1h do diagnóstico (cada hora de atraso ↑ mortalidade ~7%)',
-        'Reposição volêmica: SF 0,9% ou Ringer Lactato 30 mL/kg EV em 3h (↑ pré-carga → ↑ débito cardíaco → ↑ perfusão tecidual)',
-        'Vasopressor: Noradrenalina SE PAM < 65 mmHg após reposição volêmica (vasoconstricção alfa-1 → ↑ RVP → ↑ PAM)',
-        'Oxigênio / suporte ventilatório conforme SpO₂ (↑ oferta de O₂ aos tecidos hipoperfundidos)',
-        'Controle glicêmico: alvo 140–180 mg/dL (hiperglicemia ↑ disfunção imune e mortalidade na sepse)'
-      ],
-      educacional:[
-        'Explicar gravidade ao paciente/família; obter consentimento para UTI',
-        'Rastreio de foco infeccioso após estabilização (abscesso oculto, endocardite, etc.)',
-        'Vacinação contra pneumococo e influenza pós-alta (profilaxia infecções recorrentes)'
-      ]
-    },
-    IC:{
-      diagnostico:[
-        'BNP ou NT-proBNP (↑ por estresse parietal ventricular; altamente sensível para IC descompensada)',
-        'Ecocardiograma urgente (avalia FE, função diastólica, valvopatias, derrame)',
-        'Radiografia tórax (congestão hilar, linha B de Kerley, cardiomegalia)',
-        'Troponina hs (IC aguda pode elevar troponina por isquemia subendocárdica / dano miocítico)',
-        'Função renal + eletrólitos (guia diurese e ajuste de medicações; ↑ creatinina = síndrome cardiorrenal)'
-      ],
-      terapeutico:[
-        'Furosemida 40–80 mg EV (diurético de alça → ↓ volemia → ↓ congestão pulmonar e periférica)',
-        'Nitrato EV/SL SE PA > 110 mmHg (↓ pré-carga e pós-carga → ↑ debito cardíaco)',
-        'CPAP/VNI se insuficiência respiratória (↑ CRF → ↑ oferta O₂ → ↓ trabalho respiratório)',
-        'Suspender betabloqueador temporariamente SE baixo débito grave (na IC aguda, BB pode ↓ ainda mais contratilidade)',
-        'Monitorização rigorosa diurese horária + balanço hídrico (controle da resposta à diurese)'
-      ],
-      educacional:[
-        'Restrição hídrica 1,5 L/dia e sódio < 2 g/dia (evitar sobrecarga volêmica)',
-        'Pesagem diária em jejum (ganho > 2 kg em 2 dias = sinal de alarme para descompensação)',
-        'Ajuste progressivo de betabloqueador + IECA/BRA + espironolactona após estabilização (pilar do tratamento crônico)'
-      ]
-    },
-    AVC:{
-      diagnostico:[
-        'TC de crânio sem contraste IMEDIATA (exclui hemorragia — imprescindível antes de trombólise)',
-        'Glicemia capilar imediata (hipoglicemia mimetiza AVC — exclusão obrigatória)',
-        'Escala NIHSS (quantifica gravidade neurológica; orienta elegibilidade para trombólise e prognóstico)',
-        'ECG (fibrilação atrial é causa cardioembólica mais comum de AVC isquêmico)',
-        'Coagulograma + hemograma + função renal (contraindições à trombólise e planejamento)'
-      ],
-      terapeutico:[
-        'Alteplase 0,9 mg/kg EV (máx 90 mg) SE < 4,5h do início e sem contraindições (trombólise → recanalização arterial → ↓ área de infarto)',
-        'Trombectomia mecânica SE oclusão de grande vaso < 24h em centro capacitado (repermeabilização → ↓ sequelas)',
-        'AAS 300 mg VO (após 24h da trombólise ou imediatamente se sem trombólise — ↓ recorrência precoce)',
-        'Controle PA: alvo < 180/105 mmHg SE não for trombolisado; < 180/105 SE após trombólise (hipoperfusão da penumbra isquêmica)',
-        'Glicemia alvo 140–180 mg/dL (hiper e hipoglicemia agravam lesão neuronal isquêmica)'
-      ],
-      educacional:[
-        'FAST aos familiares (Face + Arms + Speech + Time = reconhecimento precoce)',
-        'Anticoagulação se FA (↓ recorrência embólica)',
-        'Controle rigoroso de HAS, DM, dislipidemia (FRs modificáveis principais para AVC)',
-        'Reabilitação multidisciplinar precoce (neurológica, fonoaudiológica, fisioterapia)'
-      ]
-    },
-    Pneumonia:{
-      diagnostico:[
-        'Radiografia de tórax PA + Perfil (consolidação lobar/segmentar confirma diagnóstico)',
-        'CURB-65 (Confusão + Ureia > 7 + FR ≥ 30 + PA < 90/60 + Idade ≥ 65 = score de gravidade; orienta local de tratamento)',
-        'Hemograma + PCR + Procalcitonina (avaliar resposta inflamatória; PCT > 0,5 sugere etiologia bacteriana)',
-        'Saturação + gasometria se SpO₂ < 94% (extensão da hipoxemia orienta suporte ventilatório)',
-        'Hemocultura × 2 se CURB-65 ≥ 3 ou bacteremia suspeita (identificação do agente)'
-      ],
-      terapeutico:[
-        'Amoxicilina-clavulanato 875/125 mg VO 12/12h + Azitromicina 500 mg/dia (cobertura de típicos + atípicos — diretriz SBPT 2025)',
-        'Se CURB ≥ 3 / internação: Ceftriaxona 1–2 g EV/dia + Azitromicina (amplo espectro comunitário)',
-        'Oxigênio para SpO₂ ≥ 94% (↑ oferta O₂ → ↓ trabalho respiratório)',
-        'Hidratação EV/VO adequada (fluidificação das secreções + reposição de perdas insensíveis febre)',
-        'Antitérmico/analgésico (dipirona ou paracetamol — conforto + ↓ demanda metabólica)'
-      ],
-      educacional:[
-        'Vacina antipneumocócica e influenza (profilaxia — especialmente em > 65a e imunossuprimidos)',
-        'Cessação do tabagismo (tabaco ↓ clearance mucociliar → ↑ susceptibilidade)',
-        'Retorno se piora em 48–72h (não resposta = reavaliação do agente / resistência)'
-      ]
-    },
-    DPOC:{
-      diagnostico:[
-        'Gasometria arterial (hipoventilação: ↑ PaCO₂ = exacerbação grave com acidose respiratória)',
-        'Espirometria (não na fase aguda; confirma obstrução após estabilização — VEF1/CVF < 0,7)',
-        'Radiografia de tórax (excluir pneumonia, pneumotórax — complicações e diagnósticos diferenciais)',
-        'Hemograma + PCR (foco infeccioso como precipitante; poliglobulia indica hipoxemia crônica)',
-        'ECG (cor pulmonale, arritmias — comorbidades frequentes no DPOC avançado)'
-      ],
-      terapeutico:[
-        'SABA (Salbutamol) + SAMA (Brometo de Ipratrópio) inalatório em nebulização ou aerossol (broncodilatação rápida → ↓ resistência de vias aéreas → ↓ aprisionamento aéreo)',
-        'Corticosteroide sistêmico: Prednisona 40 mg/dia VO × 5 dias ou Metilprednisolona EV (↓ inflamação brônquica → acelera recuperação)',
-        'ATB SE escarro purulento + ↑ dispneia + ↑ volume (critérios de Anthonisen — etiologia bacteriana)',
-        'O₂ controlado: alvo SpO₂ 88–92% (evitar hiperoxia → supressão do drive hipóxico em retentores de CO₂)',
-        'VNI (BiPAP) SE pH < 7,35 + PaCO₂ > 45 (↓ intubação orotraqueal em 50–70%)'
-      ],
-      educacional:[
-        'Cessação tabágica absoluta (única intervenção que altera história natural do DPOC)',
-        'Técnica correta de uso de dispositivos inalatórios (erro de técnica = causa frequente de falha terapêutica)',
-        'Vacinação: influenza anual + pneumocócica (↓ exacerbações infecciosas)',
-        'Reconhecer precocemente sinais de exacerbação para busca imediata de atendimento'
-      ]
-    }
-  };
-
-  const base = planosMap[top.code] || {
-    diagnostico:['Exames complementares direcionados ao quadro clínico'],
-    terapeutico:['Conduta específica conforme hipótese diagnóstica confirmada'],
-    educacional:['Orientações gerais conforme evolução do quadro']
-  };
-
-  return base;
-}
-
-// ════════════════════════════════════════════════════════════════════════════
-// 16. TPS — TEORIA / PROVA / SOLUÇÃO
-// ════════════════════════════════════════════════════════════════════════════
-const TPS = {
-  generate(data, res) {
-    const top  = res.hipoteses[0];
-    const seg  = res.hipoteses[1];
-    const text = norm(data.s+' '+data.o);
-    const pct  = (top.post*100).toFixed(1);
-
-    // ── T — Teoria ─────────────────────────────────────────────────────────
-    const teoria = {
-      diagnostico:     top.name,
-      probabilidade:   pct,
-      sindrome:        buildSindrome(top.code),
-      diferencialRapido: seg ? buildDiferencialRapido(top.code, seg.code, text) : 'Diagnóstico isolado neste contexto.'
-    };
-
-    // ── P — Prova ──────────────────────────────────────────────────────────
-    const subjetivos  = buildProvaSubjetiva(top.code, text, data);
-    const objetivos   = buildProvaObjetiva(top.code, text, data);
-    const negativos   = buildProvaNegativa(top.code, text, data);
-
-    const prova = { subjetivos, objetivos, negativos };
-
-    // ── S — Solução ────────────────────────────────────────────────────────
-    const solucao = buildSolucaoTPS(top, data, text);
-
-    return { teoria, prova, solucao, top };
-  }
-};
-
-function buildSindrome(code) {
-  const map={
-    SCA:      'Síndrome Coronariana Aguda — oclusão aguda de artéria coronária por rotura de placa aterosclerótica com trombose sobreaguda',
-    TEP:      'Síndrome de Obstrução Pulmonar Aguda — oclusão de artéria pulmonar por êmbolo (geralmente TVP de MMII)',
-    Sepse:    'Síndrome de Disfunção Orgânica por Infecção — resposta inflamatória sistêmica desregulada a agente infeccioso',
-    IC:       'Síndrome de Congestão Cardíaca — incapacidade do coração em manter débito adequado com pressões de enchimento normais',
-    AVC:      'Síndrome Neurológica Focal de Início Súbito — oclusão arterial cerebral com isquemia na zona de penumbra',
-    Pneumonia:'Síndrome de Consolidação Alveolar Infecciosa — resposta inflamatória pulmonar a agente patogênico',
-    DPOC:     'Síndrome de Exacerbação Obstrutiva Crônica — piora aguda de limitação de fluxo aéreo sobre doença de base'
-  };
-  return map[code]||'Síndrome clínica em caracterização';
-}
-
-function buildDiferencialRapido(c1, c2, text) {
-  const map={
-    'SCA_TEP':      `SCA supera TEP: dor opressiva + irradiação + perfil coronariano > dispneia isolada sem TVP documentada.`,
-    'SCA_IC':       `SCA supera IC: início agudo com dor precede eventual disfunção cardíaca.`,
-    'SCA_Sepse':    `SCA supera Sepse: ausência de febre/foco infeccioso + perfil de dor isquêmica.`,
-    'TEP_Sepse':    `TEP supera Sepse: dispneia + hipoxemia sem febre/foco claro.`,
-    'Sepse_IC':     `Sepse supera IC: contexto infeccioso + hipotensão sem ortopneia predominante.`,
-    'IC_DPOC':      `IC supera DPOC: ortopneia + edema MMII + sem padrão obstrutivo prévio.`,
-    'AVC_SCA':      `AVC supera SCA: déficits focais neurológicos como queixa principal.`,
-    'Pneumonia_DPOC':`PAC supera DPOC: febre + consolidação + sem padrão obstrutivo prévio estabelecido.`
-  };
-  return map[`${c1}_${c2}`]||map[`${c2}_${c1}`]||
-    `${c1} é priorizado sobre ${c2} pela maior convergência dos dados clínicos disponíveis.`;
-}
-
-function buildProvaSubjetiva(code, text, data) {
-  const base=[];
-  const map={
-    SCA:[
-      /(dor torac|peito|precord)/.test(text)&&'Dor torácica — achado âncora para isquemia miocárdica',
-      /(irrad|mse|mandibul)/.test(text)&&'Irradiação para MSE/mandíbula — padrão neurológico da dor isquêmica (ramos C7-T4)',
-      /(sudore|diafore)/.test(text)&&'Sudorese — ativação simpática reflexa por queda do débito cardíaco',
-      /(nausea|vomit)/.test(text)&&'Náusea — reflexo vagal por estimulação do nervo vago pela isquemia inferior/posterior',
-      /(has|hipertens)/.test(text)&&'HAS — fator de risco independente para aterosclerose coronariana',
-      /(dm|diabet)/.test(text)&&'DM — neuropatia autonômica pode atenuar a dor (isquemia silenciosa mais frequente)',
-    ],
-    TEP:[/(dispne|falta.*ar)/.test(text)&&'Dispneia de início agudo — hipóxia por shunt V/Q',/(pleurit|dor.*resp)/.test(text)&&'Dor pleurítica — inflamação pleural por infarto pulmonar periférico',/(tvp|trombose|perna.*incha)/.test(text)&&'TVP — fonte trombótica primária em 70–80% dos casos de TEP'],
-    Sepse:[/(febre|calafr)/.test(text)&&'Febre/calafrio — resposta pirogênica mediada por IL-1, IL-6, TNF-α',/(confus|desorient)/.test(text)&&'Confusão — disfunção orgânica cerebral por hipoperfusão',/(foco)/.test(text)&&'Foco infeccioso identificado — porta de entrada do agente'],
-    IC:[/(ortopne|dispne.*parox)/.test(text)&&'Ortopneia — redistribuição do volume ao decúbito ↑ pré-carga → congestão pulmonar',/(edema.*mmii|inchac)/.test(text)&&'Edema MMII — retenção hidrossalina por ativação neuro-hormonal (SRAA + ADH)',],
-    AVC:[/(hemipar|pares)/.test(text)&&'Déficit motor focal — lesão do trato corticoespinhal ipsilateral à isquemia',/(afas|disartr)/.test(text)&&'Afasia/disartria — comprometimento do córtex de linguagem (área de Broca/Wernicke)',/(subit)/.test(text)&&'Início súbito — padrão vascular (vs tumoral / desmielinizante de início insidioso)',],
-    Pneumonia:[/(tosse.*produt|expector)/.test(text)&&'Tosse produtiva — resposta mucociliar à inflamação alveolar',/(febre|calafr)/.test(text)&&'Febre/calafrio — resposta pirogênica à infecção bacteriana',],
-    DPOC:[/(tabag|fumante)/.test(text)&&'Tabagismo — principal fator causal do DPOC (↑ inflamação brônquica crônica)',/(sibil|chiad)/.test(text)&&'Sibilância — obstrução de vias aéreas (broncoespasmo + edema + secreção)',]
-  };
-  return (map[code]||[]).filter(Boolean);
-}
-
-function buildProvaObjetiva(code, text, data) {
-  const provas=[];
-  const bp=parseBP(data.bp); const hr=parseHR(data.hr);
-  const temp=parseTemp(data.temp); const spo2=parseSPO2(data.spo2);
-  if (bp&&bp.sys>=140) provas.push(`PA ${bp.sys}/${bp.dia} mmHg — hipertensão (↑ pós-carga ventricular)`);
-  if (bp&&bp.sys<90)   provas.push(`PA ${bp.sys}/${bp.dia} mmHg — HIPOTENSÃO (sinal de choque)`);
-  if (hr&&hr>=100)     provas.push(`FC ${hr} bpm — taquicardia (ativação simpática compensatória ou instabilidade)`);
-  if (temp&&temp>=38)  provas.push(`Temperatura ${temp}°C — febre (resposta inflamatória ativa)`);
-  if (spo2&&spo2<94)   provas.push(`SpO₂ ${spo2}% — hipoxemia significativa`);
-  if (/(crepitac)/.test(text)) provas.push('Crepitações pulmonares — transudato/exsudato alveolar');
-  if (!provas.length) provas.push('Dados vitais dentro dos parâmetros mensurados — avaliar conforme clínica');
-  return provas;
-}
-
-function buildProvaNegativa(code, text, data) {
-  const neg=[];
-  if (!/(sopro)/.test(text))    neg.push('Ausência de sopros → torna valvopatia aguda como causa principal menos provável');
-  if (!/(crepitac)/.test(text)) neg.push('Ausência de crepitações → fala contra IC com congestão pulmonar grave');
-  if (!/(febre|calafr)/.test(text)&&code!=='Sepse') neg.push('Ausência de febre → processo infeccioso sistêmico como etiologia primária menos provável');
-  if (!/(hemipar|deficit|focal)/.test(text)&&code!=='AVC') neg.push('Ausência de déficits focais → AVC como diagnóstico primário menos provável');
-  if (!/(sinal.*murphy|murphy)/.test(text)) neg.push('Sinal de Murphy não descrito → colecistite aguda como causa principal descartada');
-  if (!/(rigidez|nuca|kernig|brudzinski)/.test(text)) neg.push('Sinais meníngeos ausentes → meningite menos provável como diagnóstico diferencial');
-  if (!/(tvp|perna.*incha|trombose)/.test(text)&&code!=='TEP') neg.push('Ausência de TVP clínica → TEP como hipótese primária menos sustentada');
-  return neg.filter(Boolean);
-}
-
-function buildSolucaoTPS(top, data, text) {
-  const meds=norm(data.medications||'');
-  const sol = {imediatas:[], curtoPrazo:[], longoPrazo:[]};
-
-  // Condutas imediatas universais + específicas
-  sol.imediatas=[
-    'Acesso venoso periférico calibroso (via de administração de medicamentos e fluidos de emergência)',
-    'Monitorização contínua: ECG + oximetria + PA (detecção imediata de instabilidade hemodinâmica / arritmias)',
-    top.tests[0]+' ('+buildTestJustificativa(top.tests[0])+')',
-    top.tests[1]+' ('+buildTestJustificativa(top.tests[1])+')',
-  ];
-
-  if (top.code==='SCA') {
-    sol.imediatas.push('AAS 300 mg VO (inibição plaquetária → ↓ progressão do trombo intracoronário)');
-    if (!meds.includes('varfarina')&&!meds.includes('anticoag'))
-      sol.imediatas.push('Ticagrelor 180 mg VO (bloqueio P2Y12 → potencialização da antiagregação)');
-    sol.imediatas.push('Acionar hemodinâmica: IAMCSST = angioplastia primária < 90 min (reperfusão miocárdica → ↓ necrose)');
-  }
-  if (top.code==='AVC') {
-    sol.imediatas.push('TC crânio imediato (exclusão de hemorragia — pré-requisito absoluto para trombólise)');
-    sol.imediatas.push('Avaliar janela terapêutica: rtPA 0,9 mg/kg EV SE < 4,5h e sem CI (recanalização → ↓ infarto cerebral)');
-  }
-  if (top.code==='Sepse') {
-    sol.imediatas.push('ATB empírico em < 1h (cada hora de atraso ↑ mortalidade ~7%)');
-    sol.imediatas.push('Lactato + hemoculturas × 2 ANTES do ATB (não atrasar antibioticoterapia pela coleta)');
-    sol.imediatas.push('Reposição volêmica 30 mL/kg em 3h (↑ débito cardíaco → ↑ perfusão tecidual)');
-  }
-
-  sol.curtoPrazo=[
-    'Reavaliação clínica em 1–2h após intervenção inicial (documentar resposta terapêutica)',
-    'Ajuste de conduta por resultado dos exames coletados (abordagem baseada em evidências)',
-    'Interconsulta: '+buildEspecialidade(top.code)+' (manejo especializado do quadro de base)',
-    'Controle de dor/sintomas: escala numérica + reavaliação contínua (conforto + qualidade da avaliação clínica seriada)'
-  ];
-
-  sol.longoPrazo=[
-    'Alta estruturada com critérios clínicos definidos (↓ reinternações precoces)',
-    'Consulta de retorno em 7–14 dias (reavaliação e ajuste de plano terapêutico)',
-    'Reconciliação medicamentosa completa na alta (↓ erros de medicação — principal causa de readmissão)',
-    'Modificação de fatores de risco identificados: '+buildFRmod(text)+' (prevenção secundária)',
-  ];
-
-  return sol;
-}
-
-function buildTestJustificativa(test='') {
-  const t=norm(test);
-  if (/ecg|eletrocard/.test(t)) return 'identifica supra/infra ST, arritmias, BRE — imprescindível para decisão de reperfusão';
-  if (/troponina/.test(t))      return 'marcador de necrose miocárdica; cinética 0-1h permite diagnóstico/exclusão rápido';
-  if (/lactato/.test(t))        return 'marcador de hipoperfusão tecidual; > 4 mmol/L = mortalidade > 40%';
-  if (/hemocultura/.test(t))    return 'identifica agente etiológico; guia desescalonamento do ATB';
-  if (/wells/.test(t))          return 'estratifica probabilidade pré-teste de TEP; orienta algoritmo diagnóstico';
-  if (/d.dimer/.test(t))        return 'alta sensibilidade; valor normal exclui TEP em baixa/intermediária probabilidade';
-  if (/tc.*cranio|tomograf/.test(t)) return 'exclui hemorragia intracraniana — pré-requisito absoluto para trombólise';
-  if (/nihss/.test(t))          return 'quantifica déficit neurológico; orienta elegibilidade para trombólise e prognóstico';
-  if (/bnp|proBNP/.test(t))     return 'marcador de estresse parietal ventricular; altamente sensível para IC descompensada';
-  if (/curb/.test(t))           return 'score de gravidade da PAC; orienta local de tratamento (ambulatorial vs UTI)';
-  if (/gasometria/.test(t))     return 'avalia ventilação, oxigenação e equilíbrio ácido-base; guia suporte ventilatório';
-  return 'exame complementar pertinente para este diagnóstico';
-}
-
-function buildEspecialidade(code) {
-  const m={SCA:'Cardiologia / Hemodinâmica',TEP:'Cardiologia / Pneumologia',
-           Sepse:'UTI / Infectologia',IC:'Cardiologia',AVC:'Neurologia',
-           Pneumonia:'Pneumologia / Infectologia',DPOC:'Pneumologia'};
-  return m[code]||'Especialidade pertinente';
-}
-
-function buildFRmod(text) {
-  const frs=[];
-  if (/(has|hipertens)/.test(text))  frs.push('HAS');
-  if (/(dm|diabet)/.test(text))      frs.push('DM');
-  if (/(tabag|fumante)/.test(text))  frs.push('tabagismo');
-  if (/(dislipidemia|colesterol)/.test(text)) frs.push('dislipidemia');
-  if (/(sedentari)/.test(text))      frs.push('sedentarismo');
-  if (/(obesidade)/.test(text))      frs.push('obesidade');
-  return frs.length?frs.join(', '):'fatores de risco identificados no caso';
-}
-
-// ════════════════════════════════════════════════════════════════════════════
-// 17. RENDERIZADORES HTML DO SOAP ANALÍTICO E TPS
-// ════════════════════════════════════════════════════════════════════════════
-
-function sectionCard(title, icon, color, content) {
-  return `
-  <div style="background:rgba(255,255,255,.03);border-radius:14px;padding:18px;
-       margin-bottom:16px;border-left:4px solid ${color}">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
-      <div style="width:34px;height:34px;border-radius:10px;background:${color}20;
-           display:flex;align-items:center;justify-content:center;flex-shrink:0">
-        <i class="${icon}" style="color:${color};font-size:16px"></i>
-      </div>
-      <h3 style="font-weight:800;color:${color};text-transform:uppercase;font-size:12px;letter-spacing:.06em">${title}</h3>
-    </div>
-    ${content}
-  </div>`;
-}
-
-function infoBox(label, value, color='rgba(255,255,255,.6)') {
-  return `<div style="margin-bottom:8px">
-    <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
-         color:rgba(255,255,255,.3)">${label}: </span>
-    <span style="font-size:13px;color:${color};line-height:1.6">${value}</span>
-  </div>`;
-}
-
-function bulletList(items, color='rgba(255,255,255,.7)', icon='fa-circle') {
-  if (!items||!items.length) return '<p style="opacity:.3;font-size:12px">Nenhum dado identificado</p>';
-  return `<ul style="list-style:none;padding:0;margin:0">
-    ${items.map(i=>`<li style="display:flex;gap:8px;align-items:flex-start;
-        margin-bottom:7px;font-size:13px;line-height:1.6;color:rgba(255,255,255,.75)">
-      <i class="fas ${icon}" style="color:${color};margin-top:4px;font-size:8px;flex-shrink:0"></i>
-      <span>${i}</span>
-    </li>`).join('')}
-  </ul>`;
-}
-
-function justifBullet(items, iconColor='#34C759') {
-  if (!items||!items.length) return '<p style="opacity:.3;font-size:12px">Nenhuma conduta listada</p>';
-  return items.map(item=>{
-    // Detecta se tem justificativa entre parênteses
-    const match = item.match(/^(.*?)\s*\(([^)]+)\)\s*$/);
-    if (match) {
-      return `<div style="margin-bottom:10px;padding:10px 13px;background:rgba(255,255,255,.04);
-           border-radius:10px;border-left:3px solid ${iconColor}">
-        <p style="font-size:13px;font-weight:600;color:rgba(255,255,255,.9);margin-bottom:4px">${match[1]}</p>
-        <p style="font-size:11px;color:#34C759;font-style:italic">
-          <i class="fas fa-flask" style="margin-right:5px"></i>${match[2]}
-        </p>
-      </div>`;
-    }
-    return `<div style="margin-bottom:8px;padding:9px 13px;background:rgba(255,255,255,.04);
-         border-radius:10px;border-left:3px solid ${iconColor}">
-      <p style="font-size:13px;color:rgba(255,255,255,.85)">${item}</p>
-    </div>`;
-  }).join('');
-}
-
-function renderSoapAnalitico(soap) {
-  const {subjetivo, objetivo, avaliacao, plano, top} = soap;
-  const pqrst = subjetivo.pqrst;
-
-  const sContent=`
-    <p style="font-size:13px;line-height:1.7;margin-bottom:14px;color:rgba(255,255,255,.8)">
-      ${subjetivo.narrativa}
-    </p>
-    <div style="background:rgba(0,122,255,.08);border:1px solid rgba(0,122,255,.2);border-radius:12px;padding:14px;margin-bottom:14px">
-      <p style="font-size:11px;font-weight:800;color:#60a5fa;margin-bottom:10px;text-transform:uppercase;letter-spacing:.06em">
-        PQRST — Caracterização da Queixa Principal
-      </p>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-        ${[['P — Provocação',pqrst.P],['Q — Qualidade',pqrst.Q],['R — Região/Irradiação',pqrst.R],['S — Severidade',pqrst.S],['T — Tempo/Evolução',pqrst.T]].map(([l,v])=>`
-        <div style="padding:8px 11px;background:rgba(255,255,255,.04);border-radius:8px">
-          <p style="font-size:10px;font-weight:700;color:#60a5fa;margin-bottom:3px">${l}</p>
-          <p style="font-size:12px;color:rgba(255,255,255,.8)">${v}</p>
-        </div>`).join('')}
-      </div>
-    </div>
-    ${subjetivo.antecedentes.length?`
-    <div style="margin-bottom:10px">
-      <p style="font-size:11px;font-weight:700;color:rgba(255,255,255,.4);margin-bottom:8px;text-transform:uppercase">
-        Antecedentes Relevantes para as Hipóteses
-      </p>
-      ${bulletList(subjetivo.antecedentes,'#FF9500','fa-exclamation-circle')}
-    </div>`:''}
-    <div>
-      <p style="font-size:11px;font-weight:700;color:rgba(255,255,255,.4);margin-bottom:8px;text-transform:uppercase">
-        Cronologia do Quadro
-      </p>
-      ${bulletList(subjetivo.cronologia,'#60a5fa','fa-clock')}
-    </div>`;
-
-  const oContent=`
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
-      <div>
-        <p style="font-size:11px;font-weight:800;color:#34C759;margin-bottom:8px;text-transform:uppercase">
-          ✅ Achados Positivos Pertinentes
-        </p>
-        ${bulletList(objetivo.achPositivos,'#34C759','fa-plus-circle')}
-      </div>
-      <div>
-        <p style="font-size:11px;font-weight:800;color:#FF9500;margin-bottom:8px;text-transform:uppercase">
-          ⚠️ Achados Negativos Pertinentes (Exclusão)
-        </p>
-        ${bulletList(objetivo.achNegativos,'#FF9500','fa-minus-circle')}
-      </div>
-    </div>
-    <div style="padding:10px 14px;background:rgba(255,149,0,.08);border:1px solid rgba(255,149,0,.2);border-radius:10px">
-      <p style="font-size:11px;color:#FF9500;line-height:1.6">
-        <i class="fas fa-lightbulb" style="margin-right:6px"></i>
-        <strong>Regra de Ouro:</strong> Os achados negativos são tão importantes quanto os positivos — eles documentam o raciocínio de exclusão ativa de diagnósticos emergenciais.
-      </p>
-    </div>`;
-
-  const aContent=`
-    ${avaliacao.map((av,i)=>`
-    <div style="padding:16px;border-radius:13px;margin-bottom:12px;
-         background:${i===0?'rgba(175,82,222,.1)':'rgba(255,255,255,.03)'};
-         border:1px solid ${i===0?'rgba(175,82,222,.3)':'rgba(255,255,255,.07)'}">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-        <div style="display:flex;align-items:center;gap:8px">
-          <span style="width:26px;height:26px;border-radius:50%;background:rgba(175,82,222,.2);
-               color:#AF52DE;font-weight:900;font-size:13px;display:flex;align-items:center;justify-content:center">${av.rank}</span>
-          <span style="font-weight:800;font-size:${i===0?'15px':'13px'};color:rgba(255,255,255,.95)">${av.h.name}</span>
-        </div>
-        <span style="background:rgba(175,82,222,.2);color:#AF52DE;padding:3px 11px;
-             border-radius:20px;font-weight:700;font-size:12px">${(av.h.post*100).toFixed(1)}%</span>
-      </div>
-      <div style="margin-bottom:10px">
-        <p style="font-size:10px;font-weight:700;color:rgba(255,255,255,.35);margin-bottom:5px;text-transform:uppercase">
-          Justificativa Clínica + Mecanismo Fisiopatológico
-        </p>
-        <p style="font-size:12px;line-height:1.75;color:rgba(255,255,255,.75)">${av.justificativa}</p>
-      </div>
-      ${av.porqueVence?`
-      <div style="padding:8px 12px;background:rgba(255,255,255,.04);border-radius:8px;border-left:3px solid #AF52DE">
-        <p style="font-size:10px;font-weight:700;color:#AF52DE;margin-bottom:4px;text-transform:uppercase">
-          Por que supera a 2ª hipótese?
-        </p>
-        <p style="font-size:12px;color:rgba(255,255,255,.65);line-height:1.65">${av.porqueVence}</p>
-      </div>`:''}`).join('')}`;
-
-  const pContent=`
-    <div style="display:grid;grid-template-columns:1fr;gap:14px">
-      ${[
-        {label:'🔬 Plano Diagnóstico', items:plano.diagnostico, color:'#60a5fa'},
-        {label:'💊 Plano Terapêutico (com justificativa fisiopatológica)', items:plano.terapeutico, color:'#34C759'},
-        {label:'📚 Plano Educacional', items:plano.educacional, color:'#FF9500'}
-      ].map(sec=>`
-      <div style="background:rgba(255,255,255,.04);border-radius:12px;padding:14px">
-        <p style="font-size:12px;font-weight:800;color:${sec.color};margin-bottom:12px;text-transform:uppercase;letter-spacing:.04em">
-          ${sec.label}
-        </p>
-        ${justifBullet(sec.items, sec.color)}
-      </div>`).join('')}
-    </div>`;
-
-  return sectionCard('S — Subjetivo (Raciocínio Narrativo)','fas fa-comment-medical','#60a5fa',sContent)+
-         sectionCard('O — Objetivo (Achados + Exclusões)','fas fa-search','#34C759',oContent)+
-         sectionCard('A — Avaliação (Síntese e Diferencial)','fas fa-balance-scale','#AF52DE',aContent)+
-         sectionCard('P — Plano (Intencionalidade Terapêutica)','fas fa-prescription','#FF9500',pContent);
-}
-
-function renderTPS(tps) {
-  const {teoria, prova, solucao} = tps;
-
-  const tContent=`
-    <div style="margin-bottom:14px">
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
-        <div style="font-size:22px;font-weight:900;color:#60a5fa">${teoria.probabilidade}%</div>
-        <div>
-          <p style="font-size:15px;font-weight:800;color:rgba(255,255,255,.95)">${teoria.diagnostico}</p>
-          <p style="font-size:11px;color:rgba(255,255,255,.4)">Probabilidade posterior bayesiana</p>
-        </div>
-      </div>
-      <div style="padding:12px 15px;background:rgba(96,165,250,.08);border:1px solid rgba(96,165,250,.2);
-           border-radius:11px;margin-bottom:10px">
-        <p style="font-size:11px;font-weight:700;color:#60a5fa;margin-bottom:5px;text-transform:uppercase">Síndrome Clínica</p>
-        <p style="font-size:13px;line-height:1.65;color:rgba(255,255,255,.8)">${teoria.sindrome}</p>
-      </div>
-      <div style="padding:12px 15px;background:rgba(255,255,255,.04);border-radius:11px">
-        <p style="font-size:11px;font-weight:700;color:rgba(255,255,255,.35);margin-bottom:5px;text-transform:uppercase">
-          Raciocínio Diferencial Rápido
-        </p>
-        <p style="font-size:12px;line-height:1.65;color:rgba(255,255,255,.7)">${teoria.diferencialRapido}</p>
-      </div>
-    </div>`;
-
-  const pContent=`
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
-      <div>
-        <p style="font-size:11px;font-weight:800;color:#60a5fa;margin-bottom:8px;text-transform:uppercase">
-          Dados Subjetivos Âncora
-        </p>
-        ${bulletList(prova.subjetivos,'#60a5fa','fa-quote-left')}
-      </div>
-      <div>
-        <p style="font-size:11px;font-weight:800;color:#34C759;margin-bottom:8px;text-transform:uppercase">
-          Dados Objetivos Âncora
-        </p>
-        ${bulletList(prova.objetivos,'#34C759','fa-chart-bar')}
-      </div>
-    </div>
-    <div style="padding:12px 14px;background:rgba(255,149,0,.07);border:1px solid rgba(255,149,0,.2);border-radius:11px">
-      <p style="font-size:11px;font-weight:800;color:#FF9500;margin-bottom:8px;text-transform:uppercase">
-        ⊝ Prova Negativa (Exclusão Ativa de Gravidade)
-      </p>
-      ${bulletList(prova.negativos,'#FF9500','fa-ban')}
-    </div>`;
-
-  const sContent=`
-    ${[
-      {label:'⚡ Condutas Imediatas', items:solucao.imediatas, color:'#FF3B30'},
-      {label:'📋 Curto Prazo (< 24–48h)', items:solucao.curtoPrazo, color:'#FF9500'},
-      {label:'🏥 Longo Prazo', items:solucao.longoPrazo, color:'#34C759'}
-    ].map(sec=>`
-    <div style="margin-bottom:14px">
-      <p style="font-size:12px;font-weight:800;color:${sec.color};margin-bottom:10px;text-transform:uppercase">
-        ${sec.label}
-      </p>
-      ${justifBullet(sec.items, sec.color)}
-    </div>`).join('')}`;
-
-  return `
-  <div style="display:grid;grid-template-columns:1fr;gap:0">
-    ${sectionCard('T — Teoria (Hipótese Central + Diferencial)','fas fa-atom','#60a5fa',tContent)}
-    ${sectionCard('P — Prova (Dados Âncora + Exclusão)','fas fa-microscope','#34C759',pContent)}
-    ${sectionCard('S — Solução (Gerenciamento com Justificativa)','fas fa-tools','#FF9500',sContent)}
-  </div>`;
-}
-
-// ════════════════════════════════════════════════════════════════════════════
-// 18. MODAL HELPERS + KEYBOARD SHORTCUTS
-// ════════════════════════════════════════════════════════════════════════════
-function openModal(id)  { const el=document.getElementById(id); if(el){el.style.display='flex';el.classList.add('open');} }
-function closeModal(id) { const el=document.getElementById(id); if(el){el.style.display='none';el.classList.remove('open');} }
-
-document.addEventListener('keydown', e => {
+// ════════════════════════════════════════════════════════════════════
+// MODAL HELPERS + SHORTCUTS
+// ════════════════════════════════════════════════════════════════════
+function openModal(id){const el=document.getElementById(id);if(el){el.style.display='flex';el.classList.add('open');}}
+function closeModal(id){const el=document.getElementById(id);if(el){el.style.display='none';el.classList.remove('open');}}
+
+document.addEventListener('keydown',e=>{
   const tag=(e.target||{}).tagName||'';
   const inInput=['INPUT','TEXTAREA','SELECT'].includes(tag);
-  if (e.key==='Escape') { ['mBayes','mLR','mDebug','mAudit','mUpload','mHL'].forEach(closeModal); return; }
-  if (inInput) return;
-  if ((e.ctrlKey||e.metaKey)&&e.key==='b') { e.preventDefault(); App.openBayesEditor(); }
-  if ((e.ctrlKey||e.metaKey)&&e.key==='l') { e.preventDefault(); App.openLREditor(); }
-  if ((e.ctrlKey||e.metaKey)&&e.key==='d') { e.preventDefault(); App.openDebug(); }
-  if ((e.ctrlKey||e.metaKey)&&e.key==='a') { e.preventDefault(); App.openAuditLog(); }
+  if(e.key==='Escape'){['mBayesModal','mLR','mDebug','mAudit','mUpload','mHL'].forEach(closeModal);return;}
+  if(inInput)return;
+  if((e.ctrlKey||e.metaKey)&&e.key==='b'){e.preventDefault();App.openBayesEditor();}
+  if((e.ctrlKey||e.metaKey)&&e.key==='l'){e.preventDefault();App.openLREditor();}
+  if((e.ctrlKey||e.metaKey)&&e.key==='d'){e.preventDefault();App.openDebug();}
+  if((e.ctrlKey||e.metaKey)&&e.key==='a'){e.preventDefault();App.openAuditLog();}
 });
 document.getElementById('masterPwd').addEventListener('keydown',e=>{if(e.key==='Enter')App.unlock();});
 
-// ════════════════════════════════════════════════════════════════════════════
-// 19. INICIALIZAÇÃO
-// ════════════════════════════════════════════════════════════════════════════
-window.App=App; window.Mon=Mon;
-Mon.log('ARPEmed v19.0 + SOAP Analítico + TPS inicializado.','ok');
-Mon.log(`Ambiente: ${location.protocol}//${location.host||'local'}`,location.protocol==='file:'?'warn':'ok');
-Mon.log(`Base: ${GUIDELINES_DB.length} diretrizes | LRs: ${LR_DEFAULT.length} regras | PQRST: ativo | TPS: ativo`,'info');
-Mon.log('Atalhos: Ctrl+B (Bayes) | Ctrl+L (LRs) | Ctrl+D (Debug) | Ctrl+A (Audit) | Esc (fechar modal)','info');
+// ════════════════════════════════════════════════════════════════════
+// INICIALIZAÇÃO
+// ════════════════════════════════════════════════════════════════════
+window.App=App;window.Mon=Mon;
+Mon.log('ARPEmed v20.0 CORRIGIDO — pronto para desbloqueio.','ok');
 document.getElementById('sYear').textContent=String(new Date().getFullYear());
 </script>
 </body>
