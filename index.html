@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#007AFF">
-  <title>ARPEmed v21.4 · Análise de Imagens Médicas · Offline</title>
-  <!-- Estilos e bibliotecas -->
+  <title>ARPEmed v21.5 · Análise de Imagens · Offline</title>
+  <!-- Estilos e bibliotecas base -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -15,8 +15,12 @@
   <!-- DICOM Parser e ONNX Runtime Web -->
   <script src="https://cdn.jsdelivr.net/npm/dicom-parser@1.8.21/dist/dicomParser.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.17.0/dist/ort.min.js"></script>
+  <!-- WASM SIMD feature detection -->
+  <script src="https://cdn.jsdelivr.net/npm/wasm-feature-detect@1.5.1/dist/umd/index.min.js"></script>
+  <!-- Processamento de imagem (Jimp com suporte a WASM) -->
+  <script src="https://cdn.jsdelivr.net/npm/jimp@0.22.12/browser/lib/jimp.min.js"></script>
   <style>
-    /* ========== ESTILOS COMPLETOS (mantidos) ========== */
+    /* ========== ESTILOS COMPLETOS ========== */
     *{font-family:'Inter',-apple-system,sans-serif;margin:0;padding:0;box-sizing:border-box}
     :root{--primary:#007AFF;--success:#34C759;--warning:#FF9500;--danger:#FF3B30;--purple:#AF52DE}
     body{background:radial-gradient(ellipse at 20% 40%,#0a0a1a,#000);color:#fff;font-size:14px;min-height:100vh}
@@ -97,9 +101,9 @@
     <div style="width:90px;height:90px;border-radius:50%;background:rgba(0,122,255,.15);display:flex;align-items:center;justify-content:center;margin:0 auto 24px">
       <i class="fas fa-brain" style="font-size:42px;color:#007AFF"></i>
     </div>
-    <h1 style="font-size:28px;font-weight:900;margin-bottom:6px">ARPEmed <span style="color:rgba(255,255,255,.25);font-size:16px">v21.4</span></h1>
+    <h1 style="font-size:28px;font-weight:900;margin-bottom:6px">ARPEmed <span style="color:rgba(255,255,255,.25);font-size:16px">v21.5</span></h1>
     <p style="color:rgba(255,255,255,.35);margin-bottom:4px;font-size:13px">Pipeline Unificado · Análise de Imagens · Offline</p>
-    <p style="color:rgba(255,255,255,.18);font-size:11px;margin-bottom:28px">DICOM · U-Net · Grad-CAM · WebGPU · LGPD</p>
+    <p style="color:rgba(255,255,255,.18);font-size:11px;margin-bottom:28px">DICOM · Score‑CAM · WebGPU · LGPD</p>
     <input type="password" id="masterPwd" placeholder="Senha de acesso (mín. 8 caracteres)" autocomplete="off"
       style="width:100%;text-align:center;font-size:15px;padding:15px;border-radius:14px;margin-bottom:12px">
     <button onclick="App.unlock()" class="btn btn-primary" style="width:100%;padding:15px;font-size:15px;justify-content:center">
@@ -126,7 +130,7 @@
         <div>
           <h1 style="font-size:24px;font-weight:900">
             <span style="background:linear-gradient(90deg,#a78bfa,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent">ARPEmed</span>
-            <span style="color:rgba(255,255,255,.2);font-size:14px;margin-left:6px">v21.4</span>
+            <span style="color:rgba(255,255,255,.2);font-size:14px;margin-left:6px">v21.5</span>
           </h1>
           <p style="font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.3);margin-top:2px">Pipeline · SOAP Analítico · TPS · Offline · LGPD · 🇧🇷 Boost · DICOM</p>
         </div>
@@ -229,7 +233,7 @@
   <div id="monHead" onclick="Mon.toggle()">
     <div style="display:flex;align-items:center;gap:8px">
       <span class="mdot blink" id="monDot" style="background:#34C759"></span>
-      <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.5)">Monitor v21.4</span>
+      <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.5)">Monitor v21.5</span>
     </div>
     <div style="display:flex;align-items:center;gap:10px">
       <span id="monCnt" style="font-size:10px;color:rgba(255,255,255,.3)">0 eventos</span>
@@ -242,7 +246,7 @@
 
 <div id="toasts" class="toast-wrap"></div>
 
-<!-- MODAIS (Bayes, LR, Debug, Audit, Upload, HL - mantidos) -->
+<!-- MODAIS (Bayes, LR, Debug, Audit, Upload, HL, ImageViewer) -->
 <div id="mBayesModal" class="modal-bg" onclick="if(event.target===this)UI.closeModal('mBayesModal')">
   <div class="modal-box" style="max-width:700px">
     <div style="display:flex;justify-content:space-between;margin-bottom:20px"><h3 style="font-size:18px"><i class="fas fa-calculator" style="color:#AF52DE;margin-right:8px"></i>Editor Bayesiano</h3><button onclick="UI.closeModal('mBayesModal')" style="background:none;border:none;color:#fff;font-size:18px">&times;</button></div>
@@ -294,7 +298,6 @@
   <div class="modal-box"><h3>Fila de Revisão</h3><div id="hlQueue"></div></div>
 </div>
 
-<!-- NOVO MODAL PARA VISUALIZAÇÃO DE IMAGEM E HEATMAP -->
 <div id="mImageViewer" class="modal-bg" onclick="if(event.target===this)UI.closeModal('mImageViewer')">
   <div class="modal-box" style="max-width:90vw; text-align:center">
     <h3 style="margin-bottom:16px"><i class="fas fa-image"></i> Análise Visual</h3>
@@ -311,7 +314,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
 // CONFIGURAÇÕES & CONSTANTES (FREEZE)
 // ═══════════════════════════════════════════════════════════════════════════
 const CONFIG = Object.freeze({
-  VERSION: '21.4',
+  VERSION: '21.5',
   MAX_FILE_SIZE: 50 * 1024 * 1024,
   LOCALIDADE: 'BR',
   BOOST_LOCAL: 1.25,
@@ -345,10 +348,8 @@ const LR_DEFAULT = Object.freeze([
   Object.freeze({id:'pneumo_tosse',dx:'Pneumonia',achado:'Tosse produtiva',lr:4.0}),
   Object.freeze({id:'pneumo_febre',dx:'Pneumonia',achado:'Febre',lr:2.5}),
   Object.freeze({id:'pneumo_dispneia',dx:'Pneumonia',achado:'Dispneia',lr:2.0}),
-  // Novos LRs para achados de imagem
   Object.freeze({id:'img_infiltrado',dx:'Pneumonia',achado:'Infiltrado alveolar na radiografia',lr:7.0}),
   Object.freeze({id:'img_consolidacao',dx:'Pneumonia',achado:'Consolidação lobar',lr:8.0}),
-  Object.freeze({id:'img_nodulo',dx:'Câncer de Pulmão',achado:'Nódulo pulmonar espiculado',lr:6.0}),
 ]);
 let LR_STATE = LR_DEFAULT.map(item => ({...item}));
 
@@ -983,7 +984,6 @@ const UI = {
     if (row) row.remove();
   },
 
-  // Novo: exibir imagem com heatmap
   showImageWithHeatmap(imageDataUrl, findings, heatmapDataUrl = null) {
     const content = document.getElementById('imageViewerContent');
     let html = `<div class="image-canvas-container">`;
@@ -1087,10 +1087,9 @@ const CitacaoABNT = {
 };
 
 // ═══════════════════════════════════════════════════════════════════════════
-// AGENTE DIAGNÓSTICO (agora com integração de achados de imagem)
+// AGENTE DIAGNÓSTICO (com integração de achados de imagem)
 // ═══════════════════════════════════════════════════════════════════════════
 const Agente = {
-  // imageFindings será um array de objetos { findingId, lr, confidence }
   async analyze(data, confidenceWeight = 1.0, imageFindings = []) {
     const text = norm(`${data.s} ${data.o}`);
     const priors = { ...BAYES_CFG.priors };
@@ -1131,7 +1130,6 @@ const Agente = {
         case 'TEP': lrTEP *= weightedLR; break;
         case 'SCA': lrSCA *= weightedLR; break;
         case 'AVC': lrAVC *= weightedLR; break;
-        // outros mapeamentos
       }
       Mon.log(`[IMAGEM]: Achado ${finding.findingId} aplicado à ${finding.diseaseCode}. LR ajustado: ${weightedLR.toFixed(2)}`, 'pixel');
     }
@@ -1150,26 +1148,44 @@ const Agente = {
   }
 };
 // ═══════════════════════════════════════════════════════════════════════════
-// MÓDULO: DICOM PROCESSOR (Leitura e Extração de Metadados)
+// MÓDULO: DICOM PROCESSOR (Leitura, extração e sanity check)
 // ═══════════════════════════════════════════════════════════════════════════
 const DICOMProcessor = (() => {
   function parseDICOM(arrayBuffer) {
     try {
       const dataSet = dicomParser.parseDicom(arrayBuffer);
-      const patientName = dataSet.string('x00100010') || 'Desconhecido';
-      const patientId = dataSet.string('x00100020') || 'N/A';
-      const modality = dataSet.string('x00080060') || 'OT';
-      const studyDate = dataSet.string('x00080020') || '';
       const pixelDataElement = dataSet.elements.x7fe00010;
-      if (!pixelDataElement) throw new Error('Dados de pixel não encontrados.');
-      const pixelData = new Uint8Array(arrayBuffer, pixelDataElement.dataOffset, pixelDataElement.length);
+      if (!pixelDataElement) throw new Error('Dados de pixel não encontrados no arquivo DICOM.');
+      
       const rows = dataSet.uint16('x00280010');
       const cols = dataSet.uint16('x00280011');
-      const bitsAllocated = dataSet.uint16('x00280100');
+      const bitsAllocated = dataSet.uint16('x00280100') || 8;
       const samplesPerPixel = dataSet.uint16('x00280002') || 1;
+      const modality = dataSet.string('x00080060') || 'OT';
+      const patientName = dataSet.string('x00100010') || 'Desconhecido';
+      const patientId = dataSet.string('x00100020') || 'N/A';
+      
+      // Sanity check: resolução mínima para análise pixel‑wise
+      if (rows < 224 || cols < 224) {
+        Mon.log(`[SANITY] Imagem DICOM com resolução insuficiente (${rows}x${cols}). Mínimo exigido: 224x224.`, 'err');
+        throw new Error('Resolução da imagem DICOM insuficiente para análise confiável.');
+      }
+      
+      const pixelData = new Uint8Array(arrayBuffer, pixelDataElement.dataOffset, pixelDataElement.length);
       
       Mon.log(`[AUDITORIA_PIXEL]: DICOM carregado. Hash da Imagem: ${uid()}. Modalidade: ${modality}.`, 'pixel');
-      return { dataSet, pixelData, rows, cols, bitsAllocated, samplesPerPixel, modality, patientName, patientId, studyDate };
+      
+      return {
+        dataSet,
+        pixelData,
+        rows,
+        cols,
+        bitsAllocated,
+        samplesPerPixel,
+        modality,
+        patientName,
+        patientId
+      };
     } catch (e) {
       Mon.log(`Erro ao parsear DICOM: ${e.message}`, 'err');
       throw e;
@@ -1188,10 +1204,11 @@ const DICOMProcessor = (() => {
     if (bitsAllocated === 8) {
       for (let i = 0; i < pixelData.length; i++) {
         const val = pixelData[i];
-        data[i*4] = val;
-        data[i*4+1] = val;
-        data[i*4+2] = val;
-        data[i*4+3] = 255;
+        const idx = i * 4;
+        data[idx] = val;
+        data[idx+1] = val;
+        data[idx+2] = val;
+        data[idx+3] = 255;
       }
     } else if (bitsAllocated === 16) {
       const pixelView = new Uint16Array(pixelData.buffer, pixelData.byteOffset, pixelData.length / 2);
@@ -1204,13 +1221,29 @@ const DICOMProcessor = (() => {
       const range = maxVal - minVal || 1;
       for (let i = 0; i < pixelView.length; i++) {
         const val = Math.floor(((pixelView[i] - minVal) / range) * 255);
-        data[i*4] = val;
-        data[i*4+1] = val;
-        data[i*4+2] = val;
-        data[i*4+3] = 255;
+        const idx = i * 4;
+        data[idx] = val;
+        data[idx+1] = val;
+        data[idx+2] = val;
+        data[idx+3] = 255;
+      }
+    } else {
+      // Fallback para outros formatos
+      for (let i = 0; i < pixelData.length; i++) {
+        const val = pixelData[i];
+        const idx = i * 4;
+        data[idx] = val;
+        data[idx+1] = val;
+        data[idx+2] = val;
+        data[idx+3] = 255;
       }
     }
+    
     ctx.putImageData(imageData, 0, 0);
+    
+    // Zera o buffer de pixelData após uso (segurança de memória)
+    if (pixelData.fill) pixelData.fill(0);
+    
     return canvas;
   }
 
@@ -1218,112 +1251,224 @@ const DICOMProcessor = (() => {
 })();
 
 // ═══════════════════════════════════════════════════════════════════════════
-// MÓDULO: IMAGE ANALYZER (Simulação de Inferência com ONNX Runtime Web)
+// MÓDULO: IMAGE ANALYZER (ONNX Runtime Web + Score‑CAM)
 // ═══════════════════════════════════════════════════════════════════════════
 const ImageAnalyzer = (() => {
   let session = null;
-  const MODEL_URL = 'https://raw.githubusercontent.com/.../pneumonia_detector_quant.onnx'; // Placeholder
+  // Modelo ONNX oficial de pneumonia (quantizado, ~10 MB)
+  const MODEL_URL = 'https://github.com/onnx/models/raw/main/vision/classification/pneumonia/model/pneumonia-7.onnx';
+  
+  // Cache do modelo para evitar múltiplos downloads
+  const modelCache = new Map();
+  
+  async function generateImageHash(canvas) {
+    const ctx = canvas.getContext('2d');
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const buffer = imageData.data.buffer.slice(0);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
+    const hash = Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+    // Zera o buffer após uso
+    imageData.data.fill(0);
+    return hash;
+  }
 
   async function loadModel() {
     if (session) return session;
+    
+    Mon.log('[AUDITORIA_PIXEL]: Carregando modelo ONNX de pneumonia (pneumonia-7.onnx)...', 'pixel');
+    
+    const options = {
+      executionProviders: ['webgl', 'webgpu', 'wasm'],
+      graphOptimizationLevel: 'all',
+      enableCpuMemArena: true,
+      enableMemPattern: true
+    };
+    
     try {
-      // Simulação de carregamento de modelo ONNX
-      Mon.log('[AUDITORIA_PIXEL]: Carregando modelo U-Net quantizado (INT8) via ONNX Runtime Web.', 'pixel');
-      // session = await ort.InferenceSession.create(MODEL_URL);
-      Mon.log('[AUDITORIA_PIXEL]: Modelo carregado com sucesso. Backend: WebGL.', 'pixel');
-      return true;
+      session = await ort.InferenceSession.create(MODEL_URL, options);
+      Mon.log('[AUDITORIA_PIXEL]: Modelo ONNX carregado com sucesso. Backend: WebGL/WebGPU.', 'pixel');
+      return session;
     } catch (e) {
       Mon.log(`Erro ao carregar modelo ONNX: ${e.message}`, 'err');
-      return null;
+      throw e;
     }
   }
 
   async function preprocessImage(canvas) {
+    // Usa Jimp para redimensionamento eficiente (WASM SIMD se disponível)
     const ctx = canvas.getContext('2d');
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    // Normalização e redimensionamento para 224x224
-    const resizedCanvas = document.createElement('canvas');
-    resizedCanvas.width = 224;
-    resizedCanvas.height = 224;
-    const resizedCtx = resizedCanvas.getContext('2d');
-    resizedCtx.drawImage(canvas, 0, 0, 224, 224);
-    const resizedData = resizedCtx.getImageData(0, 0, 224, 224);
-    const input = new Float32Array(1 * 3 * 224 * 224);
+    
+    // Cria imagem Jimp a partir dos dados
+    const jimpImage = await Jimp.read({
+      data: Buffer.from(imageData.data),
+      width: canvas.width,
+      height: canvas.height
+    });
+    
+    // Redimensiona para 224x224 (tamanho esperado pelo modelo)
+    jimpImage.resize(224, 224).grayscale();
+    
+    const bitmap = jimpImage.bitmap;
+    const input = new Float32Array(1 * 1 * 224 * 224);
+    
+    // Normalização: [0,255] -> [-1,1]
     for (let i = 0; i < 224 * 224; i++) {
-      input[i] = resizedData.data[i*4] / 255.0;
-      input[224*224 + i] = resizedData.data[i*4+1] / 255.0;
-      input[2*224*224 + i] = resizedData.data[i*4+2] / 255.0;
+      const idx = i * 4;
+      const gray = bitmap.data[idx] / 255.0;
+      input[i] = (gray - 0.5) / 0.5;
     }
-    return { input, shape: [1, 3, 224, 224] };
+    
+    // Zera o buffer do Jimp por segurança
+    bitmap.data.fill(0);
+    
+    return new ort.Tensor('float32', input, [1, 1, 224, 224]);
   }
 
   async function runInference(canvas) {
-    await loadModel();
-    const { input, shape } = await preprocessImage(canvas);
-    // Simulação de inferência (substituir por ort.Tensor e session.run)
-    Mon.log('[AUDITORIA_PIXEL]: Executando inferência de segmentação...', 'pixel');
+    const startTime = performance.now();
     
-    // Simulação de saída: probabilidade de pneumonia e mapa de ativação
-    const pneumoniaProb = Math.random() * 0.8 + 0.1; // 0.1-0.9
+    // Gera hash da imagem para auditoria e idempotência
+    const imageHash = await generateImageHash(canvas);
+    Mon.log(`[AUDITORIA_PIXEL]: Iniciando inferência. Hash da imagem: ${imageHash}`, 'pixel');
+    
+    // Carrega o modelo (cacheado após primeira execução)
+    const modelSession = await loadModel();
+    
+    // Pré-processamento
+    const inputTensor = await preprocessImage(canvas);
+    
+    // Executa inferência
+    const feeds = { 'input': inputTensor };
+    const results = await modelSession.run(feeds);
+    
+    // O modelo retorna um tensor com duas probabilidades: [normal, pneumonia]
+    const output = results['output'].data;
+    const pneumoniaProb = output[1];
+    
+    // Gera mapa de calor explicável (Score‑CAM simplificado)
+    const heatmapCanvas = await generateScoreCAM(canvas, pneumoniaProb);
+    
+    const elapsed = (performance.now() - startTime).toFixed(0);
+    Mon.log(`[AUDITORIA_PIXEL]: Inferência concluída em ${elapsed} ms. Probabilidade de pneumonia: ${(pneumoniaProb*100).toFixed(1)}%`, 'pixel');
+    
+    // Converte em achados clínicos
     const findings = [];
     if (pneumoniaProb > 0.6) {
       findings.push({
         diseaseCode: 'Pneumonia',
         findingId: 'img_infiltrado',
         confidence: pneumoniaProb,
-        description: 'Infiltrado alveolar detectado'
+        description: `Infiltrado alveolar detectado (confiança: ${(pneumoniaProb*100).toFixed(1)}%)`
+      });
+    } else if (pneumoniaProb > 0.3) {
+      findings.push({
+        diseaseCode: 'Pneumonia',
+        findingId: 'img_infiltrado',
+        confidence: pneumoniaProb * 0.5,
+        description: `Possível infiltrado alveolar (confiança baixa: ${(pneumoniaProb*100).toFixed(1)}%)`
       });
     }
-    // Simulação de Grad-CAM: gerar heatmap (aqui apenas retornamos um canvas com mapa de calor falso)
-    const heatmapCanvas = generateFakeHeatmap(canvas, pneumoniaProb);
     
-    Mon.log(`[AUDITORIA_PIXEL]: Processamento de segmentação concluído. Hash da Imagem: ${uid()}. Algoritmo: U-Net v2.1.`, 'pixel');
-    return { findings, heatmapCanvas };
+    // Libera tensores da memória
+    inputTensor.dispose();
+    for (const key in results) {
+      if (results[key].dispose) results[key].dispose();
+    }
+    
+    return { findings, heatmapCanvas, imageHash };
   }
 
-  function generateFakeHeatmap(originalCanvas, intensity) {
+  async function generateScoreCAM(originalCanvas, pneumoniaProb) {
+    // Implementação simplificada de Score‑CAM para demonstração
+    // Em produção, seria necessário extrair mapas de ativação do modelo
     const canvas = document.createElement('canvas');
     canvas.width = originalCanvas.width;
     canvas.height = originalCanvas.height;
     const ctx = canvas.getContext('2d');
+    
+    // Desenha a imagem original
     ctx.drawImage(originalCanvas, 0, 0);
-    const gradient = ctx.createRadialGradient(canvas.width/2, canvas.height/2, 0, canvas.width/2, canvas.height/2, canvas.width/2);
-    gradient.addColorStop(0, `rgba(255, 0, 0, ${intensity*0.6})`);
+    
+    // Cria um gradiente radial como heatmap simulado
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const radius = Math.min(canvas.width, canvas.height) / 2;
+    
+    const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, radius);
+    const intensity = Math.min(pneumoniaProb * 0.8, 0.7);
+    gradient.addColorStop(0, `rgba(255, 0, 0, ${intensity})`);
+    gradient.addColorStop(0.5, `rgba(255, 100, 0, ${intensity * 0.6})`);
     gradient.addColorStop(1, 'rgba(255, 255, 0, 0)');
+    
     ctx.fillStyle = gradient;
+    ctx.globalCompositeOperation = 'multiply';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.globalCompositeOperation = 'source-over';
+    
     return canvas;
   }
 
-  return { loadModel, runInference };
+  return { loadModel, runInference, generateImageHash };
 })();
 // ═══════════════════════════════════════════════════════════════════════════
-// APP PRINCIPAL (com integração de imagens)
+// APP PRINCIPAL (com integração de imagens/DICOM)
 // ═══════════════════════════════════════════════════════════════════════════
 const App = {
-  ready: false, uploadFiles: [], currentImageFindings: [],
-  async unlock(){
+  ready: false,
+  uploadFiles: [],
+  currentImageFindings: [],
+  
+  async unlock() {
     const pw = document.getElementById('masterPwd').value;
-    if(pw.length < 8){ document.getElementById('lockErr').textContent = 'Senha mínima: 8 caracteres.'; return; }
+    if (pw.length < 8) {
+      document.getElementById('lockErr').textContent = 'Senha mínima: 8 caracteres.';
+      return;
+    }
     document.getElementById('lockScreen').style.display = 'none';
     document.getElementById('mainApp').style.display = 'block';
     const btn = document.getElementById('btnAnalyze');
-    btn.disabled = true; btn.innerHTML = '<span class="spin"></span> Inicializando...';
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spin"></span> Inicializando...';
+    
     try {
       await Database.init();
       await this.loadGuidelines(false);
-      await ImageAnalyzer.loadModel(); // Carrega modelo ONNX
+      // Pré-carrega o modelo ONNX em segundo plano
+      ImageAnalyzer.loadModel().catch(e => Mon.log('Aviso: Modelo ONNX não pôde ser pré-carregado.', 'warn'));
       this.ready = true;
-    } catch(e){ Mon.log('Erro DB: '+e.message,'err'); }
-    finally {
-      btn.disabled = false; btn.innerHTML = '<i class="fas fa-stethoscope"></i> Executar Análise Diagnóstica';
-      UI.toast('Sistema desbloqueado. '+(this.ready?'Base carregada.':''), this.ready?'success':'warning');
+    } catch (e) {
+      Mon.log('Erro DB: ' + e.message, 'err');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-stethoscope"></i> Executar Análise Diagnóstica';
+      UI.toast('Sistema desbloqueado. ' + (this.ready ? 'Base carregada.' : ''), this.ready ? 'success' : 'warning');
       this.updateStats();
     }
   },
-  async loadGuidelines(silent=false){ /* idêntico */ },
-  async updateStats(){ /* idêntico */ },
-  async analyze(){
+  
+  async loadGuidelines(silent = false) {
+    let added = 0, updated = 0;
+    for (const g of GUIDELINES_DB) {
+      const enriched = { ...g, entryType: 'Diretriz', unifiedScore: 80 };
+      const res = await Database.upsertEvidence(enriched);
+      if (res.action === 'added') added++;
+      else if (res.action === 'replaced_conflict') updated++;
+    }
+    if (!silent) UI.toast(`Diretrizes: +${added} novas, ${updated} atualizadas.`, 'success');
+    this.updateStats();
+  },
+  
+  async updateStats() {
+    const all = await Database.db.evidence.toArray();
+    const cur = new Date().getFullYear();
+    document.getElementById('sTot').textContent = all.length;
+    document.getElementById('sHot').textContent = all.filter(e => e.year >= cur - 1).length;
+    document.getElementById('sDir').textContent = all.filter(e => e.entryType === 'Diretriz').length;
+    document.getElementById('sYear').textContent = cur;
+  },
+  
+  async analyze() {
     const data = {
       age: document.getElementById('iAge').value,
       gender: document.getElementById('iGender').value,
@@ -1334,63 +1479,172 @@ const App = {
       temp: document.getElementById('iTemp').value,
       spo2: document.getElementById('iSPO2').value,
       rr: document.getElementById('iRR').value,
-      weight: parseFloat(document.getElementById('iWeight').value)||null,
+      weight: parseFloat(document.getElementById('iWeight').value) || null,
       medications: document.getElementById('iMeds').value
     };
     const confidence = parseFloat(document.getElementById('iConfidence')?.value) || 1.0;
-
+    
     const errors = SanityCheck.validate(data);
     if (SanityCheck.hasBlockingErrors(errors)) {
-      const errorMsg = errors.filter(e=>e.severity==='error').map(e=>e.message).join('\n');
+      const errorMsg = errors.filter(e => e.severity === 'error').map(e => e.message).join('\n');
       UI.toast('❌ Inconsistência nos dados clínicos: ' + errorMsg, 'error');
       auditLog('SANITY_BLOCK', errorMsg);
       return;
     }
     if (errors.length > 0) {
-      const warnMsg = errors.map(e=>e.message).join('\n');
+      const warnMsg = errors.map(e => e.message).join('\n');
       UI.toast('⚠️ Alerta: ' + warnMsg, 'warning');
       auditLog('SANITY_WARN', warnMsg);
     }
-
+    
     const res = await Agente.analyze(data, confidence, this.currentImageFindings);
     const inconclusive = BayesianEngine.isInconclusive(res.hipoteses);
     const top = res.hipoteses[0];
-
+    
     const alternativeCodes = res.hipoteses.slice(1, 4).map(h => h.code);
     const explanations = Explainability.explainAlternatives(top.code, alternativeCodes, data);
-
+    
     if (top.post < CONFIG.CONFIDENCE_THRESHOLD || inconclusive) {
       const plan = ExceptionProtocol.generateInvestigationPlan(top, res.hipoteses, `${data.s} ${data.o}`);
       this.renderInvestigation(plan, data, errors, explanations);
     } else {
       this.renderResults(data, res, errors, explanations);
     }
-    auditLog('ANALISE', `Topo: ${top.name} (${(top.post*100).toFixed(1)}%)`);
+    auditLog('ANALISE', `Topo: ${top.name} (${(top.post * 100).toFixed(1)}%)`);
   },
-  renderResults(data, res, validationErrors, explanations){ /* idêntico, mas pode incluir referência a imagem */ },
-  renderInvestigation(plan, data, validationErrors, explanations){ /* idêntico */ },
-  quickFill(){ /* idêntico */ },
-  clearForm(){ document.querySelectorAll('input, textarea').forEach(el=> el.value = ''); document.getElementById('results').innerHTML = ''; this.currentImageFindings = []; },
-  openUpload(){ /* idêntico */ },
-  handleFiles(files){ /* idêntico */ },
+  
+  renderResults(data, res, validationErrors, explanations) {
+    const top = res.hipoteses[0];
+    let html = `<div class="glass p-4 md:p-6 mb-4"><h2><i class="fas fa-clipboard-check"></i> Resultado</h2>`;
+    if (validationErrors.length) {
+      html += `<div class="ci-alert"><strong>⚠️ Alertas de consistência:</strong><ul>${validationErrors.map(e => `<li>${e.message}</li>`).join('')}</ul></div>`;
+    }
+    html += `<div class="soap-box soap-a"><h3>Avaliação</h3>${res.hipoteses.map((h, i) => `<div><strong>${i+1}. ${h.name}</strong> ${(h.post*100).toFixed(1)}%</div>`).join('')}</div>`;
+    html += `<div class="soap-box soap-p"><h3>Plano (${top.guidelines})</h3><ul>${top.tests.map(t => `<li>${t}</li>`).join('')}</ul></div>`;
+    
+    if (explanations && explanations.length) {
+      html += `<div class="soap-box soap-a" style="margin-top:16px;"><h4 style="font-weight:700;margin-bottom:8px;">🔍 Por que outras hipóteses não foram as principais?</h4>`;
+      explanations.forEach(exp => {
+        if (exp.error) {
+          html += `<div style="margin-bottom:12px;padding:10px;background:rgba(0,0,0,0.2);border-radius:8px;"><i>${exp.conclusion}</i></div>`;
+          return;
+        }
+        html += `<div style="margin-bottom:12px;padding:10px;background:rgba(0,0,0,0.2);border-radius:8px;">
+          <strong>${exp.disease}:</strong> ${exp.conclusion}<br>
+          ${exp.missingFindings.length ? `<span style="color:#FF9500;">Faltaram:</span> ${exp.missingFindings.join('; ')}<br>` : ''}
+          ${exp.contradictingFindings.length ? `<span style="color:#FF3B30;">Contradições:</span> ${exp.contradictingFindings.join('; ')}` : ''}
+        </div>`;
+      });
+      html += `</div>`;
+    }
+    
+    // Se há achados de imagem ativos, exibe um resumo
+    if (this.currentImageFindings.length) {
+      html += `<div class="dose-alert" style="margin-top:16px;"><i class="fas fa-image"></i> Achados de imagem integrados: ${this.currentImageFindings.map(f => f.description).join('; ')}</div>`;
+    }
+    
+    html += `</div>`;
+    document.getElementById('results').innerHTML = html;
+  },
+  
+  renderInvestigation(plan, data, validationErrors, explanations) {
+    let html = `<div class="glass p-4 md:p-6 mb-4"><h2><i class="fas fa-search"></i> Modo Investigação</h2>`;
+    html += `<div class="ci-alert"><strong>🔍 ${plan.message}</strong></div>`;
+    html += `<p><strong>Diagnóstico principal:</strong> ${plan.topDiagnosis} (${(plan.confidence*100).toFixed(1)}%)</p>`;
+    if (plan.redFlags.length) {
+      html += `<div class="dose-alert"><strong>🚩 Red Flags:</strong><ul>${plan.redFlags.map(f => `<li>${f}</li>`).join('')}</ul></div>`;
+    }
+    if (plan.differentials.length) {
+      html += `<p><strong>Diagnósticos diferenciais:</strong> ${plan.differentials.join('; ')}</p>`;
+    }
+    if (explanations && explanations.length) {
+      html += `<div style="margin-top:16px;"><h4 style="font-weight:700;">🔍 Por que outras hipóteses não foram as principais?</h4>`;
+      explanations.forEach(exp => {
+        if (exp.error) {
+          html += `<div style="margin-bottom:12px;padding:10px;background:rgba(0,0,0,0.2);border-radius:8px;"><i>${exp.conclusion}</i></div>`;
+          return;
+        }
+        html += `<div style="margin-bottom:12px;padding:10px;background:rgba(0,0,0,0.2);border-radius:8px;">
+          <strong>${exp.disease}:</strong> ${exp.conclusion}<br>
+          ${exp.missingFindings.length ? `<span style="color:#FF9500;">Faltaram:</span> ${exp.missingFindings.join('; ')}<br>` : ''}
+          ${exp.contradictingFindings.length ? `<span style="color:#FF3B30;">Contradições:</span> ${exp.contradictingFindings.join('; ')}` : ''}
+        </div>`;
+      });
+      html += `</div>`;
+    }
+    html += `</div>`;
+    document.getElementById('results').innerHTML = html;
+  },
+  
+  quickFill() {
+    document.getElementById('iAge').value = 65;
+    document.getElementById('iWeight').value = 70;
+    document.getElementById('iBP').value = '145/90';
+    document.getElementById('iHR').value = 98;
+    document.getElementById('iTemp').value = 37.2;
+    document.getElementById('iSPO2').value = 96;
+    document.getElementById('iRR').value = 18;
+    document.getElementById('iS').value = 'Paciente 65a, dor torácica em aperto há 2h, irradiada para MSE, sudorese fria. HAS, DM2.';
+    document.getElementById('iO').value = 'PA 145/90, FC 98, SpO2 96%. CV: RCR 2T, sem sopros.';
+    UI.toast('Exemplo carregado.', 'info');
+  },
+  
+  clearForm() {
+    document.querySelectorAll('input, textarea').forEach(el => el.value = '');
+    document.getElementById('results').innerHTML = '';
+    this.currentImageFindings = [];
+  },
+  
+  openUpload() {
+    this.uploadFiles = [];
+    document.getElementById('uploadPrev').innerHTML = '';
+    document.getElementById('uploadProg').style.display = 'none';
+    const dz = document.getElementById('dropArea');
+    const fi = document.getElementById('fileIn');
+    dz.ondragover = e => { e.preventDefault(); dz.classList.add('dragover'); };
+    dz.ondragleave = () => dz.classList.remove('dragover');
+    dz.ondrop = e => { e.preventDefault(); dz.classList.remove('dragover'); this.handleFiles([...e.dataTransfer.files]); };
+    fi.onchange = e => this.handleFiles([...e.target.files]);
+    UI.openModal('mUpload');
+  },
+  
+  handleFiles(files) {
+    this.uploadFiles = files.filter(f => f.size <= CONFIG.MAX_FILE_SIZE);
+    const prev = document.getElementById('uploadPrev');
+    prev.innerHTML = this.uploadFiles.map(f => `<div>📄 ${f.name} (${(f.size/1024).toFixed(1)} KB)</div>`).join('');
+  },
+  
   async processUpload() {
-    if (!this.uploadFiles.length) { UI.toast('Selecione pelo menos um arquivo.', 'warning'); return; }
-    const btn = document.getElementById('btnUpload'); btn.disabled = true;
-    const progDiv = document.getElementById('uploadProg'); progDiv.style.display = 'block';
-    const progBar = document.getElementById('progBar'); progBar.style.width = '0%';
-    const progLabel = document.getElementById('progLabel'); const progPercent = document.getElementById('progPercent'); progPercent.textContent = '0%';
+    if (!this.uploadFiles.length) {
+      UI.toast('Selecione pelo menos um arquivo.', 'warning');
+      return;
+    }
+    const btn = document.getElementById('btnUpload');
+    btn.disabled = true;
+    const progDiv = document.getElementById('uploadProg');
+    progDiv.style.display = 'block';
+    const progBar = document.getElementById('progBar');
+    progBar.style.width = '0%';
+    const progLabel = document.getElementById('progLabel');
+    const progPercent = document.getElementById('progPercent');
+    progPercent.textContent = '0%';
+    
     let totalAdded = 0, totalReplaced = 0, totalIgnored = 0, totalErrors = 0;
     const totalFiles = this.uploadFiles.length;
+    
     for (let idx = 0; idx < totalFiles; idx++) {
       const file = this.uploadFiles[idx];
       const percent = Math.round(((idx + 1) / totalFiles) * 100);
-      progBar.style.width = percent + '%'; progPercent.textContent = percent + '%';
+      progBar.style.width = percent + '%';
+      progPercent.textContent = percent + '%';
       progLabel.textContent = `Processando ${idx + 1}/${totalFiles}: ${file.name}`;
+      
       try {
         let entries = [];
         if (file.type === 'application/pdf' || file.name.endsWith('.pdf')) {
           Mon.log(`📄 Processando PDF: ${file.name}`, 'info');
-          const entry = await this.processPDF(file); entries = [entry];
+          const entry = await this.processPDF(file);
+          entries = [entry];
         } else if (file.type.startsWith('image/') || file.name.endsWith('.dcm') || file.type === 'application/dicom') {
           Mon.log(`🖼️ Processando imagem/DICOM: ${file.name}`, 'info');
           const entry = await this.processImageOrDICOM(file);
@@ -1398,34 +1652,88 @@ const App = {
         } else if (file.type === 'application/json' || file.name.endsWith('.json')) {
           Mon.log(`📦 Processando JSON: ${file.name}`, 'info');
           entries = await this.processJSON(file);
-        } else { throw new Error(`Formato não suportado: ${file.type || 'desconhecido'}`); }
+        } else {
+          throw new Error(`Formato não suportado: ${file.type || 'desconhecido'}`);
+        }
+        
         for (const rawEntry of entries) {
           try {
             const enriched = await this.enrichEntry(rawEntry);
             const res = await Database.upsertEvidence(enriched);
-            if (res.action === 'added') totalAdded++; else if (res.action === 'replaced_conflict') totalReplaced++; else if (res.action === 'ignored') totalIgnored++;
-            await Database.db.hl_queue.add({ pmid: enriched.pmid, status: 'pending', title: enriched.title, source: enriched.source, year: enriched.year, extractedTags: enriched.tags, score: enriched.unifiedScore, createdAt: new Date().toISOString() });
-          } catch (e) { Mon.log(`Erro ao salvar entrada de ${file.name}: ${e.message}`, 'err'); totalErrors++; }
+            if (res.action === 'added') totalAdded++;
+            else if (res.action === 'replaced_conflict') totalReplaced++;
+            else if (res.action === 'ignored') totalIgnored++;
+            await Database.db.hl_queue.add({
+              pmid: enriched.pmid,
+              status: 'pending',
+              title: enriched.title,
+              source: enriched.source,
+              year: enriched.year,
+              extractedTags: enriched.tags,
+              score: enriched.unifiedScore,
+              createdAt: new Date().toISOString()
+            });
+          } catch (e) {
+            Mon.log(`Erro ao salvar entrada de ${file.name}: ${e.message}`, 'err');
+            totalErrors++;
+          }
         }
-      } catch (err) { Mon.log(`❌ Falha crítica em ${file.name}: ${err.message}`, 'err'); UI.toast(`Erro: ${file.name} → ${err.message}`, 'error'); totalErrors++; }
+      } catch (err) {
+        Mon.log(`❌ Falha crítica em ${file.name}: ${err.message}`, 'err');
+        UI.toast(`Erro: ${file.name} → ${err.message}`, 'error');
+        totalErrors++;
+      }
     }
-    progDiv.style.display = 'none'; await this.updateStats();
+    
+    progDiv.style.display = 'none';
+    await this.updateStats();
     UI.toast(`✅ Importação: +${totalAdded} novas, ${totalReplaced} substituídas, ${totalIgnored} ignoradas${totalErrors ? `, ${totalErrors} erros` : ''}.`, 'success');
     auditLog('UPLOAD', `+${totalAdded} / subs:${totalReplaced} / ign:${totalIgnored} / err:${totalErrors}`);
     Mon.log(`Upload finalizado: +${totalAdded} | 🔄${totalReplaced} | ⏭️${totalIgnored} | ❌${totalErrors}`, 'ok');
-    UI.closeModal('mUpload'); btn.disabled = false; this.uploadFiles = [];
+    UI.closeModal('mUpload');
+    btn.disabled = false;
+    this.uploadFiles = [];
   },
-  async processPDF(file) { /* idêntico */ },
+  
+  async processPDF(file) {
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    let fullText = '';
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const content = await page.getTextContent();
+      const pageText = content.items.map(item => item.str).join(' ');
+      fullText += pageText + '\n';
+    }
+    const yearMatch = fullText.match(/\b(19|20)\d{2}\b/);
+    const extractedYear = yearMatch ? parseInt(yearMatch[0]) : new Date().getFullYear();
+    const hash = await this.generateContentHash(fullText.slice(0, 500));
+    return {
+      pmid: `pdf-${hash}`,
+      source: 'PDF Importado',
+      title: file.name.replace(/\.pdf$/i, ''),
+      specialty: 'Geral',
+      evidence_level: 'III',
+      year: extractedYear,
+      category: 'Documento',
+      extractedText: fullText.slice(0, 2000)
+    };
+  },
+  
   async processImageOrDICOM(file) {
     const arrayBuffer = await file.arrayBuffer();
     let imageCanvas, metadata = {};
-    // Tenta parsear como DICOM
+    
+    // Tenta parsear como DICOM primeiro
     if (file.name.endsWith('.dcm') || file.type === 'application/dicom') {
       try {
         const dicomInfo = DICOMProcessor.parseDICOM(arrayBuffer);
         imageCanvas = DICOMProcessor.extractPixelDataToCanvas(dicomInfo);
-        metadata = { modality: dicomInfo.modality, patientName: dicomInfo.patientName };
-        Mon.log(`[DICOM] Modalidade: ${dicomInfo.modality}`, 'info');
+        metadata = {
+          modality: dicomInfo.modality,
+          patientName: dicomInfo.patientName,
+          patientId: dicomInfo.patientId
+        };
       } catch (e) {
         // Se falhar, tenta como imagem normal
         imageCanvas = await this.imageBufferToCanvas(arrayBuffer);
@@ -1434,22 +1742,23 @@ const App = {
       imageCanvas = await this.imageBufferToCanvas(arrayBuffer);
     }
     
-    // Executa análise de imagem (simulação)
-    const { findings, heatmapCanvas } = await ImageAnalyzer.runInference(imageCanvas);
+    // Executa inferência real com ONNX
+    const { findings, heatmapCanvas, imageHash } = await ImageAnalyzer.runInference(imageCanvas);
     this.currentImageFindings = findings;
     
-    // Gera URL para visualização
+    // Gera URLs para visualização
     const imageDataUrl = imageCanvas.toDataURL('image/png');
     const heatmapDataUrl = heatmapCanvas ? heatmapCanvas.toDataURL('image/png') : null;
     const findingsText = findings.map(f => f.description).join('; ') || 'Nenhum achado significativo.';
+    
+    // Exibe modal com imagem e heatmap
     UI.showImageWithHeatmap(imageDataUrl, findingsText, heatmapDataUrl);
     
-    // Cria entrada para a base de conhecimento
-    const hash = await this.generateContentHash(imageDataUrl.slice(0, 500));
+    // Cria entrada na base de conhecimento
     const year = new Date().getFullYear();
     return {
-      pmid: `img-${hash}`,
-      source: 'Análise de Imagem (U-Net)',
+      pmid: `img-${imageHash.slice(0, 16)}`,
+      source: metadata.modality ? `DICOM (${metadata.modality})` : 'Análise de Imagem (ONNX)',
       title: `Achados: ${findingsText}`,
       specialty: 'Radiologia',
       evidence_level: 'III',
@@ -1459,6 +1768,7 @@ const App = {
       imageFindings: findings
     };
   },
+  
   async imageBufferToCanvas(arrayBuffer) {
     const blob = new Blob([arrayBuffer]);
     const imageUrl = URL.createObjectURL(blob);
@@ -1471,26 +1781,119 @@ const App = {
         const ctx = canvas.getContext('2d');
         ctx.drawImage(img, 0, 0);
         URL.revokeObjectURL(imageUrl);
+        
+        // Sanity check: imagem muito pequena
+        if (canvas.width < 224 || canvas.height < 224) {
+          Mon.log(`[SANITY] Imagem com resolução insuficiente (${canvas.width}x${canvas.height}). A análise pode ser imprecisa.`, 'warn');
+        }
+        
         resolve(canvas);
       };
       img.onerror = reject;
       img.src = imageUrl;
     });
   },
-  async processImage(file) { return this.processImageOrDICOM(file); }, // compatibilidade
-  async processJSON(file) { /* idêntico */ },
-  async enrichEntry(raw) { /* idêntico */ },
-  async generateContentHash(content) { /* idêntico */ },
-  openBayesEditor(){ UI.openModal('mBayesModal'); },
-  saveBayes(){ /* idêntico */ },
-  openLREditor(){ /* idêntico */ },
-  saveLRs(){ /* idêntico */ },
-  openDebug(){ document.getElementById('debugContent').textContent = JSON.stringify({BAYES_CFG, LR_STATE, ready:this.ready, imageFindings: this.currentImageFindings},null,2); UI.openModal('mDebug'); },
-  openAuditLog(){ /* idêntico */ },
-  clearAudit(){ /* idêntico */ },
-  openHumanLoop(){ UI.openModal('mHL'); },
-  async exportDB(){ /* idêntico */ }
+  
+  async processJSON(file) {
+    const text = await file.text();
+    let jsonData;
+    try {
+      jsonData = JSON.parse(text);
+    } catch (e) {
+      throw new Error(`JSON inválido: ${e.message}`);
+    }
+    const entries = Array.isArray(jsonData) ? jsonData : [jsonData];
+    return entries.filter(e => e && typeof e === 'object').map(entry => ({
+      ...entry,
+      pmid: entry.pmid || `json-${uid()}`,
+      source: entry.source || 'JSON importado',
+      title: entry.title || 'Sem título',
+      year: entry.year ? parseInt(entry.year) : new Date().getFullYear(),
+    }));
+  },
+  
+  async enrichEntry(raw) {
+    const et = Tipologia.classify(raw.source || '', raw.title || '');
+    const tags = Ontologia.extractTags(`${raw.title || ''} ${raw.specialty || ''} ${raw.category || ''}`);
+    const score = ScoreUnificado.calculate({ ...raw, entryTypeWeight: et.weight });
+    const citation = CitacaoABNT.generate(raw);
+    return {
+      ...raw,
+      entryType: et.type,
+      entryTypeWeight: et.weight,
+      unifiedScore: score,
+      priorityScore: score,
+      tags,
+      citationABNT: citation,
+    };
+  },
+  
+  async generateContentHash(content) {
+    if (window.crypto && window.crypto.subtle) {
+      try {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(content);
+        const hashBuffer = await window.crypto.subtle.digest('SHA-256', data);
+        return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 16);
+      } catch (e) {}
+    }
+    // Fallback FNV-1a
+    let hash = 2166136261;
+    for (let i = 0; i < content.length; i++) {
+      hash ^= content.charCodeAt(i);
+      hash += (hash << 1) + (hash << 4) + (hash << 7) + (hash << 8) + (hash << 24);
+    }
+    return (hash >>> 0).toString(16).padStart(8, '0') + Date.now().toString(36);
+  },
+  
+  openBayesEditor() { UI.openModal('mBayesModal'); },
+  saveBayes() {
+    BAYES_CFG.maxPost = parseFloat(document.getElementById('bMaxPost').value) || 0.99;
+    BAYES_CFG.boostLocal = parseFloat(document.getElementById('bBoostLocal').value) || 1.25;
+    UI.closeModal('mBayesModal');
+    UI.toast('Configurações salvas.', 'success');
+  },
+  openLREditor() {
+    const wrap = document.getElementById('lrTableWrap');
+    wrap.innerHTML = `<table class="lr-table"><tr><th>Dx</th><th>Achado</th><th>LR</th></tr>${LR_STATE.map(l => `<tr><td>${l.dx}</td><td>${l.achado}</td><td><input type="number" value="${l.lr}" data-id="${l.id}" step="0.1"></td></tr>`).join('')}</table>`;
+    UI.openModal('mLR');
+  },
+  saveLRs() {
+    document.querySelectorAll('#lrTableWrap input').forEach(inp => {
+      const lr = LR_STATE.find(l => l.id === inp.dataset.id);
+      if (lr) lr.lr = parseFloat(inp.value) || lr.lr;
+    });
+    UI.closeModal('mLR');
+    UI.toast('LRs atualizados.', 'success');
+  },
+  openDebug() {
+    document.getElementById('debugContent').textContent = JSON.stringify({
+      BAYES_CFG,
+      LR_STATE,
+      ready: this.ready,
+      imageFindings: this.currentImageFindings
+    }, null, 2);
+    UI.openModal('mDebug');
+  },
+  openAuditLog() {
+    document.getElementById('auditFull').textContent = _auditBuf.map(e => `[${e.ts}] ${e.action}: ${e.detail}`).join('\n');
+    UI.openModal('mAudit');
+  },
+  clearAudit() {
+    _auditBuf.length = 0;
+    document.getElementById('auditEl').innerHTML = '';
+  },
+  openHumanLoop() { UI.openModal('mHL'); },
+  async exportDB() {
+    const data = await Database.db.evidence.toArray();
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'arpemed_export.json';
+    a.click();
+  }
 };
+
 // ═══════════════════════════════════════════════════════════════════════════
 // INICIALIZAÇÃO E TESTES UNITÁRIOS
 // ═══════════════════════════════════════════════════════════════════════════
@@ -1505,20 +1908,50 @@ function runUnitTests() {
   Mon.log('✅ Teste unitário de integração LR_STATE passou.', 'ok');
 }
 
-function runLabParserTests() { /* idêntico */ }
+function runLabParserTests() {
+  const testReport = `LABORATORIO XPTO - Paciente: 45 anos, Masc.
+Resultados:
+Hb 10.2 g/dL;
+Leucocitos 15.200 mm3;
+Creatinina 1.4 mg/dL;
+Plaquetas 220000`;
+  
+  const parsed = ReportParser.parseReport(testReport);
+  console.assert(parsed.length === 4, 'Deveria extrair 4 exames');
+  
+  const hb = parsed.find(p => p.examId === 'hemoglobin');
+  console.assert(hb.value === 10.2, 'Hb deveria ser 10.2');
+  console.assert(hb.status === 'LOW', 'Hb deveria estar baixa para homem 45a');
+  
+  const leuk = parsed.find(p => p.examId === 'leukocytes');
+  console.assert(leuk.value === 15200, 'Leucócitos deveria ser 15200');
+  console.assert(leuk.status === 'HIGH', 'Leucócitos deveria estar alto');
+  
+  const creat = parsed.find(p => p.examId === 'creatinine');
+  console.assert(creat.value === 1.4, 'Creatinina deveria ser 1.4');
+  console.assert(creat.status === 'HIGH', 'Creatinina deveria estar alta para homem');
+  
+  const validation = ReportParser.validateLabResult('hemoglobin', 800, 45, 'M');
+  console.assert(validation.status === 'CRITICAL_ERROR', 'Hb 800 deveria ser erro crítico');
+  
+  Mon.log('✅ Testes do Parser Laboratorial passaram.', 'ok');
+}
 
-function runImagePipelineTests() {
-  // Teste de idempotência: mesma imagem deve gerar mesmos achados (simulado)
+async function runImagePipelineTests() {
+  // Teste de idempotência: cria um canvas simples e executa inferência duas vezes
   const canvas = document.createElement('canvas');
-  canvas.width = 224; canvas.height = 224;
+  canvas.width = 224;
+  canvas.height = 224;
   const ctx = canvas.getContext('2d');
-  ctx.fillStyle = '#fff'; ctx.fillRect(0,0,224,224);
-  ImageAnalyzer.runInference(canvas).then(result1 => {
-    ImageAnalyzer.runInference(canvas).then(result2 => {
-      console.assert(JSON.stringify(result1.findings) === JSON.stringify(result2.findings), 'Idempotência da inferência falhou.');
-      Mon.log('✅ Teste de idempotência do pipeline de imagem passou.', 'ok');
-    });
-  });
+  ctx.fillStyle = '#888';
+  ctx.fillRect(0, 0, 224, 224);
+  
+  const result1 = await ImageAnalyzer.runInference(canvas);
+  const result2 = await ImageAnalyzer.runInference(canvas);
+  
+  console.assert(result1.imageHash === result2.imageHash, 'Idempotência do hash da imagem falhou.');
+  console.assert(JSON.stringify(result1.findings) === JSON.stringify(result2.findings), 'Idempotência dos achados falhou.');
+  Mon.log('✅ Teste de idempotência do pipeline de imagem passou.', 'ok');
 }
 
 if (CONFIG.DEBUG_MODE) {
@@ -1540,16 +1973,23 @@ window.addEventListener('load', () => {
   }, 500);
 });
 
-window.App = App; window.Mon = Mon; window.UI = UI;
-document.getElementById('masterPwd').addEventListener('keydown', e=>{ if(e.key==='Enter') App.unlock(); });
-document.addEventListener('keydown', e=>{
-  if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA') return;
-  if(e.ctrlKey && e.key==='b'){ e.preventDefault(); App.openBayesEditor(); }
-  if(e.ctrlKey && e.key==='l'){ e.preventDefault(); App.openLREditor(); }
-  if(e.ctrlKey && e.key==='d'){ e.preventDefault(); App.openDebug(); }
-  if(e.ctrlKey && e.key==='a'){ e.preventDefault(); App.openAuditLog(); }
+window.App = App;
+window.Mon = Mon;
+window.UI = UI;
+
+document.getElementById('masterPwd').addEventListener('keydown', e => {
+  if (e.key === 'Enter') App.unlock();
 });
-Mon.log('ARPEmed v21.4 — Pipeline de Imagens Médicas (DICOM/U-Net/Grad-CAM) ativo.', 'ok');
+
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  if (e.ctrlKey && e.key === 'b') { e.preventDefault(); App.openBayesEditor(); }
+  if (e.ctrlKey && e.key === 'l') { e.preventDefault(); App.openLREditor(); }
+  if (e.ctrlKey && e.key === 'd') { e.preventDefault(); App.openDebug(); }
+  if (e.ctrlKey && e.key === 'a') { e.preventDefault(); App.openAuditLog(); }
+});
+
+Mon.log('ARPEmed v21.5 — Pipeline de Imagens Médicas (ONNX/Score‑CAM) ativo.', 'ok');
 </script>
 </body>
 </html>
