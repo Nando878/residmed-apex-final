@@ -13,7 +13,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   <style>
-    /* ========== ESTILOS ========== */
+    /* ========== ESTILOS COMPLETOS ========== */
     *{font-family:'Inter',-apple-system,sans-serif;margin:0;padding:0;box-sizing:border-box}
     :root{--primary:#007AFF;--success:#34C759;--warning:#FF9500;--danger:#FF3B30;--purple:#AF52DE}
     body{background:radial-gradient(ellipse at 20% 40%,#0a0a1a,#000);color:#fff;font-size:14px;min-height:100vh}
@@ -30,6 +30,7 @@
     input,textarea,select{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:#fff;border-radius:12px;padding:11px 15px;font-size:14px;width:100%}
     input:focus,textarea:focus,select:focus{outline:none;border-color:var(--primary)}
     select option{background:#111;color:#fff}
+    textarea{resize:vertical}
     .soap-box{background:rgba(255,255,255,.025);border-radius:16px;padding:18px;margin-bottom:16px;border-left:4px solid}
     .soap-s{border-color:#007AFF}.soap-o{border-color:#34C759}.soap-a{border-color:#AF52DE}.soap-p{border-color:#FF9500}
     .soap-ltr{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:20px}
@@ -37,25 +38,50 @@
     .soap-lo{background:rgba(52,199,89,.15);color:#34C759}
     .soap-la{background:rgba(175,82,222,.15);color:#AF52DE}
     .soap-lp{background:rgba(255,149,0,.15);color:#FF9500}
-    .hot{background:linear-gradient(135deg,#FF3B30,#FF9500);color:#fff;padding:1px 7px;border-radius:20px;font-size:8px;font-weight:700}
-    .drop-area{border:2px dashed rgba(255,255,255,.2);border-radius:18px;padding:36px;text-align:center;cursor:pointer}
+    .pqrst-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}
+    @media(min-width:768px){.pqrst-grid{grid-template-columns:repeat(5,1fr)}}
+    .pqrst-card{background:rgba(255,255,255,.05);border-radius:12px;padding:12px;text-align:center}
+    .pqrst-letter{font-size:22px;font-weight:900;margin-bottom:4px}
+    .pqrst-label{font-size:9px;text-transform:uppercase;letter-spacing:.06em;opacity:.4;margin-bottom:6px}
+    .pqrst-value{font-size:11px;line-height:1.5;opacity:.8}
+    .hot{background:linear-gradient(135deg,#FF3B30,#FF9500);color:#fff;padding:1px 7px;border-radius:20px;font-size:8px;font-weight:700;animation:pulse 2s infinite}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}
+    .drop-area{border:2px dashed rgba(255,255,255,.2);border-radius:18px;padding:36px;text-align:center;transition:all .3s;cursor:pointer}
     .drop-area:hover,.drop-area.dragover{border-color:var(--primary);background:rgba(0,122,255,.06)}
-    #monitor{position:fixed;bottom:18px;right:18px;width:370px;background:rgba(6,6,16,.97);border:1px solid rgba(255,255,255,.1);border-radius:18px;z-index:89990;display:flex;flex-direction:column;box-shadow:0 8px 36px rgba(0,0,0,.7);backdrop-filter:blur(24px);max-height:420px}
+    #monitor{position:fixed;bottom:18px;right:18px;width:370px;background:rgba(6,6,16,.97);border:1px solid rgba(255,255,255,.1);border-radius:18px;z-index:89990;display:flex;flex-direction:column;box-shadow:0 8px 36px rgba(0,0,0,.7);backdrop-filter:blur(24px);transition:max-height .3s ease;max-height:420px}
     #monitor.collapsed{max-height:44px;overflow:hidden}
-    #monHead{display:flex;align-items:center;justify-content:space-between;padding:10px 15px;border-bottom:1px solid rgba(255,255,255,.07);cursor:pointer}
-    #monBody{overflow-y:auto;flex:1;padding:8px 12px;font-family:'Courier New',monospace;font-size:10.5px}
-    .mln{padding:3px 6px;border-radius:5px;color:rgba(255,255,255,.65)}
-    .mln.ok{color:#34C759}.mln.warn{color:#FF9500}
-    .mln.err{background:rgba(255,59,48,.88)!important;color:#fff!important;border-left:4px solid #FF3B30;padding-left:8px}
+    #monHead{display:flex;align-items:center;justify-content:space-between;padding:10px 15px;border-bottom:1px solid rgba(255,255,255,.07);cursor:pointer;user-select:none;flex-shrink:0;border-radius:18px 18px 0 0}
+    #monHead:hover{background:rgba(255,255,255,.03)}
+    #monBody{overflow-y:auto;flex:1;padding:8px 12px;display:flex;flex-direction:column;gap:3px;font-family:'Courier New',monospace;font-size:10.5px}
+    #monFoot{padding:5px 14px;border-top:1px solid rgba(255,255,255,.07);font-size:10px;color:rgba(255,255,255,.3);flex-shrink:0}
+    .mln{padding:3px 6px;border-radius:5px;line-height:1.55;word-break:break-all;color:rgba(255,255,255,.65)}
+    .mln.ok{color:#34C759}.mln.warn{color:#FF9500}.mln.dbg{color:#60a5fa}
+    .mln.err{background:rgba(255,59,48,.88)!important;color:#fff!important;border-left:4px solid #FF3B30;padding-left:8px;font-weight:700;border-radius:4px}
+    .mdot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:6px;flex-shrink:0}
+    .mdot.blink{animation:dotBlink 1s infinite}
+    @keyframes dotBlink{0%,100%{opacity:1}50%{opacity:.2}}
     .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.88);backdrop-filter:blur(18px);z-index:10500;display:none;align-items:center;justify-content:center}
     .modal-bg.open{display:flex}
     .modal-box{background:rgba(12,12,22,.98);border:1px solid rgba(255,255,255,.1);border-radius:22px;padding:28px;width:100%;max-height:88vh;overflow-y:auto}
-    .toast-wrap{position:fixed;top:18px;right:18px;z-index:99998;display:flex;flex-direction:column;gap:8px}
-    .toast{padding:11px 16px;border-radius:13px;background:rgba(10,10,20,.97);border:1px solid rgba(255,255,255,.1);font-size:13px}
-    .spin{border:2px solid rgba(255,255,255,.1);border-top:2px solid var(--primary);border-radius:50%;width:17px;height:17px;animation:rot .8s linear infinite;display:inline-block}
+    .lr-table{width:100%;border-collapse:collapse;font-size:12px}
+    .lr-table th{padding:8px 10px;text-align:left;color:rgba(255,255,255,.4);font-weight:600;border-bottom:1px solid rgba(255,255,255,.07);font-size:11px;text-transform:uppercase}
+    .lr-table td{padding:7px 10px;border-bottom:1px solid rgba(255,255,255,.05);vertical-align:middle}
+    .lr-table input[type=number]{width:70px;padding:4px 8px;border-radius:8px;font-size:12px;text-align:center}
+    .kbd{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:6px;padding:2px 7px;font-size:10px;font-family:'Courier New',monospace;color:rgba(255,255,255,.7)}
+    .ci-alert{background:rgba(255,59,48,.1);border:1px solid rgba(255,59,48,.3);border-radius:11px;padding:11px;margin:7px 0}
+    .pts-grid{display:grid;grid-template-columns:1fr;gap:14px}
+    @media(min-width:768px){.pts-grid{grid-template-columns:1fr 1fr 1fr}}
+    .pts-card{background:rgba(255,255,255,.03);border-radius:15px;padding:18px;border-top:4px solid}
+    .hl-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:16px;margin-bottom:12px}
+    .prog-wrap{background:rgba(255,255,255,.08);border-radius:99px;height:5px;overflow:hidden}
+    .prog-bar{height:100%;background:linear-gradient(90deg,#34C759,#007AFF);border-radius:99px;transition:width .3s}
+    .toast-wrap{position:fixed;top:18px;right:18px;z-index:99998;display:flex;flex-direction:column;gap:8px;max-width:320px}
+    .toast{padding:11px 16px;border-radius:13px;background:rgba(10,10,20,.97);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.1);font-size:13px;font-weight:500;animation:slideR .3s ease;word-break:break-word}
+    @keyframes slideR{from{transform:translateX(110%);opacity:0}to{transform:translateX(0);opacity:1}}
+    .spin{border:2px solid rgba(255,255,255,.1);border-top:2px solid var(--primary);border-radius:50%;width:17px;height:17px;animation:rot .8s linear infinite;display:inline-block;vertical-align:middle}
     @keyframes rot{to{transform:rotate(360deg)}}
-    .dose-alert{background:rgba(0,200,100,.1);border-left:4px solid #34C759;border-radius:10px;padding:12px;margin-top:12px}
-    .kbd{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:6px;padding:2px 7px;font-size:10px}
+    ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:4px}
+    .dose-alert{background:rgba(0,200,100,.1);border-left:4px solid #34C759;border-radius:10px;padding:12px;margin-top:12px;font-size:13px}
   </style>
 </head>
 <body class="p-3 md:p-5">
@@ -137,8 +163,7 @@
       <div style="text-align:center"><div class="text-2xl font-black text-cyan-400" id="sYear">—</div><div style="font-size:10px;opacity:.4">Ano</div></div>
     </div>
   </div>
-
-  <!-- FORMULÁRIO -->
+  <!-- FORMULÁRIO SOAP -->
   <div class="glass p-4 md:p-6 mb-4">
     <h2 style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.3);margin-bottom:16px">
       <i class="fas fa-notes-medical" style="margin-right:8px"></i>Entrada Clínica — SOAP + PQRST
@@ -181,8 +206,10 @@
     </div>
   </div>
 
+  <!-- ÁREA DE RESULTADOS -->
   <div id="results"></div>
 
+  <!-- AUDIT LOG -->
   <div class="glass p-4 mt-4" style="margin-bottom:120px">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
       <h3 style="font-size:11px;font-weight:800;text-transform:uppercase;color:rgba(255,255,255,.3)"><i class="fas fa-history" style="margin-right:6px"></i>Audit Log LGPD</h3>
@@ -191,121 +218,703 @@
     <div id="auditEl" style="max-height:80px;overflow-y:auto;font-family:'Courier New',monospace;font-size:11px;opacity:.55"></div>
   </div>
 </div>
-
 <!-- MONITOR -->
 <div id="monitor">
   <div id="monHead" onclick="Mon.toggle()">
-    <div style="display:flex;align-items:center;gap:8px"><span class="mdot blink" id="monDot" style="background:#34C759"></span><span style="font-size:11px;font-weight:700;color:rgba(255,255,255,.5)">Monitor v21.0</span></div>
-    <div style="display:flex;align-items:center;gap:10px"><span id="monCnt" style="font-size:10px;color:rgba(255,255,255,.3)">0 eventos</span><i id="monChev" class="fas fa-chevron-down" style="font-size:10px;color:rgba(255,255,255,.3)"></i></div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <span class="mdot blink" id="monDot" style="background:#34C759"></span>
+      <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.5)">Monitor v21.0</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <span id="monCnt" style="font-size:10px;color:rgba(255,255,255,.3)">0 eventos</span>
+      <i id="monChev" class="fas fa-chevron-down" style="font-size:10px;color:rgba(255,255,255,.3)"></i>
+    </div>
   </div>
   <div id="monBody"></div>
   <div id="monFoot"><span id="monStat">Aguardando desbloqueio...</span></div>
 </div>
+
 <div id="toasts" class="toast-wrap"></div>
 
-<!-- MODAIS (estrutura completa) -->
-<div id="mBayesModal" class="modal-bg" onclick="if(event.target===this)UI.closeModal('mBayesModal')">...</div>
-<div id="mLR" class="modal-bg" onclick="if(event.target===this)UI.closeModal('mLR')">...</div>
-<div id="mDebug" class="modal-bg" onclick="if(event.target===this)UI.closeModal('mDebug')">...</div>
-<div id="mAudit" class="modal-bg" onclick="if(event.target===this)UI.closeModal('mAudit')">...</div>
-<div id="mUpload" class="modal-bg" onclick="if(event.target===this)UI.closeModal('mUpload')">...</div>
-<div id="mHL" class="modal-bg" onclick="if(event.target===this)UI.closeModal('mHL')">...</div>
+<!-- MODAIS -->
+<div id="mBayesModal" class="modal-bg" onclick="if(event.target===this)UI.closeModal('mBayesModal')">
+  <div class="modal-box" style="max-width:700px">
+    <div style="display:flex;justify-content:space-between;margin-bottom:20px"><h3 style="font-size:18px"><i class="fas fa-calculator" style="color:#AF52DE;margin-right:8px"></i>Editor Bayesiano</h3><button onclick="UI.closeModal('mBayesModal')" style="background:none;border:none;color:#fff;font-size:18px">&times;</button></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+      <div><label>Max posterior</label><input type="number" id="bMaxPost" value="0.99" step="0.01" min="0.5" max="0.99"></div>
+      <div><label>Boost BR</label><input type="number" id="bBoostLocal" value="1.25" step="0.05" min="1" max="2"></div>
+    </div>
+    <div style="margin-top:20px;display:flex;gap:10px"><button onclick="App.saveBayes()" class="btn btn-primary">Salvar</button><button onclick="UI.closeModal('mBayesModal')" class="btn btn-secondary">Cancelar</button></div>
+  </div>
+</div>
+
+<div id="mLR" class="modal-bg" onclick="if(event.target===this)UI.closeModal('mLR')">
+  <div class="modal-box" style="max-width:900px">
+    <h3 style="font-size:18px"><i class="fas fa-sliders-h" style="color:#FF9500"></i> Likelihood Ratios</h3>
+    <div id="lrTableWrap"></div>
+    <div style="margin-top:20px"><button onclick="App.saveLRs()" class="btn btn-primary">Salvar</button></div>
+  </div>
+</div>
+
+<div id="mDebug" class="modal-bg" onclick="if(event.target===this)UI.closeModal('mDebug')">
+  <div class="modal-box"><h3>Debug</h3><pre id="debugContent" style="background:#000;padding:12px;border-radius:8px;color:#0f0"></pre></div>
+</div>
+
+<div id="mAudit" class="modal-bg" onclick="if(event.target===this)UI.closeModal('mAudit')">
+  <div class="modal-box"><h3>Audit Log Completo</h3><pre id="auditFull" style="background:#000;padding:12px;border-radius:8px;max-height:400px;overflow:auto"></pre></div>
+</div>
+
+<div id="mUpload" class="modal-bg" onclick="if(event.target===this)UI.closeModal('mUpload')">
+  <div class="modal-box" style="max-width:750px">
+    <h3><i class="fas fa-upload"></i> Importar Arquivos</h3>
+    <div class="drop-area" id="dropArea" onclick="document.getElementById('fileIn').click()">
+      <i class="fas fa-cloud-upload-alt" style="font-size:44px"></i>
+      <p>Arraste ou clique (PDF, JSON, PNG, JPG)</p>
+      <input type="file" id="fileIn" accept=".pdf,.json,image/png,image/jpeg" multiple style="display:none">
+    </div>
+    <div id="uploadPrev" style="margin-top:14px"></div>
+    <div id="uploadProg" style="display:none"><div class="prog-wrap"><div id="progBar" class="prog-bar" style="width:0%"></div></div></div>
+    <div style="margin-top:18px"><button onclick="App.processUpload()" class="btn btn-primary">Processar</button></div>
+  </div>
+</div>
+
+<div id="mHL" class="modal-bg" onclick="if(event.target===this)UI.closeModal('mHL')">
+  <div class="modal-box"><h3>Fila de Revisão</h3><div id="hlQueue"></div></div>
+</div>
 
 <script>
 'use strict';
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-// ---------- CONFIG & FREEZE ----------
-const CONFIG = Object.freeze({ VERSION:'21.0', MAX_FILE_SIZE:50*1024*1024, LOCALIDADE:'BR', BOOST_LOCAL:1.25 });
-const GUIDELINES_DB = Object.freeze([ /* ... array completo de diretrizes ... */ ]);
+// ==================== CONFIGURAÇÕES & CONSTANTES (FREEZE) ====================
+const CONFIG = Object.freeze({
+  VERSION: '21.0',
+  MAX_FILE_SIZE: 50 * 1024 * 1024,
+  LOCALIDADE: 'BR',
+  BOOST_LOCAL: 1.25
+});
 
-// ---------- MONITOR ----------
-const Mon = (()=>{
-  let cnt=0, collapsed=false;
-  const b=()=>document.getElementById('monBody'), s=()=>document.getElementById('monStat'), c=()=>document.getElementById('monCnt'), d=()=>document.getElementById('monDot');
-  function log(msg,type='info'){
-    cnt++; const bd=b(); if(!bd)return;
+const GUIDELINES_DB = Object.freeze([
+  Object.freeze({pmid:'SBC-2025-SCA',source:'SBC',title:'Diretriz de Síndrome Coronariana Aguda 2025',specialty:'Cardiologia',ev:'1A',year:2025,cat:'SCA'}),
+  Object.freeze({pmid:'SBC-2025-HAS',source:'SBC',title:'Diretriz Brasileira de Hipertensão Arterial 2025',specialty:'Cardiologia',ev:'1A',year:2025,cat:'HAS'}),
+  Object.freeze({pmid:'SBC-2024-IC',source:'SBC',title:'Diretriz de Insuficiência Cardíaca 2024',specialty:'Cardiologia',ev:'1A',year:2024,cat:'IC'}),
+  Object.freeze({pmid:'ESC-2025-SCA',source:'ESC',title:'ESC Guidelines Acute Coronary Syndromes 2025',specialty:'Cardiologia',ev:'1A',year:2025,cat:'SCA'}),
+  Object.freeze({pmid:'GOLD-2025',source:'GOLD',title:'GOLD COPD Global Strategy Report 2025',specialty:'Pneumologia',ev:'1A',year:2025,cat:'DPOC'}),
+  Object.freeze({pmid:'SSC-2025',source:'SSC',title:'Surviving Sepsis Campaign 2025',specialty:'UTI',ev:'1A',year:2025,cat:'Sepse'}),
+  Object.freeze({pmid:'ABN-2025-AVC',source:'ABN',title:'Protocolo AVC Isquêmico ABN 2025',specialty:'Neurologia',ev:'1A',year:2025,cat:'AVC'}),
+  Object.freeze({pmid:'ADA-2025',source:'ADA',title:'ADA Standards of Diabetes Care 2025',specialty:'Endocrinologia',ev:'1A',year:2025,cat:'Diabetes'}),
+]);
+
+const LR_DEFAULT = Object.freeze([
+  Object.freeze({id:'sca_dor_torac',dx:'SCA',achado:'Dor torácica em aperto/pressão',lr:5.0}),
+  Object.freeze({id:'sca_irrad',dx:'SCA',achado:'Irradiação MSE / mandíbula',lr:3.5}),
+  Object.freeze({id:'tep_dispneia',dx:'TEP',achado:'Dispneia súbita',lr:4.0}),
+  Object.freeze({id:'sep_febre',dx:'Sepse',achado:'Febre/calafrio',lr:3.0}),
+  Object.freeze({id:'ic_ortopneia',dx:'IC',achado:'Ortopneia/DPN',lr:6.0}),
+  Object.freeze({id:'avc_hemipar',dx:'AVC',achado:'Hemiparesia',lr:9.0}),
+]);
+let LR_STATE = LR_DEFAULT.map(item => ({...item}));
+
+let BAYES_CFG = {
+  maxPost: 0.99,
+  priors: { SCA:0.15, TEP:0.10, Sepse:0.12, IC:0.10, AVC:0.08, Pneumonia:0.10, DPOC:0.08 },
+  boostLocal: CONFIG.BOOST_LOCAL
+};
+
+// ==================== MONITOR ====================
+const Mon = (() => {
+  let count=0, collapsed=false;
+  const b=()=>document.getElementById('monBody');
+  const s=()=>document.getElementById('monStat');
+  const c=()=>document.getElementById('monCnt');
+  const dot=()=>document.getElementById('monDot');
+  function log(msg, type='info'){
+    count++;
+    const bd=b(); if(!bd) return;
     const ts=new Date().toLocaleTimeString('pt-BR',{hour12:false});
     const icon={ok:'✅',warn:'⚠️',err:'🔴'}[type]||'ℹ️';
-    const el=document.createElement('div'); el.className='mln '+(type==='info'?'':type); el.textContent=`[${ts}] ${icon} ${msg}`;
-    bd.insertBefore(el,bd.firstChild); while(bd.children.length>80)bd.removeChild(bd.lastChild);
-    if(c())c().textContent=cnt+' eventos';
-    if(s()&&type!=='err')s().textContent=msg.slice(0,65);
-    if(type==='err'){ if(d()){d().style.background='#FF3B30';d().classList.add('blink');} if(collapsed)toggle(); }
-    else if(type==='ok'){ if(d()){d().style.background='#34C759';d().classList.remove('blink');} }
+    const d=document.createElement('div');
+    d.className='mln '+(type==='info'?'':type);
+    d.textContent=`[${ts}] ${icon} ${msg}`;
+    bd.insertBefore(d,bd.firstChild);
+    while(bd.children.length>80) bd.removeChild(bd.lastChild);
+    if(c()) c().textContent=count+' eventos';
+    if(s()&&type!=='err') s().textContent=msg.slice(0,65);
+    if(type==='err'){
+      if(dot()){dot().style.background='#FF3B30';dot().classList.add('blink');}
+      if(collapsed) toggle();
+    } else if(type==='ok'){
+      if(dot()){dot().style.background='#34C759';dot().classList.remove('blink');}
+    }
   }
-  function toggle(){ collapsed=!collapsed; const p=document.getElementById('monitor'); p.classList.toggle('collapsed',collapsed); document.getElementById('monChev').className=collapsed?'fas fa-chevron-up':'fas fa-chevron-down'; }
-  return{log,toggle};
+  function toggle(){
+    collapsed=!collapsed;
+    document.getElementById('monitor').classList.toggle('collapsed',collapsed);
+    document.getElementById('monChev').className=collapsed?'fas fa-chevron-up':'fas fa-chevron-down';
+  }
+  return {log, toggle};
 })();
 
-// ---------- DATABASE ----------
-const Database = (()=>{
-  let db;
-  async function init(){
-    db=new Dexie('ARPEmed_v21');
-    db.version(2).stores({ evidence:'++id, pmid, [source+title], year, *tags, unifiedScore', cases:'++id', hl_queue:'++id, pmid, status' });
-    await db.open(); Mon.log('DB pronto','ok'); return db;
+// ==================== AUDIT ====================
+const _auditBuf = [];
+function auditLog(action, detail=''){
+  const e = {ts: new Date().toISOString(), action, detail};
+  _auditBuf.unshift(e);
+  if(_auditBuf.length > 200) _auditBuf.pop();
+  const el = document.getElementById('auditEl');
+  if(el){
+    const d = document.createElement('div');
+    d.textContent = `[${e.ts}] ${action}: ${detail}`;
+    el.prepend(d);
+    while(el.children.length > 30) el.removeChild(el.lastChild);
   }
-  async function upsertEvidence(entry){
-    const year=entry.year?parseInt(entry.year):null;
-    if(!year||isNaN(year)){ await db.evidence.add({...entry,updatedAt:new Date().toISOString()}); return{action:'added'}; }
-    let existing=null;
-    if(entry.pmid) existing=await db.evidence.where('pmid').equals(entry.pmid).first();
-    else if(entry.source&&entry.title) existing=(await db.evidence.where('[source+title]').equals([entry.source,entry.title]).toArray())[0];
-    if(existing){
-      const existingYear=existing.year?parseInt(existing.year):0;
-      if(year>existingYear){
-        await db.evidence.update(existing.id,{...entry,updatedAt:new Date().toISOString()});
-        await db.hl_queue.add({pmid:entry.pmid,status:'conflict',title:entry.title,source:entry.source,year,oldYear:existingYear,conflictNote:`Substituído: ${existingYear}→${year}`,createdAt:new Date().toISOString()});
-        UI.toast(`⚠️ Conflito: "${entry.title}" atualizado de ${existingYear} para ${year}.`,'warning');
-        return{action:'replaced_conflict'};
-      }else return{action:'ignored'};
-    }else{ await db.evidence.add({...entry,updatedAt:new Date().toISOString()}); return{action:'added'}; }
-  }
-  return{init,upsertEvidence,get db(){return db;}};
-})();
+}
 
-// ---------- UTILITÁRIOS ----------
+// ==================== UTILITÁRIOS ====================
 function norm(s=''){ return String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,' ').trim(); }
+function tokenize(raw){
+  const STOP=new Set(['paciente','anos','com','sem','de','da','do','em','no','na','para','por','um','uma','e','ou','que','mais','mas','nao','esta']);
+  return norm(raw).split(/\s+/).filter(t=>t.length>=3&&!STOP.has(t));
+}
 function parseBP(s){ const m=String(s).match(/(\d{2,3})\s*[\/x]\s*(\d{2,3})/i); return m?{sys:+m[1],dia:+m[2]}:null; }
 function parseHR(v){ const n=parseInt(v,10); return isFinite(n)?n:null; }
+function parseTemp(v){ const n=parseFloat(v); return isFinite(n)?n:null; }
+function parseSPO2(v){ const n=parseFloat(v); return isFinite(n)?n:null; }
+function uid(){ return `${Date.now()}-${Math.random().toString(36).slice(2,8)}`; }
 
-// ---------- DOMÍNIO (Dosagem, Bayes, PQRST, Agente, etc. completos) ----------
-const DosageCalculator = { extractPattern(text){ /* ... */ }, compute(weight,pattern){ /* ... */ } };
-// ... (implementações completas de Bayes, PQRST, Ontologia, Busca, Agente com boost BR)
+// ==================== DATABASE ====================
+const Database = (() => {
+  let db;
+  async function init(){
+    db = new Dexie('ARPEmed_v21');
+    db.version(2).stores({
+      evidence: '++id, pmid, [source+title], year, specialty, category, entryType, *tags, unifiedScore, updatedAt',
+      cases: '++id, timestamp',
+      hl_queue: '++id, pmid, status, createdAt'
+    });
+    await db.open();
+    Mon.log('IndexedDB v2 inicializado.', 'ok');
+    return db;
+  }
+  async function upsertEvidence(entry){
+    const year = entry.year ? parseInt(entry.year) : null;
+    if(!year || isNaN(year)){
+      await db.evidence.add({...entry, updatedAt: new Date().toISOString()});
+      return {action:'added'};
+    }
+    let existing = null;
+    if(entry.pmid) existing = await db.evidence.where('pmid').equals(entry.pmid).first();
+    else if(entry.source && entry.title){
+      const coll = await db.evidence.where('[source+title]').equals([entry.source, entry.title]).toArray();
+      existing = coll[0];
+    }
+    if(existing){
+      const existingYear = existing.year ? parseInt(existing.year) : 0;
+      if(year > existingYear){
+        await db.evidence.update(existing.id, {...entry, updatedAt: new Date().toISOString()});
+        await db.hl_queue.add({
+          pmid: entry.pmid, status: 'conflict', title: entry.title, source: entry.source, year, oldYear: existingYear,
+          conflictNote: `Diretriz substituída: ${existingYear} → ${year}. Verificar mudanças.`, createdAt: new Date().toISOString()
+        });
+        UI.toast(`⚠️ Conflito: "${entry.title}" atualizado de ${existingYear} para ${year}.`, 'warning');
+        Mon.log(`Conflito registrado: ${entry.title}`, 'warn');
+        return {action:'replaced_conflict'};
+      } else {
+        Mon.log(`Ignorado (ano ${year} ≤ ${existingYear})`);
+        return {action:'ignored'};
+      }
+    } else {
+      await db.evidence.add({...entry, updatedAt: new Date().toISOString()});
+      return {action:'added'};
+    }
+  }
+  return { init, upsertEvidence, get db(){ return db; } };
+})();
 
-// ---------- UI ----------
-const UI = {
-  toast(msg,type='info'){ const c=document.getElementById('toasts'); const el=document.createElement('div'); el.className='toast'; el.innerHTML=`${type==='success'?'✅':type==='error'?'❌':type==='warning'?'⚠️':'ℹ️'} ${msg}`; c.appendChild(el); setTimeout(()=>el.remove(),5000); },
-  openModal(id){ document.getElementById(id).style.display='flex'; },
-  closeModal(id){ document.getElementById(id).style.display='none'; }
+// ==================== TIPOLOGIA / SCORE ====================
+const Tipologia = {
+  classify(source='',title=''){
+    const t = norm(`${source} ${title}`);
+    if(/diretriz|guideline|consenso|protocolo/.test(t) || /^(sbc|esc|aha|sbpt|gold|ssc|abn|ada)$/i.test(norm(source)))
+      return {type:'Diretriz', weight:1.00};
+    if(/harrison|braunwald|tintinalli/.test(t)) return {type:'Livro-Texto', weight:0.95};
+    return {type:'Documento', weight:0.80};
+  }
+};
+const AncoraTemporal = {
+  get ano(){ return new Date().getFullYear(); },
+  evaluate(year){
+    const d = this.ano - parseInt(year||this.ano);
+    if(d<=1) return {status:'HOT', score:1.00};
+    if(d<=3) return {status:'VÁLIDO', score:0.85};
+    if(d<=7) return {status:'ANTIGO', score:0.65};
+    return {status:'OBSOLETO', score:0.40};
+  }
+};
+const CitacaoABNT = {
+  generate(doc){
+    const au = (doc.source||'S.N.').toUpperCase();
+    const ti = doc.title||'Sem título';
+    const yr = doc.year||new Date().getFullYear();
+    return `${au}. ${ti}. ${yr}.`;
+  }
+};
+const ScoreUnificado = {
+  calculate(doc){
+    const t = AncoraTemporal.evaluate(doc.year).score;
+    const w = doc.entryTypeWeight||0.80;
+    const e = {'1A':1.0,'1B':0.9,'2A':0.75}[doc.evidence_level||doc.ev]||0.70;
+    let score = Math.round((t*0.4 + w*0.35 + e*0.25)*100);
+    if(CONFIG.LOCALIDADE==='BR' && doc.source && /^(SBC|SBPT|ABN|AMIB|SBD|SBEM)/i.test(doc.source)){
+      score = Math.min(100, Math.round(score * BAYES_CFG.boostLocal));
+    }
+    return score;
+  }
+};
+const Ontologia = {
+  REGRAS: [
+    {tag:'Cardiologia',re:/dor torac|precord|opress|angin|iam|sca|has|hipertens/},
+    {tag:'Pneumologia',re:/dispne|tep|tromboemb|dpoc|pneumoni|asma/},
+    {tag:'Infectologia',re:/febre|sepse|infecc|antib|leucocitose/},
+    {tag:'Neurologia',re:/avc|hemipar|afas|disartr|cefale|convuls/},
+  ],
+  extractTags(text){
+    const tags = new Set();
+    for(const r of this.REGRAS) if(r.re.test(norm(text))) tags.add(r.tag);
+    if(!tags.size) tags.add('Clínica Médica');
+    return [...tags];
+  }
+};
+const Busca = {
+  async search(query, limit=10){
+    let all = await Database.db.evidence.toArray();
+    if(!all.length) return [];
+    const qTags = Ontologia.extractTags(query);
+    const qTokens = tokenize(query);
+    const scored = all.map(doc => {
+      const hay = norm(`${doc.title} ${doc.source} ${doc.specialty} ${doc.category}`);
+      const tokH = qTokens.reduce((a,t)=>a+(hay.includes(t)?1:0),0);
+      const tagH = (doc.tags||[]).some(t=>qTags.includes(t))?3:0;
+      return {doc, score: tokH*3 + tagH + (doc.unifiedScore||50)/100};
+    });
+    scored.sort((a,b)=>b.score-a.score);
+    return scored.slice(0,limit).map(x=>x.doc);
+  }
 };
 
-// ---------- APP ----------
-const App = {
-  ready:false, uploadFiles:[],
-  async unlock(){
-    const pw=document.getElementById('masterPwd').value;
-    if(pw.length<8){ document.getElementById('lockErr').textContent='Senha mínima: 8 caracteres.'; return; }
-    document.getElementById('lockScreen').style.display='none';
-    document.getElementById('mainApp').style.display='block';
-    const btn=document.getElementById('btnAnalyze'); btn.disabled=true; btn.innerHTML='<span class="spin"></span> Inicializando...';
-    try{ await Database.init(); await this.loadGuidelines(false); this.ready=true; }
-    catch(e){ Mon.log('Erro DB: '+e.message,'err'); }
-    finally{ btn.disabled=false; btn.innerHTML='<i class="fas fa-stethoscope"></i> Executar Análise Diagnóstica'; UI.toast('Sistema desbloqueado.'+(this.ready?' Base carregada.':''),this.ready?'success':'warning'); this.updateStats(); }
+// ==================== DOSAGEM ====================
+const DosageCalculator = {
+  extractPattern(text){
+    const patterns = [/(\d+(?:\.\d+)?)\s*mg\/kg\/dia/i, /(\d+(?:\.\d+)?)\s*mg\/kg\/dose/i];
+    for(const re of patterns){
+      const m = text.match(re);
+      if(m) return { value: parseFloat(m[1]), unit: m[0].replace(m[1],'').trim() };
+    }
+    return null;
   },
-  async loadGuidelines(silent){ /* ... */ },
-  async updateStats(){ /* ... */ },
-  async analyze(){ /* ... usa Agente, DosageCalculator, renderResults com dose e conflitos */ },
-  quickFill(){ /* preenche com exemplo */ },
-  clearForm(){ /* limpa formulário */ },
-  openUpload(){ /* modal de upload com PDF/OCR/JSON */ },
-  // ... demais métodos
+  compute(weight, pattern){
+    if(!weight || !pattern) return null;
+    if(pattern.unit.includes('mg/kg/dia')) return `${(weight * pattern.value).toFixed(1)} mg/dia`;
+    if(pattern.unit.includes('mg/kg/dose')) return `${(weight * pattern.value).toFixed(1)} mg/dose`;
+    return null;
+  }
 };
 
-window.App=App; window.Mon=Mon; window.UI=UI;
-document.getElementById('masterPwd').addEventListener('keydown',e=>{ if(e.key==='Enter') App.unlock(); });
-Mon.log('ARPEmed v21.0 — Pronto para uso.','ok');
+// ==================== AGENTE DIAGNÓSTICO ====================
+const Agente = {
+  async analyze(data){
+    const text = norm(`${data.s} ${data.o}`);
+    const age = parseInt(data.age)||50;
+    const hr = parseHR(data.hr), bp = parseBP(data.bp);
+    const priors = {...BAYES_CFG.priors};
+    let lrSCA=1, lrTEP=1, lrSepse=1, lrIC=1, lrAVC=1;
+    if(/dor.*(peito|torac)/.test(text)) lrSCA *= LR_STATE.find(l=>l.id==='sca_dor_torac')?.lr||5;
+    if(/irrad|mse/.test(text)) lrSCA *= LR_STATE.find(l=>l.id==='sca_irrad')?.lr||3.5;
+    if(/dispne|falta de ar/.test(text)) lrTEP *= LR_STATE.find(l=>l.id==='tep_dispneia')?.lr||4;
+    if(/febre|calafr/.test(text)) lrSepse *= LR_STATE.find(l=>l.id==='sep_febre')?.lr||3;
+    if(/ortopne|dpn/.test(text)) lrIC *= LR_STATE.find(l=>l.id==='ic_ortopneia')?.lr||6;
+    if(/hemipar|paresia/.test(text)) lrAVC *= LR_STATE.find(l=>l.id==='avc_hemipar')?.lr||9;
+    
+    const post = (prior,lr) => Math.min(BAYES_CFG.maxPost, (prior*lr)/((prior*lr)+(1-prior)));
+    const hipoteses = [
+      {code:'SCA', name:'Síndrome Coronariana Aguda', post:post(priors.SCA,lrSCA), urgency:'CRÍTICO', tests:['ECG<10min','Troponina','AAS+Ticagrelor'], guidelines:'SBC 2025'},
+      {code:'TEP', name:'Tromboembolismo Pulmonar', post:post(priors.TEP,lrTEP), urgency:'CRÍTICO', tests:['AngioTC','D-dímero'], guidelines:'SBC 2025'},
+      {code:'Sepse', name:'Sepse/Choque Séptico', post:post(priors.Sepse,lrSepse), urgency:'CRÍTICO', tests:['Lactato','Hemocultura','ATB'], guidelines:'SSC 2025'},
+      {code:'IC', name:'Insuficiência Cardíaca', post:post(priors.IC,lrIC), urgency:'URGENTE', tests:['BNP','Ecocardio'], guidelines:'SBC 2024'},
+      {code:'AVC', name:'AVC Isquêmico', post:post(priors.AVC,lrAVC), urgency:'CRÍTICO', tests:['TC crânio','NIHSS'], guidelines:'ABN 2025'},
+    ];
+    hipoteses.sort((a,b)=>b.post-a.post);
+    const evid = await Busca.search(text,5);
+    return { hipoteses, evid };
+  }
+};
+
+// ==================== UI ====================
+const UI = {
+  toast(msg, type='info'){
+    const c = document.getElementById('toasts');
+    const el = document.createElement('div'); el.className = 'toast';
+    el.innerHTML = `${type==='success'?'✅':type==='error'?'❌':type==='warning'?'⚠️':'ℹ️'} ${msg}`;
+    c.appendChild(el); setTimeout(()=>el.remove(), 5000);
+  },
+  openModal(id){ document.getElementById(id).style.display = 'flex'; },
+  closeModal(id){ document.getElementById(id).style.display = 'none'; }
+};
+
+// ==================== APP ====================
+const App = {
+  ready: false, uploadFiles: [],
+  async unlock(){
+    const pw = document.getElementById('masterPwd').value;
+    if(pw.length < 8){ document.getElementById('lockErr').textContent = 'Senha mínima: 8 caracteres.'; return; }
+    document.getElementById('lockScreen').style.display = 'none';
+    document.getElementById('mainApp').style.display = 'block';
+    const btn = document.getElementById('btnAnalyze');
+    btn.disabled = true; btn.innerHTML = '<span class="spin"></span> Inicializando...';
+    try {
+      await Database.init();
+      await this.loadGuidelines(false);
+      this.ready = true;
+    } catch(e){ Mon.log('Erro DB: '+e.message,'err'); }
+    finally {
+      btn.disabled = false; btn.innerHTML = '<i class="fas fa-stethoscope"></i> Executar Análise Diagnóstica';
+      UI.toast('Sistema desbloqueado. '+(this.ready?'Base carregada.':''), this.ready?'success':'warning');
+      this.updateStats();
+    }
+  },
+  async loadGuidelines(silent=false){
+    let added=0, updated=0;
+    for(const g of GUIDELINES_DB){
+      const et = Tipologia.classify(g.source,g.title);
+      const tags = Ontologia.extractTags(`${g.title} ${g.specialty}`);
+      const score = ScoreUnificado.calculate({...g, entryTypeWeight:et.weight});
+      const enriched = {...g, entryType:et.type, entryTypeWeight:et.weight, unifiedScore:score, tags, citationABNT:CitacaoABNT.generate(g)};
+      const res = await Database.upsertEvidence(enriched);
+      if(res.action==='added') added++;
+      else if(res.action==='replaced_conflict') updated++;
+    }
+    if(!silent) UI.toast(`Diretrizes: +${added} novas, ${updated} atualizadas.`, 'success');
+    this.updateStats();
+  },
+  async updateStats(){
+    const all = await Database.db.evidence.toArray();
+    const cur = new Date().getFullYear();
+    document.getElementById('sTot').textContent = all.length;
+    document.getElementById('sHot').textContent = all.filter(e=>e.year>=cur-1).length;
+    document.getElementById('sDir').textContent = all.filter(e=>e.entryType==='Diretriz').length;
+    document.getElementById('sYear').textContent = cur;
+  },
+  async analyze(){
+    const data = {
+      age: document.getElementById('iAge').value,
+      gender: document.getElementById('iGender').value,
+      s: document.getElementById('iS').value,
+      o: document.getElementById('iO').value,
+      bp: document.getElementById('iBP').value,
+      hr: document.getElementById('iHR').value,
+      weight: parseFloat(document.getElementById('iWeight').value)||null,
+      medications: document.getElementById('iMeds').value
+    };
+    const res = await Agente.analyze(data);
+    this.renderResults(data, res);
+    auditLog('ANALISE', `Topo: ${res.hipoteses[0].name}`);
+  },
+  renderResults(data, res){
+    const top = res.hipoteses[0];
+    const dosePattern = DosageCalculator.extractPattern(top.tests.join(' '));
+    const doseInfo = dosePattern && data.weight ? DosageCalculator.compute(data.weight, dosePattern) : null;
+    const html = `
+      <div class="glass p-4 md:p-6 mb-4">
+        <h2><i class="fas fa-clipboard-check"></i> Resultado</h2>
+        <div class="soap-box soap-a">
+          <h3>Avaliação</h3>
+          ${res.hipoteses.map((h,i)=>`<div style="margin-bottom:8px"><strong>${i+1}. ${h.name}</strong> ${(h.post*100).toFixed(1)}%</div>`).join('')}
+        </div>
+        <div class="soap-box soap-p">
+          <h3>Plano (${top.guidelines})</h3>
+          <ul>${top.tests.map(t=>`<li>${t}</li>`).join('')}</ul>
+          ${doseInfo?`<div class="dose-alert">💊 Dose calculada para ${data.weight} kg: <strong>${doseInfo}</strong></div>`:''}
+        </div>
+      </div>
+    `;
+    document.getElementById('results').innerHTML = html;
+  },
+  quickFill(){
+    document.getElementById('iAge').value = 65;
+    document.getElementById('iWeight').value = 70;
+    document.getElementById('iBP').value = '145/90';
+    document.getElementById('iHR').value = 98;
+    document.getElementById('iS').value = 'Paciente 65a, dor torácica em aperto há 2h, irradiada para MSE, sudorese. HAS, DM2.';
+    document.getElementById('iO').value = 'PA 145/90, FC 98, SpO2 96%. CV: RCR 2T, sem sopros.';
+    UI.toast('Exemplo carregado.','info');
+  },
+  clearForm(){
+    document.querySelectorAll('input, textarea').forEach(el=> el.value = '');
+    document.getElementById('results').innerHTML = '';
+  },
+  openUpload(){
+    this.uploadFiles = [];
+    document.getElementById('uploadPrev').innerHTML = '';
+    document.getElementById('uploadProg').style.display = 'none';
+    const dz = document.getElementById('dropArea');
+    const fi = document.getElementById('fileIn');
+    dz.ondragover = e => { e.preventDefault(); dz.classList.add('dragover'); };
+    dz.ondragleave = () => dz.classList.remove('dragover');
+    dz.ondrop = e => { e.preventDefault(); dz.classList.remove('dragover'); this.handleFiles([...e.dataTransfer.files]); };
+    fi.onchange = e => this.handleFiles([...e.target.files]);
+    UI.openModal('mUpload');
+  },
+  handleFiles(files){
+    this.uploadFiles = files.filter(f=>f.size<=CONFIG.MAX_FILE_SIZE);
+    const prev = document.getElementById('uploadPrev');
+    prev.innerHTML = this.uploadFiles.map(f=>`<div>📄 ${f.name} (${(f.size/1024).toFixed(1)} KB)</div>`).join('');
+  },
+  // ══════════════════════════════════════════════════════════════════════════
+// SUBSTITUIR O MÉTODO 'processUpload' EXISTENTE POR ESTE BLOCO COMPLETO
+// ══════════════════════════════════════════════════════════════════════════
+
+  // ────────────────────────────────────────────────────────────────────────
+  // UPLOAD REAL (PDF, OCR, JSON)
+  // ────────────────────────────────────────────────────────────────────────
+  async processUpload() {
+    if (!this.uploadFiles.length) {
+      UI.toast('Selecione pelo menos um arquivo.', 'warning');
+      return;
+    }
+
+    const btn = document.getElementById('btnUpload');
+    btn.disabled = true;
+    const progDiv = document.getElementById('uploadProg');
+    const progBar = document.getElementById('progBar');
+    const progLabel = document.getElementById('progLabel');
+    const progPercent = document.getElementById('progPercent');
+    progDiv.style.display = 'block';
+    progBar.style.width = '0%';
+    progPercent.textContent = '0%';
+
+    let totalAdded = 0, totalReplaced = 0, totalIgnored = 0, totalErrors = 0;
+    const totalFiles = this.uploadFiles.length;
+
+    for (let idx = 0; idx < totalFiles; idx++) {
+      const file = this.uploadFiles[idx];
+      const percent = Math.round(((idx + 1) / totalFiles) * 100);
+      progBar.style.width = percent + '%';
+      progPercent.textContent = percent + '%';
+      progLabel.textContent = `Processando ${idx + 1}/${totalFiles}: ${file.name}`;
+
+      try {
+        let entries = [];
+
+        // ----- DETECTA TIPO E PROCESSA -----
+        if (file.type === 'application/pdf' || file.name.endsWith('.pdf')) {
+          Mon.log(`📄 Processando PDF: ${file.name}`, 'info');
+          const entry = await this.processPDF(file);
+          entries = [entry];
+        }
+        else if (file.type.startsWith('image/')) {
+          Mon.log(`🖼️ Processando imagem (OCR): ${file.name}`, 'info');
+          const entry = await this.processImage(file);
+          entries = [entry];
+        }
+        else if (file.type === 'application/json' || file.name.endsWith('.json')) {
+          Mon.log(`📦 Processando JSON: ${file.name}`, 'info');
+          entries = await this.processJSON(file);
+        }
+        else {
+          throw new Error(`Formato não suportado: ${file.type || 'desconhecido'}`);
+        }
+
+        // ----- PARA CADA ENTRADA EXTRAÍDA, FAZ UPSERT INTELIGENTE -----
+        for (const rawEntry of entries) {
+          try {
+            const enriched = await this.enrichEntry(rawEntry);
+            const res = await Database.upsertEvidence(enriched);
+
+            if (res.action === 'added') totalAdded++;
+            else if (res.action === 'replaced_conflict') totalReplaced++;
+            else if (res.action === 'ignored') totalIgnored++;
+
+            // Adiciona à fila de revisão humana
+            await Database.db.hl_queue.add({
+              pmid: enriched.pmid,
+              status: 'pending',
+              title: enriched.title,
+              source: enriched.source,
+              year: enriched.year,
+              extractedTags: enriched.tags,
+              score: enriched.unifiedScore,
+              createdAt: new Date().toISOString()
+            });
+
+          } catch (e) {
+            Mon.log(`Erro ao salvar entrada de ${file.name}: ${e.message}`, 'err');
+            totalErrors++;
+          }
+        }
+      } catch (err) {
+        Mon.log(`❌ Falha crítica em ${file.name}: ${err.message}`, 'err');
+        UI.toast(`Erro: ${file.name} → ${err.message}`, 'error');
+        totalErrors++;
+      }
+    }
+
+    progDiv.style.display = 'none';
+    await this.updateStats();
+    UI.toast(`✅ Importação: +${totalAdded} novas, ${totalReplaced} substituídas, ${totalIgnored} ignoradas${totalErrors ? `, ${totalErrors} erros` : ''}.`, 'success');
+    auditLog('UPLOAD', `+${totalAdded} / subs:${totalReplaced} / ign:${totalIgnored} / err:${totalErrors}`);
+    Mon.log(`Upload finalizado: +${totalAdded} | 🔄${totalReplaced} | ⏭️${totalIgnored} | ❌${totalErrors}`, 'ok');
+
+    UI.closeModal('mUpload');
+    btn.disabled = false;
+    this.uploadFiles = [];
+  },
+
+  // ---------- PROCESSADORES DE ARQUIVO ----------
+  async processPDF(file) {
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    let fullText = '';
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const content = await page.getTextContent();
+      const pageText = content.items.map(item => item.str).join(' ');
+      fullText += pageText + '\n';
+    }
+    // Tenta extrair ano do texto
+    const yearMatch = fullText.match(/\b(19|20)\d{2}\b/);
+    const extractedYear = yearMatch ? parseInt(yearMatch[0]) : new Date().getFullYear();
+
+    return {
+      pmid: `pdf-${await this.generateContentHash(fullText.slice(0, 500))}`,
+      source: 'PDF Importado',
+      title: file.name.replace(/\.pdf$/i, ''),
+      specialty: 'Geral',
+      evidence_level: 'III',
+      year: extractedYear,
+      category: 'Documento',
+      extractedText: fullText.slice(0, 2000)
+    };
+  },
+
+  async processImage(file) {
+    const imageUrl = URL.createObjectURL(file);
+    try {
+      const { data: { text } } = await Tesseract.recognize(imageUrl, 'por+eng', {
+        logger: m => {
+          if (m.status === 'recognizing text') {
+            // poderia atualizar um progresso fino, mas simplificamos
+          }
+        }
+      });
+      const yearMatch = text.match(/\b(19|20)\d{2}\b/);
+      const extractedYear = yearMatch ? parseInt(yearMatch[0]) : new Date().getFullYear();
+
+      return {
+        pmid: `ocr-${await this.generateContentHash(text.slice(0, 500))}`,
+        source: 'Imagem OCR',
+        title: file.name.replace(/\.(png|jpe?g)$/i, ''),
+        specialty: 'Diagnóstico por imagem',
+        evidence_level: 'IV',
+        year: extractedYear,
+        category: 'Relatório/Exame',
+        ocrText: text.slice(0, 2000)
+      };
+    } finally {
+      URL.revokeObjectURL(imageUrl);
+    }
+  },
+
+  async processJSON(file) {
+    const text = await file.text();
+    let jsonData;
+    try {
+      jsonData = JSON.parse(text);
+    } catch (e) {
+      throw new Error(`JSON inválido: ${e.message}`);
+    }
+    // Aceita array ou objeto único
+    const entries = Array.isArray(jsonData) ? jsonData : [jsonData];
+    return entries.filter(e => e && typeof e === 'object').map(entry => ({
+      ...entry,
+      // Garante campos mínimos
+      pmid: entry.pmid || `json-${uid()}`,
+      source: entry.source || 'JSON importado',
+      title: entry.title || 'Sem título',
+      year: entry.year ? parseInt(entry.year) : new Date().getFullYear(),
+    }));
+  },
+
+  // ---------- ENRIQUECIMENTO (Tipologia, Score, Tags, Citação) ----------
+  async enrichEntry(raw) {
+    const et = Tipologia.classify(raw.source || '', raw.title || '');
+    const tags = Ontologia.extractTags(`${raw.title || ''} ${raw.specialty || ''} ${raw.category || ''}`);
+    const score = ScoreUnificado.calculate({ ...raw, entryTypeWeight: et.weight });
+    const citation = CitacaoABNT.generate(raw);
+    return {
+      ...raw,
+      entryType: et.type,
+      entryTypeWeight: et.weight,
+      unifiedScore: score,
+      priorityScore: score,
+      tags,
+      citationABNT: citation,
+    };
+  },
+
+  // ---------- GERADOR DE HASH DETERMINÍSTICO (evita duplicatas) ----------
+  async generateContentHash(content) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(content);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 16);
+  },
+  },
+  openBayesEditor(){ UI.openModal('mBayesModal'); },
+  saveBayes(){
+    BAYES_CFG.maxPost = parseFloat(document.getElementById('bMaxPost').value)||0.99;
+    BAYES_CFG.boostLocal = parseFloat(document.getElementById('bBoostLocal').value)||1.25;
+    UI.closeModal('mBayesModal'); UI.toast('Configurações salvas.','success');
+  },
+  openLREditor(){
+    const wrap = document.getElementById('lrTableWrap');
+    wrap.innerHTML = `<table class="lr-table"><tr><th>Dx</th><th>Achado</th><th>LR</th></tr>
+      ${LR_STATE.map(l=>`<tr><td>${l.dx}</td><td>${l.achado}</td><td><input type="number" value="${l.lr}" data-id="${l.id}" step="0.1"></td></tr>`).join('')}</table>`;
+    UI.openModal('mLR');
+  },
+  saveLRs(){
+    document.querySelectorAll('#lrTableWrap input').forEach(inp=>{
+      const lr = LR_STATE.find(l=>l.id===inp.dataset.id);
+      if(lr) lr.lr = parseFloat(inp.value)||lr.lr;
+    });
+    UI.closeModal('mLR'); UI.toast('LRs atualizados.','success');
+  },
+  openDebug(){
+    document.getElementById('debugContent').textContent = JSON.stringify({BAYES_CFG, dbReady:this.ready},null,2);
+    UI.openModal('mDebug');
+  },
+  openAuditLog(){
+    document.getElementById('auditFull').textContent = _auditBuf.map(e=>`[${e.ts}] ${e.action}: ${e.detail}`).join('\n');
+    UI.openModal('mAudit');
+  },
+  clearAudit(){ _auditBuf.length=0; document.getElementById('auditEl').innerHTML=''; },
+  openHumanLoop(){ UI.openModal('mHL'); },
+  async exportDB(){
+    const data = await Database.db.evidence.toArray();
+    const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'arpemed_export.json'; a.click();
+  }
+};
+
+window.App = App; window.Mon = Mon; window.UI = UI;
+document.getElementById('masterPwd').addEventListener('keydown', e=>{ if(e.key==='Enter') App.unlock(); });
+document.addEventListener('keydown', e=>{
+  if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA') return;
+  if(e.ctrlKey && e.key==='b'){ e.preventDefault(); App.openBayesEditor(); }
+  if(e.ctrlKey && e.key==='l'){ e.preventDefault(); App.openLREditor(); }
+  if(e.ctrlKey && e.key==='d'){ e.preventDefault(); App.openDebug(); }
+  if(e.ctrlKey && e.key==='a'){ e.preventDefault(); App.openAuditLog(); }
+});
+Mon.log('ARPEmed v21.0 — Pronto para desbloqueio.', 'ok');
 </script>
 </body>
 </html>
