@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#007AFF">
-  <title>ARPEmed v21.0 · Pipeline Unificado · SOAP Analítico · TPS · Offline</title>
+  <title>ARPEmed v21.1 · Pipeline Unificado · SOAP Analítico · TPS · Offline</title>
   <!-- Estilos e bibliotecas -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -92,7 +92,7 @@
     <div style="width:90px;height:90px;border-radius:50%;background:rgba(0,122,255,.15);display:flex;align-items:center;justify-content:center;margin:0 auto 24px">
       <i class="fas fa-brain" style="font-size:42px;color:#007AFF"></i>
     </div>
-    <h1 style="font-size:28px;font-weight:900;margin-bottom:6px">ARPEmed <span style="color:rgba(255,255,255,.25);font-size:16px">v21.0</span></h1>
+    <h1 style="font-size:28px;font-weight:900;margin-bottom:6px">ARPEmed <span style="color:rgba(255,255,255,.25);font-size:16px">v21.1</span></h1>
     <p style="color:rgba(255,255,255,.35);margin-bottom:4px;font-size:13px">Pipeline Unificado · SOAP Analítico · TPS</p>
     <p style="color:rgba(255,255,255,.18);font-size:11px;margin-bottom:28px">Bayesiano · PQRST · Offline · LGPD · BR Priorizado</p>
     <input type="password" id="masterPwd" placeholder="Senha de acesso (mín. 8 caracteres)" autocomplete="off"
@@ -121,7 +121,7 @@
         <div>
           <h1 style="font-size:24px;font-weight:900">
             <span style="background:linear-gradient(90deg,#a78bfa,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent">ARPEmed</span>
-            <span style="color:rgba(255,255,255,.2);font-size:14px;margin-left:6px">v21.0</span>
+            <span style="color:rgba(255,255,255,.2);font-size:14px;margin-left:6px">v21.1</span>
           </h1>
           <p style="font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.3);margin-top:2px">Pipeline · SOAP Analítico · TPS · Offline · LGPD · 🇧🇷 Boost</p>
         </div>
@@ -218,12 +218,13 @@
     <div id="auditEl" style="max-height:80px;overflow-y:auto;font-family:'Courier New',monospace;font-size:11px;opacity:.55"></div>
   </div>
 </div>
+
 <!-- MONITOR -->
 <div id="monitor">
   <div id="monHead" onclick="Mon.toggle()">
     <div style="display:flex;align-items:center;gap:8px">
       <span class="mdot blink" id="monDot" style="background:#34C759"></span>
-      <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.5)">Monitor v21.0</span>
+      <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.5)">Monitor v21.1</span>
     </div>
     <div style="display:flex;align-items:center;gap:10px">
       <span id="monCnt" style="font-size:10px;color:rgba(255,255,255,.3)">0 eventos</span>
@@ -273,25 +274,35 @@
       <input type="file" id="fileIn" accept=".pdf,.json,image/png,image/jpeg" multiple style="display:none">
     </div>
     <div id="uploadPrev" style="margin-top:14px"></div>
-    <div id="uploadProg" style="display:none"><div class="prog-wrap"><div id="progBar" class="prog-bar" style="width:0%"></div></div></div>
-    <div style="margin-top:18px"><button onclick="App.processUpload()" class="btn btn-primary">Processar</button></div>
+    <div id="uploadProg" style="display:none">
+      <div style="display:flex;justify-content:space-between;margin-bottom:5px;font-size:11px">
+        <span id="progLabel">Processando...</span>
+        <span id="progPercent">0%</span>
+      </div>
+      <div class="prog-wrap"><div id="progBar" class="prog-bar" style="width:0%"></div></div>
+    </div>
+    <div style="margin-top:18px"><button onclick="App.processUpload()" id="btnUpload" class="btn btn-primary">Processar</button></div>
   </div>
 </div>
 
 <div id="mHL" class="modal-bg" onclick="if(event.target===this)UI.closeModal('mHL')">
   <div class="modal-box"><h3>Fila de Revisão</h3><div id="hlQueue"></div></div>
 </div>
-
 <script>
 'use strict';
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-// ==================== CONFIGURAÇÕES & CONSTANTES (FREEZE) ====================
+// ═══════════════════════════════════════════════════════════════════════════
+// CONFIGURAÇÕES & CONSTANTES (FREEZE)
+// ═══════════════════════════════════════════════════════════════════════════
 const CONFIG = Object.freeze({
-  VERSION: '21.0',
+  VERSION: '21.1',
   MAX_FILE_SIZE: 50 * 1024 * 1024,
   LOCALIDADE: 'BR',
-  BOOST_LOCAL: 1.25
+  BOOST_LOCAL: 1.25,
+  CONFIDENCE_THRESHOLD: 0.95,
+  ENTROPY_THRESHOLD: 0.10,
+  DEFAULT_PRIOR_WEIGHT: 0.5
 });
 
 const GUIDELINES_DB = Object.freeze([
@@ -321,7 +332,23 @@ let BAYES_CFG = {
   boostLocal: CONFIG.BOOST_LOCAL
 };
 
-// ==================== MONITOR ====================
+// ═══════════════════════════════════════════════════════════════════════════
+// UTILITÁRIOS GERAIS
+// ═══════════════════════════════════════════════════════════════════════════
+function norm(s=''){ return String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,' ').trim(); }
+function tokenize(raw){
+  const STOP=new Set(['paciente','anos','com','sem','de','da','do','em','no','na','para','por','um','uma','e','ou','que','mais','mas','nao','esta']);
+  return norm(raw).split(/\s+/).filter(t=>t.length>=3&&!STOP.has(t));
+}
+function parseBP(s){ const m=String(s).match(/(\d{2,3})\s*[\/x]\s*(\d{2,3})/i); return m?{sys:+m[1],dia:+m[2]}:null; }
+function parseHR(v){ const n=parseInt(v,10); return isFinite(n)?n:null; }
+function parseTemp(v){ const n=parseFloat(v); return isFinite(n)?n:null; }
+function parseSPO2(v){ const n=parseFloat(v); return isFinite(n)?n:null; }
+function uid(){ return `${Date.now()}-${Math.random().toString(36).slice(2,8)}`; }
+
+// ═══════════════════════════════════════════════════════════════════════════
+// MONITOR
+// ═══════════════════════════════════════════════════════════════════════════
 const Mon = (() => {
   let count=0, collapsed=false;
   const b=()=>document.getElementById('monBody');
@@ -355,7 +382,9 @@ const Mon = (() => {
   return {log, toggle};
 })();
 
-// ==================== AUDIT ====================
+// ═══════════════════════════════════════════════════════════════════════════
+// AUDIT LOG
+// ═══════════════════════════════════════════════════════════════════════════
 const _auditBuf = [];
 function auditLog(action, detail=''){
   const e = {ts: new Date().toISOString(), action, detail};
@@ -370,27 +399,143 @@ function auditLog(action, detail=''){
   }
 }
 
-// ==================== UTILITÁRIOS ====================
-function norm(s=''){ return String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,' ').trim(); }
-function tokenize(raw){
-  const STOP=new Set(['paciente','anos','com','sem','de','da','do','em','no','na','para','por','um','uma','e','ou','que','mais','mas','nao','esta']);
-  return norm(raw).split(/\s+/).filter(t=>t.length>=3&&!STOP.has(t));
-}
-function parseBP(s){ const m=String(s).match(/(\d{2,3})\s*[\/x]\s*(\d{2,3})/i); return m?{sys:+m[1],dia:+m[2]}:null; }
-function parseHR(v){ const n=parseInt(v,10); return isFinite(n)?n:null; }
-function parseTemp(v){ const n=parseFloat(v); return isFinite(n)?n:null; }
-function parseSPO2(v){ const n=parseFloat(v); return isFinite(n)?n:null; }
-function uid(){ return `${Date.now()}-${Math.random().toString(36).slice(2,8)}`; }
+// ═══════════════════════════════════════════════════════════════════════════
+// MÓDULO 1: SANITY CHECK (validador de consistência clínica)
+// ═══════════════════════════════════════════════════════════════════════════
+const SanityCheck = (() => {
+  const RULES = [
+    {
+      name: 'FEVER_COLD_SKIN',
+      severity: 'warning',
+      check: (data) => {
+        const temp = parseFloat(data.temp);
+        const subj = norm(data.s || '');
+        if (!isNaN(temp) && temp > 39.0 && subj.includes('sudorese') && subj.includes('frio')) {
+          return {
+            rule: 'FEVER_COLD_SKIN',
+            message: 'Febre alta (>39°C) associada a sudorese fria. Considere sepse ou choque.',
+            severity: 'warning'
+          };
+        }
+        return null;
+      }
+    },
+    {
+      name: 'CHEST_PAIN_HYPOXIA_NO_TACHYPNEA',
+      severity: 'error',
+      check: (data) => {
+        const spo2 = parseFloat(data.spo2);
+        const rr = parseFloat(data.rr);
+        const subj = norm(data.s || '');
+        if (!isNaN(spo2) && spo2 < 90 && subj.includes('dor torácica') && (isNaN(rr) || rr < 20)) {
+          return {
+            rule: 'CHEST_PAIN_HYPOXIA_NO_TACHYPNEA',
+            message: 'SpO₂ < 90% com dor torácica, mas sem taquipneia. Verifique a saturação ou considere causa não respiratória.',
+            severity: 'error'
+          };
+        }
+        return null;
+      }
+    }
+  ];
 
-// ==================== DATABASE ====================
+  function validate(patientData) {
+    const errors = [];
+    for (const rule of RULES) {
+      const err = rule.check(patientData);
+      if (err) errors.push(err);
+    }
+    return errors;
+  }
+
+  function hasBlockingErrors(errors) {
+    return errors.some(e => e.severity === 'error');
+  }
+
+  return { validate, hasBlockingErrors };
+})();
+
+// ═══════════════════════════════════════════════════════════════════════════
+// MÓDULO 2: BAYESIAN ENGINE (cálculo probabilístico com entropia)
+// ═══════════════════════════════════════════════════════════════════════════
+const BayesianEngine = (() => {
+  function computePosterior(prior, lr, confidence = 1.0) {
+    let post = (prior * lr) / ((prior * lr) + (1 - prior));
+    post = post * confidence;
+    return Math.min(BAYES_CFG.maxPost, post);
+  }
+
+  function entropy(probs) {
+    return -probs.reduce((sum, p) => sum + (p > 0 ? p * Math.log2(p) : 0), 0);
+  }
+
+  function isInconclusive(hypotheses) {
+    if (hypotheses.length < 2) return false;
+    const top2 = hypotheses.slice(0, 2);
+    const diff = Math.abs(top2[0].post - top2[1].post);
+    const ent = entropy(hypotheses.map(h => h.post));
+    return (diff < CONFIG.ENTROPY_THRESHOLD) || (ent > 0.8);
+  }
+
+  return { computePosterior, entropy, isInconclusive };
+})();
+
+// ═══════════════════════════════════════════════════════════════════════════
+// MÓDULO 3: EXCEPTION PROTOCOL (red flags e modo investigação)
+// ═══════════════════════════════════════════════════════════════════════════
+const ExceptionProtocol = (() => {
+  function getRedFlags(text) {
+    const flags = [];
+    const t = norm(text);
+    if (/cefaleia.*subita|pior dor da vida/.test(t)) flags.push('Cefaleia súbita intensa: considerar hemorragia subaracnóidea.');
+    if (/rigidez.*nuca|kernig|brudzinski/.test(t)) flags.push('Sinais meníngeos: investigar meningite.');
+    if (/petéquias|purpura/.test(t)) flags.push('Petéquias/púrpura: avaliar meningococemia ou vasculite.');
+    if (/sopro|febre|sinais.*periféricos/.test(t)) flags.push('Febre + sopro cardíaco: endocardite infecciosa.');
+    if (/dor.*lombar.*súbita|pulso.*ausente/.test(t)) flags.push('Dor lombar súbita com déficit de pulso: dissecção aórtica.');
+    return flags;
+  }
+
+  function generateInvestigationPlan(topHyp, allHyps, clinicalText) {
+    const redFlags = getRedFlags(clinicalText);
+    const differentials = allHyps.slice(1, 4).map(h => `${h.name} (${(h.post*100).toFixed(1)}%)`);
+    return {
+      mode: 'investigation',
+      topDiagnosis: topHyp.name,
+      confidence: topHyp.post,
+      redFlags,
+      differentials,
+      message: 'Confiança abaixo de 95%. Considere exames complementares e investigação de causas raras.'
+    };
+  }
+
+  return { getRedFlags, generateInvestigationPlan };
+})();
+
+// ═══════════════════════════════════════════════════════════════════════════
+// UI (toast, modais) e componentes específicos
+// ═══════════════════════════════════════════════════════════════════════════
+const UI = {
+  toast(msg, type='info'){
+    const c = document.getElementById('toasts');
+    const el = document.createElement('div'); el.className = 'toast';
+    el.innerHTML = `${type==='success'?'✅':type==='error'?'❌':type==='warning'?'⚠️':'ℹ️'} ${msg}`;
+    c.appendChild(el); setTimeout(()=>el.remove(), 5000);
+  },
+  openModal(id){ document.getElementById(id).style.display = 'flex'; },
+  closeModal(id){ document.getElementById(id).style.display = 'none'; }
+};
+
+// ═══════════════════════════════════════════════════════════════════════════
+// DATABASE (IndexedDB via Dexie)
+// ═══════════════════════════════════════════════════════════════════════════
 const Database = (() => {
   let db;
   async function init(){
     db = new Dexie('ARPEmed_v21');
     db.version(2).stores({
-      evidence: '++id, pmid, [source+title], year, specialty, category, entryType, *tags, unifiedScore, updatedAt',
+      evidence: '++id, pmid, [source+title], year, *tags, unifiedScore',
       cases: '++id, timestamp',
-      hl_queue: '++id, pmid, status, createdAt'
+      hl_queue: '++id, pmid, status'
     });
     await db.open();
     Mon.log('IndexedDB v2 inicializado.', 'ok');
@@ -412,18 +557,11 @@ const Database = (() => {
       const existingYear = existing.year ? parseInt(existing.year) : 0;
       if(year > existingYear){
         await db.evidence.update(existing.id, {...entry, updatedAt: new Date().toISOString()});
-        await db.hl_queue.add({
-          pmid: entry.pmid, status: 'conflict', title: entry.title, source: entry.source, year, oldYear: existingYear,
-          conflictNote: `Diretriz substituída: ${existingYear} → ${year}. Verificar mudanças.`, createdAt: new Date().toISOString()
-        });
+        await db.hl_queue.add({pmid:entry.pmid,status:'conflict',title:entry.title,source:entry.source,year,oldYear:existingYear,conflictNote:`Substituído: ${existingYear}→${year}`,createdAt:new Date().toISOString()});
         UI.toast(`⚠️ Conflito: "${entry.title}" atualizado de ${existingYear} para ${year}.`, 'warning');
-        Mon.log(`Conflito registrado: ${entry.title}`, 'warn');
         return {action:'replaced_conflict'};
-      } else {
-        Mon.log(`Ignorado (ano ${year} ≤ ${existingYear})`);
-        return {action:'ignored'};
-      }
-    } else {
+      }else return {action:'ignored'};
+    }else{
       await db.evidence.add({...entry, updatedAt: new Date().toISOString()});
       return {action:'added'};
     }
@@ -431,40 +569,29 @@ const Database = (() => {
   return { init, upsertEvidence, get db(){ return db; } };
 })();
 
-// ==================== TIPOLOGIA / SCORE ====================
+// ═══════════════════════════════════════════════════════════════════════════
+// TIPOLOGIA / SCORE (simplificados para manter funcionalidade)
+// ═══════════════════════════════════════════════════════════════════════════
 const Tipologia = {
   classify(source='',title=''){
     const t = norm(`${source} ${title}`);
     if(/diretriz|guideline|consenso|protocolo/.test(t) || /^(sbc|esc|aha|sbpt|gold|ssc|abn|ada)$/i.test(norm(source)))
       return {type:'Diretriz', weight:1.00};
-    if(/harrison|braunwald|tintinalli/.test(t)) return {type:'Livro-Texto', weight:0.95};
     return {type:'Documento', weight:0.80};
-  }
-};
-const AncoraTemporal = {
-  get ano(){ return new Date().getFullYear(); },
-  evaluate(year){
-    const d = this.ano - parseInt(year||this.ano);
-    if(d<=1) return {status:'HOT', score:1.00};
-    if(d<=3) return {status:'VÁLIDO', score:0.85};
-    if(d<=7) return {status:'ANTIGO', score:0.65};
-    return {status:'OBSOLETO', score:0.40};
-  }
-};
-const CitacaoABNT = {
-  generate(doc){
-    const au = (doc.source||'S.N.').toUpperCase();
-    const ti = doc.title||'Sem título';
-    const yr = doc.year||new Date().getFullYear();
-    return `${au}. ${ti}. ${yr}.`;
   }
 };
 const ScoreUnificado = {
   calculate(doc){
-    const t = AncoraTemporal.evaluate(doc.year).score;
-    const w = doc.entryTypeWeight||0.80;
-    const e = {'1A':1.0,'1B':0.9,'2A':0.75}[doc.evidence_level||doc.ev]||0.70;
-    let score = Math.round((t*0.4 + w*0.35 + e*0.25)*100);
+    const year = doc.year || new Date().getFullYear();
+    const age = new Date().getFullYear() - year;
+    let temporal = 1.0;
+    if(age <= 1) temporal = 1.0;
+    else if(age <= 3) temporal = 0.85;
+    else if(age <= 7) temporal = 0.65;
+    else temporal = 0.4;
+    const weight = doc.entryTypeWeight || 0.8;
+    const evidence = {'1A':1.0,'1B':0.9,'2A':0.75}[doc.evidence_level||doc.ev]||0.7;
+    let score = Math.round((temporal*0.4 + weight*0.35 + evidence*0.25)*100);
     if(CONFIG.LOCALIDADE==='BR' && doc.source && /^(SBC|SBPT|ABN|AMIB|SBD|SBEM)/i.test(doc.source)){
       score = Math.min(100, Math.round(score * BAYES_CFG.boostLocal));
     }
@@ -485,57 +612,27 @@ const Ontologia = {
     return [...tags];
   }
 };
-const Busca = {
-  async search(query, limit=10){
-    let all = await Database.db.evidence.toArray();
-    if(!all.length) return [];
-    const qTags = Ontologia.extractTags(query);
-    const qTokens = tokenize(query);
-    const scored = all.map(doc => {
-      const hay = norm(`${doc.title} ${doc.source} ${doc.specialty} ${doc.category}`);
-      const tokH = qTokens.reduce((a,t)=>a+(hay.includes(t)?1:0),0);
-      const tagH = (doc.tags||[]).some(t=>qTags.includes(t))?3:0;
-      return {doc, score: tokH*3 + tagH + (doc.unifiedScore||50)/100};
-    });
-    scored.sort((a,b)=>b.score-a.score);
-    return scored.slice(0,limit).map(x=>x.doc);
-  }
+const CitacaoABNT = {
+  generate(doc){ return `${doc.source||'S.N.'}. ${doc.title||'Sem título'}. ${doc.year||new Date().getFullYear()}.`; }
 };
 
-// ==================== DOSAGEM ====================
-const DosageCalculator = {
-  extractPattern(text){
-    const patterns = [/(\d+(?:\.\d+)?)\s*mg\/kg\/dia/i, /(\d+(?:\.\d+)?)\s*mg\/kg\/dose/i];
-    for(const re of patterns){
-      const m = text.match(re);
-      if(m) return { value: parseFloat(m[1]), unit: m[0].replace(m[1],'').trim() };
-    }
-    return null;
-  },
-  compute(weight, pattern){
-    if(!weight || !pattern) return null;
-    if(pattern.unit.includes('mg/kg/dia')) return `${(weight * pattern.value).toFixed(1)} mg/dia`;
-    if(pattern.unit.includes('mg/kg/dose')) return `${(weight * pattern.value).toFixed(1)} mg/dose`;
-    return null;
-  }
-};
-
-// ==================== AGENTE DIAGNÓSTICO ====================
+// ═══════════════════════════════════════════════════════════════════════════
+// AGENTE DIAGNÓSTICO (usa Bayes e Sanity Check)
+// ═══════════════════════════════════════════════════════════════════════════
 const Agente = {
-  async analyze(data){
+  async analyze(data, confidenceWeight = 1.0){
     const text = norm(`${data.s} ${data.o}`);
     const age = parseInt(data.age)||50;
-    const hr = parseHR(data.hr), bp = parseBP(data.bp);
     const priors = {...BAYES_CFG.priors};
     let lrSCA=1, lrTEP=1, lrSepse=1, lrIC=1, lrAVC=1;
     if(/dor.*(peito|torac)/.test(text)) lrSCA *= LR_STATE.find(l=>l.id==='sca_dor_torac')?.lr||5;
     if(/irrad|mse/.test(text)) lrSCA *= LR_STATE.find(l=>l.id==='sca_irrad')?.lr||3.5;
     if(/dispne|falta de ar/.test(text)) lrTEP *= LR_STATE.find(l=>l.id==='tep_dispneia')?.lr||4;
-    if(/febre|calafr/.test(text)) lrSepse *= LR_STATE.find(l=>l.id==='sep_febre')?.lr||3;
-    if(/ortopne|dpn/.test(text)) lrIC *= LR_STATE.find(l=>l.id==='ic_ortopneia')?.lr||6;
-    if(/hemipar|paresia/.test(text)) lrAVC *= LR_STATE.find(l=>l.id==='avc_hemipar')?.lr||9;
-    
-    const post = (prior,lr) => Math.min(BAYES_CFG.maxPost, (prior*lr)/((prior*lr)+(1-prior)));
+    if(/febre|calafr/.test(text)) lrSepse *= 3.0;
+    if(/ortopne|dpn/.test(text)) lrIC *= 6.0;
+    if(/hemipar|paresia/.test(text)) lrAVC *= 9.0;
+
+    const post = (prior,lr) => BayesianEngine.computePosterior(prior, lr, confidenceWeight);
     const hipoteses = [
       {code:'SCA', name:'Síndrome Coronariana Aguda', post:post(priors.SCA,lrSCA), urgency:'CRÍTICO', tests:['ECG<10min','Troponina','AAS+Ticagrelor'], guidelines:'SBC 2025'},
       {code:'TEP', name:'Tromboembolismo Pulmonar', post:post(priors.TEP,lrTEP), urgency:'CRÍTICO', tests:['AngioTC','D-dímero'], guidelines:'SBC 2025'},
@@ -544,24 +641,13 @@ const Agente = {
       {code:'AVC', name:'AVC Isquêmico', post:post(priors.AVC,lrAVC), urgency:'CRÍTICO', tests:['TC crânio','NIHSS'], guidelines:'ABN 2025'},
     ];
     hipoteses.sort((a,b)=>b.post-a.post);
-    const evid = await Busca.search(text,5);
-    return { hipoteses, evid };
+    return { hipoteses };
   }
 };
 
-// ==================== UI ====================
-const UI = {
-  toast(msg, type='info'){
-    const c = document.getElementById('toasts');
-    const el = document.createElement('div'); el.className = 'toast';
-    el.innerHTML = `${type==='success'?'✅':type==='error'?'❌':type==='warning'?'⚠️':'ℹ️'} ${msg}`;
-    c.appendChild(el); setTimeout(()=>el.remove(), 5000);
-  },
-  openModal(id){ document.getElementById(id).style.display = 'flex'; },
-  closeModal(id){ document.getElementById(id).style.display = 'none'; }
-};
-
-// ==================== APP ====================
+// ═══════════════════════════════════════════════════════════════════════════
+// APP PRINCIPAL (parte 1)
+// ═══════════════════════════════════════════════════════════════════════════
 const App = {
   ready: false, uploadFiles: [],
   async unlock(){
@@ -585,10 +671,7 @@ const App = {
   async loadGuidelines(silent=false){
     let added=0, updated=0;
     for(const g of GUIDELINES_DB){
-      const et = Tipologia.classify(g.source,g.title);
-      const tags = Ontologia.extractTags(`${g.title} ${g.specialty}`);
-      const score = ScoreUnificado.calculate({...g, entryTypeWeight:et.weight});
-      const enriched = {...g, entryType:et.type, entryTypeWeight:et.weight, unifiedScore:score, tags, citationABNT:CitacaoABNT.generate(g)};
+      const enriched = {...g, entryType:'Diretriz', unifiedScore:80};
       const res = await Database.upsertEvidence(enriched);
       if(res.action==='added') added++;
       else if(res.action==='replaced_conflict') updated++;
@@ -612,31 +695,63 @@ const App = {
       o: document.getElementById('iO').value,
       bp: document.getElementById('iBP').value,
       hr: document.getElementById('iHR').value,
+      temp: document.getElementById('iTemp').value,
+      spo2: document.getElementById('iSPO2').value,
+      rr: document.getElementById('iRR').value,
       weight: parseFloat(document.getElementById('iWeight').value)||null,
       medications: document.getElementById('iMeds').value
     };
-    const res = await Agente.analyze(data);
-    this.renderResults(data, res);
-    auditLog('ANALISE', `Topo: ${res.hipoteses[0].name}`);
-  },
-  renderResults(data, res){
+    const confidence = parseFloat(document.getElementById('iConfidence')?.value) || 1.0;
+
+    // 1. Sanity Check
+    const errors = SanityCheck.validate(data);
+    if (SanityCheck.hasBlockingErrors(errors)) {
+      const errorMsg = errors.filter(e=>e.severity==='error').map(e=>e.message).join('\n');
+      UI.toast('❌ Inconsistência nos dados clínicos: ' + errorMsg, 'error');
+      auditLog('SANITY_BLOCK', errorMsg);
+      return;
+    }
+    if (errors.length > 0) {
+      const warnMsg = errors.map(e=>e.message).join('\n');
+      UI.toast('⚠️ Alerta: ' + warnMsg, 'warning');
+      auditLog('SANITY_WARN', warnMsg);
+    }
+
+    // 2. Análise Bayesiana
+    const res = await Agente.analyze(data, confidence);
+    const inconclusive = BayesianEngine.isInconclusive(res.hipoteses);
     const top = res.hipoteses[0];
-    const dosePattern = DosageCalculator.extractPattern(top.tests.join(' '));
-    const doseInfo = dosePattern && data.weight ? DosageCalculator.compute(data.weight, dosePattern) : null;
-    const html = `
-      <div class="glass p-4 md:p-6 mb-4">
-        <h2><i class="fas fa-clipboard-check"></i> Resultado</h2>
-        <div class="soap-box soap-a">
-          <h3>Avaliação</h3>
-          ${res.hipoteses.map((h,i)=>`<div style="margin-bottom:8px"><strong>${i+1}. ${h.name}</strong> ${(h.post*100).toFixed(1)}%</div>`).join('')}
-        </div>
-        <div class="soap-box soap-p">
-          <h3>Plano (${top.guidelines})</h3>
-          <ul>${top.tests.map(t=>`<li>${t}</li>`).join('')}</ul>
-          ${doseInfo?`<div class="dose-alert">💊 Dose calculada para ${data.weight} kg: <strong>${doseInfo}</strong></div>`:''}
-        </div>
-      </div>
-    `;
+
+    // 3. Modo investigação se baixa confiança ou inconclusivo
+    if (top.post < CONFIG.CONFIDENCE_THRESHOLD || inconclusive) {
+      const plan = ExceptionProtocol.generateInvestigationPlan(top, res.hipoteses, `${data.s} ${data.o}`);
+      this.renderInvestigation(plan, data, errors);
+    } else {
+      this.renderResults(data, res, errors);
+    }
+    auditLog('ANALISE', `Topo: ${top.name} (${(top.post*100).toFixed(1)}%)`);
+  },
+  renderResults(data, res, validationErrors){
+    const top = res.hipoteses[0];
+    let html = `<div class="glass p-4 md:p-6 mb-4"><h2><i class="fas fa-clipboard-check"></i> Resultado</h2>`;
+    if (validationErrors.length) {
+      html += `<div class="ci-alert"><strong>⚠️ Alertas de consistência:</strong><ul>${validationErrors.map(e=>`<li>${e.message}</li>`).join('')}</ul></div>`;
+    }
+    html += `<div class="soap-box soap-a"><h3>Avaliação</h3>${res.hipoteses.map((h,i)=>`<div><strong>${i+1}. ${h.name}</strong> ${(h.post*100).toFixed(1)}%</div>`).join('')}</div>`;
+    html += `<div class="soap-box soap-p"><h3>Plano (${top.guidelines})</h3><ul>${top.tests.map(t=>`<li>${t}</li>`).join('')}</ul></div></div>`;
+    document.getElementById('results').innerHTML = html;
+  },
+  renderInvestigation(plan, data, validationErrors){
+    let html = `<div class="glass p-4 md:p-6 mb-4"><h2><i class="fas fa-search"></i> Modo Investigação</h2>`;
+    html += `<div class="ci-alert"><strong>🔍 ${plan.message}</strong></div>`;
+    html += `<p><strong>Diagnóstico principal:</strong> ${plan.topDiagnosis} (${(plan.confidence*100).toFixed(1)}%)</p>`;
+    if (plan.redFlags.length) {
+      html += `<div class="dose-alert"><strong>🚩 Red Flags:</strong><ul>${plan.redFlags.map(f=>`<li>${f}</li>`).join('')}</ul></div>`;
+    }
+    if (plan.differentials.length) {
+      html += `<p><strong>Diagnósticos diferenciais:</strong> ${plan.differentials.join('; ')}</p>`;
+    }
+    html += `</div>`;
     document.getElementById('results').innerHTML = html;
   },
   quickFill(){
@@ -644,7 +759,10 @@ const App = {
     document.getElementById('iWeight').value = 70;
     document.getElementById('iBP').value = '145/90';
     document.getElementById('iHR').value = 98;
-    document.getElementById('iS').value = 'Paciente 65a, dor torácica em aperto há 2h, irradiada para MSE, sudorese. HAS, DM2.';
+    document.getElementById('iTemp').value = 37.2;
+    document.getElementById('iSPO2').value = 96;
+    document.getElementById('iRR').value = 18;
+    document.getElementById('iS').value = 'Paciente 65a, dor torácica em aperto há 2h, irradiada para MSE, sudorese fria. HAS, DM2.';
     document.getElementById('iO').value = 'PA 145/90, FC 98, SpO2 96%. CV: RCR 2T, sem sopros.';
     UI.toast('Exemplo carregado.','info');
   },
@@ -669,19 +787,11 @@ const App = {
     const prev = document.getElementById('uploadPrev');
     prev.innerHTML = this.uploadFiles.map(f=>`<div>📄 ${f.name} (${(f.size/1024).toFixed(1)} KB)</div>`).join('');
   },
-  // ══════════════════════════════════════════════════════════════════════════
-// SUBSTITUIR O MÉTODO 'processUpload' EXISTENTE POR ESTE BLOCO COMPLETO
-// ══════════════════════════════════════════════════════════════════════════
-
-  // ────────────────────────────────────────────────────────────────────────
-  // UPLOAD REAL (PDF, OCR, JSON)
-  // ────────────────────────────────────────────────────────────────────────
   async processUpload() {
     if (!this.uploadFiles.length) {
       UI.toast('Selecione pelo menos um arquivo.', 'warning');
       return;
     }
-
     const btn = document.getElementById('btnUpload');
     btn.disabled = true;
     const progDiv = document.getElementById('uploadProg');
@@ -704,48 +814,31 @@ const App = {
 
       try {
         let entries = [];
-
-        // ----- DETECTA TIPO E PROCESSA -----
         if (file.type === 'application/pdf' || file.name.endsWith('.pdf')) {
           Mon.log(`📄 Processando PDF: ${file.name}`, 'info');
           const entry = await this.processPDF(file);
           entries = [entry];
-        }
-        else if (file.type.startsWith('image/')) {
+        } else if (file.type.startsWith('image/')) {
           Mon.log(`🖼️ Processando imagem (OCR): ${file.name}`, 'info');
           const entry = await this.processImage(file);
           entries = [entry];
-        }
-        else if (file.type === 'application/json' || file.name.endsWith('.json')) {
+        } else if (file.type === 'application/json' || file.name.endsWith('.json')) {
           Mon.log(`📦 Processando JSON: ${file.name}`, 'info');
           entries = await this.processJSON(file);
-        }
-        else {
+        } else {
           throw new Error(`Formato não suportado: ${file.type || 'desconhecido'}`);
         }
-
-        // ----- PARA CADA ENTRADA EXTRAÍDA, FAZ UPSERT INTELIGENTE -----
         for (const rawEntry of entries) {
           try {
             const enriched = await this.enrichEntry(rawEntry);
             const res = await Database.upsertEvidence(enriched);
-
             if (res.action === 'added') totalAdded++;
             else if (res.action === 'replaced_conflict') totalReplaced++;
             else if (res.action === 'ignored') totalIgnored++;
-
-            // Adiciona à fila de revisão humana
             await Database.db.hl_queue.add({
-              pmid: enriched.pmid,
-              status: 'pending',
-              title: enriched.title,
-              source: enriched.source,
-              year: enriched.year,
-              extractedTags: enriched.tags,
-              score: enriched.unifiedScore,
-              createdAt: new Date().toISOString()
+              pmid: enriched.pmid, status: 'pending', title: enriched.title, source: enriched.source,
+              year: enriched.year, extractedTags: enriched.tags, score: enriched.unifiedScore, createdAt: new Date().toISOString()
             });
-
           } catch (e) {
             Mon.log(`Erro ao salvar entrada de ${file.name}: ${e.message}`, 'err');
             totalErrors++;
@@ -757,19 +850,15 @@ const App = {
         totalErrors++;
       }
     }
-
     progDiv.style.display = 'none';
     await this.updateStats();
     UI.toast(`✅ Importação: +${totalAdded} novas, ${totalReplaced} substituídas, ${totalIgnored} ignoradas${totalErrors ? `, ${totalErrors} erros` : ''}.`, 'success');
     auditLog('UPLOAD', `+${totalAdded} / subs:${totalReplaced} / ign:${totalIgnored} / err:${totalErrors}`);
     Mon.log(`Upload finalizado: +${totalAdded} | 🔄${totalReplaced} | ⏭️${totalIgnored} | ❌${totalErrors}`, 'ok');
-
     UI.closeModal('mUpload');
     btn.disabled = false;
     this.uploadFiles = [];
   },
-
-  // ---------- PROCESSADORES DE ARQUIVO ----------
   async processPDF(file) {
     const arrayBuffer = await file.arrayBuffer();
     const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
@@ -780,94 +869,57 @@ const App = {
       const pageText = content.items.map(item => item.str).join(' ');
       fullText += pageText + '\n';
     }
-    // Tenta extrair ano do texto
     const yearMatch = fullText.match(/\b(19|20)\d{2}\b/);
     const extractedYear = yearMatch ? parseInt(yearMatch[0]) : new Date().getFullYear();
-
+    const hash = await this.generateContentHash(fullText.slice(0, 500));
     return {
-      pmid: `pdf-${await this.generateContentHash(fullText.slice(0, 500))}`,
-      source: 'PDF Importado',
-      title: file.name.replace(/\.pdf$/i, ''),
-      specialty: 'Geral',
-      evidence_level: 'III',
-      year: extractedYear,
-      category: 'Documento',
-      extractedText: fullText.slice(0, 2000)
+      pmid: `pdf-${hash}`, source: 'PDF Importado', title: file.name.replace(/\.pdf$/i, ''),
+      specialty: 'Geral', evidence_level: 'III', year: extractedYear, category: 'Documento', extractedText: fullText.slice(0, 2000)
     };
   },
-
   async processImage(file) {
     const imageUrl = URL.createObjectURL(file);
     try {
-      const { data: { text } } = await Tesseract.recognize(imageUrl, 'por+eng', {
-        logger: m => {
-          if (m.status === 'recognizing text') {
-            // poderia atualizar um progresso fino, mas simplificamos
-          }
-        }
-      });
+      const { data: { text } } = await Tesseract.recognize(imageUrl, 'por+eng');
       const yearMatch = text.match(/\b(19|20)\d{2}\b/);
       const extractedYear = yearMatch ? parseInt(yearMatch[0]) : new Date().getFullYear();
-
+      const hash = await this.generateContentHash(text.slice(0, 500));
       return {
-        pmid: `ocr-${await this.generateContentHash(text.slice(0, 500))}`,
-        source: 'Imagem OCR',
-        title: file.name.replace(/\.(png|jpe?g)$/i, ''),
-        specialty: 'Diagnóstico por imagem',
-        evidence_level: 'IV',
-        year: extractedYear,
-        category: 'Relatório/Exame',
-        ocrText: text.slice(0, 2000)
+        pmid: `ocr-${hash}`, source: 'Imagem OCR', title: file.name.replace(/\.(png|jpe?g)$/i, ''),
+        specialty: 'Diagnóstico por imagem', evidence_level: 'IV', year: extractedYear, category: 'Relatório/Exame', ocrText: text.slice(0, 2000)
       };
-    } finally {
-      URL.revokeObjectURL(imageUrl);
-    }
+    } finally { URL.revokeObjectURL(imageUrl); }
   },
-
   async processJSON(file) {
     const text = await file.text();
     let jsonData;
-    try {
-      jsonData = JSON.parse(text);
-    } catch (e) {
-      throw new Error(`JSON inválido: ${e.message}`);
-    }
-    // Aceita array ou objeto único
+    try { jsonData = JSON.parse(text); }
+    catch (e) { throw new Error(`JSON inválido: ${e.message}`); }
     const entries = Array.isArray(jsonData) ? jsonData : [jsonData];
     return entries.filter(e => e && typeof e === 'object').map(entry => ({
-      ...entry,
-      // Garante campos mínimos
-      pmid: entry.pmid || `json-${uid()}`,
-      source: entry.source || 'JSON importado',
-      title: entry.title || 'Sem título',
-      year: entry.year ? parseInt(entry.year) : new Date().getFullYear(),
+      ...entry, pmid: entry.pmid || `json-${uid()}`, source: entry.source || 'JSON importado',
+      title: entry.title || 'Sem título', year: entry.year ? parseInt(entry.year) : new Date().getFullYear(),
     }));
   },
-
-  // ---------- ENRIQUECIMENTO (Tipologia, Score, Tags, Citação) ----------
   async enrichEntry(raw) {
     const et = Tipologia.classify(raw.source || '', raw.title || '');
     const tags = Ontologia.extractTags(`${raw.title || ''} ${raw.specialty || ''} ${raw.category || ''}`);
     const score = ScoreUnificado.calculate({ ...raw, entryTypeWeight: et.weight });
     const citation = CitacaoABNT.generate(raw);
-    return {
-      ...raw,
-      entryType: et.type,
-      entryTypeWeight: et.weight,
-      unifiedScore: score,
-      priorityScore: score,
-      tags,
-      citationABNT: citation,
-    };
+    return { ...raw, entryType: et.type, entryTypeWeight: et.weight, unifiedScore: score, priorityScore: score, tags, citationABNT: citation };
   },
-
-  // ---------- GERADOR DE HASH DETERMINÍSTICO (evita duplicatas) ----------
   async generateContentHash(content) {
-    const encoder = new TextEncoder();
-    const data = encoder.encode(content);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-    return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 16);
-  },
+    if (window.crypto && window.crypto.subtle) {
+      try {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(content);
+        const hashBuffer = await window.crypto.subtle.digest('SHA-256', data);
+        return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 16);
+      } catch (e) {}
+    }
+    let hash = 0;
+    for (let i = 0; i < content.length; i++) { const char = content.charCodeAt(i); hash = ((hash << 5) - hash) + char; hash |= 0; }
+    return Math.abs(hash).toString(16).padStart(8, '0') + Date.now().toString(36);
   },
   openBayesEditor(){ UI.openModal('mBayesModal'); },
   saveBayes(){
@@ -889,7 +941,7 @@ const App = {
     UI.closeModal('mLR'); UI.toast('LRs atualizados.','success');
   },
   openDebug(){
-    document.getElementById('debugContent').textContent = JSON.stringify({BAYES_CFG, dbReady:this.ready},null,2);
+    document.getElementById('debugContent').textContent = JSON.stringify({BAYES_CFG, ready:this.ready},null,2);
     UI.openModal('mDebug');
   },
   openAuditLog(){
@@ -905,6 +957,32 @@ const App = {
   }
 };
 
+// Injeção do campo de confiança ao carregar
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    const container = document.querySelector('#mainApp .glass.p-4.md\\:p-6.mb-4');
+    if (container) {
+      const modeDiv = container.querySelector('div[style*="background:rgba(255,255,255,0.04)"]');
+      if (modeDiv && !document.getElementById('iConfidence')) {
+        const confidenceHtml = `
+          <div style="margin-top:12px;">
+            <label style="font-size:11px;font-weight:700;color:rgba(255,255,255,.4);display:block;margin-bottom:5px">
+              Nível de Certeza do Médico
+            </label>
+            <select id="iConfidence" style="width:auto;min-width:150px;">
+              <option value="1.0">Alta (100%)</option>
+              <option value="0.8" selected>Moderada (80%)</option>
+              <option value="0.5">Baixa (50%)</option>
+            </select>
+          </div>
+        `;
+        modeDiv.insertAdjacentHTML('beforeend', confidenceHtml);
+      }
+    }
+  }, 500);
+});
+
+// Atalhos e inicialização
 window.App = App; window.Mon = Mon; window.UI = UI;
 document.getElementById('masterPwd').addEventListener('keydown', e=>{ if(e.key==='Enter') App.unlock(); });
 document.addEventListener('keydown', e=>{
@@ -914,7 +992,7 @@ document.addEventListener('keydown', e=>{
   if(e.ctrlKey && e.key==='d'){ e.preventDefault(); App.openDebug(); }
   if(e.ctrlKey && e.key==='a'){ e.preventDefault(); App.openAuditLog(); }
 });
-Mon.log('ARPEmed v21.0 — Pronto para desbloqueio.', 'ok');
+Mon.log('ARPEmed v21.1 — Módulos SanityCheck, Bayes, ExceptionProtocol ativos.', 'ok');
 </script>
 </body>
 </html>
