@@ -673,7 +673,214 @@ const Explainability = (() => {
 })();
 
 // ═══════════════════════════════════════════════════════════════════════════
-// UI (toast, modais)
+// BASE NORMATIVA DE EXAMES LABORATORIAIS (src/data/labNorms.json)
+// ═══════════════════════════════════════════════════════════════════════════
+const labNorms = Object.freeze({
+  hemoglobin: {
+    name: 'Hemoglobina',
+    unit: 'g/dL',
+    ranges: {
+      newborn:   { min: 13.5, max: 19.5 },
+      child:     { min: 11.0, max: 14.5 },
+      adultMale: { min: 13.5, max: 17.5 },
+      adultFemale: { min: 12.0, max: 15.5 },
+      elderly:   { min: 11.5, max: 16.0 }
+    }
+  },
+  leukocytes: {
+    name: 'Leucócitos',
+    unit: '/mm³',
+    ranges: {
+      newborn:   { min: 9000, max: 30000 },
+      child:     { min: 5000, max: 15000 },
+      adult:     { min: 4000, max: 11000 },
+      elderly:   { min: 3500, max: 10000 }
+    }
+  },
+  creatinine: {
+    name: 'Creatinina',
+    unit: 'mg/dL',
+    ranges: {
+      newborn:   { min: 0.3, max: 1.0 },
+      child:     { min: 0.3, max: 0.7 },
+      adultMale: { min: 0.7, max: 1.3 },
+      adultFemale: { min: 0.5, max: 1.1 },
+      elderly:   { min: 0.6, max: 1.2 }
+    }
+  },
+  platelets: {
+    name: 'Plaquetas',
+    unit: '/mm³',
+    ranges: {
+      all: { min: 150000, max: 450000 }
+    }
+  }
+});
+
+const labAliases = Object.freeze({
+  'hb': 'hemoglobin',
+  'hemoglobina': 'hemoglobin',
+  'hemoglobiina': 'hemoglobin',
+  'hemoglob': 'hemoglobin',
+  'leucocitos': 'leukocytes',
+  'leucócitos': 'leukocytes',
+  'leucocito': 'leukocytes',
+  'leucograma': 'leukocytes',
+  'wbc': 'leukocytes',
+  'white blood cells': 'leukocytes',
+  'creatinina': 'creatinine',
+  'creat': 'creatinine',
+  'crea': 'creatinine',
+  'plaquetas': 'platelets',
+  'plaqueta': 'platelets',
+  'plt': 'platelets'
+});
+
+// ═══════════════════════════════════════════════════════════════════════════
+// MÓDULO: PARSER DE LAUDOS LABORATORIAIS (src/validators/reportParser.js)
+// ═══════════════════════════════════════════════════════════════════════════
+const ReportParser = (() => {
+  function normalizeText(str) {
+    return str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  }
+
+  function resolveExamId(rawName) {
+    const normalized = normalizeText(rawName);
+    for (const [alias, id] of Object.entries(labAliases)) {
+      if (normalized.includes(alias)) return id;
+    }
+    for (const [id, exam] of Object.entries(labNorms)) {
+      if (normalized.includes(normalizeText(exam.name))) return id;
+    }
+    return null;
+  }
+
+  function extractValueAndUnit(rawValue) {
+    let cleaned = rawValue.replace(/\s+/g, ' ').trim();
+    const thousandsMatch = cleaned.match(/(\d{1,3})\.(\d{3})/);
+    if (thousandsMatch) {
+      cleaned = cleaned.replace(/\./g, '');
+    } else {
+      cleaned = cleaned.replace(/,/g, '.');
+    }
+    const match = cleaned.match(/(\d+(?:\.\d+)?)\s*([a-zA-Z\/³²]+)?/);
+    if (!match) return null;
+    let value = parseFloat(match[1]);
+    if (isNaN(value)) return null;
+    let unit = match[2] || '';
+    if (unit.includes('mm3') || unit.includes('mm³')) unit = '/mm³';
+    else if (unit.includes('g/dL') || unit.includes('g/dl')) unit = 'g/dL';
+    else if (unit.includes('mg/dL') || unit.includes('mg/dl')) unit = 'mg/dL';
+    return { value, unit };
+  }
+
+  function extractAge(text) {
+    const ageMatch = text.match(/(\d+)\s*anos?/i);
+    return ageMatch ? parseInt(ageMatch[1]) : null;
+  }
+
+  function extractGender(text) {
+    const normText = normalizeText(text);
+    if (/\bmasculino\b|\bhomem\b|\bm\b/.test(normText)) return 'M';
+    if (/\bfeminino\b|\bmulher\b|\bf\b/.test(normText)) return 'F';
+    return null;
+  }
+
+  function getAgeGroup(age) {
+    if (age === null) return 'adult';
+    if (age < 1) return 'newborn';
+    if (age < 12) return 'child';
+    if (age >= 65) return 'elderly';
+    return 'adult';
+  }
+
+  function getReferenceRange(examId, age, gender) {
+    const exam = labNorms[examId];
+    if (!exam) return null;
+    const ageGroup = getAgeGroup(age);
+    const ranges = exam.ranges;
+    if (ageGroup === 'adult' && gender) {
+      if (gender === 'M' && ranges.adultMale) return ranges.adultMale;
+      if (gender === 'F' && ranges.adultFemale) return ranges.adultFemale;
+    }
+    if (ranges[ageGroup]) return ranges[ageGroup];
+    return ranges.all || ranges.adult || Object.values(ranges)[0];
+  }
+
+  function validateLabResult(examId, value, age, gender) {
+    const exam = labNorms[examId];
+    if (!exam) return { status: 'UNKNOWN_EXAM', interpretation: 'Exame não reconhecido' };
+    const ref = getReferenceRange(examId, age, gender);
+    if (!ref) return { status: 'NO_REFERENCE', interpretation: 'Sem valores de referência' };
+    
+    if (examId === 'hemoglobin' && (value < 3 || value > 25)) {
+      return { status: 'CRITICAL_ERROR', interpretation: 'Valor biologicamente implausível' };
+    }
+    if (examId === 'leukocytes' && (value < 100 || value > 200000)) {
+      return { status: 'CRITICAL_ERROR', interpretation: 'Valor biologicamente implausível' };
+    }
+    if (examId === 'creatinine' && (value < 0.1 || value > 50)) {
+      return { status: 'CRITICAL_ERROR', interpretation: 'Valor biologicamente implausível' };
+    }
+
+    let status, interpretation;
+    if (value < ref.min) {
+      status = 'LOW';
+      interpretation = `Abaixo do normal (ref: ${ref.min}-${ref.max} ${exam.unit})`;
+    } else if (value > ref.max) {
+      status = 'HIGH';
+      interpretation = `Acima do normal (ref: ${ref.min}-${ref.max} ${exam.unit})`;
+    } else {
+      status = 'NORMAL';
+      interpretation = `Dentro do normal (ref: ${ref.min}-${ref.max} ${exam.unit})`;
+    }
+
+    Mon.log(`[AUDITORIA]: Exame ${exam.name} extraído. Valor: ${value}. Interpretado como: ${status} para idade ${age ?? 'desconhecida'}.`, 'audit');
+    return { status, interpretation, reference: `${ref.min}-${ref.max} ${exam.unit}` };
+  }
+
+  function parseReport(reportText) {
+    const results = [];
+    const lines = reportText.split(/\n|;/);
+    const patientAge = extractAge(reportText);
+    const patientGender = extractGender(reportText);
+
+    for (const line of lines) {
+      const match = line.match(/([a-zA-ZÀ-ÿ\s]+)\s*[:=]?\s*(\d+(?:[.,]\d+)*(?:\s*[a-zA-Z\/³²]+)?)/i);
+      if (!match) continue;
+      
+      const rawName = match[1].trim();
+      const rawValue = match[2].trim();
+      const examId = resolveExamId(rawName);
+      if (!examId) continue;
+
+      const extracted = extractValueAndUnit(rawValue);
+      if (!extracted) continue;
+
+      const validation = validateLabResult(examId, extracted.value, patientAge, patientGender);
+      
+      results.push({
+        examId,
+        examName: labNorms[examId].name,
+        rawName,
+        rawValue,
+        value: extracted.value,
+        unit: extracted.unit,
+        status: validation.status,
+        interpretation: validation.interpretation,
+        reference: validation.reference,
+        patientAge,
+        patientGender
+      });
+    }
+    return results;
+  }
+
+  return { parseReport, validateLabResult, extractAge, extractGender };
+})();
+
+// ═══════════════════════════════════════════════════════════════════════════
+// UI (toast, modais) + MÉTODOS DO MODAL DE VALIDAÇÃO LABORATORIAL
 // ═══════════════════════════════════════════════════════════════════════════
 const UI = {
   toast(msg, type='info'){
@@ -683,9 +890,80 @@ const UI = {
     c.appendChild(el); setTimeout(()=>el.remove(), 5000);
   },
   openModal(id){ document.getElementById(id).style.display = 'flex'; },
-  closeModal(id){ document.getElementById(id).style.display = 'none'; }
-};
+  closeModal(id){ document.getElementById(id).style.display = 'none'; },
 
+  showLabValidationModal(parsedResults, onConfirm) {
+    let modal = document.getElementById('mLabValidation');
+    if (!modal) {
+      modal = document.createElement('div');
+      modal.id = 'mLabValidation';
+      modal.className = 'modal-bg';
+      modal.setAttribute('onclick', 'if(event.target===this)UI.closeModal(\'mLabValidation\')');
+      modal.innerHTML = `
+        <div class="modal-box" style="max-width:900px">
+          <div style="display:flex;justify-content:space-between;margin-bottom:16px">
+            <h3 style="font-size:18px"><i class="fas fa-flask"></i> Validação de Exames Extraídos</h3>
+            <button onclick="UI.closeModal('mLabValidation')" style="background:none;border:none;color:#fff;font-size:18px">&times;</button>
+          </div>
+          <p style="font-size:12px;opacity:.6;margin-bottom:12px">Confira os valores extraídos e corrija se necessário antes de integrar à análise.</p>
+          <div id="labValidationTable"></div>
+          <div style="display:flex;gap:10px;margin-top:20px">
+            <button id="btnConfirmLab" class="btn btn-primary">Confirmar e Integrar</button>
+            <button onclick="UI.closeModal('mLabValidation')" class="btn btn-secondary">Cancelar</button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+    }
+
+    const tbody = document.getElementById('labValidationTable');
+    let html = `<table class="lr-table"><thead><tr>
+      <th>Exame</th><th>Valor Extraído</th><th>Referência</th><th>Interpretação</th><th>Ação</th>
+    </tr></thead><tbody>`;
+    
+    parsedResults.forEach((res, idx) => {
+      const statusColor = res.status === 'NORMAL' ? '#34C759' : (res.status === 'LOW' || res.status === 'HIGH' ? '#FF9500' : '#FF3B30');
+      html += `<tr>
+        <td>${res.examName}</td>
+        <td><input type="text" id="labVal_${idx}" value="${res.value} ${res.unit}" style="width:120px"></td>
+        <td>${res.reference || '—'}</td>
+        <td style="color:${statusColor}">${res.interpretation}</td>
+        <td><button onclick="UI.removeLabRow(${idx})" class="btn btn-secondary" style="padding:4px 10px;min-height:0"><i class="fas fa-trash"></i></button></td>
+      </tr>`;
+    });
+    html += `</tbody></table>`;
+    tbody.innerHTML = html;
+
+    modal.dataset.parsedResults = JSON.stringify(parsedResults);
+    modal.dataset.onConfirm = onConfirm.name;
+
+    document.getElementById('btnConfirmLab').onclick = () => {
+      const updatedResults = [];
+      parsedResults.forEach((res, idx) => {
+        const input = document.getElementById(`labVal_${idx}`);
+        if (input) {
+          const newRaw = input.value;
+          const extracted = ReportParser.extractValueAndUnit(newRaw);
+          if (extracted) {
+            const age = res.patientAge;
+            const gender = res.patientGender;
+            const validation = ReportParser.validateLabResult(res.examId, extracted.value, age, gender);
+            updatedResults.push({ ...res, value: extracted.value, unit: extracted.unit, ...validation });
+          }
+        }
+      });
+      UI.closeModal('mLabValidation');
+      if (onConfirm) onConfirm(updatedResults);
+    };
+
+    UI.openModal('mLabValidation');
+  },
+
+  removeLabRow(idx) {
+    const row = event.target.closest('tr');
+    if (row) row.remove();
+  }
+};
 // ═══════════════════════════════════════════════════════════════════════════
 // DATABASE (IndexedDB)
 // ═══════════════════════════════════════════════════════════════════════════
@@ -1041,10 +1319,50 @@ const App = {
     const imageUrl = URL.createObjectURL(file);
     try {
       const { data: { text } } = await Tesseract.recognize(imageUrl, 'por+eng');
-      const yearMatch = text.match(/\b(19|20)\d{2}\b/); const extractedYear = yearMatch ? parseInt(yearMatch[0]) : new Date().getFullYear();
+      const yearMatch = text.match(/\b(19|20)\d{2}\b/);
+      const extractedYear = yearMatch ? parseInt(yearMatch[0]) : new Date().getFullYear();
       const hash = await this.generateContentHash(text.slice(0, 500));
-      return { pmid: `ocr-${hash}`, source: 'Imagem OCR', title: file.name.replace(/\.(png|jpe?g)$/i, ''), specialty: 'Diagnóstico por imagem', evidence_level: 'IV', year: extractedYear, category: 'Relatório/Exame', ocrText: text.slice(0, 2000) };
-    } finally { URL.revokeObjectURL(imageUrl); }
+
+      const isLabReport = /hemoglobina|leucocitos|creatinina|plaquetas|hb|wbc/i.test(text);
+      
+      if (isLabReport) {
+        const parsed = ReportParser.parseReport(text);
+        if (parsed.length > 0) {
+          UI.showLabValidationModal(parsed, (validatedResults) => {
+            validatedResults.forEach(res => {
+              const entry = {
+                pmid: `lab-${hash}-${res.examId}`,
+                source: 'Laudo Laboratorial (OCR)',
+                title: `${res.examName}: ${res.value} ${res.unit} (${res.status})`,
+                specialty: 'Patologia Clínica/Medicina Laboratorial',
+                evidence_level: 'IV',
+                year: extractedYear,
+                category: 'Exame Laboratorial',
+                extractedText: `${res.examName}: ${res.value} ${res.unit} - ${res.interpretation}`,
+                labStatus: res.status
+              };
+              this.enrichEntry(entry).then(enriched => Database.upsertEvidence(enriched));
+            });
+            UI.toast(`${validatedResults.length} exames laboratoriais integrados.`, 'success');
+          });
+        } else {
+          UI.toast('Nenhum exame reconhecido no laudo.', 'warning');
+        }
+      }
+
+      return {
+        pmid: `ocr-${hash}`,
+        source: 'Imagem OCR',
+        title: file.name.replace(/\.(png|jpe?g)$/i, ''),
+        specialty: 'Diagnóstico por imagem',
+        evidence_level: 'IV',
+        year: extractedYear,
+        category: 'Relatório/Exame',
+        ocrText: text.slice(0, 2000)
+      };
+    } finally {
+      URL.revokeObjectURL(imageUrl);
+    }
   },
   async processJSON(file) {
     const text = await file.text(); let jsonData;
@@ -1067,7 +1385,6 @@ const App = {
         return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 16);
       } catch (e) {}
     }
-    // Fallback FNV-1a
     let hash = 2166136261;
     for (let i = 0; i < content.length; i++) { hash ^= content.charCodeAt(i); hash += (hash << 1) + (hash << 4) + (hash << 7) + (hash << 8) + (hash << 24); }
     return (hash >>> 0).toString(16).padStart(8, '0') + Date.now().toString(36);
@@ -1107,7 +1424,40 @@ function runUnitTests() {
   LR_STATE.find(l => l.id === 'sca_dor_torac').lr = originalLR;
   Mon.log('✅ Teste unitário de integração LR_STATE passou.', 'ok');
 }
-if (CONFIG.DEBUG_MODE) runUnitTests();
+
+function runLabParserTests() {
+  const testReport = `LABORATORIO XPTO - Paciente: 45 anos, Masc.
+Resultados:
+Hb 10.2 g/dL;
+Leucocitos 15.200 mm3;
+Creatinina 1.4 mg/dL;
+Plaquetas 220000`;
+  
+  const parsed = ReportParser.parseReport(testReport);
+  console.assert(parsed.length === 4, 'Deveria extrair 4 exames');
+  
+  const hb = parsed.find(p => p.examId === 'hemoglobin');
+  console.assert(hb.value === 10.2, 'Hb deveria ser 10.2');
+  console.assert(hb.status === 'LOW', 'Hb deveria estar baixa para homem 45a');
+  
+  const leuk = parsed.find(p => p.examId === 'leukocytes');
+  console.assert(leuk.value === 15200, 'Leucócitos deveria ser 15200');
+  console.assert(leuk.status === 'HIGH', 'Leucócitos deveria estar alto');
+  
+  const creat = parsed.find(p => p.examId === 'creatinine');
+  console.assert(creat.value === 1.4, 'Creatinina deveria ser 1.4');
+  console.assert(creat.status === 'HIGH', 'Creatinina deveria estar alta para homem');
+  
+  const validation = ReportParser.validateLabResult('hemoglobin', 800, 45, 'M');
+  console.assert(validation.status === 'CRITICAL_ERROR', 'Hb 800 deveria ser erro crítico');
+  
+  Mon.log('✅ Testes do Parser Laboratorial passaram.', 'ok');
+}
+
+if (CONFIG.DEBUG_MODE) {
+  runUnitTests();
+  runLabParserTests();
+}
 
 // Injeção do campo de confiança
 window.addEventListener('load', () => {
@@ -1131,7 +1481,7 @@ document.addEventListener('keydown', e=>{
   if(e.ctrlKey && e.key==='d'){ e.preventDefault(); App.openDebug(); }
   if(e.ctrlKey && e.key==='a'){ e.preventDefault(); App.openAuditLog(); }
 });
-Mon.log('ARPEmed v21.3 — LRs dinâmicos, Pneumonia mapeada, hash robusto e testes unitários ativos.', 'ok');
+Mon.log('ARPEmed v21.3 — LRs dinâmicos, Pneumonia mapeada, hash robusto, parser laboratorial e testes unitários ativos.', 'ok');
 </script>
 </body>
 </html>
