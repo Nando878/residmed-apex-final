@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#007AFF">
-  <title>ARPEmed v21.1 · Pipeline Unificado · SOAP Analítico · TPS · Offline</title>
+  <title>ARPEmed v21.3 · LRs Dinâmicos · Explicação Contrafactual · Offline</title>
   <!-- Estilos e bibliotecas -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -92,9 +92,9 @@
     <div style="width:90px;height:90px;border-radius:50%;background:rgba(0,122,255,.15);display:flex;align-items:center;justify-content:center;margin:0 auto 24px">
       <i class="fas fa-brain" style="font-size:42px;color:#007AFF"></i>
     </div>
-    <h1 style="font-size:28px;font-weight:900;margin-bottom:6px">ARPEmed <span style="color:rgba(255,255,255,.25);font-size:16px">v21.1</span></h1>
+    <h1 style="font-size:28px;font-weight:900;margin-bottom:6px">ARPEmed <span style="color:rgba(255,255,255,.25);font-size:16px">v21.3</span></h1>
     <p style="color:rgba(255,255,255,.35);margin-bottom:4px;font-size:13px">Pipeline Unificado · SOAP Analítico · TPS</p>
-    <p style="color:rgba(255,255,255,.18);font-size:11px;margin-bottom:28px">Bayesiano · PQRST · Offline · LGPD · BR Priorizado</p>
+    <p style="color:rgba(255,255,255,.18);font-size:11px;margin-bottom:28px">LRs Dinâmicos · Explicação Contrafactual · Offline</p>
     <input type="password" id="masterPwd" placeholder="Senha de acesso (mín. 8 caracteres)" autocomplete="off"
       style="width:100%;text-align:center;font-size:15px;padding:15px;border-radius:14px;margin-bottom:12px">
     <button onclick="App.unlock()" class="btn btn-primary" style="width:100%;padding:15px;font-size:15px;justify-content:center">
@@ -121,9 +121,9 @@
         <div>
           <h1 style="font-size:24px;font-weight:900">
             <span style="background:linear-gradient(90deg,#a78bfa,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent">ARPEmed</span>
-            <span style="color:rgba(255,255,255,.2);font-size:14px;margin-left:6px">v21.1</span>
+            <span style="color:rgba(255,255,255,.2);font-size:14px;margin-left:6px">v21.3</span>
           </h1>
-          <p style="font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.3);margin-top:2px">Pipeline · SOAP Analítico · TPS · Offline · LGPD · 🇧🇷 Boost</p>
+          <p style="font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.3);margin-top:2px">Pipeline · SOAP Analítico · TPS · Offline · LGPD · 🇧🇷 Boost · LRs Dinâmicos</p>
         </div>
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
@@ -224,7 +224,7 @@
   <div id="monHead" onclick="Mon.toggle()">
     <div style="display:flex;align-items:center;gap:8px">
       <span class="mdot blink" id="monDot" style="background:#34C759"></span>
-      <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.5)">Monitor v21.1</span>
+      <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.5)">Monitor v21.3</span>
     </div>
     <div style="display:flex;align-items:center;gap:10px">
       <span id="monCnt" style="font-size:10px;color:rgba(255,255,255,.3)">0 eventos</span>
@@ -296,13 +296,14 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
 // CONFIGURAÇÕES & CONSTANTES (FREEZE)
 // ═══════════════════════════════════════════════════════════════════════════
 const CONFIG = Object.freeze({
-  VERSION: '21.1',
+  VERSION: '21.3',
   MAX_FILE_SIZE: 50 * 1024 * 1024,
   LOCALIDADE: 'BR',
   BOOST_LOCAL: 1.25,
   CONFIDENCE_THRESHOLD: 0.95,
   ENTROPY_THRESHOLD: 0.10,
-  DEFAULT_PRIOR_WEIGHT: 0.5
+  DEFAULT_PRIOR_WEIGHT: 0.5,
+  DEBUG_MODE: true
 });
 
 const GUIDELINES_DB = Object.freeze([
@@ -320,9 +321,15 @@ const LR_DEFAULT = Object.freeze([
   Object.freeze({id:'sca_dor_torac',dx:'SCA',achado:'Dor torácica em aperto/pressão',lr:5.0}),
   Object.freeze({id:'sca_irrad',dx:'SCA',achado:'Irradiação MSE / mandíbula',lr:3.5}),
   Object.freeze({id:'tep_dispneia',dx:'TEP',achado:'Dispneia súbita',lr:4.0}),
-  Object.freeze({id:'sep_febre',dx:'Sepse',achado:'Febre/calafrio',lr:3.0}),
+  Object.freeze({id:'tep_taquicardia',dx:'TEP',achado:'FC > 100 bpm',lr:1.8}),
+  Object.freeze({id:'sepse_febre',dx:'Sepse',achado:'Febre/calafrio',lr:3.0}),
+  Object.freeze({id:'sepse_confusao',dx:'Sepse',achado:'Confusão/letargia',lr:4.5}),
   Object.freeze({id:'ic_ortopneia',dx:'IC',achado:'Ortopneia/DPN',lr:6.0}),
+  Object.freeze({id:'ic_dispneia',dx:'IC',achado:'Dispneia',lr:2.0}),
   Object.freeze({id:'avc_hemipar',dx:'AVC',achado:'Hemiparesia',lr:9.0}),
+  Object.freeze({id:'pneumo_tosse',dx:'Pneumonia',achado:'Tosse produtiva',lr:4.0}),
+  Object.freeze({id:'pneumo_febre',dx:'Pneumonia',achado:'Febre',lr:2.5}),
+  Object.freeze({id:'pneumo_dispneia',dx:'Pneumonia',achado:'Dispneia',lr:2.0}),
 ]);
 let LR_STATE = LR_DEFAULT.map(item => ({...item}));
 
@@ -336,10 +343,6 @@ let BAYES_CFG = {
 // UTILITÁRIOS GERAIS
 // ═══════════════════════════════════════════════════════════════════════════
 function norm(s=''){ return String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,' ').trim(); }
-function tokenize(raw){
-  const STOP=new Set(['paciente','anos','com','sem','de','da','do','em','no','na','para','por','um','uma','e','ou','que','mais','mas','nao','esta']);
-  return norm(raw).split(/\s+/).filter(t=>t.length>=3&&!STOP.has(t));
-}
 function parseBP(s){ const m=String(s).match(/(\d{2,3})\s*[\/x]\s*(\d{2,3})/i); return m?{sys:+m[1],dia:+m[2]}:null; }
 function parseHR(v){ const n=parseInt(v,10); return isFinite(n)?n:null; }
 function parseTemp(v){ const n=parseFloat(v); return isFinite(n)?n:null; }
@@ -347,7 +350,7 @@ function parseSPO2(v){ const n=parseFloat(v); return isFinite(n)?n:null; }
 function uid(){ return `${Date.now()}-${Math.random().toString(36).slice(2,8)}`; }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// MONITOR
+// MONITOR (com suporte a logs de auditoria)
 // ═══════════════════════════════════════════════════════════════════════════
 const Mon = (() => {
   let count=0, collapsed=false;
@@ -359,7 +362,7 @@ const Mon = (() => {
     count++;
     const bd=b(); if(!bd) return;
     const ts=new Date().toLocaleTimeString('pt-BR',{hour12:false});
-    const icon={ok:'✅',warn:'⚠️',err:'🔴'}[type]||'ℹ️';
+    const icon={ok:'✅',warn:'⚠️',err:'🔴',audit:'📋'}[type]||'ℹ️';
     const d=document.createElement('div');
     d.className='mln '+(type==='info'?'':type);
     d.textContent=`[${ts}] ${icon} ${msg}`;
@@ -400,7 +403,23 @@ function auditLog(action, detail=''){
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// MÓDULO 1: SANITY CHECK (validador de consistência clínica)
+// MÓDULO 0: GET LR VALUE (FONTE ÚNICA DE VERDADE)
+// ═══════════════════════════════════════════════════════════════════════════
+function getLRValue(id) {
+  const entry = LR_STATE.find(l => l.id === id);
+  if (!entry) {
+    if (CONFIG.DEBUG_MODE) {
+      Mon.log(`[CONFIG] LR id "${id}" não encontrado. Usando valor neutro 1.0.`, 'warn');
+      console.warn(`LR id "${id}" missing in LR_STATE.`);
+    }
+    return 1.0;
+  }
+  Mon.log(`[CONFIG]: Valor de LR para ${entry.dx} (${id}) lido de LR_STATE. Valor: ${entry.lr}`, 'audit');
+  return entry.lr;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// MÓDULO 1: SANITY CHECK
 // ═══════════════════════════════════════════════════════════════════════════
 const SanityCheck = (() => {
   const RULES = [
@@ -411,11 +430,7 @@ const SanityCheck = (() => {
         const temp = parseFloat(data.temp);
         const subj = norm(data.s || '');
         if (!isNaN(temp) && temp > 39.0 && subj.includes('sudorese') && subj.includes('frio')) {
-          return {
-            rule: 'FEVER_COLD_SKIN',
-            message: 'Febre alta (>39°C) associada a sudorese fria. Considere sepse ou choque.',
-            severity: 'warning'
-          };
+          return { rule: 'FEVER_COLD_SKIN', message: 'Febre alta (>39°C) associada a sudorese fria. Considere sepse ou choque.', severity: 'warning' };
         }
         return null;
       }
@@ -428,47 +443,27 @@ const SanityCheck = (() => {
         const rr = parseFloat(data.rr);
         const subj = norm(data.s || '');
         if (!isNaN(spo2) && spo2 < 90 && subj.includes('dor torácica') && (isNaN(rr) || rr < 20)) {
-          return {
-            rule: 'CHEST_PAIN_HYPOXIA_NO_TACHYPNEA',
-            message: 'SpO₂ < 90% com dor torácica, mas sem taquipneia. Verifique a saturação ou considere causa não respiratória.',
-            severity: 'error'
-          };
+          return { rule: 'CHEST_PAIN_HYPOXIA_NO_TACHYPNEA', message: 'SpO₂ < 90% com dor torácica, mas sem taquipneia. Verifique a saturação ou considere causa não respiratória.', severity: 'error' };
         }
         return null;
       }
     }
   ];
-
-  function validate(patientData) {
-    const errors = [];
-    for (const rule of RULES) {
-      const err = rule.check(patientData);
-      if (err) errors.push(err);
-    }
-    return errors;
-  }
-
-  function hasBlockingErrors(errors) {
-    return errors.some(e => e.severity === 'error');
-  }
-
+  function validate(patientData) { const errors = []; for (const rule of RULES) { const err = rule.check(patientData); if (err) errors.push(err); } return errors; }
+  function hasBlockingErrors(errors) { return errors.some(e => e.severity === 'error'); }
   return { validate, hasBlockingErrors };
 })();
 
 // ═══════════════════════════════════════════════════════════════════════════
-// MÓDULO 2: BAYESIAN ENGINE (cálculo probabilístico com entropia)
+// MÓDULO 2: BAYESIAN ENGINE (PURO, SEM NÚMEROS MÁGICOS)
 // ═══════════════════════════════════════════════════════════════════════════
 const BayesianEngine = (() => {
   function computePosterior(prior, lr, confidence = 1.0) {
     let post = (prior * lr) / ((prior * lr) + (1 - prior));
     post = post * confidence;
-    return Math.min(BAYES_CFG.maxPost, post);
+    return Math.min(BAYES_CFG.maxPost, Math.max(0.0001, post));
   }
-
-  function entropy(probs) {
-    return -probs.reduce((sum, p) => sum + (p > 0 ? p * Math.log2(p) : 0), 0);
-  }
-
+  function entropy(probs) { return -probs.reduce((sum, p) => sum + (p > 0 ? p * Math.log2(p) : 0), 0); }
   function isInconclusive(hypotheses) {
     if (hypotheses.length < 2) return false;
     const top2 = hypotheses.slice(0, 2);
@@ -476,12 +471,11 @@ const BayesianEngine = (() => {
     const ent = entropy(hypotheses.map(h => h.post));
     return (diff < CONFIG.ENTROPY_THRESHOLD) || (ent > 0.8);
   }
-
   return { computePosterior, entropy, isInconclusive };
 })();
 
 // ═══════════════════════════════════════════════════════════════════════════
-// MÓDULO 3: EXCEPTION PROTOCOL (red flags e modo investigação)
+// MÓDULO 3: EXCEPTION PROTOCOL
 // ═══════════════════════════════════════════════════════════════════════════
 const ExceptionProtocol = (() => {
   function getRedFlags(text) {
@@ -494,7 +488,6 @@ const ExceptionProtocol = (() => {
     if (/dor.*lombar.*súbita|pulso.*ausente/.test(t)) flags.push('Dor lombar súbita com déficit de pulso: dissecção aórtica.');
     return flags;
   }
-
   function generateInvestigationPlan(topHyp, allHyps, clinicalText) {
     const redFlags = getRedFlags(clinicalText);
     const differentials = allHyps.slice(1, 4).map(h => `${h.name} (${(h.post*100).toFixed(1)}%)`);
@@ -507,12 +500,180 @@ const ExceptionProtocol = (() => {
       message: 'Confiança abaixo de 95%. Considere exames complementares e investigação de causas raras.'
     };
   }
-
   return { getRedFlags, generateInvestigationPlan };
 })();
 
 // ═══════════════════════════════════════════════════════════════════════════
-// UI (toast, modais) e componentes específicos
+// MÓDULO 4: EXTERNAL SCORES (com log de auditoria)
+// ═══════════════════════════════════════════════════════════════════════════
+const ExternalScores = (() => {
+  function wellsPE(data) {
+    let score = 0;
+    const text = norm(`${data.s} ${data.o}`);
+    if (/(trombose|tvp|edema.*panturrilha|dor.*panturrilha|empastamento)/.test(text)) score += 3.0;
+    if (!/(pneumonia|dpoc|ic|asma|pericardite)/.test(text)) score += 3.0;
+    const hr = parseFloat(data.hr);
+    if (!isNaN(hr) && hr > 100) score += 1.5;
+    if (/(imobiliz|cirurgia|pós.operatorio|gesso|viagem.*longa)/.test(text)) score += 1.5;
+    if (/(tep|tromboembolismo|tvp).*(previa|anterior|passado)/.test(text)) score += 1.5;
+    if (/(hemoptise|escarro.*sangue|sangue.*escarro)/.test(text)) score += 1.0;
+    if (/(cancer|neoplasia|quimioterapia|radioterapia|oncologico)/.test(text)) score += 1.0;
+    if (score < 2) return 0.034;
+    if (score <= 6) return 0.20;
+    return 0.65;
+  }
+  function curb65(data) {
+    let score = 0;
+    const age = parseInt(data.age) || 0;
+    const text = norm(`${data.s} ${data.o}`);
+    if (/(confus|desorient|torpor|letargia|glasgow.*<|rebaixamento)/.test(text)) score += 1;
+    if (/(ureia|creatinina|drc|insuficiencia renal|nefropatia)/.test(text)) score += 1;
+    const rr = parseFloat(data.rr);
+    if (!isNaN(rr) && rr >= 30) score += 1;
+    const bp = parseBP(data.bp);
+    if (bp && (bp.sys < 90 || bp.dia <= 60)) score += 1;
+    if (age >= 65) score += 1;
+    if (score === 0) return 0.007;
+    if (score === 1) return 0.03;
+    if (score === 2) return 0.07;
+    if (score === 3) return 0.14;
+    if (score === 4) return 0.28;
+    return 0.57;
+  }
+  function chadsVasc(data) {
+    let score = 0;
+    const age = parseInt(data.age) || 0;
+    const text = norm(`${data.s} ${data.o}`);
+    if (/(icc|insuficiencia cardiaca|fe\s*[≤<]\s*40)/.test(text)) score += 1;
+    if (/(has|hipertensao|pa\s*[≥>]\s*140)/.test(text)) score += 1;
+    if (age >= 75) score += 2; else if (age >= 65) score += 1;
+    if (/(dm|diabete|glicemia|insulina)/.test(text)) score += 1;
+    if (/(avc|ait|isquemico|infarto cerebral).*(previa|anterior)/.test(text)) score += 2;
+    if (/(iam|infarto|dac|coronariopatia|angioplastia|stent|safena|mamaria|pad|claudicacao)/.test(text)) score += 1;
+    if (data.gender === 'F') score += 1;
+    if (score === 0) return 0.002; if (score === 1) return 0.006; if (score === 2) return 0.017;
+    if (score === 3) return 0.044; if (score === 4) return 0.086; if (score === 5) return 0.122;
+    if (score === 6) return 0.157; if (score === 7) return 0.175; if (score === 8) return 0.194;
+    return 0.237;
+  }
+  function getPretestProbability(diseaseCode, patientData) {
+    let prob = null;
+    switch (diseaseCode) {
+      case 'TEP': prob = wellsPE(patientData); break;
+      case 'Pneumonia': prob = curb65(patientData); break;
+      case 'AVC': prob = chadsVasc(patientData); break;
+      default: return null;
+    }
+    Mon.log(`[AUDITORIA]: Escore ${diseaseCode} aplicado. Valor: ${(prob*100).toFixed(1)}%. Influência: Probabilidade pré-teste ajustada.`, 'audit');
+    return prob;
+  }
+  return { getPretestProbability, wellsPE, curb65, chadsVasc };
+})();
+
+// ═══════════════════════════════════════════════════════════════════════════
+// MÓDULO 5: EXPLAINABILITY (com Pneumonia e fallback seguro)
+// ═══════════════════════════════════════════════════════════════════════════
+const Explainability = (() => {
+  const DISEASE_PATTERNS = {
+    SCA: {
+      expected: [
+        { re: /dor.*toracica|precordial|peito/, weight: 3, desc: 'Dor torácica/precordial' },
+        { re: /aperto|opressao|constric|peso/, weight: 2, desc: 'Dor em aperto/opressão' },
+        { re: /irradia.*(mse|braco esquerdo|mandibula|ombro)/, weight: 2, desc: 'Irradiação para MSE/mandíbula' },
+        { re: /sudorese|diaforese|frio/, weight: 1, desc: 'Sudorese fria' }
+      ],
+      absent: [
+        { re: /pleuritica|piora.*respiracao|ventilatorio/, weight: -2, desc: 'Dor pleurítica (sugere TEP)' },
+        { re: /ortopneia|dispneia.*paroxistica/, weight: -2, desc: 'Ortopneia/DPN (sugere IC)' }
+      ]
+    },
+    TEP: {
+      expected: [
+        { re: /dispneia.*subita|falta.*ar.*subita/, weight: 3, desc: 'Dispneia súbita' },
+        { re: /pleuritica|piora.*respiracao/, weight: 2, desc: 'Dor pleurítica' },
+        { re: /trombose|tvp|edema.*panturrilha/, weight: 2, desc: 'Sinais de TVP' },
+        { re: /hemoptise/, weight: 1, desc: 'Hemoptise' }
+      ],
+      absent: [
+        { re: /estertores|crepitacoes|congestao/, weight: -2, desc: 'Crepitações pulmonares (sugere IC/pneumonia)' },
+        { re: /febre.*alta|calafrio/, weight: -1, desc: 'Febre alta/calafrio (sugere pneumonia)' }
+      ]
+    },
+    Sepse: {
+      expected: [
+        { re: /febre|hipertermia|calafrio/, weight: 3, desc: 'Febre/calafrios' },
+        { re: /taquicardia|fc\s*[≥>]\s*90/, weight: 2, desc: 'Taquicardia' },
+        { re: /hipotensao|pa\s*[≤<]\s*100/, weight: 2, desc: 'Hipotensão' },
+        { re: /confusao|desorientacao|letargia/, weight: 2, desc: 'Alteração do estado mental' }
+      ],
+      absent: [
+        { re: /ausencia.*febre|afebril/, weight: -3, desc: 'Ausência de febre' },
+        { re: /normotenso|pa.*normal/, weight: -1, desc: 'Pressão arterial normal' }
+      ]
+    },
+    IC: {
+      expected: [
+        { re: /dispneia|falta.*ar/, weight: 2, desc: 'Dispneia' },
+        { re: /ortopneia|dispneia.*paroxistica|dpn/, weight: 3, desc: 'Ortopneia/DPN' },
+        { re: /edema.*(mmii|pernas|tornozelos)/, weight: 2, desc: 'Edema de membros inferiores' },
+        { re: /estertores|crepitacoes|congestao/, weight: 2, desc: 'Crepitações pulmonares' }
+      ],
+      absent: [
+        { re: /dor.*toracica.*forte/, weight: -2, desc: 'Dor torácica intensa (sugere SCA/TEP)' },
+        { re: /febre/, weight: -1, desc: 'Febre (sugere infecção)' }
+      ]
+    },
+    AVC: {
+      expected: [
+        { re: /deficit.*motor|hemiparesia|hemiplegia|paresia/, weight: 3, desc: 'Déficit motor focal' },
+        { re: /afasia|disartria|fala.*arrastada/, weight: 3, desc: 'Alteração de fala/linguagem' },
+        { re: /assimetria.*facial|desvio.*rima/, weight: 2, desc: 'Assimetria facial' },
+        { re: /subito|abrupto|repentino/, weight: 2, desc: 'Início súbito' }
+      ],
+      absent: [
+        { re: /febre/, weight: -1, desc: 'Febre (pode sugerir outra causa)' }
+      ]
+    },
+    Pneumonia: {
+      expected: [
+        { re: /tosse.*(produtiva|escarro|expectoracao)/, weight: 3, desc: 'Tosse produtiva' },
+        { re: /febre|calafrio/, weight: 2, desc: 'Febre/calafrios' },
+        { re: /dispneia|falta.*ar/, weight: 2, desc: 'Dispneia' },
+        { re: /estertores|crepitacoes|macicez/, weight: 3, desc: 'Estertores/crepitações à ausculta' }
+      ],
+      absent: [
+        { re: /radiografia.*normal|imagem.*limpa/, weight: -3, desc: 'Exame de imagem normal (fortemente contra pneumonia)' },
+        { re: /ausencia.*febre|afebril/, weight: -1, desc: 'Ausência de febre' }
+      ]
+    }
+  };
+  function explainWhyNot(alternativeDiseaseCode, patientData) {
+    const pattern = DISEASE_PATTERNS[alternativeDiseaseCode];
+    if (!pattern) {
+      if (CONFIG.DEBUG_MODE) console.warn(`[EXPLAINABILITY] Padrão não mapeado para: ${alternativeDiseaseCode}`);
+      return { disease: alternativeDiseaseCode, missingFindings: [], contradictingFindings: [], conclusion: 'Padrão clínico não cadastrado para explicação contrafactual.', error: 'UNMAPPED_DISEASE' };
+    }
+    const text = norm(`${patientData.s} ${patientData.o}`);
+    const missing = [], contradicting = [];
+    pattern.expected.forEach(item => { if (!item.re.test(text)) missing.push({ description: item.desc, weight: item.weight }); });
+    pattern.absent.forEach(item => { if (item.re.test(text)) contradicting.push({ description: item.desc, weight: item.weight }); });
+    const missingScore = missing.reduce((sum, m) => sum + m.weight, 0);
+    const contradictingScore = Math.abs(contradicting.reduce((sum, c) => sum + c.weight, 0));
+    const totalPenalty = missingScore + contradictingScore;
+    let conclusion;
+    if (totalPenalty >= 5) conclusion = `FORTE evidência contra ${alternativeDiseaseCode}.`;
+    else if (totalPenalty >= 3) conclusion = `MODERADA evidência contra ${alternativeDiseaseCode}.`;
+    else conclusion = `FRACA evidência contra ${alternativeDiseaseCode}; não pode ser totalmente descartada.`;
+    return { disease: alternativeDiseaseCode, missingFindings: missing.map(m => m.description), contradictingFindings: contradicting.map(c => c.description), totalPenalty, conclusion };
+  }
+  function explainAlternatives(mainDisease, alternativeDiseases, patientData) {
+    return alternativeDiseases.filter(code => code !== mainDisease).map(code => explainWhyNot(code, patientData));
+  }
+  return { explainWhyNot, explainAlternatives };
+})();
+
+// ═══════════════════════════════════════════════════════════════════════════
+// UI (toast, modais)
 // ═══════════════════════════════════════════════════════════════════════════
 const UI = {
   toast(msg, type='info'){
@@ -526,7 +687,7 @@ const UI = {
 };
 
 // ═══════════════════════════════════════════════════════════════════════════
-// DATABASE (IndexedDB via Dexie)
+// DATABASE (IndexedDB)
 // ═══════════════════════════════════════════════════════════════════════════
 const Database = (() => {
   let db;
@@ -570,7 +731,7 @@ const Database = (() => {
 })();
 
 // ═══════════════════════════════════════════════════════════════════════════
-// TIPOLOGIA / SCORE (simplificados para manter funcionalidade)
+// TIPOLOGIA / SCORE (simplificados)
 // ═══════════════════════════════════════════════════════════════════════════
 const Tipologia = {
   classify(source='',title=''){
@@ -585,10 +746,7 @@ const ScoreUnificado = {
     const year = doc.year || new Date().getFullYear();
     const age = new Date().getFullYear() - year;
     let temporal = 1.0;
-    if(age <= 1) temporal = 1.0;
-    else if(age <= 3) temporal = 0.85;
-    else if(age <= 7) temporal = 0.65;
-    else temporal = 0.4;
+    if(age <= 1) temporal = 1.0; else if(age <= 3) temporal = 0.85; else if(age <= 7) temporal = 0.65; else temporal = 0.4;
     const weight = doc.entryTypeWeight || 0.8;
     const evidence = {'1A':1.0,'1B':0.9,'2A':0.75}[doc.evidence_level||doc.ev]||0.7;
     let score = Math.round((temporal*0.4 + weight*0.35 + evidence*0.25)*100);
@@ -615,22 +773,40 @@ const Ontologia = {
 const CitacaoABNT = {
   generate(doc){ return `${doc.source||'S.N.'}. ${doc.title||'Sem título'}. ${doc.year||new Date().getFullYear()}.`; }
 };
-
 // ═══════════════════════════════════════════════════════════════════════════
-// AGENTE DIAGNÓSTICO (usa Bayes e Sanity Check)
+// AGENTE DIAGNÓSTICO (agora sem números mágicos, usa getLRValue)
 // ═══════════════════════════════════════════════════════════════════════════
 const Agente = {
   async analyze(data, confidenceWeight = 1.0){
     const text = norm(`${data.s} ${data.o}`);
-    const age = parseInt(data.age)||50;
-    const priors = {...BAYES_CFG.priors};
-    let lrSCA=1, lrTEP=1, lrSepse=1, lrIC=1, lrAVC=1;
-    if(/dor.*(peito|torac)/.test(text)) lrSCA *= LR_STATE.find(l=>l.id==='sca_dor_torac')?.lr||5;
-    if(/irrad|mse/.test(text)) lrSCA *= LR_STATE.find(l=>l.id==='sca_irrad')?.lr||3.5;
-    if(/dispne|falta de ar/.test(text)) lrTEP *= LR_STATE.find(l=>l.id==='tep_dispneia')?.lr||4;
-    if(/febre|calafr/.test(text)) lrSepse *= 3.0;
-    if(/ortopne|dpn/.test(text)) lrIC *= 6.0;
-    if(/hemipar|paresia/.test(text)) lrAVC *= 9.0;
+    const priors = { ...BAYES_CFG.priors };
+
+    const tepPretest = ExternalScores.getPretestProbability('TEP', data);
+    if (tepPretest !== null) priors.TEP = tepPretest;
+    const pneumoniaPretest = ExternalScores.getPretestProbability('Pneumonia', data);
+    if (pneumoniaPretest !== null) priors.Pneumonia = pneumoniaPretest;
+    const avcPretest = ExternalScores.getPretestProbability('AVC', data);
+    if (avcPretest !== null) priors.AVC = avcPretest;
+
+    let lrSCA = 1.0, lrTEP = 1.0, lrSepse = 1.0, lrIC = 1.0, lrAVC = 1.0, lrPneumonia = 1.0;
+
+    if (/dor.*(peito|torac)/.test(text)) lrSCA *= getLRValue('sca_dor_torac');
+    if (/irrad|mse/.test(text)) lrSCA *= getLRValue('sca_irrad');
+    if (/dispne|falta de ar/.test(text)) {
+      lrTEP *= getLRValue('tep_dispneia');
+      lrIC *= getLRValue('ic_dispneia');
+      lrPneumonia *= getLRValue('pneumo_dispneia');
+    }
+    if (/febre|calafr/.test(text)) {
+      lrSepse *= getLRValue('sepse_febre');
+      lrPneumonia *= getLRValue('pneumo_febre');
+    }
+    if (/ortopne|dpn/.test(text)) lrIC *= getLRValue('ic_ortopneia');
+    if (/hemipar|paresia/.test(text)) lrAVC *= getLRValue('avc_hemipar');
+    if (/tosse.*produt|expector/.test(text)) lrPneumonia *= getLRValue('pneumo_tosse');
+    if (/confus|desorient|letarg/.test(text)) lrSepse *= getLRValue('sepse_confusao');
+    const hr = parseFloat(data.hr);
+    if (!isNaN(hr) && hr > 100) lrTEP *= getLRValue('tep_taquicardia');
 
     const post = (prior,lr) => BayesianEngine.computePosterior(prior, lr, confidenceWeight);
     const hipoteses = [
@@ -639,6 +815,7 @@ const Agente = {
       {code:'Sepse', name:'Sepse/Choque Séptico', post:post(priors.Sepse,lrSepse), urgency:'CRÍTICO', tests:['Lactato','Hemocultura','ATB'], guidelines:'SSC 2025'},
       {code:'IC', name:'Insuficiência Cardíaca', post:post(priors.IC,lrIC), urgency:'URGENTE', tests:['BNP','Ecocardio'], guidelines:'SBC 2024'},
       {code:'AVC', name:'AVC Isquêmico', post:post(priors.AVC,lrAVC), urgency:'CRÍTICO', tests:['TC crânio','NIHSS'], guidelines:'ABN 2025'},
+      {code:'Pneumonia', name:'Pneumonia', post:post(priors.Pneumonia,lrPneumonia), urgency:'URGENTE', tests:['Raio-X tórax','CURB-65','ATB'], guidelines:'SBPT 2025'},
     ];
     hipoteses.sort((a,b)=>b.post-a.post);
     return { hipoteses };
@@ -646,7 +823,7 @@ const Agente = {
 };
 
 // ═══════════════════════════════════════════════════════════════════════════
-// APP PRINCIPAL (parte 1)
+// APP PRINCIPAL
 // ═══════════════════════════════════════════════════════════════════════════
 const App = {
   ready: false, uploadFiles: [],
@@ -703,7 +880,6 @@ const App = {
     };
     const confidence = parseFloat(document.getElementById('iConfidence')?.value) || 1.0;
 
-    // 1. Sanity Check
     const errors = SanityCheck.validate(data);
     if (SanityCheck.hasBlockingErrors(errors)) {
       const errorMsg = errors.filter(e=>e.severity==='error').map(e=>e.message).join('\n');
@@ -717,31 +893,49 @@ const App = {
       auditLog('SANITY_WARN', warnMsg);
     }
 
-    // 2. Análise Bayesiana
     const res = await Agente.analyze(data, confidence);
     const inconclusive = BayesianEngine.isInconclusive(res.hipoteses);
     const top = res.hipoteses[0];
 
-    // 3. Modo investigação se baixa confiança ou inconclusivo
+    const alternativeCodes = res.hipoteses.slice(1, 4).map(h => h.code);
+    const explanations = Explainability.explainAlternatives(top.code, alternativeCodes, data);
+
     if (top.post < CONFIG.CONFIDENCE_THRESHOLD || inconclusive) {
       const plan = ExceptionProtocol.generateInvestigationPlan(top, res.hipoteses, `${data.s} ${data.o}`);
-      this.renderInvestigation(plan, data, errors);
+      this.renderInvestigation(plan, data, errors, explanations);
     } else {
-      this.renderResults(data, res, errors);
+      this.renderResults(data, res, errors, explanations);
     }
     auditLog('ANALISE', `Topo: ${top.name} (${(top.post*100).toFixed(1)}%)`);
   },
-  renderResults(data, res, validationErrors){
+  renderResults(data, res, validationErrors, explanations){
     const top = res.hipoteses[0];
     let html = `<div class="glass p-4 md:p-6 mb-4"><h2><i class="fas fa-clipboard-check"></i> Resultado</h2>`;
     if (validationErrors.length) {
       html += `<div class="ci-alert"><strong>⚠️ Alertas de consistência:</strong><ul>${validationErrors.map(e=>`<li>${e.message}</li>`).join('')}</ul></div>`;
     }
     html += `<div class="soap-box soap-a"><h3>Avaliação</h3>${res.hipoteses.map((h,i)=>`<div><strong>${i+1}. ${h.name}</strong> ${(h.post*100).toFixed(1)}%</div>`).join('')}</div>`;
-    html += `<div class="soap-box soap-p"><h3>Plano (${top.guidelines})</h3><ul>${top.tests.map(t=>`<li>${t}</li>`).join('')}</ul></div></div>`;
+    html += `<div class="soap-box soap-p"><h3>Plano (${top.guidelines})</h3><ul>${top.tests.map(t=>`<li>${t}</li>`).join('')}</ul></div>`;
+
+    if (explanations && explanations.length) {
+      html += `<div class="soap-box soap-a" style="margin-top:16px;"><h4 style="font-weight:700;margin-bottom:8px;">🔍 Por que outras hipóteses não foram as principais?</h4>`;
+      explanations.forEach(exp => {
+        if (exp.error) {
+          html += `<div style="margin-bottom:12px;padding:10px;background:rgba(0,0,0,0.2);border-radius:8px;"><i>${exp.conclusion}</i></div>`;
+          return;
+        }
+        html += `<div style="margin-bottom:12px;padding:10px;background:rgba(0,0,0,0.2);border-radius:8px;">
+          <strong>${exp.disease}:</strong> ${exp.conclusion}<br>
+          ${exp.missingFindings.length ? `<span style="color:#FF9500;">Faltaram:</span> ${exp.missingFindings.join('; ')}<br>` : ''}
+          ${exp.contradictingFindings.length ? `<span style="color:#FF3B30;">Contradições:</span> ${exp.contradictingFindings.join('; ')}` : ''}
+        </div>`;
+      });
+      html += `</div>`;
+    }
+    html += `</div>`;
     document.getElementById('results').innerHTML = html;
   },
-  renderInvestigation(plan, data, validationErrors){
+  renderInvestigation(plan, data, validationErrors, explanations){
     let html = `<div class="glass p-4 md:p-6 mb-4"><h2><i class="fas fa-search"></i> Modo Investigação</h2>`;
     html += `<div class="ci-alert"><strong>🔍 ${plan.message}</strong></div>`;
     html += `<p><strong>Diagnóstico principal:</strong> ${plan.topDiagnosis} (${(plan.confidence*100).toFixed(1)}%)</p>`;
@@ -750,6 +944,21 @@ const App = {
     }
     if (plan.differentials.length) {
       html += `<p><strong>Diagnósticos diferenciais:</strong> ${plan.differentials.join('; ')}</p>`;
+    }
+    if (explanations && explanations.length) {
+      html += `<div style="margin-top:16px;"><h4 style="font-weight:700;">🔍 Por que outras hipóteses não foram as principais?</h4>`;
+      explanations.forEach(exp => {
+        if (exp.error) {
+          html += `<div style="margin-bottom:12px;padding:10px;background:rgba(0,0,0,0.2);border-radius:8px;"><i>${exp.conclusion}</i></div>`;
+          return;
+        }
+        html += `<div style="margin-bottom:12px;padding:10px;background:rgba(0,0,0,0.2);border-radius:8px;">
+          <strong>${exp.disease}:</strong> ${exp.conclusion}<br>
+          ${exp.missingFindings.length ? `<span style="color:#FF9500;">Faltaram:</span> ${exp.missingFindings.join('; ')}<br>` : ''}
+          ${exp.contradictingFindings.length ? `<span style="color:#FF3B30;">Contradições:</span> ${exp.contradictingFindings.join('; ')}` : ''}
+        </div>`;
+      });
+      html += `</div>`;
     }
     html += `</div>`;
     document.getElementById('results').innerHTML = html;
@@ -766,16 +975,10 @@ const App = {
     document.getElementById('iO').value = 'PA 145/90, FC 98, SpO2 96%. CV: RCR 2T, sem sopros.';
     UI.toast('Exemplo carregado.','info');
   },
-  clearForm(){
-    document.querySelectorAll('input, textarea').forEach(el=> el.value = '');
-    document.getElementById('results').innerHTML = '';
-  },
+  clearForm(){ document.querySelectorAll('input, textarea').forEach(el=> el.value = ''); document.getElementById('results').innerHTML = ''; },
   openUpload(){
-    this.uploadFiles = [];
-    document.getElementById('uploadPrev').innerHTML = '';
-    document.getElementById('uploadProg').style.display = 'none';
-    const dz = document.getElementById('dropArea');
-    const fi = document.getElementById('fileIn');
+    this.uploadFiles = []; document.getElementById('uploadPrev').innerHTML = ''; document.getElementById('uploadProg').style.display = 'none';
+    const dz = document.getElementById('dropArea'); const fi = document.getElementById('fileIn');
     dz.ondragover = e => { e.preventDefault(); dz.classList.add('dragover'); };
     dz.ondragleave = () => dz.classList.remove('dragover');
     dz.ondrop = e => { e.preventDefault(); dz.classList.remove('dragover'); this.handleFiles([...e.dataTransfer.files]); };
@@ -784,122 +987,70 @@ const App = {
   },
   handleFiles(files){
     this.uploadFiles = files.filter(f=>f.size<=CONFIG.MAX_FILE_SIZE);
-    const prev = document.getElementById('uploadPrev');
-    prev.innerHTML = this.uploadFiles.map(f=>`<div>📄 ${f.name} (${(f.size/1024).toFixed(1)} KB)</div>`).join('');
+    document.getElementById('uploadPrev').innerHTML = this.uploadFiles.map(f=>`<div>📄 ${f.name} (${(f.size/1024).toFixed(1)} KB)</div>`).join('');
   },
   async processUpload() {
-    if (!this.uploadFiles.length) {
-      UI.toast('Selecione pelo menos um arquivo.', 'warning');
-      return;
-    }
-    const btn = document.getElementById('btnUpload');
-    btn.disabled = true;
-    const progDiv = document.getElementById('uploadProg');
-    const progBar = document.getElementById('progBar');
-    const progLabel = document.getElementById('progLabel');
-    const progPercent = document.getElementById('progPercent');
-    progDiv.style.display = 'block';
-    progBar.style.width = '0%';
-    progPercent.textContent = '0%';
-
+    if (!this.uploadFiles.length) { UI.toast('Selecione pelo menos um arquivo.', 'warning'); return; }
+    const btn = document.getElementById('btnUpload'); btn.disabled = true;
+    const progDiv = document.getElementById('uploadProg'); progDiv.style.display = 'block';
+    const progBar = document.getElementById('progBar'); progBar.style.width = '0%';
+    const progLabel = document.getElementById('progLabel'); const progPercent = document.getElementById('progPercent'); progPercent.textContent = '0%';
     let totalAdded = 0, totalReplaced = 0, totalIgnored = 0, totalErrors = 0;
     const totalFiles = this.uploadFiles.length;
-
     for (let idx = 0; idx < totalFiles; idx++) {
       const file = this.uploadFiles[idx];
       const percent = Math.round(((idx + 1) / totalFiles) * 100);
-      progBar.style.width = percent + '%';
-      progPercent.textContent = percent + '%';
+      progBar.style.width = percent + '%'; progPercent.textContent = percent + '%';
       progLabel.textContent = `Processando ${idx + 1}/${totalFiles}: ${file.name}`;
-
       try {
         let entries = [];
         if (file.type === 'application/pdf' || file.name.endsWith('.pdf')) {
           Mon.log(`📄 Processando PDF: ${file.name}`, 'info');
-          const entry = await this.processPDF(file);
-          entries = [entry];
+          const entry = await this.processPDF(file); entries = [entry];
         } else if (file.type.startsWith('image/')) {
           Mon.log(`🖼️ Processando imagem (OCR): ${file.name}`, 'info');
-          const entry = await this.processImage(file);
-          entries = [entry];
+          const entry = await this.processImage(file); entries = [entry];
         } else if (file.type === 'application/json' || file.name.endsWith('.json')) {
           Mon.log(`📦 Processando JSON: ${file.name}`, 'info');
           entries = await this.processJSON(file);
-        } else {
-          throw new Error(`Formato não suportado: ${file.type || 'desconhecido'}`);
-        }
+        } else { throw new Error(`Formato não suportado: ${file.type || 'desconhecido'}`); }
         for (const rawEntry of entries) {
           try {
             const enriched = await this.enrichEntry(rawEntry);
             const res = await Database.upsertEvidence(enriched);
-            if (res.action === 'added') totalAdded++;
-            else if (res.action === 'replaced_conflict') totalReplaced++;
-            else if (res.action === 'ignored') totalIgnored++;
-            await Database.db.hl_queue.add({
-              pmid: enriched.pmid, status: 'pending', title: enriched.title, source: enriched.source,
-              year: enriched.year, extractedTags: enriched.tags, score: enriched.unifiedScore, createdAt: new Date().toISOString()
-            });
-          } catch (e) {
-            Mon.log(`Erro ao salvar entrada de ${file.name}: ${e.message}`, 'err');
-            totalErrors++;
-          }
+            if (res.action === 'added') totalAdded++; else if (res.action === 'replaced_conflict') totalReplaced++; else if (res.action === 'ignored') totalIgnored++;
+            await Database.db.hl_queue.add({ pmid: enriched.pmid, status: 'pending', title: enriched.title, source: enriched.source, year: enriched.year, extractedTags: enriched.tags, score: enriched.unifiedScore, createdAt: new Date().toISOString() });
+          } catch (e) { Mon.log(`Erro ao salvar entrada de ${file.name}: ${e.message}`, 'err'); totalErrors++; }
         }
-      } catch (err) {
-        Mon.log(`❌ Falha crítica em ${file.name}: ${err.message}`, 'err');
-        UI.toast(`Erro: ${file.name} → ${err.message}`, 'error');
-        totalErrors++;
-      }
+      } catch (err) { Mon.log(`❌ Falha crítica em ${file.name}: ${err.message}`, 'err'); UI.toast(`Erro: ${file.name} → ${err.message}`, 'error'); totalErrors++; }
     }
-    progDiv.style.display = 'none';
-    await this.updateStats();
+    progDiv.style.display = 'none'; await this.updateStats();
     UI.toast(`✅ Importação: +${totalAdded} novas, ${totalReplaced} substituídas, ${totalIgnored} ignoradas${totalErrors ? `, ${totalErrors} erros` : ''}.`, 'success');
     auditLog('UPLOAD', `+${totalAdded} / subs:${totalReplaced} / ign:${totalIgnored} / err:${totalErrors}`);
     Mon.log(`Upload finalizado: +${totalAdded} | 🔄${totalReplaced} | ⏭️${totalIgnored} | ❌${totalErrors}`, 'ok');
-    UI.closeModal('mUpload');
-    btn.disabled = false;
-    this.uploadFiles = [];
+    UI.closeModal('mUpload'); btn.disabled = false; this.uploadFiles = [];
   },
   async processPDF(file) {
-    const arrayBuffer = await file.arrayBuffer();
-    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-    let fullText = '';
-    for (let i = 1; i <= pdf.numPages; i++) {
-      const page = await pdf.getPage(i);
-      const content = await page.getTextContent();
-      const pageText = content.items.map(item => item.str).join(' ');
-      fullText += pageText + '\n';
-    }
-    const yearMatch = fullText.match(/\b(19|20)\d{2}\b/);
-    const extractedYear = yearMatch ? parseInt(yearMatch[0]) : new Date().getFullYear();
+    const arrayBuffer = await file.arrayBuffer(); const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise; let fullText = '';
+    for (let i = 1; i <= pdf.numPages; i++) { const page = await pdf.getPage(i); const content = await page.getTextContent(); const pageText = content.items.map(item => item.str).join(' '); fullText += pageText + '\n'; }
+    const yearMatch = fullText.match(/\b(19|20)\d{2}\b/); const extractedYear = yearMatch ? parseInt(yearMatch[0]) : new Date().getFullYear();
     const hash = await this.generateContentHash(fullText.slice(0, 500));
-    return {
-      pmid: `pdf-${hash}`, source: 'PDF Importado', title: file.name.replace(/\.pdf$/i, ''),
-      specialty: 'Geral', evidence_level: 'III', year: extractedYear, category: 'Documento', extractedText: fullText.slice(0, 2000)
-    };
+    return { pmid: `pdf-${hash}`, source: 'PDF Importado', title: file.name.replace(/\.pdf$/i, ''), specialty: 'Geral', evidence_level: 'III', year: extractedYear, category: 'Documento', extractedText: fullText.slice(0, 2000) };
   },
   async processImage(file) {
     const imageUrl = URL.createObjectURL(file);
     try {
       const { data: { text } } = await Tesseract.recognize(imageUrl, 'por+eng');
-      const yearMatch = text.match(/\b(19|20)\d{2}\b/);
-      const extractedYear = yearMatch ? parseInt(yearMatch[0]) : new Date().getFullYear();
+      const yearMatch = text.match(/\b(19|20)\d{2}\b/); const extractedYear = yearMatch ? parseInt(yearMatch[0]) : new Date().getFullYear();
       const hash = await this.generateContentHash(text.slice(0, 500));
-      return {
-        pmid: `ocr-${hash}`, source: 'Imagem OCR', title: file.name.replace(/\.(png|jpe?g)$/i, ''),
-        specialty: 'Diagnóstico por imagem', evidence_level: 'IV', year: extractedYear, category: 'Relatório/Exame', ocrText: text.slice(0, 2000)
-      };
+      return { pmid: `ocr-${hash}`, source: 'Imagem OCR', title: file.name.replace(/\.(png|jpe?g)$/i, ''), specialty: 'Diagnóstico por imagem', evidence_level: 'IV', year: extractedYear, category: 'Relatório/Exame', ocrText: text.slice(0, 2000) };
     } finally { URL.revokeObjectURL(imageUrl); }
   },
   async processJSON(file) {
-    const text = await file.text();
-    let jsonData;
-    try { jsonData = JSON.parse(text); }
-    catch (e) { throw new Error(`JSON inválido: ${e.message}`); }
+    const text = await file.text(); let jsonData;
+    try { jsonData = JSON.parse(text); } catch (e) { throw new Error(`JSON inválido: ${e.message}`); }
     const entries = Array.isArray(jsonData) ? jsonData : [jsonData];
-    return entries.filter(e => e && typeof e === 'object').map(entry => ({
-      ...entry, pmid: entry.pmid || `json-${uid()}`, source: entry.source || 'JSON importado',
-      title: entry.title || 'Sem título', year: entry.year ? parseInt(entry.year) : new Date().getFullYear(),
-    }));
+    return entries.filter(e => e && typeof e === 'object').map(entry => ({ ...entry, pmid: entry.pmid || `json-${uid()}`, source: entry.source || 'JSON importado', title: entry.title || 'Sem título', year: entry.year ? parseInt(entry.year) : new Date().getFullYear() }));
   },
   async enrichEntry(raw) {
     const et = Tipologia.classify(raw.source || '', raw.title || '');
@@ -911,15 +1062,15 @@ const App = {
   async generateContentHash(content) {
     if (window.crypto && window.crypto.subtle) {
       try {
-        const encoder = new TextEncoder();
-        const data = encoder.encode(content);
+        const encoder = new TextEncoder(); const data = encoder.encode(content);
         const hashBuffer = await window.crypto.subtle.digest('SHA-256', data);
         return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 16);
       } catch (e) {}
     }
-    let hash = 0;
-    for (let i = 0; i < content.length; i++) { const char = content.charCodeAt(i); hash = ((hash << 5) - hash) + char; hash |= 0; }
-    return Math.abs(hash).toString(16).padStart(8, '0') + Date.now().toString(36);
+    // Fallback FNV-1a
+    let hash = 2166136261;
+    for (let i = 0; i < content.length; i++) { hash ^= content.charCodeAt(i); hash += (hash << 1) + (hash << 4) + (hash << 7) + (hash << 8) + (hash << 24); }
+    return (hash >>> 0).toString(16).padStart(8, '0') + Date.now().toString(36);
   },
   openBayesEditor(){ UI.openModal('mBayesModal'); },
   saveBayes(){
@@ -929,60 +1080,48 @@ const App = {
   },
   openLREditor(){
     const wrap = document.getElementById('lrTableWrap');
-    wrap.innerHTML = `<table class="lr-table"><tr><th>Dx</th><th>Achado</th><th>LR</th></tr>
-      ${LR_STATE.map(l=>`<tr><td>${l.dx}</td><td>${l.achado}</td><td><input type="number" value="${l.lr}" data-id="${l.id}" step="0.1"></td></tr>`).join('')}</table>`;
+    wrap.innerHTML = `<table class="lr-table"><tr><th>Dx</th><th>Achado</th><th>LR</th></tr>${LR_STATE.map(l=>`<tr><td>${l.dx}</td><td>${l.achado}</td><td><input type="number" value="${l.lr}" data-id="${l.id}" step="0.1"></td></tr>`).join('')}</table>`;
     UI.openModal('mLR');
   },
   saveLRs(){
-    document.querySelectorAll('#lrTableWrap input').forEach(inp=>{
-      const lr = LR_STATE.find(l=>l.id===inp.dataset.id);
-      if(lr) lr.lr = parseFloat(inp.value)||lr.lr;
-    });
+    document.querySelectorAll('#lrTableWrap input').forEach(inp=>{ const lr = LR_STATE.find(l=>l.id===inp.dataset.id); if(lr) lr.lr = parseFloat(inp.value)||lr.lr; });
     UI.closeModal('mLR'); UI.toast('LRs atualizados.','success');
   },
-  openDebug(){
-    document.getElementById('debugContent').textContent = JSON.stringify({BAYES_CFG, ready:this.ready},null,2);
-    UI.openModal('mDebug');
-  },
-  openAuditLog(){
-    document.getElementById('auditFull').textContent = _auditBuf.map(e=>`[${e.ts}] ${e.action}: ${e.detail}`).join('\n');
-    UI.openModal('mAudit');
-  },
+  openDebug(){ document.getElementById('debugContent').textContent = JSON.stringify({BAYES_CFG, LR_STATE, ready:this.ready},null,2); UI.openModal('mDebug'); },
+  openAuditLog(){ document.getElementById('auditFull').textContent = _auditBuf.map(e=>`[${e.ts}] ${e.action}: ${e.detail}`).join('\n'); UI.openModal('mAudit'); },
   clearAudit(){ _auditBuf.length=0; document.getElementById('auditEl').innerHTML=''; },
   openHumanLoop(){ UI.openModal('mHL'); },
-  async exportDB(){
-    const data = await Database.db.evidence.toArray();
-    const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
-    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'arpemed_export.json'; a.click();
-  }
+  async exportDB(){ const data = await Database.db.evidence.toArray(); const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'arpemed_export.json'; a.click(); }
 };
 
-// Injeção do campo de confiança ao carregar
+// ═══════════════════════════════════════════════════════════════════════════
+// INICIALIZAÇÃO E TESTES UNITÁRIOS
+// ═══════════════════════════════════════════════════════════════════════════
+function runUnitTests() {
+  const originalLR = LR_STATE.find(l => l.id === 'sca_dor_torac').lr;
+  LR_STATE.find(l => l.id === 'sca_dor_torac').lr = 10.0;
+  const testData = { age: '65', gender: 'M', s: 'dor torácica', o: '', bp: '120/80', hr: '80', temp: '37', spo2: '98', rr: '16', weight: '70', medications: '' };
+  const res = Agente.analyze(testData, 1.0);
+  const scaProb = res.hipoteses.find(h => h.code === 'SCA').post;
+  console.assert(scaProb > 0.5, 'Teste LR falhou: Probabilidade de SCA deveria ser alta com LR=10.');
+  LR_STATE.find(l => l.id === 'sca_dor_torac').lr = originalLR;
+  Mon.log('✅ Teste unitário de integração LR_STATE passou.', 'ok');
+}
+if (CONFIG.DEBUG_MODE) runUnitTests();
+
+// Injeção do campo de confiança
 window.addEventListener('load', () => {
   setTimeout(() => {
     const container = document.querySelector('#mainApp .glass.p-4.md\\:p-6.mb-4');
     if (container) {
       const modeDiv = container.querySelector('div[style*="background:rgba(255,255,255,0.04)"]');
       if (modeDiv && !document.getElementById('iConfidence')) {
-        const confidenceHtml = `
-          <div style="margin-top:12px;">
-            <label style="font-size:11px;font-weight:700;color:rgba(255,255,255,.4);display:block;margin-bottom:5px">
-              Nível de Certeza do Médico
-            </label>
-            <select id="iConfidence" style="width:auto;min-width:150px;">
-              <option value="1.0">Alta (100%)</option>
-              <option value="0.8" selected>Moderada (80%)</option>
-              <option value="0.5">Baixa (50%)</option>
-            </select>
-          </div>
-        `;
-        modeDiv.insertAdjacentHTML('beforeend', confidenceHtml);
+        modeDiv.insertAdjacentHTML('beforeend', `<div style="margin-top:12px;"><label style="font-size:11px;font-weight:700;color:rgba(255,255,255,.4);display:block;margin-bottom:5px">Nível de Certeza do Médico</label><select id="iConfidence" style="width:auto;min-width:150px;"><option value="1.0">Alta (100%)</option><option value="0.8" selected>Moderada (80%)</option><option value="0.5">Baixa (50%)</option></select></div>`);
       }
     }
   }, 500);
 });
 
-// Atalhos e inicialização
 window.App = App; window.Mon = Mon; window.UI = UI;
 document.getElementById('masterPwd').addEventListener('keydown', e=>{ if(e.key==='Enter') App.unlock(); });
 document.addEventListener('keydown', e=>{
@@ -992,7 +1131,7 @@ document.addEventListener('keydown', e=>{
   if(e.ctrlKey && e.key==='d'){ e.preventDefault(); App.openDebug(); }
   if(e.ctrlKey && e.key==='a'){ e.preventDefault(); App.openAuditLog(); }
 });
-Mon.log('ARPEmed v21.1 — Módulos SanityCheck, Bayes, ExceptionProtocol ativos.', 'ok');
+Mon.log('ARPEmed v21.3 — LRs dinâmicos, Pneumonia mapeada, hash robusto e testes unitários ativos.', 'ok');
 </script>
 </body>
 </html>
